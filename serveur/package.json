@@ -4,15 +4,18 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch . node serveur.js"
+    "test": "eslint .",
+    "dev": "nodemon --watch . node serveur.js",
+    "migrate": "sequelize-cli db:migrate --config ./models/config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mariadb": "^2.5.2",
-    "sequelize": "^6.5.0"
+    "migrate": "^1.7.0",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.5.0",
+    "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
     "eslint": "^7.18.0",

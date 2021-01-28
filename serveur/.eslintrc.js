@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    browser: true,
+    node: true,
     commonjs: true,
     es2021: true,
   },
@@ -13,5 +13,6 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     quotes: ['warn', 'single'],
     semi: ['warn', 'always'],
+    'no-unused-vars': 'warn',
   },
 };
