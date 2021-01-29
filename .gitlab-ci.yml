@@ -1,12 +1,6 @@
-image: node
-
-stage: 
-  - lint
-
-
 eslint: 
   script: 
-    - "cd serveur"
-    - "npm i eslint"
-    - "npm run test"
-  stage: lint
+    - cd serveur
+    - npm i eslint
+    - npm run test
+  stage: test
