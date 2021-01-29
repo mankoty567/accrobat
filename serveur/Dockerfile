@@ -8,4 +8,4 @@ WORKDIR /app
 RUN npm install
 
 EXPOSE 1418
-CMD /bin/sh /app/startup.sh
+CMD npm run start

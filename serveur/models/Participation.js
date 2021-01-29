@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'Participation',
     {
       startDate: DataTypes.DATE,
+      endDate: DataTypes.DATE,
       isDone: DataTypes.BOOLEAN,
     },
     {}

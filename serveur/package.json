@@ -6,6 +6,7 @@
   "scripts": {
     "test": "eslint .",
     "dev": "nodemon --watch . node serveur.js",
+    "start": "node serveur.js",
     "migrate": "sequelize-cli db:migrate --config ./models/config.js"
   },
   "author": "",

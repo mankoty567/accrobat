@@ -9,8 +9,14 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Segment.associate = function (models) {
-    models.Segment.belongsTo(models.PointPassage, { as: 'pointStart' });
-    models.Segment.belongsTo(models.PointPassage, { as: 'pointEnd' });
+    models.Segment.belongsTo(models.PointPassage, {
+      as: 'pointStart',
+      foreignKey: 'PointStartId',
+    });
+    models.Segment.belongsTo(models.PointPassage, {
+      as: 'pointEnd',
+      foreignKey: 'PointEndId',
+    });
     models.Segment.hasMany(models.ChallengeCurrent);
     models.Segment.hasMany(models.Obstacle);
   };
