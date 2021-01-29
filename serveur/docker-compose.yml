@@ -1,0 +1,19 @@
+version: "3"
+services:
+  web:
+    build: .
+    environment:
+      - NODE_ENV=development
+      - BDD_URL=mysql://acrobat:acrobat@database/database
+    ports:
+      - 1418:1418
+    command: npm run dev
+    volumes:
+      - ./:/app
+  database:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=database
+      - MYSQL_USER=acrobat
+      - MYSQL_PASSWORD=acrobat
+      - MYSQL_ROOT_PASSWORD=acrobat
