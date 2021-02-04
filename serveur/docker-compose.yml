@@ -12,6 +12,8 @@ services:
       - ./:/app
   database:
     image: mysql:5.7
+    ports:
+      - 1419:3306
     environment:
       - MYSQL_DATABASE=database
       - MYSQL_USER=acrobat
