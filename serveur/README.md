@@ -25,9 +25,6 @@
 }
 ```
 *400* `Bad Request`
-```
-Bad Request
-``` 
 
 ## PointPassage
 - **POST** `/api/challenge/:id/point` : Création d'un point de passage
@@ -56,5 +53,5 @@ Bad Request
     "createdAt": "date"
 }
 ```
-*400* `Bad request`
-*404* `Challenge not exist`
+*400* `Bad request`  
+*404* `Challenge not exist`  
