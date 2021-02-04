@@ -3,6 +3,25 @@ const bdd = require('../../models');
 const REQUIRED_TYPE = ['start', 'end', 'point'];
 
 module.exports = {
+  get_pointpassage: (req, res) => {
+    let query_obj = { where: { ChallengeId: req.params.id } };
+
+    if (req.query.include === 'segment') {
+      query_obj.include = [
+        {
+          model: bdd.Segment,
+          as: 'pointStart',
+        },
+        {
+          model: bdd.Segment,
+          as: 'pointEnd',
+        },
+      ];
+    }
+    bdd.PointPassage.findAll(query_obj).then((pointpassages) => {
+      res.json(pointpassages);
+    });
+  },
   post_pointpassage: (req, res) => {
     if (
       !req.body.title ||
