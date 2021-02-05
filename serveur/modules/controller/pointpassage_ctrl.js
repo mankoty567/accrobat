@@ -27,7 +27,9 @@ module.exports = {
       !req.body.title ||
       !req.body.description ||
       !req.body.type ||
-      !REQUIRED_TYPE.includes(req.body.type)
+      !REQUIRED_TYPE.includes(req.body.type) ||
+      req.body.x === undefined ||
+      req.body.y === undefined
     ) {
       res.status(400).send('Bad request');
     } else {

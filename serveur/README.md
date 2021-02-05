@@ -2,6 +2,9 @@
 
 ## Challenge
 - **GET** `/api/challenge/:id` : Récupération d'un challenge ainsi que de ses points
+*Query Param* : 
+-> include=point : Les points de passage reliés au challenge se retrouvent dans PointPassages
+-> include=pointsegment : Les Points de Passage reliés au challenge se retrouvent dans PointPassage, et les segments reliés aux points se retrouvent dans PointStarts et PointEnds 
 ```JSON
 {
     "id": 0,
@@ -10,7 +13,13 @@
     "img_fond": "data:image/",
     "createdAt": "date",
     "updatedAt": "date",
-    "PointPassages": []
+    "PointPassages": [
+      {
+        ...
+        "pointStarts": [],
+        "pointEnds": []
+      }
+    ]
 }
 ```
 - **POST** `/api/challenge` : Création d'un challenge
@@ -64,7 +73,7 @@
 ## PointPassage
 - **GET** `/api/challenge/:id/point` : Récupération de tous les points de passage d'un segment
 *Query Param* : 
--> include=segment : Les segments reliés aux points se retrouvent dans PointStarts et PointEnds 
+-> include=segment : Les segments reliés aux points se retrouvent dans pointStarts et pointEnds 
 ```JSON
 [
   {
@@ -77,8 +86,8 @@
     "createdAt": "date",
     "updatedAt": "date",
     "ChallengeId": 0,
-    "pointStart": [],
-    "pointEnd": []
+    "pointStarts": [],
+    "pointEnds": []
   }
 ]
 ```

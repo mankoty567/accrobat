@@ -2,10 +2,30 @@ const bdd = require('../../models');
 
 module.exports = {
   get_challenge_id: (req, res) => {
-    bdd.Challenge.findOne({
+    let query = {
       where: { id: req.params.id },
-      include: [{ model: bdd.PointPassage }],
-    }).then((challenge) => {
+    };
+
+    if (req.query.include === 'point') {
+      query.include = [{ model: bdd.PointPassage }];
+    } else if (req.query.include === 'pointsegment') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+            },
+          ],
+        },
+      ];
+    }
+    bdd.Challenge.findOne(query).then((challenge) => {
       if (challenge !== null) {
         res.json(challenge);
       } else {
