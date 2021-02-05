@@ -111,6 +111,32 @@
 *400* `Bad request`  
 *404* `Challenge not exist`
 
+- **POST** `/api/pointpassage/:id` : Modification d'un point de passage (tous les champs sont optionnels)
+```JSON
+{
+  "title": "",
+  "description": "",
+  "x": 0,
+  "y": 0
+}
+```
+*200*
+```JSON
+{
+  "id": 0,
+  "title": "",
+  "description": "",
+  "type": "start/end/point",
+  "x": 0,
+  "y": 0,
+  "createdAt": "date",
+  "updatedAt": "date",
+  "ChallengeId": 0
+}
+```
+*400* `Bad Request`
+*404* `PointPassage not found`
+
 - **DELETE** `/api/pointpassage/:id`
 *200* `Deleted`  
 *400* `Bad Request/Error`  

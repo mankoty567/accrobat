@@ -1,3 +1,4 @@
+const e = require('express');
 const bdd = require('../../models');
 
 const REQUIRED_TYPE = ['start', 'end', 'point'];
@@ -66,5 +67,44 @@ module.exports = {
         }
       }
     );
+  },
+  update_pointpassage: (req, res) => {
+    bdd.PointPassage.findOne({
+      where: { id: req.params.id },
+    }).then((pointpassage) => {
+      if (pointpassage === null) {
+        res.status(404).send('PointPassage not found');
+      } else {
+        let edited = false;
+
+        if (req.body.title) {
+          pointpassage.title = req.body.title;
+          edited = true;
+        }
+
+        if (req.body.description) {
+          pointpassage.description = req.body.description;
+          edited = true;
+        }
+
+        if (req.body.x !== undefined) {
+          pointpassage.x = req.body.x;
+          edited = true;
+        }
+
+        if (req.body.y !== undefined) {
+          pointpassage.y = req.body.y;
+          edited = true;
+        }
+
+        if (edited) {
+          pointpassage.save().then(() => {
+            res.json(pointpassage);
+          });
+        } else {
+          res.json(pointpassage);
+        }
+      }
+    });
   },
 };

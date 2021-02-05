@@ -15,6 +15,7 @@ app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
 app.get('/api/challenge/:id/point', m.pointpassage_ctrl.get_pointpassage);
 app.post('/api/challenge/:id/point', m.pointpassage_ctrl.post_pointpassage);
 app.delete('/api/pointpassage/:id', m.pointpassage_ctrl.delete_pointpassage);
+app.post('/api/pointpassage/:id', m.pointpassage_ctrl.update_pointpassage);
 
 // Segment
 app.post('/api/segment', m.segment_ctrl.post_segment);
