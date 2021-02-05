@@ -1,4 +1,3 @@
-const e = require('express');
 const bdd = require('../../models');
 
 const REQUIRED_TYPE = ['start', 'end', 'point'];
