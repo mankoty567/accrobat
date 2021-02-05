@@ -109,7 +109,12 @@
 }
 ```
 *400* `Bad request`  
-*404* `Challenge not exist`  
+*404* `Challenge not exist`
+
+- **DELETE** `/api/pointpassage/:id`
+*200* `Deleted`  
+*400* `Bad Request/Error`  
+*404* `PointPassage not found`
 
 ## Segment
 - **POST** `/api/segment` : Création d'un segment

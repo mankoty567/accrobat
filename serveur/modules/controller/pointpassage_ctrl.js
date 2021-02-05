@@ -49,4 +49,22 @@ module.exports = {
       });
     }
   },
+  delete_pointpassage: (req, res) => {
+    bdd.PointPassage.findOne({ where: { id: req.params.id } }).then(
+      (pointpassage) => {
+        if (pointpassage === null) {
+          res.status(404).send('PointPassage not found');
+        } else {
+          pointpassage
+            .destroy()
+            .then(() => {
+              res.send('OK');
+            })
+            .catch((err) => {
+              res.status(400).send(err);
+            });
+        }
+      }
+    );
+  },
 };
