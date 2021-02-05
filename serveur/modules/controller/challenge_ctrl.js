@@ -45,4 +45,37 @@ module.exports = {
       }
     );
   },
+  update_challenge: (req, res) => {
+    bdd.Challenge.findOne({
+      where: { id: req.params.id },
+    }).then((challenge) => {
+      if (challenge === null) {
+        res.status(404).send('Challenge not found');
+      } else {
+        let edited = false;
+        if (req.body.title) {
+          challenge.title = req.body.title;
+          edited = true;
+        }
+
+        if (req.body.description) {
+          challenge.description = req.body.description;
+          edited = true;
+        }
+
+        if (req.body.img_fond) {
+          challenge.img_fond = req.body.img_fond;
+          edited = true;
+        }
+
+        if (edited) {
+          challenge.save().then(() => {
+            res.json(challenge);
+          });
+        } else {
+          res.json(challenge);
+        }
+      }
+    });
+  },
 };

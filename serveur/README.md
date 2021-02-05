@@ -34,6 +34,28 @@
 ```
 *400* `Bad Request`
 
+- **POST** `/api/challenge/:id` : Modification d'un challenge (tous les champs sont optionnels)
+```JSON
+{
+  "title": "",
+  "description": "",
+  "img_fond": "data:"
+}
+```
+*200*
+```JSON
+{
+  "id": 0,
+  "title": "",
+  "description": "",
+  "img_fond": "data:image/",
+  "createdAt": "date",
+  "updatedAt": "date",
+}
+```
+*400* `Bad Request`
+*404* `Challenge not found`
+
 - **DELETE** `/api/challenge/:id` : Suppression d'un challenge
 *200* `Deleted`
 *400* `Bad request`
