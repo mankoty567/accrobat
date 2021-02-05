@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       as: 'pointEnd',
       foreignKey: 'PointEndId',
     });
-    models.Segment.hasMany(models.ChallengeCurrent);
-    models.Segment.hasMany(models.Obstacle);
+    models.Segment.hasMany(models.ChallengeCurrent, { onDelete: 'cascade' });
+    models.Segment.hasMany(models.Obstacle, { onDelete: 'cascade' });
   };
   return Segment;
 };

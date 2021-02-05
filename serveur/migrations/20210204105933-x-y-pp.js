@@ -11,7 +11,7 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropColumn('PointPassages', 'x');
-    await queryInterface.dropColumn('PointPassages', 'y');
+    await queryInterface.removeColumn('PointPassages', 'x');
+    await queryInterface.removeColumn('PointPassages', 'y');
   },
 };

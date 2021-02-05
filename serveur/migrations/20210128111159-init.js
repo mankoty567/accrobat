@@ -187,6 +187,7 @@ module.exports = {
         model: {
           tableName: 'Participations',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -198,6 +199,7 @@ module.exports = {
         model: {
           tableName: 'Segments',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -209,6 +211,7 @@ module.exports = {
         model: {
           tableName: 'Segments',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -220,6 +223,7 @@ module.exports = {
         model: {
           tableName: 'ChallengeCurrents',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -231,6 +235,7 @@ module.exports = {
         model: {
           tableName: 'Obstacles',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -242,6 +247,7 @@ module.exports = {
         model: {
           tableName: 'Users',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -253,6 +259,7 @@ module.exports = {
         model: {
           tableName: 'ChallengeCurrents',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -264,6 +271,7 @@ module.exports = {
         model: {
           tableName: 'Challenges',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -275,6 +283,7 @@ module.exports = {
         model: {
           tableName: 'PointPassages',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -286,6 +295,7 @@ module.exports = {
         model: {
           tableName: 'PointPassages',
         },
+        onDelete: 'CASCADE',
         key: 'id',
       },
     });
@@ -298,6 +308,7 @@ module.exports = {
           tableName: 'Users',
         },
         key: 'id',
+        onDelete: 'CASCADE',
       },
     });
 
@@ -309,11 +320,33 @@ module.exports = {
           tableName: 'Challenges',
         },
         key: 'id',
+        onDelete: 'CASCADE',
       },
     });
   },
 
   down: async (queryInterface) => {
+    await queryInterface.removeColumn('ChallengeCurrents', 'ParticipationId');
+    await queryInterface.removeColumn('ChallengeCurrents', 'SegmentId');
+    await queryInterface.removeColumn('Obstacles', 'SegmentId');
+    await queryInterface.removeColumn('ObstacleAwnsers', 'ChallengeCurrentId');
+    await queryInterface.removeColumn('ObstacleAwnsers', 'ObstacleId');
+    await queryInterface.removeColumn('Participations', 'UserId');
+    await queryInterface.removeColumn('Participations', 'ChallengeCurrentId');
+    await queryInterface.removeColumn('PointPassages', 'ChallengeId');
+    await queryInterface.removeColumn('Segments', 'PointStartId');
+    await queryInterface.removeColumn('Segments', 'PointEndId');
+    await queryInterface.removeColumn('UserChallengeAdmins', 'UserId');
+    await queryInterface.removeColumn('UserChallengeAdmins', 'ChallengeId');
+
+    await queryInterface.dropTable('Challenges');
+    await queryInterface.dropTable('ChallengeCurrents');
+    await queryInterface.dropTable('Obstacles');
+    await queryInterface.dropTable('ObstacleAwnsers');
+    await queryInterface.dropTable('Participations');
+    await queryInterface.dropTable('PointPassages');
+    await queryInterface.dropTable('Segments');
     await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('UserChallengeAdmins');
   },
 };

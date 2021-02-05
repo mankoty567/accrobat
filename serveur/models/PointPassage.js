@@ -17,10 +17,12 @@ module.exports = (sequelize, DataTypes) => {
     models.PointPassage.hasMany(models.Segment, {
       as: 'pointStart',
       foreignKey: 'PointStartId',
+      onDelete: 'cascade',
     });
     models.PointPassage.hasMany(models.Segment, {
       as: 'pointEnd',
       foreignKey: 'PointEndId',
+      onDelete: 'cascade',
     });
   };
   return PointPassage;

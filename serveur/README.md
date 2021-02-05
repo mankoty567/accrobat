@@ -3,7 +3,15 @@
 ## Challenge
 - **GET** `/api/challenge/:id` : Récupération d'un challenge ainsi que de ses points
 ```JSON
-
+{
+    "id": 0,
+    "title": "",
+    "description": "",
+    "img_fond": "data:image/",
+    "createdAt": "date",
+    "updatedAt": "date",
+    "PointPassages": []
+}
 ```
 - **POST** `/api/challenge` : Création d'un challenge
 ```JSON
@@ -25,6 +33,11 @@
 }
 ```
 *400* `Bad Request`
+
+- **DELETE** `/api/challenge/:id` : Suppression d'un challenge
+*200* `Deleted`
+*400* `Bad request`
+*404* `Challenge not found`
 
 ## PointPassage
 - **GET** `/api/challenge/:id/point` : Récupération de tous les points de passage d'un segment
@@ -52,7 +65,6 @@
 -> `:id` : Id du challenge auquel il appartient 
 ```JSON
 {
-  "id": 0,
   "title": "",
   "description": "",
   "type": "start/end/point",

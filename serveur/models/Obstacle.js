@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   Obstacle.associate = function (models) {
     models.Obstacle.belongsTo(models.Segment);
-    models.Obstacle.hasMany(models.ObstacleAwnser);
+    models.Obstacle.hasMany(models.ObstacleAwnser, { onDelete: 'cascade' });
   };
   return Obstacle;
 };

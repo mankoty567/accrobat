@@ -26,4 +26,23 @@ module.exports = {
       });
     }
   },
+  delete_challenge: (req, res) => {
+    bdd.Challenge.findOne({ where: { id: req.params.id } }).then(
+      (challenge) => {
+        if (challenge === null) {
+          res.status(404).send('Not found');
+        } else {
+          challenge
+            .destroy()
+            .then(() => {
+              res.send('OK');
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(400).send('Error during delete');
+            });
+        }
+      }
+    );
+  },
 };
