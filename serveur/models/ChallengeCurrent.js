@@ -6,10 +6,10 @@ module.exports = (sequelize) => {
     models.ChallengeCurrent.belongsTo(models.Participation, {
       onDelete: 'cascade',
     });
-    models.ChallengeCurrent.hasMany(models.ObstacleAwnser, {
-      onDelete: 'cascade',
+    models.ChallengeCurrent.belongsToMany(models.Obstacle, {
+      through: models.ObstacleAwnser,
     });
-    models.ChallengeCurrent.belongsTo(models.Segment);
+    models.ChallengeCurrent.belongsTo(models.Segment, { onDelete: 'cascade' });
   };
   return ChallengeCurrent;
 };

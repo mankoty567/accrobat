@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   PointPassage.associate = function (models) {
-    models.PointPassage.belongsTo(models.Challenge);
+    models.PointPassage.belongsTo(models.Challenge, { onDelete: 'cascade' });
     models.PointPassage.hasMany(models.Segment, {
       as: 'pointStart',
       foreignKey: 'PointStartId',

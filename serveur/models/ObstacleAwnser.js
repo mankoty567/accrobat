@@ -8,11 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  ObstacleAwnser.associate = function (models) {
-    models.ObstacleAwnser.belongsTo(models.ChallengeCurrent, {
-      onDelete: 'cascade',
-    });
-    models.ObstacleAwnser.belongsTo(models.Obstacle);
-  };
+  ObstacleAwnser.associate = function () {};
   return ObstacleAwnser;
 };

@@ -7,8 +7,7 @@
     "test": "eslint .",
     "dev": "nodemon --watch . node serveur.js",
     "start": "node serveur.js",
-    "migrate": "sequelize-cli db:migrate --config ./models/config.js",
-    "migrateundo": "sequelize-cli db:migrate:undo --config ./models/config.js"
+    "sync": "node ./cli/bdd_sync.js"
   },
   "author": "",
   "license": "ISC",
