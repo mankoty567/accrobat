@@ -11,9 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Challenge.associate = function (models) {
-    models.Challenge.hasMany(models.UserChallengeAdmin);
-    models.Challenge.hasMany(models.Participation);
-    models.Challenge.hasMany(models.PointPassage);
+    models.Challenge.belongsToMany(models.User, {
+      through: models.UserChallengeAdmin,
+    });
+    models.Challenge.hasMany(models.Participation, { onDelete: 'cascade' });
+    models.Challenge.hasMany(models.PointPassage, { onDelete: 'cascade' });
   };
   return Challenge;
 };

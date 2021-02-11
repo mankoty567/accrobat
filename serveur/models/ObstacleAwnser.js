@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  ObstacleAwnser.associate = function (models) {
-    models.ObstacleAwnser.belongsTo(models.ChallengeCurrent);
-    models.ObstacleAwnser.belongsTo(models.Obstacle);
-  };
+  ObstacleAwnser.associate = function () {};
   return ObstacleAwnser;
 };
