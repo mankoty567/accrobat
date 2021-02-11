@@ -6,3 +6,10 @@ eslint:
     - npm i eslint
     - npm run test
   stage: test
+
+eslintweb: 
+  script: 
+    - cd web
+    - npm install
+    - npm run test
+  stage: test
