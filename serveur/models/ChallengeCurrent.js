@@ -1,7 +1,13 @@
 'use strict';
 
-module.exports = (sequelize) => {
-  const ChallengeCurrent = sequelize.define('ChallengeCurrent', {}, {});
+module.exports = (sequelize, DataTypes) => {
+  const ChallengeCurrent = sequelize.define(
+    'ChallengeCurrent',
+    {
+      distance: DataTypes.INTEGER,
+    },
+    {}
+  );
   ChallengeCurrent.associate = function (models) {
     models.ChallengeCurrent.belongsTo(models.Participation, {
       onDelete: 'cascade',

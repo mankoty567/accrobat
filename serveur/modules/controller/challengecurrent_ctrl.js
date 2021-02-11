@@ -23,7 +23,7 @@ module.exports = {
   get_one_challengecurrent: (req, res) => {
     bdd.ChallengeCurrent.findOne({
       where: { id: req.params.id },
-      attributes: ['id', 'SegmentId', 'PointPassageId'],
+      attributes: ['id', 'distance', 'SegmentId', 'PointPassageId'],
       include: [
         {
           model: bdd.Participation,
