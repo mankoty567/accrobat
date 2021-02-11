@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'PointEndId',
       onDelete: 'cascade',
     });
+    models.PointPassage.hasMany(models.ChallengeCurrent, {
+      onDelete: 'cascade',
+    });
   };
   return PointPassage;
 };

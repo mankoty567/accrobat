@@ -10,6 +10,9 @@ module.exports = (sequelize) => {
       through: models.ObstacleAwnser,
     });
     models.ChallengeCurrent.belongsTo(models.Segment, { onDelete: 'cascade' });
+    models.ChallengeCurrent.belongsTo(models.PointPassage, {
+      onDelete: 'cascade',
+    });
   };
   return ChallengeCurrent;
 };
