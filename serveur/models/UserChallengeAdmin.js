@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  UserChallengeAdmin.associate = function (models) {
-    models.UserChallengeAdmin.belongsTo(models.User);
-    models.UserChallengeAdmin.belongsTo(models.Challenge);
-  };
+  UserChallengeAdmin.associate = function () {};
   return UserChallengeAdmin;
 };

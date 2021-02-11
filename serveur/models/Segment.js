@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'Segment',
     {
       distance: DataTypes.INTEGER,
+      path: DataTypes.JSON,
     },
     {}
   );
@@ -12,13 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     models.Segment.belongsTo(models.PointPassage, {
       as: 'pointStart',
       foreignKey: 'PointStartId',
+      onDelete: 'cascade',
     });
     models.Segment.belongsTo(models.PointPassage, {
       as: 'pointEnd',
       foreignKey: 'PointEndId',
+      onDelete: 'cascade',
     });
-    models.Segment.hasMany(models.ChallengeCurrent);
-    models.Segment.hasMany(models.Obstacle);
+    models.Segment.hasMany(models.ChallengeCurrent, {
+      onDelete: 'cascade',
+      allowNull: true,
+    });
+    models.Segment.hasMany(models.Obstacle, { onDelete: 'cascade' });
   };
   return Segment;
 };
