@@ -206,3 +206,29 @@
 }
 ```
 *404* `Not Found`
+- **POST** `/api/challengecurrent/:id/save` : Sauvegarde de la progression
+```JSON
+{
+  "PointPassageId": 0
+}
+```
+OU
+```JSON
+{
+  "SegmentId": 0,
+  "distance": 0
+}
+```
+*200*
+```JSON
+{
+  "id": 0,
+  "distance": 0/null,
+  "createdAt": "date",
+  "updatedAt": "date",
+  "ParticipationId": 0,
+  "SegmentId": 0/null,
+  "PointPassageId": 0/null,
+  "Participation": {}
+}
+```

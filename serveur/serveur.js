@@ -30,5 +30,9 @@ app.get(
   '/api/challengecurrent/:id',
   m.challengecurrent_ctrl.get_one_challengecurrent
 );
+app.post(
+  '/api/challengecurrent/:id/save',
+  m.challengecurrent_ctrl.save_progression
+);
 
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));
