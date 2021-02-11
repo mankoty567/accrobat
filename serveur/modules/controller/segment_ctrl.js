@@ -2,7 +2,12 @@ const bdd = require('../../models');
 
 module.exports = {
   post_segment: (req, res) => {
-    if (!req.body.distance || !req.body.PointStartId || !req.body.PointEndId) {
+    if (
+      !req.body.distance ||
+      !req.body.PointStartId ||
+      !req.body.PointEndId ||
+      !req.body.path
+    ) {
       res.status(400).send('Bad request');
     } else {
       bdd.PointPassage.findOne({ where: { id: req.body.PointStartId } }).then(
@@ -20,6 +25,7 @@ module.exports = {
                   distance: req.body.distance,
                   PointStartId: req.body.PointStartId,
                   PointEndId: req.body.PointEndId,
+                  path: req.body.path,
                 }).then((segment) => {
                   res.json(segment);
                 });

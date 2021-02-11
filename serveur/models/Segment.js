@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'Segment',
     {
       distance: DataTypes.INTEGER,
+      path: DataTypes.JSON,
     },
     {}
   );

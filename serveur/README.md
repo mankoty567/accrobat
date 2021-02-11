@@ -16,7 +16,12 @@
     "PointPassages": [
       {
         ...
-        "pointStarts": [],
+        "pointStarts": [{
+          "distance": 0,
+          "PointStartId": 0,
+          "PointEndId": 0,
+          "path": [[0,0]]
+        }],
         "pointEnds": []
       }
     ]
