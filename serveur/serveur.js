@@ -20,4 +20,11 @@ app.post('/api/pointpassage/:id', m.pointpassage_ctrl.update_pointpassage);
 // Segment
 app.post('/api/segment', m.segment_ctrl.post_segment);
 
+// ChallengeCurrent
+app.get(
+  '/api/challengecurrent/get_all',
+  m.user_mdw.put_user,
+  m.challengecurrent_ctrl.get_all_challengecurrent
+);
+
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));

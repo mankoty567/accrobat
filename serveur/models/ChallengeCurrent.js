@@ -9,9 +9,13 @@ module.exports = (sequelize) => {
     models.ChallengeCurrent.belongsToMany(models.Obstacle, {
       through: models.ObstacleAwnser,
     });
-    models.ChallengeCurrent.belongsTo(models.Segment, { onDelete: 'cascade' });
+    models.ChallengeCurrent.belongsTo(models.Segment, {
+      onDelete: 'cascade',
+      allowNull: true,
+    });
     models.ChallengeCurrent.belongsTo(models.PointPassage, {
       onDelete: 'cascade',
+      allowNull: true,
     });
   };
   return ChallengeCurrent;

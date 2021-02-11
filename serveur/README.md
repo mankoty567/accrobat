@@ -173,3 +173,21 @@
 ```
 *400* `Bad request`
 *404* `PointStartId or PointEndId not exist`
+
+## ChallengeCurrent
+- **GET** `/api/challengecurrent/get_all` : Récupération de tous les challenges courrants de l'utilisateur
+*200*
+```JSON
+{
+  "id": 0,
+  "Participation": {
+    "startDate": "date",
+    "id": 0,
+    "Challenge": {
+      "title": "",
+      "description": "",
+      "id": 0
+    }
+  }
+}
+```

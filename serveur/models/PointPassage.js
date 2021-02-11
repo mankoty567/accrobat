@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     models.PointPassage.hasMany(models.ChallengeCurrent, {
       onDelete: 'cascade',
+      allowNull: true,
     });
   };
   return PointPassage;
