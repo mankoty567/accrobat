@@ -191,3 +191,18 @@
   }
 }
 ```
+- **GET** `/api/challengecurrent/:id` : Récupération des informations sur un ChallengeCurrent
+*200*
+```JSON
+{
+    "id": 0,
+    "SegmentId": null,
+    "PointPassageId": null,
+    "Participation": {
+        "startDate": "",
+        "id": 0,
+        "ChallengeId": 0
+    }
+}
+```
+*404* `Not Found`

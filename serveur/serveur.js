@@ -26,5 +26,9 @@ app.get(
   m.user_mdw.put_user,
   m.challengecurrent_ctrl.get_all_challengecurrent
 );
+app.get(
+  '/api/challengecurrent/:id',
+  m.challengecurrent_ctrl.get_one_challengecurrent
+);
 
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));

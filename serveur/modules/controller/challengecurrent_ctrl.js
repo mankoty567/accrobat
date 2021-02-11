@@ -20,4 +20,23 @@ module.exports = {
       res.json(challengeCurrent);
     });
   },
+  get_one_challengecurrent: (req, res) => {
+    bdd.ChallengeCurrent.findOne({
+      where: { id: req.params.id },
+      attributes: ['id', 'SegmentId', 'PointPassageId'],
+      include: [
+        {
+          model: bdd.Participation,
+          required: true,
+          attributes: ['startDate', 'id', 'ChallengeId'],
+        },
+      ],
+    }).then((challengeCurrent) => {
+      if (challengeCurrent === null) {
+        res.status(404).send('Not found');
+      } else {
+        res.json(challengeCurrent);
+      }
+    });
+  },
 };
