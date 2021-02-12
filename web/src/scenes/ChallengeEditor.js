@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { CRS } from 'leaflet';
+import { bounds, CRS } from 'leaflet';
 import {
   MapContainer,
   ImageOverlay,
   Marker,
   useMapEvent,
+  Popup,
+  useMap,
 } from 'react-leaflet';
 import {
   List,
@@ -15,7 +17,10 @@ import {
   Typography,
   Drawer,
   Divider,
+  IconButton,
+  Select,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 
 //Du style CSS de Material ui
@@ -54,11 +59,13 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
     setMarkers((current) => [...current, event.latlng]);
   };
   //Pour éditer les maps
-  const map = useMapEvent({
+  const mapEvent = useMapEvent({
     click: (event) => {
       addMarker(event);
     },
   });
+
+  const map = useMap();
 
   return (
     <>
@@ -69,7 +76,14 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
             marker_index={index}
             key={index}
             position={item}
-          />
+          >
+            <Popup>
+              <IconButton>
+                <AddIcon />
+                <Select></Select>
+              </IconButton>
+            </Popup>
+          </Marker>
         );
       })}
     </>
@@ -83,9 +97,9 @@ const ChallengeEditor = () => {
   //Informations sur la carte
   const bounds = [
     [0, 0],
-    [1750, 2450],
+    [1, 1],
   ];
-  const [markers, setMarkers] = useState([[1000, 1000]]);
+  const [markers, setMarkers] = useState([[0.5, 0.5]]);
 
   return (
     <div className={classes.root}>
@@ -129,8 +143,7 @@ const ChallengeEditor = () => {
           center={[bounds[1][0] / 2, bounds[1][1] / 2]}
           bounds={bounds}
           maxBounds={bounds}
-          zoom={0}
-          maxZoom={4}
+          style={{ height: '90vh', width: '84vw' }}
         >
           <ImageOverlay
             url={'/map.png'}
