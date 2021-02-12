@@ -20,6 +20,7 @@ app.post('/api/pointpassage/:id', m.pointpassage_ctrl.update_pointpassage);
 // Segment
 app.post('/api/segment', m.segment_ctrl.post_segment);
 app.get('/api/segment/:id', m.segment_ctrl.get_segment);
+app.post('/api/segment/:id', m.segment_ctrl.update_segment);
 
 // ChallengeCurrent
 app.get(
