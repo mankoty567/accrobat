@@ -38,4 +38,7 @@ app.post(
   m.challengecurrent_ctrl.save_progression
 );
 
+// Obstacle
+app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
+
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));
