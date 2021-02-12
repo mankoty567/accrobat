@@ -36,4 +36,44 @@ module.exports = {
       );
     }
   },
+  get_segment: (req, res) => {
+    bdd.Segment.findOne({
+      where: { id: req.params.id },
+      attributes: ['id', 'path', 'distance', 'PointStartId', 'PointEndId'],
+      include: [
+        {
+          model: bdd.PointPassage,
+          as: 'pointStart',
+          attributes: [
+            'id',
+            'title',
+            'description',
+            'type',
+            'x',
+            'y',
+            'ChallengeId',
+          ],
+        },
+        {
+          model: bdd.PointPassage,
+          as: 'pointEnd',
+          attributes: [
+            'id',
+            'title',
+            'description',
+            'type',
+            'x',
+            'y',
+            'ChallengeId',
+          ],
+        },
+      ],
+    }).then((segment) => {
+      if (segment === null) {
+        res.status(404).send('Segment not found');
+      } else {
+        res.json(segment);
+      }
+    });
+  },
 };
