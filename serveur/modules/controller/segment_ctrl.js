@@ -138,4 +138,9 @@ module.exports = {
       }
     }
   },
+  delete_segment: (req, res) => {
+    bdd.Segment.findOne({ where: { id: req.params.id } }).then((segment) => {
+      segment.destroy().then(res.send('OK'));
+    });
+  },
 };
