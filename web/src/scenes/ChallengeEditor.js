@@ -7,6 +7,7 @@ import {
   useMapEvent,
   Popup,
   useMap,
+  Polyline,
 } from 'react-leaflet';
 import {
   List,
@@ -19,6 +20,7 @@ import {
   Divider,
   IconButton,
   Select,
+  MenuItem,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -61,7 +63,17 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
   //Pour éditer les maps
   const mapEvent = useMapEvent({
     click: (event) => {
-      addMarker(event);
+      console.log(event.latlng);
+      if (
+        !(
+          event.latlng.lat < 0 ||
+          event.latlng.lat > 1 ||
+          event.latlng.lng < 0 ||
+          event.latlng.lng > 1
+        )
+      ) {
+        addMarker(event);
+      }
     },
   });
 
@@ -78,10 +90,22 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
             position={item}
           >
             <Popup>
-              <IconButton>
-                <AddIcon />
-                <Select></Select>
-              </IconButton>
+              <List>
+                <ListItem>
+                  <IconButton>
+                    <AddIcon />
+                  </IconButton>
+                </ListItem>
+                <ListItem>
+                  <Select>
+                    <MenuItem value={'Begin'}>Départ</MenuItem>
+                    <MenuItem value={'End'}>Arrivée</MenuItem>
+                    <MenuItem value={'Checkpoint'}>
+                      Point de passage
+                    </MenuItem>
+                  </Select>
+                </ListItem>
+              </List>
             </Popup>
           </Marker>
         );
@@ -122,17 +146,15 @@ const ChallengeEditor = () => {
         <List>
           <Typography variant="h5">Menu d'édition</Typography>
           <Divider />
-          {['Depart', 'Arrivée', 'Point de passage', 'Obstacle'].map(
-            (text) => {
-              return (
-                <>
-                  <ListItem button key={text}>
-                    <ListItemText primary={text}></ListItemText>
-                  </ListItem>
-                </>
-              );
-            },
-          )}
+          {['Test 1', 'Test 2', 'Test 3'].map((text) => {
+            return (
+              <>
+                <ListItem button key={text}>
+                  <ListItemText primary={text}></ListItemText>
+                </ListItem>
+              </>
+            );
+          })}
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -153,6 +175,21 @@ const ChallengeEditor = () => {
             markers={markers}
             setMarkers={setMarkers}
           />
+          <Polyline
+            positions={[
+              [0.2, 0.4],
+              [0.6, 0.5],
+              [0.8, 0.7],
+            ]}
+            eventHandlers={{
+              mouseover: () => {},
+              click: () => {},
+            }}
+          >
+            <Popup>
+              <p>Test</p>
+            </Popup>
+          </Polyline>
         </MapContainer>
       </main>
     </div>
