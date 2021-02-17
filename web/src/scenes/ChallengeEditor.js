@@ -55,7 +55,13 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object[]} markers La liste des markers à afficher sur la map
  * @param {Function} setMarkers Fonction pour update le state de markers
  */
-const DraggableMarkers = ({ markers, setMarkers }) => {
+const DraggableMarkers = ({
+  markers,
+  setMarkers,
+  editMode,
+  setEditMode,
+  setLines,
+}) => {
   //Fonction pour ajouter un marker
   let addMarker = (event) => {
     setMarkers((current) => [...current, event.latlng]);
@@ -63,7 +69,6 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
   //Pour éditer les maps
   const mapEvent = useMapEvent({
     click: (event) => {
-      console.log(event.latlng);
       if (
         !(
           event.latlng.lat < 0 ||
@@ -72,7 +77,17 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
           event.latlng.lng > 1
         )
       ) {
-        addMarker(event);
+        console.log(editMode);
+        if (!editMode) {
+          addMarker(event);
+        } else {
+          /*setLines((current) =>
+            current[current.length].push([
+              event.latlng.lat,
+              event.latlng.lng,
+            ]),
+          );*/
+        }
       }
     },
   });
@@ -81,35 +96,37 @@ const DraggableMarkers = ({ markers, setMarkers }) => {
 
   return (
     <>
-      {markers.map((item, index) => {
-        return (
-          <Marker
-            draggable={true}
-            marker_index={index}
-            key={index}
-            position={item}
-          >
-            <Popup>
-              <List>
-                <ListItem>
-                  <IconButton>
-                    <AddIcon />
-                  </IconButton>
-                </ListItem>
-                <ListItem>
-                  <Select>
-                    <MenuItem value={'Begin'}>Départ</MenuItem>
-                    <MenuItem value={'End'}>Arrivée</MenuItem>
-                    <MenuItem value={'Checkpoint'}>
-                      Point de passage
-                    </MenuItem>
-                  </Select>
-                </ListItem>
-              </List>
-            </Popup>
-          </Marker>
-        );
-      })}
+      {markers.length > 0 && markers[0][0] !== null
+        ? markers.map((item, index) => {
+            return (
+              <Marker
+                draggable={true}
+                marker_index={index}
+                key={index}
+                position={item}
+              >
+                <Popup>
+                  <List>
+                    <ListItem>
+                      <IconButton onClick={setEditMode(true)}>
+                        <AddIcon />
+                      </IconButton>
+                    </ListItem>
+                    <ListItem>
+                      <Select>
+                        <MenuItem value={'Begin'}>Départ</MenuItem>
+                        <MenuItem value={'End'}>Arrivée</MenuItem>
+                        <MenuItem value={'Checkpoint'}>
+                          Point de passage
+                        </MenuItem>
+                      </Select>
+                    </ListItem>
+                  </List>
+                </Popup>
+              </Marker>
+            );
+          })
+        : null}
     </>
   );
 };
@@ -123,7 +140,11 @@ const ChallengeEditor = () => {
     [0, 0],
     [1, 1],
   ];
-  const [markers, setMarkers] = useState([[0.5, 0.5]]);
+  //Retient la position de la ligne sélectionnée
+  const currentLine = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [editMode, setEditMode] = useState(false);
 
   return (
     <div className={classes.root}>
@@ -174,22 +195,15 @@ const ChallengeEditor = () => {
           <DraggableMarkers
             markers={markers}
             setMarkers={setMarkers}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            setLines={setLines}
           />
-          <Polyline
-            positions={[
-              [0.2, 0.4],
-              [0.6, 0.5],
-              [0.8, 0.7],
-            ]}
-            eventHandlers={{
-              mouseover: () => {},
-              click: () => {},
-            }}
-          >
-            <Popup>
-              <p>Test</p>
-            </Popup>
-          </Polyline>
+          {lines.map((element, index) => {
+            return (
+              <Polyline positions={element} key={index}></Polyline>
+            );
+          })}
         </MapContainer>
       </main>
     </div>
