@@ -30,6 +30,7 @@ import AddIcon from '@material-ui/icons/Add';
 import {
   makeStyles
 } from '@material-ui/core/styles';
+import {redIcon, blueIcon, greenIcon} from './MarkerIcons'
 
 //Du style CSS de Material ui
 const drawerWidth = 240;
@@ -107,6 +108,19 @@ const DraggableMarkers = ({
     };
     setLines((current) => [...current, newLines]);
   }
+
+  let getIcon = (marker) => {
+    switch(marker.type) {
+      case 'start':
+        return greenIcon;
+      case 'end':
+        return redIcon;
+      case 'point':
+        return blueIcon;
+      case 'default':
+        return blueIcon;
+    }
+  }
   //Pour éditer les maps
   const mapEvent = useMapEvent({
     click: (event) => {
@@ -141,7 +155,7 @@ const DraggableMarkers = ({
                 marker_index={index}
                 key={index}
                 position={[item.x, item.y]}
-                //icon={icon}
+                icon={getIcon(item)}
               >
                 <Popup>
                   <List>
