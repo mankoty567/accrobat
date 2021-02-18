@@ -25,11 +25,20 @@
             android:text="Effacer" />
 
         <Button
-            android:id="@+id/bTelecharger"
+            android:id="@+id/bPodometre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Telecharger" />
+            android:text="Activer Podomètre"
+            android:onClick="onClickPedo"/>
+
+        <Button
+            android:id="@+id/bModePodometre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Piéton"
+            android:onClick="onClickModePedo"/>
     </LinearLayout>
 
     <LinearLayout
@@ -52,8 +61,22 @@
             android:text="+ à partir ici" />
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/seekBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="750px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/tKilometres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="--- kms"/>
+    </LinearLayout>
 </LinearLayout>

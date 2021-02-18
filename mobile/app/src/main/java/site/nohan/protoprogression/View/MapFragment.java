@@ -47,7 +47,7 @@ public class MapFragment extends Fragment {
         seekBar.setOnSeekBarChangeListener(seekBarController);
         bEffacer = getActivity().findViewById(R.id.bEffacer);
         bEffacer.setOnClickListener(buttonController);
-        bEtape = getActivity().findViewById(R.id.bTelecharger);
+        bEtape = getActivity().findViewById(R.id.bPodometre);
         bEtape.setOnClickListener(buttonController);
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);
