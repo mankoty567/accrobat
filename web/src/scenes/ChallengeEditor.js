@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { bounds, CRS } from 'leaflet';
+import React, {
+  useState
+} from 'react';
+import {
+  CRS
+} from 'leaflet';
 import {
   MapContainer,
   ImageOverlay,
   Marker,
   useMapEvent,
   Popup,
-  useMap,
-  Polyline,
+  Polyline
 } from 'react-leaflet';
 import {
   List,
   ListItem,
-  ListItemText,
   AppBar,
   Toolbar,
   Typography,
@@ -21,10 +23,13 @@ import {
   IconButton,
   Select,
   MenuItem,
-  Button
+  Button,
+  TextField
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  makeStyles
+} from '@material-ui/core/styles';
 
 //Du style CSS de Material ui
 const drawerWidth = 240;
@@ -51,35 +56,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// var greenIcon = new L.Icon({
-//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
-
-// var redIcon = new L.Icon({
-//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
-
-// var blueIcon = new L.Icon({
-//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
-
 /**
- * Permet de créer des markers au click
+ * Permet de créer des markers au click et leurs lignes associées
  * @param {Object[]} markers La liste des markers à afficher sur la map
  * @param {Function} setMarkers Fonction pour update le state de markers
  */
@@ -91,33 +69,42 @@ const DraggableMarkers = ({
   lines,
   setLines,
 }) => {
-  //Fonction pour ajouter un marker
+  //Ajoute un marker
   let addMarker = (event) => {
     var newMarker = {
-      "id": markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
-      "x": event.latlng.lat,
-      "y": event.latlng.lng,
-      "title": "",
-      "description": "",
-      "type": "begin"
+      'id': markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
+      'title': '',
+      'description': '',
+      'type': 'start',
+      'x': event.latlng.lat,
+      'y': event.latlng.lng
     };
     setMarkers((current) => [...current, newMarker]);
     return newMarker;
   };
-  //Supprimer un marker
+  //Supprime un marker
   let removeMarker = (marker) => {
-    setMarkers((current) => current.filter(val => val.id != marker));
+    setMarkers((current) => current.filter(val => val != marker));
+    setLines((current) => current.filter(val => (val.PointStartId || val.PointEndId) != marker.id));
   }
-  //Fonction pour ajouter une ligne
+  //Update un marker
+  let updateMarker = (marker) => {
+    setMarkers((current) => current.filter(val => {
+      if (val.id == marker.id) val = marker;
+      return val;
+    }));
+  }
+  //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      "id": lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
-      "PointStartId": start.id,
-      "PointEndId": end.id,
-      "path": [
+      'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
+      'PointStartId': start.id,
+      'PointEndId': end.id,
+      'path': [
         [start.x, start.y],
         [end.x, end.y],
-    ]};
+      ]
+    };
     setLines((current) => [...current, newLines]);
   }
   //Pour éditer les maps
@@ -143,26 +130,6 @@ const DraggableMarkers = ({
   });
 
   const [startPoint, setStartPoint] = useState(null);
-  // const [type, setType] = useState('Begin');
-  // const [icon, setIcon] = useState(blueIcon);
-
-  // useEffect(() => {
-  //   switch(type) {
-  //     case 'Begin':
-  //       setIcon(blueIcon);
-  //       return;
-  //     case 'End':
-  //       setIcon(redIcon);
-  //       return;
-  //     case 'Checkpoint':
-  //       setIcon(greenIcon);
-  //       return;
-  //     default:
-  //       return;
-  //   }
-  // }, [type]);
-
-  const map = useMap();
 
   return (
     <>
@@ -179,6 +146,30 @@ const DraggableMarkers = ({
                 <Popup>
                   <List>
                     <ListItem>
+                      <TextField value={item.title} label='Titre' 
+                        onChange={(e) => {
+                          item.title = e.target.value;
+                          updateMarker(item);
+                        }} />
+                    </ListItem>
+                    <ListItem>
+                      <TextField value={item.description} label='Description' 
+                        onChange={(e) => {
+                          item.description = e.target.value;
+                          updateMarker(item);
+                        }} />
+                    </ListItem>
+                    <ListItem>
+                      <Select value={item.type} onChange={(e) => {
+                          item.type = e.target.value;
+                          updateMarker(item);
+                        }}>
+                        <MenuItem value={'start'}>Départ</MenuItem>
+                        <MenuItem value={'end'}>Arrivée</MenuItem>
+                        <MenuItem value={'point'}>Checkpoint</MenuItem>
+                      </Select>
+                    </ListItem>
+                    <ListItem>
                       <IconButton onClick={() => {
                         setEditMode(true);
                         setStartPoint(item);
@@ -186,17 +177,8 @@ const DraggableMarkers = ({
                         <AddIcon />
                       </IconButton>
                     </ListItem>
-                    <ListItem>
-                      <Select /*onChange={(e) => setType(e.target.value)}*/>
-                        <MenuItem value={'Begin'}>Départ</MenuItem>
-                        <MenuItem value={'End'}>Arrivée</MenuItem>
-                        <MenuItem value={'Checkpoint'}>
-                          Point de passage
-                        </MenuItem>
-                      </Select>
-                    </ListItem>
                   </List>
-                  <Button variant="contained" color="secondary" onClick={() => removeMarker(item.id)}>
+                  <Button variant='contained' color='secondary' onClick={() => removeMarker(item)}>
                     Supprimer
                   </Button>
                 </Popup>
@@ -217,41 +199,33 @@ const ChallengeEditor = () => {
     [0, 0],
     [1, 1],
   ];
-  //Retient la position de la ligne sélectionnée
-  const currentLine = useState(null);
+
   const [markers, setMarkers] = useState([]);
   const [lines, setLines] = useState([]);
   const [editMode, setEditMode] = useState(false);
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position='fixed' className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" noWrap>
+          <Typography variant='h6' noWrap>
             Editeur de challenge
           </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
         className={classes.drawer}
-        variant="permanent"
+        variant='permanent'
         classes={{
           paper: classes.drawerPaper,
         }}
-        anchor="left"
+        anchor='left'
       >
         <div className={classes.toolbar} />
         <List>
-          <Typography variant="h5">Menu d'édition</Typography>
+          <Typography variant='h5'>Menu d'édition</Typography>
           <Divider />
-          {['Test 1', 'Test 2', 'Test 3'].map((text, index) => {
-            return (
-              <ListItem button key={index}>
-                <ListItemText primary={text}></ListItemText>
-              </ListItem>
-            );
-          })}
-          <Button variant="contained" color="primary" onClick={() => {
+          <Button variant='contained' color='primary' onClick={() => {
             console.log(lines);
             console.log(markers);
           }}>
