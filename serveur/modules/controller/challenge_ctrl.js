@@ -4,6 +4,7 @@ module.exports = {
   get_challenge_id: (req, res) => {
     let query = {
       where: { id: req.params.id },
+      attributes: ['title', 'description', 'createdAt'],
     };
 
     if (req.query.include === 'point') {
@@ -30,6 +31,29 @@ module.exports = {
         res.json(challenge);
       } else {
         res.status(404).send('Not found');
+      }
+    });
+  },
+  get_image: (req, res) => {
+    bdd.Challenge.findOne({
+      where: { id: req.params.id },
+    }).then((challenge) => {
+      if (challenge === null) {
+        res.status(404).send('Not found');
+      } else {
+        let img = new Buffer.from(
+          challenge.img_fond.replace(/^.*base64,/, ''),
+          'base64'
+        );
+        var mime = challenge.img_fond.match(
+          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
+        )[1];
+
+        res.writeHead(200, {
+          'Content-Type': mime,
+          'Content-Length': img.length,
+        });
+        res.end(img);
       }
     });
   },
