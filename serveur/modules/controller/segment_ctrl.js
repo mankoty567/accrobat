@@ -2,11 +2,11 @@ const bdd = require('../../models');
 
 module.exports = {
   post_segment: (req, res) => {
+    console.log(req.body);
     if (
-      !req.body.distance ||
-      !req.body.PointStartId ||
-      !req.body.PointEndId ||
-      !req.body.path
+      req.body.PointStartId === undefined ||
+      req.body.PointEndId === undefined ||
+      req.body.path === undefined
     ) {
       res.status(400).send('Bad request');
     } else {
@@ -22,7 +22,6 @@ module.exports = {
                 res.status(404).send('PointEnd not found');
               } else {
                 bdd.Segment.create({
-                  distance: req.body.distance,
                   PointStartId: req.body.PointStartId,
                   PointEndId: req.body.PointEndId,
                   path: req.body.path,
@@ -90,11 +89,6 @@ module.exports = {
       let edited = false;
       if (req.body.path !== undefined && Array.isArray(req.body.path)) {
         segment.path = req.body.path;
-        edited = true;
-      }
-
-      if (req.body.distance !== undefined) {
-        segment.distance = req.body.distance;
         edited = true;
       }
 

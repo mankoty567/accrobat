@@ -23,21 +23,6 @@ app.get('/api/segment/:id', m.segment_ctrl.get_segment);
 app.post('/api/segment/:id', m.segment_ctrl.update_segment);
 app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
 
-// ChallengeCurrent
-app.get(
-  '/api/challengecurrent/get_all',
-  m.user_mdw.put_user,
-  m.challengecurrent_ctrl.get_all_challengecurrent
-);
-app.get(
-  '/api/challengecurrent/:id',
-  m.challengecurrent_ctrl.get_one_challengecurrent
-);
-app.post(
-  '/api/challengecurrent/:id/save',
-  m.challengecurrent_ctrl.save_progression
-);
-
 // Obstacle
 app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
 
