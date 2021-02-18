@@ -88,19 +88,37 @@ const DraggableMarkers = ({
   setMarkers,
   editMode,
   setEditMode,
+  lines,
   setLines,
 }) => {
   //Fonction pour ajouter un marker
   let addMarker = (event) => {
-    setMarkers((current) => [...current, event.latlng]);
+    var newMarker = {
+      "id": markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
+      "x": event.latlng.lat,
+      "y": event.latlng.lng,
+      "title": "",
+      "description": "",
+      "type": "begin"
+    };
+    setMarkers((current) => [...current, newMarker]);
+    return newMarker;
   };
   //Supprimer un marker
   let removeMarker = (marker) => {
-    setMarkers((current) => current.filter(val => val != marker));
+    setMarkers((current) => current.filter(val => val.id != marker));
   }
   //Fonction pour ajouter une ligne
   let addLine = (start, end) => {
-    setLines((current) => [...current, [start, end]]);
+    var newLines = {
+      "id": lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
+      "PointStartId": start.id,
+      "PointEndId": end.id,
+      "path": [
+        [start.x, start.y],
+        [end.x, end.y],
+    ]};
+    setLines((current) => [...current, newLines]);
   }
   //Pour éditer les maps
   const mapEvent = useMapEvent({
@@ -116,9 +134,8 @@ const DraggableMarkers = ({
         if (!editMode) {
           addMarker(event);
         } else {
-          console.log(event.latlng);
-          addLine(startPoint, event.latlng);
-          addMarker(event);
+          var newMarker = addMarker(event);
+          addLine(startPoint, newMarker);
           setEditMode(false);
         }
       }
@@ -156,7 +173,7 @@ const DraggableMarkers = ({
                 draggable={false}
                 marker_index={index}
                 key={index}
-                position={item}
+                position={[item.x, item.y]}
                 //icon={icon}
               >
                 <Popup>
@@ -179,7 +196,7 @@ const DraggableMarkers = ({
                       </Select>
                     </ListItem>
                   </List>
-                  <Button variant="contained" color="secondary" onClick={() => removeMarker(item)}>
+                  <Button variant="contained" color="secondary" onClick={() => removeMarker(item.id)}>
                     Supprimer
                   </Button>
                 </Popup>
@@ -234,6 +251,12 @@ const ChallengeEditor = () => {
               </ListItem>
             );
           })}
+          <Button variant="contained" color="primary" onClick={() => {
+            console.log(lines);
+            console.log(markers);
+          }}>
+            Logs
+          </Button>
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -255,11 +278,12 @@ const ChallengeEditor = () => {
             setMarkers={setMarkers}
             editMode={editMode}
             setEditMode={setEditMode}
+            lines={lines}
             setLines={setLines}
           />
           {lines.map((element, index) => {
             return (
-              <Polyline positions={element} key={index} color={'black'}></Polyline>
+              <Polyline positions={element.path} key={index} color={'black'}></Polyline>
             );
           })}
         </MapContainer>
