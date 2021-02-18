@@ -70,23 +70,28 @@ const DraggableMarkers = ({
   lines,
   setLines,
 }) => {
+
+  const [startPoint, setStartPoint] = useState(null);
+
   //Ajoute un marker
   let addMarker = (event) => {
     var newMarker = {
       'id': markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
       'title': '',
       'description': '',
-      'type': 'start',
+      'type': markers.length > 0 ? 'point' : 'start',
       'x': event.latlng.lat,
       'y': event.latlng.lng
     };
     setMarkers((current) => [...current, newMarker]);
+    setStartPoint(newMarker);
     return newMarker;
   };
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter(val => val != marker));
-    setLines((current) => current.filter(val => (val.PointStartId || val.PointEndId) != marker.id));
+    setLines((current) => current.filter(val => (val.PointStartId && val.PointEndId) != marker.id));
+    setStartPoint(markers.slice(-1)[0]);
   }
   //Update un marker
   let updateMarker = (marker) => {
@@ -132,18 +137,15 @@ const DraggableMarkers = ({
           event.latlng.lng > 1
         )
       ) {
-        if (!editMode) {
+        if (!markers.length > 0) {
           addMarker(event);
         } else {
           var newMarker = addMarker(event);
           addLine(startPoint, newMarker);
-          setEditMode(false);
         }
       }
     },
   });
-
-  const [startPoint, setStartPoint] = useState(null);
 
   return (
     <>
@@ -156,6 +158,7 @@ const DraggableMarkers = ({
                 key={index}
                 position={[item.x, item.y]}
                 icon={getIcon(item)}
+                onClick={() => {console.log("oui")}}
               >
                 <Popup>
                   <List>
@@ -173,24 +176,28 @@ const DraggableMarkers = ({
                           updateMarker(item);
                         }} />
                     </ListItem>
-                    <ListItem>
-                      <Select value={item.type} onChange={(e) => {
-                          item.type = e.target.value;
-                          updateMarker(item);
+                    {item.type != 'start' ? 
+                      <ListItem>
+                        <Select value={item.type} onChange={(e) => {
+                            item.type = e.target.value;
+                            updateMarker(item);
+                          }}>
+                          <MenuItem value={'start'}>Départ</MenuItem>
+                          <MenuItem value={'end'}>Arrivée</MenuItem>
+                          <MenuItem value={'point'}>Checkpoint</MenuItem>
+                        </Select>
+                      </ListItem> 
+                    : null}
+                    {item.type != 'end' ? 
+                      <ListItem>
+                        <IconButton onClick={() => {
+                          setEditMode(true);
+                          setStartPoint(item);
                         }}>
-                        <MenuItem value={'start'}>Départ</MenuItem>
-                        <MenuItem value={'end'}>Arrivée</MenuItem>
-                        <MenuItem value={'point'}>Checkpoint</MenuItem>
-                      </Select>
-                    </ListItem>
-                    <ListItem>
-                      <IconButton onClick={() => {
-                        setEditMode(true);
-                        setStartPoint(item);
-                      }}>
-                        <AddIcon />
-                      </IconButton>
-                    </ListItem>
+                          <AddIcon />
+                        </IconButton>
+                      </ListItem>
+                    : null}
                   </List>
                   <Button variant='contained' color='secondary' onClick={() => removeMarker(item)}>
                     Supprimer
