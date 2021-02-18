@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { bounds, CRS } from 'leaflet';
 import {
   MapContainer,
@@ -50,6 +50,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// var greenIcon = new L.Icon({
+//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   shadowSize: [41, 41]
+// });
+
+// var redIcon = new L.Icon({
+//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   shadowSize: [41, 41]
+// });
+
+// var blueIcon = new L.Icon({
+//   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   shadowSize: [41, 41]
+// });
+
 /**
  * Permet de créer des markers au click
  * @param {Object[]} markers La liste des markers à afficher sur la map
@@ -60,12 +87,16 @@ const DraggableMarkers = ({
   setMarkers,
   editMode,
   setEditMode,
-  setLines,
+  setLines
 }) => {
   //Fonction pour ajouter un marker
   let addMarker = (event) => {
     setMarkers((current) => [...current, event.latlng]);
   };
+  //Fonction pour ajouter une ligne
+  let addLine = (start, end) => {
+    setLines((current) => [...current, [start, end]]);
+  }
   //Pour éditer les maps
   const mapEvent = useMapEvent({
     click: (event) => {
@@ -77,20 +108,37 @@ const DraggableMarkers = ({
           event.latlng.lng > 1
         )
       ) {
-        console.log(editMode);
         if (!editMode) {
           addMarker(event);
         } else {
-          /*setLines((current) =>
-            current[current.length].push([
-              event.latlng.lat,
-              event.latlng.lng,
-            ]),
-          );*/
+          console.log(event.latlng);
+          addLine(startPoint, event.latlng);
+          addMarker(event);
+          setEditMode(false);
         }
       }
     },
   });
+
+  const [startPoint, setStartPoint] = useState(null);
+  // const [type, setType] = useState('Begin');
+  // const [icon, setIcon] = useState(blueIcon);
+
+  // useEffect(() => {
+  //   switch(type) {
+  //     case 'Begin':
+  //       setIcon(blueIcon);
+  //       return;
+  //     case 'End':
+  //       setIcon(redIcon);
+  //       return;
+  //     case 'Checkpoint':
+  //       setIcon(greenIcon);
+  //       return;
+  //     default:
+  //       return;
+  //   }
+  // }, [type]);
 
   const map = useMap();
 
@@ -100,20 +148,24 @@ const DraggableMarkers = ({
         ? markers.map((item, index) => {
             return (
               <Marker
-                draggable={true}
+                draggable={false}
                 marker_index={index}
                 key={index}
                 position={item}
+                //icon={icon}
               >
                 <Popup>
                   <List>
                     <ListItem>
-                      <IconButton onClick={setEditMode(true)}>
+                      <IconButton onClick={() => {
+                        setEditMode(true);
+                        setStartPoint(item);
+                      }}>
                         <AddIcon />
                       </IconButton>
                     </ListItem>
                     <ListItem>
-                      <Select>
+                      <Select /*onChange={(e) => setType(e.target.value)}*/>
                         <MenuItem value={'Begin'}>Départ</MenuItem>
                         <MenuItem value={'End'}>Arrivée</MenuItem>
                         <MenuItem value={'Checkpoint'}>
@@ -201,7 +253,7 @@ const ChallengeEditor = () => {
           />
           {lines.map((element, index) => {
             return (
-              <Polyline positions={element} key={index}></Polyline>
+              <Polyline positions={element} key={index} color={'black'}></Polyline>
             );
           })}
         </MapContainer>
