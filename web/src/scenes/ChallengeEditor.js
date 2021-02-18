@@ -21,6 +21,7 @@ import {
   IconButton,
   Select,
   MenuItem,
+  Button
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -87,12 +88,16 @@ const DraggableMarkers = ({
   setMarkers,
   editMode,
   setEditMode,
-  setLines
+  setLines,
 }) => {
   //Fonction pour ajouter un marker
   let addMarker = (event) => {
     setMarkers((current) => [...current, event.latlng]);
   };
+  //Supprimer un marker
+  let removeMarker = (marker) => {
+    setMarkers((current) => current.filter(val => val != marker));
+  }
   //Fonction pour ajouter une ligne
   let addLine = (start, end) => {
     setLines((current) => [...current, [start, end]]);
@@ -174,6 +179,9 @@ const DraggableMarkers = ({
                       </Select>
                     </ListItem>
                   </List>
+                  <Button variant="contained" color="secondary" onClick={() => removeMarker(item)}>
+                    Supprimer
+                  </Button>
                 </Popup>
               </Marker>
             );
@@ -219,13 +227,11 @@ const ChallengeEditor = () => {
         <List>
           <Typography variant="h5">Menu d'édition</Typography>
           <Divider />
-          {['Test 1', 'Test 2', 'Test 3'].map((text) => {
+          {['Test 1', 'Test 2', 'Test 3'].map((text, index) => {
             return (
-              <>
-                <ListItem button key={text}>
-                  <ListItemText primary={text}></ListItemText>
-                </ListItem>
-              </>
+              <ListItem button key={index}>
+                <ListItemText primary={text}></ListItemText>
+              </ListItem>
             );
           })}
         </List>
