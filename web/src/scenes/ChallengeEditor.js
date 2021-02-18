@@ -90,7 +90,7 @@ const DraggableMarkers = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter(val => val != marker));
-    setLines((current) => current.filter(val => (val.PointStartId && val.PointEndId) != marker.id));
+    setLines((current) => current.filter(val => val.PointStartId != marker.id && val.PointEndId != marker.id));
     setStartPoint(markers.slice(-1)[0]);
   }
   //Update un marker
@@ -158,7 +158,13 @@ const DraggableMarkers = ({
                 key={index}
                 position={[item.x, item.y]}
                 icon={getIcon(item)}
-                onClick={() => {console.log("oui")}}
+                eventHandlers={{
+                  click: () => {
+                    if(editMode && item.type != 'start') {
+                      setEditMode(false);
+                      addLine(startPoint, item);
+                    }
+                  }}}
               >
                 <Popup>
                   <List>
@@ -181,6 +187,9 @@ const DraggableMarkers = ({
                         <Select value={item.type} onChange={(e) => {
                             item.type = e.target.value;
                             updateMarker(item);
+                            if(item.type == 'end') {
+                              setStartPoint(markers.slice(-2)[0]);                            
+                            }
                           }}>
                           <MenuItem value={'start'}>Départ</MenuItem>
                           <MenuItem value={'end'}>Arrivée</MenuItem>
