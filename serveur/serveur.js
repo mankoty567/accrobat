@@ -27,4 +27,10 @@ app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
 // Obstacle
 app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
 
+// Participation
+app.post('/api/participation', m.participation_ctrl.post_participation);
+
+// Event
+app.post('/api/event', m.event_ctrl.post_event);
+
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));

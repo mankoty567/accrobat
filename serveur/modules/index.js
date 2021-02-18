@@ -4,5 +4,6 @@ module.exports = {
   segment_ctrl: require('./controller/segment_ctrl'),
   obstacle_ctrl: require('./controller/obstacle_ctrl'),
   event_ctrl: require('./controller/event_ctrl'),
+  participation_ctrl: require('./controller/participation_ctrl'),
   user_mdw: require('./middleware/user_mdw'),
 };
