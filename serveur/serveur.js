@@ -32,5 +32,6 @@ app.post('/api/participation', m.participation_ctrl.post_participation);
 
 // Event
 app.post('/api/event', m.event_ctrl.post_event);
+app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
 
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));

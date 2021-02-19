@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'Event',
     {
       type: DataTypes.STRING,
-      data: DataTypes.INTEGER,
+      data: DataTypes.FLOAT,
     },
     {}
   );
