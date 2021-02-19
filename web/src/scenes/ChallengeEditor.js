@@ -60,11 +60,12 @@ let ChallengeEditor = () => {
           <Divider />
           {currentMarker ? 
           <MarkerEditor 
-            item={currentMarker}
+            marker={currentMarker}
             setStartPoint={setStartPoint}
             setEditMode={setEditMode}
-            markers={markers}
             setMarkers={setMarkers}
+            markers={markers}
+            setLines={setLines}
           />
           : "Sélectionner un marker à modifier"}
           <Button variant='contained' color='primary' onClick={() => {
@@ -97,6 +98,7 @@ let ChallengeEditor = () => {
             lines={lines}
             setLines={setLines}
             setCurrentMarker={setCurrentMarker}
+            currentMarker={currentMarker}
             setStartPoint={setStartPoint}
             startPoint={startPoint}
           />

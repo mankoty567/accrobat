@@ -1,8 +1,9 @@
 import {
   Marker,
-  useMapEvent
+  useMapEvent,
+  Tooltip
 } from 'react-leaflet';
-import {redIcon, blueIcon, greenIcon} from './MarkerIcons'
+import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons'
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -17,9 +18,10 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
 
   //Ajoute un marker
   let addMarker = (event) => {
+    var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
     var newMarker = {
-      'id': markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
-      'title': '',
+      'id': id,
+      'title': 'Point ' + id,
       'description': '',
       'type': markers.length > 0 ? 'point' : 'start',
       'x': event.latlng.lat,
@@ -29,13 +31,6 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     setStartPoint(newMarker);
     return newMarker;
   };
-
-  //Supprime un marker
-  let removeMarker = (marker) => {
-    setMarkers((current) => current.filter(val => val != marker));
-    setLines((current) => current.filter(val => val.PointStartId != marker.id && val.PointEndId != marker.id));
-    setStartPoint(markers.slice(-1)[0]);
-  }
 
   //Ajoute une ligne
   let addLine = (start, end) => {
@@ -55,13 +50,11 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
   let getIcon = (marker) => {
     switch(marker.type) {
       case 'start':
-        return greenIcon;
+        return createStartIcon(marker == currentMarker);
       case 'end':
-        return redIcon;
+        return createEndIcon(marker == currentMarker);
       case 'point':
-        return blueIcon;
-      case 'default':
-        return blueIcon;
+        return createCheckpointIcon(marker == currentMarker);
     }
   }
 
@@ -99,15 +92,18 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    setCurrentMarker(item);
-                    // {currentMarker ? (currentMaker.id == item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
+                    {currentMarker ? (currentMarker.id == item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
                     if(editMode && item.type != 'start') {
                       setEditMode(false);
                       addLine(startPoint, item);
                       setStartPoint(item);
                     }
                   }}}
-              />
+              >
+                <Tooltip direction="top" offset={[0, -40]} permanent>
+                  {item.title}
+                </Tooltip>
+              </Marker>
             );
           })
         : null}

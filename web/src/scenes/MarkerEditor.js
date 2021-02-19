@@ -1,71 +1,76 @@
 import {
   List,
   ListItem,
-  IconButton,
   Select,
   MenuItem,
   Button,
   TextField
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 
-let MarkerEditor = ({item, setStartPoint, setEditMode, markers, setMarkers}) => {
+let MarkerEditor = ({marker, setStartPoint, setEditMode, markers, setMarkers, setLines}) => {
 
   //Update un marker
   let updateMarker = (marker) => {
-    console.log(markers);
     setMarkers((current) => current.filter(val => {
       if (val.id == marker.id) val = marker;
       return val;
     }));
   }
 
+  //Supprime un marker
+  let removeMarker = (marker) => {
+    setMarkers((current) => current.filter(val => val != marker));
+    setLines((current) => current.filter(val => val.PointStartId != marker.id && val.PointEndId != marker.id));
+    setStartPoint(markers.slice(-1)[0]);
+  }
+
   return (
     <>
       <List>
         <ListItem>
-          <TextField value={item.title} label='Titre' 
+          <TextField value={marker.title} label='Titre' 
             onChange={(e) => {
-              item.title = e.target.value;
-              updateMarker(item);
+              marker.title = e.target.value;
+              updateMarker(marker);
             }} />
         </ListItem>
         <ListItem>
-          <TextField value={item.description} label='Description' 
+          <TextField value={marker.description} label='Description' 
             onChange={(e) => {
-              item.description = e.target.value;
-              updateMarker(item);
+              marker.description = e.target.value;
+              updateMarker(marker);
             }} />
         </ListItem>
-        {item.type != 'start' ? 
+        {marker.type != 'start' ? 
           <ListItem>
-            <Select value={item.type} onChange={(e) => {
-              item.type = e.target.value;
-              updateMarker(item);
-              if(item.type == 'end') {
+            <Select value={marker.type} onChange={(e) => {
+              marker.type = e.target.value;
+              updateMarker(marker);
+              if(marker.type == 'end') {
                 setStartPoint(markers.slice(-2)[0]);                            
               }
             }}>
-              <MenuItem value={'start'}>Départ</MenuItem>
               <MenuItem value={'end'}>Arrivée</MenuItem>
               <MenuItem value={'point'}>Checkpoint</MenuItem>
             </Select>
           </ListItem> 
         : null}
-        {item.type != 'end' ? 
+        {marker.type != 'end' ? 
         <ListItem>
           <Button variant='contained' color='primary' onClick={() => {
             setEditMode(true);
-            setStartPoint(item);
+            setStartPoint(marker);
           }}>
             Relier un autre segment
           </Button>
         </ListItem>
         : null}
+        <ListItem>
+          <Button variant='contained' color='secondary' onClick={() => removeMarker(marker)}>
+            Supprimer
+          </Button>
+        </ListItem>
       </List>
-      <Button variant='contained' color='secondary' onClick={() => removeMarker(item)}>
-        Supprimer
-      </Button>
     </>
   );
 }
