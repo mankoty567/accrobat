@@ -12,3 +12,9 @@ sudo docker stop acrobat-serveur
 sudo docker start acrobat-serveur
 sudo docker exec acrobat-serveur npm run sync
 ```
+
+# Build + Push vers l'unistra
+```
+docker build -t registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur .
+sudo docker push registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur
+```
