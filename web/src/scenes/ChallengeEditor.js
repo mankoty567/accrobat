@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers'
 import useStyles from './MaterialUI'
+import MarkerEditor from './MarkerEditor';
 
 let ChallengeEditor = () => {
 
@@ -35,6 +36,8 @@ let ChallengeEditor = () => {
   const [markers, setMarkers] = useState([]);
   const [lines, setLines] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [startPoint, setStartPoint] = useState(null);
 
   return (
     <div className={classes.root}>
@@ -55,6 +58,15 @@ let ChallengeEditor = () => {
         <List>
           <Typography variant='h5'>Menu d'édition</Typography>
           <Divider />
+          {currentMarker ? 
+          <MarkerEditor 
+            item={currentMarker}
+            setStartPoint={setStartPoint}
+            setEditMode={setEditMode}
+            markers={markers}
+            setMarkers={setMarkers}
+          />
+          : "Sélectionner un marker à modifier"}
           <Button variant='contained' color='primary' onClick={() => {
             console.log(lines);
             console.log(markers);
@@ -84,6 +96,9 @@ let ChallengeEditor = () => {
             setEditMode={setEditMode}
             lines={lines}
             setLines={setLines}
+            setCurrentMarker={setCurrentMarker}
+            setStartPoint={setStartPoint}
+            startPoint={startPoint}
           />
           {lines.map((element, index) => {
             return (

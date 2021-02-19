@@ -1,21 +1,7 @@
-import React, {
-  useState
-} from 'react';
 import {
   Marker,
-  useMapEvent,
-  Popup
+  useMapEvent
 } from 'react-leaflet';
-import {
-  List,
-  ListItem,
-  IconButton,
-  Select,
-  MenuItem,
-  Button,
-  TextField
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import {redIcon, blueIcon, greenIcon} from './MarkerIcons'
 
 /**
@@ -27,10 +13,7 @@ import {redIcon, blueIcon, greenIcon} from './MarkerIcons'
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  * @param {Function} setLines Fonction pour update le state de lines
  */
-let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines }) => {
-
-  //Le point de départ du prochain segment
-  const [startPoint, setStartPoint] = useState(null);
+let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, startPoint }) => {
 
   //Ajoute un marker
   let addMarker = (event) => {
@@ -52,14 +35,6 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     setMarkers((current) => current.filter(val => val != marker));
     setLines((current) => current.filter(val => val.PointStartId != marker.id && val.PointEndId != marker.id));
     setStartPoint(markers.slice(-1)[0]);
-  }
-
-  //Update un marker
-  let updateMarker = (marker) => {
-    setMarkers((current) => current.filter(val => {
-      if (val.id == marker.id) val = marker;
-      return val;
-    }));
   }
 
   //Ajoute une ligne
@@ -124,60 +99,15 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
+                    setCurrentMarker(item);
+                    // {currentMarker ? (currentMaker.id == item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
                     if(editMode && item.type != 'start') {
                       setEditMode(false);
                       addLine(startPoint, item);
                       setStartPoint(item);
                     }
                   }}}
-              >
-                <Popup>
-                  <List>
-                    <ListItem>
-                      <TextField value={item.title} label='Titre' 
-                        onChange={(e) => {
-                          item.title = e.target.value;
-                          updateMarker(item);
-                        }} />
-                    </ListItem>
-                    <ListItem>
-                      <TextField value={item.description} label='Description' 
-                        onChange={(e) => {
-                          item.description = e.target.value;
-                          updateMarker(item);
-                        }} />
-                    </ListItem>
-                    {item.type != 'start' ? 
-                      <ListItem>
-                        <Select value={item.type} onChange={(e) => {
-                            item.type = e.target.value;
-                            updateMarker(item);
-                            if(item.type == 'end') {
-                              setStartPoint(markers.slice(-2)[0]);                            
-                            }
-                          }}>
-                          <MenuItem value={'start'}>Départ</MenuItem>
-                          <MenuItem value={'end'}>Arrivée</MenuItem>
-                          <MenuItem value={'point'}>Checkpoint</MenuItem>
-                        </Select>
-                      </ListItem> 
-                    : null}
-                    {item.type != 'end' ? 
-                      <ListItem>
-                        <IconButton onClick={() => {
-                          setEditMode(true);
-                          setStartPoint(item);
-                        }}>
-                          <AddIcon />
-                        </IconButton>
-                      </ListItem>
-                    : null}
-                  </List>
-                  <Button variant='contained' color='secondary' onClick={() => removeMarker(item)}>
-                    Supprimer
-                  </Button>
-                </Popup>
-              </Marker>
+              />
             );
           })
         : null}
