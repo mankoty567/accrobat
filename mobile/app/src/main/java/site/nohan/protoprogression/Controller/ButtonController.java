@@ -1,7 +1,11 @@
 package site.nohan.protoprogression.Controller;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,6 +16,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
@@ -33,7 +42,13 @@ public class ButtonController implements View.OnClickListener, SensorEventListen
     private SensorManager sensorManager;
     private Sensor accel;
     private boolean isPedometerOn;
+    private boolean isGPSOn;
     private int numSteps;
+    public static double latitudeGPS;
+    public static double longitudeGPS;
+    public static double oldLatitudeGPS;
+    public static double oldLongitudeGPS;
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
 
     public ButtonController(Activity activity){
         this.activity = activity;
@@ -51,16 +66,20 @@ public class ButtonController implements View.OnClickListener, SensorEventListen
         }
 
 
+        // Get an instance of the SensorManager
+        Log.i(TAG, "onCreate: Initializing Sensor Services");
+        sensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        simpleStepDetector = new StepDetector();
+        simpleStepDetector.registerListener(this);
+        Button bPodometre = activity.findViewById(R.id.bPodometre);
+        tKilometres = activity.findViewById(R.id.tKilometres);
+
         if(v.getId() == R.id.bPodometre){
-            Button bPodometre = activity.findViewById(R.id.bPodometre);
-            Button bModePedo = activity.findViewById(R.id.bModePodometre);
-            Log.i(TAG, "onCreate: Initializing Sensor Services");
-            tKilometres = activity.findViewById(R.id.tKilometres);
-            // Get an instance of the SensorManager
-            sensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
-            accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            simpleStepDetector = new StepDetector();
-            simpleStepDetector.registerListener(this);
+            if(isGPSOn){
+                stopLocationService();
+                isGPSOn = false;
+            }
 
             if(!isPedometerOn){
                 Log.i(TAG, "onCreate : Registered accelerometer listener");
@@ -69,18 +88,40 @@ public class ButtonController implements View.OnClickListener, SensorEventListen
                 sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
                 isPedometerOn = true;
-                bPodometre.setText("Désactiver Podomètre");
+                bPodometre.setText("Stop Podomètre");
             }
             else{
                 sensorManager.unregisterListener(this);
                 tKilometres.setText("--- kms");
 
                 isPedometerOn = false;
-                bPodometre.setText("Activer Podomètre");
+                bPodometre.setText("Start Podomètre");
             }
             return;
         }
 
+        if(v.getId() == R.id.bModePodometre){
+            if(isPedometerOn){
+                sensorManager.unregisterListener(this);
+                //tKilometres.setText("--- kms");
+                isPedometerOn = false;
+                bPodometre.setText("Start Podomètre");
+            }
+
+            if(!isGPSOn){
+                if(ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+                } else {
+                    startLocationService();
+                }
+                isGPSOn = true;
+            }
+            else{
+                stopLocationService();
+                isGPSOn = false;
+
+            }
+        }
 
         Chemin chemin = new Chemin();
 
@@ -168,5 +209,54 @@ public class ButtonController implements View.OnClickListener, SensorEventListen
         int tronque = (int)distance;
         distance = (float)tronque / 1000;
         return distance;
+    }
+
+    /************************************************************************
+     * Fontions nécessaires pour la localisation (GPS)
+     ************************************************************************/
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        if(requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                startLocationService();
+            } else{
+                Toast.makeText(activity, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+    private boolean isLocationServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        if(activityManager != null){
+            for(ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)){
+                if(LocationService.class.getName().equals(service.service.getClassName())){
+                    if(service.foreground){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+    private void startLocationService(){
+        if(!isLocationServiceRunning()){
+            Intent intent = new Intent(activity.getApplicationContext(), LocationService.class);
+            intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
+            activity.getApplicationContext().startService(intent);
+            Toast.makeText(activity.getApplicationContext(), "Location service started", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopLocationService(){
+        if(isLocationServiceRunning()){
+            Intent intent = new Intent(activity.getApplicationContext(), LocationService.class);
+            intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
+            activity.getApplicationContext().startService(intent);
+            Toast.makeText(activity.getApplicationContext(), "Location service stopped", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
+ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
 MERGED from [com.google.android.material:material:1.2.1] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b988cdf40af7cdf3e0317011f8e5bfe7\material-1.2.1\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\a527ad4f532df6b258c428a911debd89\appcompat-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.volley:volley:1.1.1] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\553b8db9040f15ddc02236981b65b23c\jetified-volley-1.1.1\AndroidManifest.xml:2:1-11:12
@@ -37,20 +37,20 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\celes\.gradle
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\af090a78eaea8296976d6555a3a135f2\lifecycle-livedata-core-2.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.arch.core:core-runtime:2.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\4277c449ae4e7defb11901a027a49277\core-runtime-2.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\01339aeadc2379d14234ec1725fb1d1d\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:17:1-24:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
-INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
 	package
 		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:3:5-42
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
+		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-30:12
+		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:1-35:12
 		INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:2:11-69
@@ -71,7 +71,7 @@ ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobil
 	android:name
 		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:8:22-74
 application
-ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:10:5-27:19
+ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:10:5-32:19
 MERGED from [com.google.android.material:material:1.2.1] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b988cdf40af7cdf3e0317011f8e5bfe7\material-1.2.1\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.2.1] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b988cdf40af7cdf3e0317011f8e5bfe7\material-1.2.1\AndroidManifest.xml:22:5-20
 MERGED from [com.android.volley:volley:1.1.1] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\553b8db9040f15ddc02236981b65b23c\jetified-volley-1.1.1\AndroidManifest.xml:9:5-20
@@ -120,6 +120,14 @@ category#android.intent.category.LAUNCHER
 ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:17-77
 	android:name
 		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:27-74
+service#site.nohan.protoprogression.Controller.LocationService
+ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:27:9-30:40
+	android:enabled
+		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:29:13-35
+	android:exported
+		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:28:13-55
 uses-sdk
 INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml

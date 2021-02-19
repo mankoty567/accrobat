@@ -20,7 +20,8 @@ public class MapFragment extends Fragment {
     Toile toile;
 
     SeekBar seekBar;
-    Button bEffacer;
+    Button bPodometre;
+    Button bVelo;
     Button bEtape;
     Button bAddPrev;
     Button bAddCurrent;
@@ -45,8 +46,10 @@ public class MapFragment extends Fragment {
         super.onResume();
         seekBar = getActivity().findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarController);
-        bEffacer = getActivity().findViewById(R.id.bEffacer);
-        bEffacer.setOnClickListener(buttonController);
+        bPodometre = getActivity().findViewById(R.id.bEffacer);
+        bPodometre.setOnClickListener(buttonController);
+        bVelo = getActivity().findViewById(R.id.bModePodometre);
+        bVelo.setOnClickListener(buttonController);
         bEtape = getActivity().findViewById(R.id.bPodometre);
         bEtape.setOnClickListener(buttonController);
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
