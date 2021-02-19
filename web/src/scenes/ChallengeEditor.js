@@ -16,11 +16,11 @@ import {
   Typography,
   Drawer,
   Divider,
-  Button,
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers'
 import useStyles from './MaterialUI'
 import MarkerEditor from './MarkerEditor';
+import ChallengeInfosEditor from './ChallengeInfosEditor';
 
 let ChallengeEditor = () => {
 
@@ -43,8 +43,8 @@ let ChallengeEditor = () => {
     <div className={classes.root}>
       <AppBar position='fixed' className={classes.appBar}>
         <Toolbar>
-          <Typography variant='h6' noWrap>
-            Editeur de challenge
+          <Typography variant='h6' noWrap> 
+            Éditeur de challenge
           </Typography>
         </Toolbar>
       </AppBar>
@@ -58,6 +58,11 @@ let ChallengeEditor = () => {
         <List>
           <Typography variant='h5'>Menu d'édition</Typography>
           <Divider />
+          <Typography variant='h6' className={classes.margin_top}>Édition du challenge</Typography>
+          <Divider />
+          <ChallengeInfosEditor />
+          <Typography variant='h6' className={classes.margin_top}>Édition d'un point</Typography>
+          <Divider />
           {currentMarker ? 
           <MarkerEditor 
             marker={currentMarker}
@@ -67,13 +72,13 @@ let ChallengeEditor = () => {
             markers={markers}
             setLines={setLines}
           />
-          : "Sélectionner un marker à modifier"}
-          <Button variant='contained' color='primary' onClick={() => {
+          : <Typography variant='h6' className={classes.margin_top}>Sélectionner un point à modifier</Typography>}
+          {/* <Button variant='contained' color='primary' onClick={() => {
             console.log(lines);
             console.log(markers);
           }}>
             Logs
-          </Button>
+          </Button> */}
         </List>
       </Drawer>
       <main className={classes.content}>

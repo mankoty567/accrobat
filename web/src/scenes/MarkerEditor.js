@@ -4,8 +4,11 @@ import {
   Select,
   MenuItem,
   Button,
-  TextField
+  TextField,
+  InputLabel
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 let MarkerEditor = ({marker, setStartPoint, setEditMode, markers, setMarkers, setLines}) => {
 
@@ -43,7 +46,8 @@ let MarkerEditor = ({marker, setStartPoint, setEditMode, markers, setMarkers, se
         </ListItem>
         {marker.type != 'start' ? 
           <ListItem>
-            <Select value={marker.type} onChange={(e) => {
+            <InputLabel shrink id="select-label">Type</InputLabel>
+            <Select labelId="select-label" value={marker.type} onChange={(e) => {
               marker.type = e.target.value;
               updateMarker(marker);
               if(marker.type == 'end') {
@@ -57,17 +61,17 @@ let MarkerEditor = ({marker, setStartPoint, setEditMode, markers, setMarkers, se
         : null}
         {marker.type != 'end' ? 
         <ListItem>
-          <Button variant='contained' color='primary' onClick={() => {
+          <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => {
             setEditMode(true);
             setStartPoint(marker);
           }}>
-            Relier un autre segment
+            Créer un nouveau segment à partir de ce point
           </Button>
         </ListItem>
         : null}
         <ListItem>
-          <Button variant='contained' color='secondary' onClick={() => removeMarker(marker)}>
-            Supprimer
+          <Button variant='contained' color='secondary' startIcon={<DeleteIcon />} onClick={() => removeMarker(marker)}>
+            Supprimer le point sélectionné
           </Button>
         </ListItem>
       </List>
