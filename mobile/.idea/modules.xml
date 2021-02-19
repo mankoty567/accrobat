@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProtoProgression.iml" filepath="$PROJECT_DIR$/.idea/modules/ProtoProgression.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ProtoProgression.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ProtoProgression.app.iml" />
-    </modules>
-  </component>
-</project>
