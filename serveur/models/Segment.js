@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
   const Segment = sequelize.define(
     'Segment',
     {
-      distance: DataTypes.INTEGER,
       path: DataTypes.JSON,
     },
     {}
@@ -19,10 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'pointEnd',
       foreignKey: 'PointEndId',
       onDelete: 'cascade',
-    });
-    models.Segment.hasMany(models.ChallengeCurrent, {
-      onDelete: 'cascade',
-      allowNull: true,
     });
     models.Segment.hasMany(models.Obstacle, { onDelete: 'cascade' });
   };

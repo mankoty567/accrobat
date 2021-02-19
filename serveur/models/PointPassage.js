@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
       type: DataTypes.STRING,
-      x: DataTypes.INTEGER,
-      y: DataTypes.INTEGER,
+      x: DataTypes.FLOAT,
+      y: DataTypes.FLOAT,
     },
     {}
   );
@@ -23,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'pointEnd',
       foreignKey: 'PointEndId',
       onDelete: 'cascade',
-    });
-    models.PointPassage.hasMany(models.ChallengeCurrent, {
-      onDelete: 'cascade',
-      allowNull: true,
     });
   };
   return PointPassage;

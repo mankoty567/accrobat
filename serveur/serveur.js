@@ -10,6 +10,7 @@ app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
 app.post('/api/challenge', m.challenge_ctrl.post_challenge);
 app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
+app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
 
 // PointPassage
 app.get('/api/challenge/:id/point', m.pointpassage_ctrl.get_pointpassage);
@@ -19,20 +20,18 @@ app.post('/api/pointpassage/:id', m.pointpassage_ctrl.update_pointpassage);
 
 // Segment
 app.post('/api/segment', m.segment_ctrl.post_segment);
+app.get('/api/segment/:id', m.segment_ctrl.get_segment);
+app.post('/api/segment/:id', m.segment_ctrl.update_segment);
+app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
 
-// ChallengeCurrent
-app.get(
-  '/api/challengecurrent/get_all',
-  m.user_mdw.put_user,
-  m.challengecurrent_ctrl.get_all_challengecurrent
-);
-app.get(
-  '/api/challengecurrent/:id',
-  m.challengecurrent_ctrl.get_one_challengecurrent
-);
-app.post(
-  '/api/challengecurrent/:id/save',
-  m.challengecurrent_ctrl.save_progression
-);
+// Obstacle
+app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
+
+// Participation
+app.post('/api/participation', m.participation_ctrl.post_participation);
+
+// Event
+app.post('/api/event', m.event_ctrl.post_event);
+app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
 
 app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));
