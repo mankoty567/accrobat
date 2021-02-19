@@ -7,220 +7,22 @@ import {
 import {
   MapContainer,
   ImageOverlay,
-  Marker,
-  useMapEvent,
-  Popup,
   Polyline
 } from 'react-leaflet';
 import {
   List,
-  ListItem,
   AppBar,
   Toolbar,
   Typography,
   Drawer,
   Divider,
-  IconButton,
-  Select,
-  MenuItem,
   Button,
-  TextField
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import {
-  makeStyles
-} from '@material-ui/core/styles';
-import {redIcon, blueIcon, greenIcon} from './MarkerIcons'
+import DraggableMarkers from './DraggableMarkers'
+import useStyles from './MaterialUI'
 
-//Du style CSS de Material ui
-const drawerWidth = 240;
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  toolbar: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
-  },
-}));
+let ChallengeEditor = () => {
 
-/**
- * Permet de créer des markers au click et leurs lignes associées
- * @param {Object[]} markers La liste des markers à afficher sur la map
- * @param {Function} setMarkers Fonction pour update le state de markers
- */
-const DraggableMarkers = ({
-  markers,
-  setMarkers,
-  editMode,
-  setEditMode,
-  lines,
-  setLines,
-}) => {
-
-  const [startPoint, setStartPoint] = useState(null);
-
-  //Ajoute un marker
-  let addMarker = (event) => {
-    var newMarker = {
-      'id': markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0,
-      'title': '',
-      'description': '',
-      'type': markers.length > 0 ? 'point' : 'start',
-      'x': event.latlng.lat,
-      'y': event.latlng.lng
-    };
-    setMarkers((current) => [...current, newMarker]);
-    setStartPoint(newMarker);
-    return newMarker;
-  };
-  //Supprime un marker
-  let removeMarker = (marker) => {
-    setMarkers((current) => current.filter(val => val != marker));
-    setLines((current) => current.filter(val => val.PointStartId != marker.id && val.PointEndId != marker.id));
-    setStartPoint(markers.slice(-1)[0]);
-  }
-  //Update un marker
-  let updateMarker = (marker) => {
-    setMarkers((current) => current.filter(val => {
-      if (val.id == marker.id) val = marker;
-      return val;
-    }));
-  }
-  //Ajoute une ligne
-  let addLine = (start, end) => {
-    var newLines = {
-      'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
-      'PointStartId': start.id,
-      'PointEndId': end.id,
-      'path': [
-        [start.x, start.y],
-        [end.x, end.y],
-      ]
-    };
-    setLines((current) => [...current, newLines]);
-  }
-
-  let getIcon = (marker) => {
-    switch(marker.type) {
-      case 'start':
-        return greenIcon;
-      case 'end':
-        return redIcon;
-      case 'point':
-        return blueIcon;
-      case 'default':
-        return blueIcon;
-    }
-  }
-  //Pour éditer les maps
-  const mapEvent = useMapEvent({
-    click: (event) => {
-      if (
-        !(
-          event.latlng.lat < 0 ||
-          event.latlng.lat > 1 ||
-          event.latlng.lng < 0 ||
-          event.latlng.lng > 1
-        )
-      ) {
-        if (!markers.length > 0) {
-          addMarker(event);
-        } else {
-          var newMarker = addMarker(event);
-          addLine(startPoint, newMarker);
-        }
-      }
-    },
-  });
-
-  return (
-    <>
-      {markers.length > 0 && markers[0][0] !== null
-        ? markers.map((item, index) => {
-            return (
-              <Marker
-                draggable={false}
-                marker_index={index}
-                key={index}
-                position={[item.x, item.y]}
-                icon={getIcon(item)}
-                eventHandlers={{
-                  click: () => {
-                    if(editMode && item.type != 'start') {
-                      setEditMode(false);
-                      addLine(startPoint, item);
-                    }
-                  }}}
-              >
-                <Popup>
-                  <List>
-                    <ListItem>
-                      <TextField value={item.title} label='Titre' 
-                        onChange={(e) => {
-                          item.title = e.target.value;
-                          updateMarker(item);
-                        }} />
-                    </ListItem>
-                    <ListItem>
-                      <TextField value={item.description} label='Description' 
-                        onChange={(e) => {
-                          item.description = e.target.value;
-                          updateMarker(item);
-                        }} />
-                    </ListItem>
-                    {item.type != 'start' ? 
-                      <ListItem>
-                        <Select value={item.type} onChange={(e) => {
-                            item.type = e.target.value;
-                            updateMarker(item);
-                            if(item.type == 'end') {
-                              setStartPoint(markers.slice(-2)[0]);                            
-                            }
-                          }}>
-                          <MenuItem value={'start'}>Départ</MenuItem>
-                          <MenuItem value={'end'}>Arrivée</MenuItem>
-                          <MenuItem value={'point'}>Checkpoint</MenuItem>
-                        </Select>
-                      </ListItem> 
-                    : null}
-                    {item.type != 'end' ? 
-                      <ListItem>
-                        <IconButton onClick={() => {
-                          setEditMode(true);
-                          setStartPoint(item);
-                        }}>
-                          <AddIcon />
-                        </IconButton>
-                      </ListItem>
-                    : null}
-                  </List>
-                  <Button variant='contained' color='secondary' onClick={() => removeMarker(item)}>
-                    Supprimer
-                  </Button>
-                </Popup>
-              </Marker>
-            );
-          })
-        : null}
-    </>
-  );
-};
-
-const ChallengeEditor = () => {
   //Utilisation des classes CSS
   const classes = useStyles();
 
@@ -246,9 +48,7 @@ const ChallengeEditor = () => {
       <Drawer
         className={classes.drawer}
         variant='permanent'
-        classes={{
-          paper: classes.drawerPaper,
-        }}
+        classes={{ paper: classes.drawerPaper }}
         anchor='left'
       >
         <div className={classes.toolbar} />
