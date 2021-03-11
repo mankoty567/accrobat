@@ -1,4 +1,5 @@
 const express = require('express');
+const debug = require('debug')('serveur:main');
 const m = require('./modules');
 
 var app = express();
@@ -34,4 +35,4 @@ app.post('/api/participation', m.participation_ctrl.post_participation);
 app.post('/api/event', m.event_ctrl.post_event);
 app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
 
-app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));
+app.listen(1418, () => debug('Serveur lancé sur le port 1418'));
