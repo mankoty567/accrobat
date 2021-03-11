@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "debug": "^2.6.9",
     "express": "^4.17.1",
     "migrate": "^1.7.0",
     "mysql2": "^2.2.5",

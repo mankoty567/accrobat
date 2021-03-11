@@ -5,6 +5,7 @@ services:
     environment:
       - NODE_ENV=development
       - BDD_URL=mysql://acrobat:acrobat@database/database
+      - DEBUG=serveur:*
     ports:
       - 1418:1418
     command: npm run dev

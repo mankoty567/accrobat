@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:participation');
 
 module.exports = {
   post_participation: (req, res) => {
@@ -19,6 +20,7 @@ module.exports = {
                   UserId: req.body.UserId,
                   ChallengeId: req.body.ChallengeId,
                 }).then((participation) => {
+                  debug('Création participation ' + participation.id);
                   res.json(participation);
                 });
               }
