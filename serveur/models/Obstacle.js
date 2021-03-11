@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
       type: DataTypes.STRING,
-      distance: DataTypes.INTEGER,
+      distance: DataTypes.FLOAT,
       enigme_img: DataTypes.TEXT,
       enigme_awnser: DataTypes.STRING,
     },
@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   );
   Obstacle.associate = function (models) {
     models.Obstacle.belongsTo(models.Segment, { onDelete: 'cascade' });
-    models.Obstacle.belongsToMany(models.ChallengeCurrent, {
-      through: models.ObstacleAwnser,
+    models.Obstacle.belongsToMany(models.Event, {
+      through: models.ImageSubmition,
     });
   };
   return Obstacle;

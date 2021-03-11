@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   Participation.associate = function (models) {
     models.Participation.belongsTo(models.User, { onDelete: 'cascade' });
     models.Participation.belongsTo(models.Challenge, { onDelete: 'cascade' });
-    models.Participation.hasOne(models.ChallengeCurrent, {
+    models.Participation.hasMany(models.Event, {
       onDelete: 'cascade',
     });
   };

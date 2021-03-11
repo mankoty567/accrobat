@@ -1,0 +1,70 @@
+[
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/layout_progression.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/layout/progression.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/generated/res/pngs/debug/drawable-anydpi-v24/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/layout_toile.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/layout/toile.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/drawable_ic_launcher_background.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/build/intermediates/res/merged/debug/drawable-v24_map.jpg.flat",
+        "source": "/Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/res/drawable-v24/map.jpg"
+    }
+]
