@@ -1,14 +1,6 @@
-import React, {
-  useState
-} from 'react';
-import {
-  CRS
-} from 'leaflet';
-import {
-  MapContainer,
-  ImageOverlay,
-  Polyline
-} from 'react-leaflet';
+import React, { useState } from 'react';
+import { CRS } from 'leaflet';
+import { MapContainer, ImageOverlay, Polyline } from 'react-leaflet';
 import {
   List,
   AppBar,
@@ -16,14 +8,15 @@ import {
   Typography,
   Drawer,
   Divider,
+  Button,
 } from '@material-ui/core';
-import DraggableMarkers from './DraggableMarkers'
-import useStyles from './MaterialUI'
+import DraggableMarkers from './DraggableMarkers';
+import useStyles from './MaterialUI';
 import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
+import ObstacleEditor from './ObstacleEditor';
 
 let ChallengeEditor = () => {
-
   //Utilisation des classes CSS
   const classes = useStyles();
 
@@ -39,40 +32,54 @@ let ChallengeEditor = () => {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [startPoint, setStartPoint] = useState(null);
 
+  //Une variable temporaire, utilisée plus tard pour la création d'un obstacle
+  const [editObstacle, setEditObstacle] = useState(false);
+
   return (
     <div className={classes.root}>
-      <AppBar position='fixed' className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <Typography variant='h6' noWrap> 
+          <Typography variant="h6" noWrap>
             Éditeur de challenge
           </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
         className={classes.drawer}
-        variant='permanent'
+        variant="permanent"
         classes={{ paper: classes.drawerPaper }}
-        anchor='left'
+        anchor="left"
       >
         <div className={classes.toolbar} />
         <List>
-          <Typography variant='h5'>Menu d'édition</Typography>
+          <Typography variant="h5">Menu d'édition</Typography>
           <Divider />
-          <Typography variant='h6' className={classes.margin_top}>Édition du challenge</Typography>
+          <Typography variant="h6" className={classes.margin_top}>
+            Édition du challenge
+          </Typography>
           <Divider />
           <ChallengeInfosEditor />
-          <Typography variant='h6' className={classes.margin_top}>Édition d'un point</Typography>
+          <Typography variant="h6" className={classes.margin_top}>
+            Édition d'un point
+          </Typography>
           <Divider />
-          {currentMarker ? 
-          <MarkerEditor 
-            marker={currentMarker}
-            setStartPoint={setStartPoint}
-            setEditMode={setEditMode}
-            setMarkers={setMarkers}
-            markers={markers}
-            setLines={setLines}
-          />
-          : <Typography variant='h6' className={classes.margin_top}>Sélectionner un point à modifier</Typography>}
+          {currentMarker ? (
+            <MarkerEditor
+              marker={currentMarker}
+              setStartPoint={setStartPoint}
+              setEditMode={setEditMode}
+              setMarkers={setMarkers}
+              markers={markers}
+              setLines={setLines}
+            />
+          ) : (
+            <Typography variant="h6" className={classes.margin_top}>
+              Sélectionner un point à modifier
+            </Typography>
+          )}
+          <Button onClick={() => setEditObstacle(true)}>
+            Test obstacle
+          </Button>
           {/* <Button variant='contained' color='primary' onClick={() => {
             console.log(lines);
             console.log(markers);
@@ -109,10 +116,20 @@ let ChallengeEditor = () => {
           />
           {lines.map((element, index) => {
             return (
-              <Polyline positions={element.path} key={index} color={'black'}></Polyline>
+              <Polyline
+                positions={element.path}
+                key={index}
+                color={'black'}
+              ></Polyline>
             );
           })}
         </MapContainer>
+        {editObstacle ? (
+          <ObstacleEditor
+            open={editObstacle}
+            setOpen={setEditObstacle}
+          ></ObstacleEditor>
+        ) : null}
       </main>
     </div>
   );
