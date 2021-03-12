@@ -24,7 +24,7 @@
 14-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:8:22-74
 15
 16    <application
-16-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:10:5-32:19
+16-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:10:5-34:19
 17        android:allowBackup="true"
 17-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:11:9-35
 18        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -39,50 +39,53 @@
 23-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:14:9-54
 24        android:supportsRtl="true"
 24-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:15:9-35
-25        android:theme="@style/Theme.ProtoProgression" >
-25-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:16:9-54
-26        <activity
-26-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:17:9-25:20
-27            android:name="site.nohan.protoprogression.Controller.MainActivity"
-27-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:18:13-52
-28            android:label="@string/app_name" >
-28-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:19:13-45
-29            <intent-filter>
-29-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:21:13-24:29
-30                <action android:name="android.intent.action.MAIN" />
-30-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:22:17-69
-30-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:22:25-66
-31
-32                <category android:name="android.intent.category.LAUNCHER" />
-32-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:17-77
-32-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:27-74
-33            </intent-filter>
-34        </activity>
-35
-36        <service
-36-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:27:9-30:40
-37            android:name="site.nohan.protoprogression.Controller.LocationService"
-37-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:28:13-55
-38            android:enabled="true"
-38-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:29:13-35
-39            android:exported="false" />
-39-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:30:13-37
-40
-41        <activity
-41-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:23:9-26:75
-42            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-42-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:24:13-79
-43            android:exported="false"
-43-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:25:13-37
-44            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-44-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:26:13-72
-45
-46        <meta-data
-46-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:23:9-25:69
-47            android:name="com.google.android.gms.version"
-47-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:24:13-58
-48            android:value="@integer/google_play_services_version" />
-48-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:25:13-66
-49    </application>
-50
-51</manifest>
+25        android:testOnly="true"
+26        android:theme="@style/Theme.ProtoProgression" >
+26-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:16:9-54
+27        <activity
+27-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:17:9-26:20
+28            android:name="site.nohan.protoprogression.Controller.MainActivity"
+28-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:18:13-52
+29            android:label="@string/app_name"
+29-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:19:13-45
+30            android:screenOrientation="portrait" >
+30-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:20:13-49
+31            <intent-filter>
+31-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:22:13-25:29
+32                <action android:name="android.intent.action.MAIN" />
+32-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:17-69
+32-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:23:25-66
+33
+34                <category android:name="android.intent.category.LAUNCHER" />
+34-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:24:17-77
+34-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:24:27-74
+35            </intent-filter>
+36        </activity>
+37
+38        <service
+38-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:28:9-31:40
+39            android:name="site.nohan.protoprogression.Controller.Pedometer.LocationService"
+39-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:29:13-65
+40            android:enabled="true"
+40-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:30:13-35
+41            android:exported="false" />
+41-->C:\Users\celes\Downloads\projet-acrobatt-mobile\projet-acrobatt-mobile\mobile\app\src\main\AndroidManifest.xml:31:13-37
+42
+43        <activity
+43-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:23:9-26:75
+44            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+44-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:24:13-79
+45            android:exported="false"
+45-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:25:13-37
+46            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+46-->[com.google.android.gms:play-services-base:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\b64aa4f17e23c4f3b9c5f8ff583bfd0d\jetified-play-services-base-17.0.0\AndroidManifest.xml:26:13-72
+47
+48        <meta-data
+48-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:23:9-25:69
+49            android:name="com.google.android.gms.version"
+49-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:24:13-58
+50            android:value="@integer/google_play_services_version" />
+50-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\celes\.gradle\caches\transforms-2\files-2.1\09a73e8828332f639ca43c2c3d1e6559\jetified-play-services-basement-17.0.0\AndroidManifest.xml:25:13-66
+51    </application>
+52
+53</manifest>

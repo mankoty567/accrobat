@@ -26,9 +26,10 @@
         </activity>
 
         <service
-            android:name=".Controller.LocationService"
+            android:name=".Controller.Pedometer.LocationService"
             android:enabled="true"
             android:exported="false" />
+
 
     </application>
 
