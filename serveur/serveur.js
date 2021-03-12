@@ -4,7 +4,7 @@ const m = require('./modules');
 
 var app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
