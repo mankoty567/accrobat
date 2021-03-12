@@ -26,6 +26,48 @@ module.exports = {
           ],
         },
       ];
+    } else if (req.query.include === 'pointsegmentobstacle') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
     }
     bdd.Challenge.findOne(query).then((challenge) => {
       if (challenge !== null) {

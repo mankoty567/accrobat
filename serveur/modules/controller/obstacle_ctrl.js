@@ -11,7 +11,6 @@ module.exports = {
       !req.body.type ||
       !TYPE.includes(req.body.type) ||
       !req.body.distance ||
-      !req.body.enigme_img ||
       !req.body.SegmentId ||
       (req.body.type === 'question' && !req.body.enigme_awnser)
     ) {
