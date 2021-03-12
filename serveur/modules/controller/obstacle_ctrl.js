@@ -44,4 +44,27 @@ module.exports = {
       });
     }
   },
+  get_image: (req, res) => {
+    bdd.Obstacle.findOne({
+      where: { id: req.params.id },
+    }).then((obstacle) => {
+      if (obstacle === null || obstacle.enigme_img === null) {
+        res.status(404).send('Not found');
+      } else {
+        let img = new Buffer.from(
+          obstacle.enigme_img.replace(/^.*base64,/, ''),
+          'base64'
+        );
+        var mime = obstacle.enigme_img.match(
+          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
+        )[1];
+
+        res.writeHead(200, {
+          'Content-Type': mime,
+          'Content-Length': img.length,
+        });
+        res.end(img);
+      }
+    });
+  },
 };
