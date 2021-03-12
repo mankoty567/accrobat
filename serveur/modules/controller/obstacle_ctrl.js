@@ -1,5 +1,8 @@
 const bdd = require('../../models');
 const debug = require('debug')('serveur:obstacle');
+const path = require('path');
+const utils = require('../utils');
+const fs = require('fs');
 
 const TYPE = ['question', 'action'];
 
@@ -32,13 +35,21 @@ module.exports = {
             description: req.body.description,
             type: req.body.type,
             distance: req.body.distance,
-            enigme_img: req.body.enigme_img,
             enigme_awnser:
               req.body.type === 'question' ? req.body.enigme_awnser : null,
             SegmentId: req.body.SegmentId,
-          }).then((ostacle) => {
-            debug('Création obstacle ' + ostacle.id);
-            res.json(ostacle);
+          }).then((obstacle) => {
+            utils.pngParser(req.body.enigme_img).then((buffer) => {
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  '../../data/obstacle/' + obstacle.id + '.jpg'
+                ),
+                buffer
+              );
+              debug('Création obstacle ' + obstacle.id);
+              res.json(obstacle);
+            });
           });
         }
       });
@@ -73,8 +84,15 @@ module.exports = {
         }
 
         if (req.body.enigme_img) {
-          obstacle.enigme_img = req.body.enigme_img;
-          edited = true;
+          utils.pngParser(req.body.enigme_img).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/obstacle/' + obstacle.id + '.jpg'
+              ),
+              buffer
+            );
+          });
         }
 
         if (req.body.enigme_awnser) {
@@ -100,19 +118,9 @@ module.exports = {
       if (obstacle === null || obstacle.enigme_img === null) {
         res.status(404).send('Not found');
       } else {
-        let img = new Buffer.from(
-          obstacle.enigme_img.replace(/^.*base64,/, ''),
-          'base64'
+        res.sendFile(
+          path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
         );
-        var mime = obstacle.enigme_img.match(
-          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
-        )[1];
-
-        res.writeHead(200, {
-          'Content-Type': mime,
-          'Content-Length': img.length,
-        });
-        res.end(img);
       }
     });
   },

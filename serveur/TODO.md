@@ -19,7 +19,7 @@ type:
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
-- [ ] Sauvegarde des images sur le disque
+- [x] Sauvegarde des images sur le disque
 - [ ] Supprimer la description obligatoire du point de passage
 - [ ] Ajouter paramètre custom quand on crée un point
 - [ ] Renvoit de l'image soumise à un obstacle

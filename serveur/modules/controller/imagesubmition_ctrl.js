@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const path = require('path');
 
 module.exports = {
   get_image: (req, res) => {
@@ -8,19 +9,12 @@ module.exports = {
       if (imagesubmition === null) {
         res.status(404).send('Not found');
       } else {
-        let img = new Buffer.from(
-          imagesubmition.img.replace(/^.*base64,/, ''),
-          'base64'
+        res.sendFile(
+          path.join(
+            __dirname,
+            '../../data/imageSumbition/' + imagesubmition.id + '.jpg'
+          )
         );
-        var mime = imagesubmition.img.match(
-          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
-        )[1];
-
-        res.writeHead(200, {
-          'Content-Type': mime,
-          'Content-Length': img.length,
-        });
-        res.end(img);
       }
     });
   },

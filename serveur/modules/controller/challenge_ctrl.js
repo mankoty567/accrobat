@@ -105,7 +105,6 @@ module.exports = {
       bdd.Challenge.create({
         title: req.body.title,
         description: req.body.description,
-        img_fond: req.body.img_fond,
         echelle: req.body.echelle,
       }).then((challenge) => {
         utils.pngParser(req.body.img_fond).then((buffer) => {

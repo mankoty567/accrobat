@@ -101,7 +101,7 @@ module.exports = {
         }).then((obstacle) => {
           bdd.ImageSubmition.findOne({
             where: { EventId: events[0].id },
-            attributes: ['createdAt', 'updatedAt'],
+            attributes: ['createdAt', 'updatedAt', 'ok'],
           }).then((img) => {
             obj.entity = obstacle;
             obj.submitedImg = img;
