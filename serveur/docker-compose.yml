@@ -20,3 +20,4 @@ services:
       - MYSQL_USER=acrobat
       - MYSQL_PASSWORD=acrobat
       - MYSQL_ROOT_PASSWORD=acrobat
+    command: --max_allowed_packet=104857600

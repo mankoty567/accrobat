@@ -1,8 +1,5 @@
 # Déploiment du serveur
 ```
-cd serveur
-npm install
-sudo docker build -t acrobat/serveur .
 sudo docker run -d -e MYSQL_DATABASE=database -e MYSQL_USER=acrobat -e MYSQL_PASSWORD=acrobat -e MYSQL_ROOT_PASSWORD=acrobat -p 1419:3306 --name acrobat-bdd mysql:5.7
 sudo docker run -d -p1418:1418 -e NODE_ENV=development -e BDD_URL=mysql://acrobat:acrobat@acrobat-bdd/database --name acrobat-serveur registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur
 sudo docker network create acrobat

@@ -101,13 +101,19 @@ module.exports = {
     });
   },
   post_challenge: (req, res) => {
-    if (!req.body.title || !req.body.description || !req.body.img_fond) {
+    if (
+      !req.body.title ||
+      !req.body.description ||
+      !req.body.img_fond ||
+      !req.body.echelle
+    ) {
       res.status(400).send('Bad request');
     } else {
       bdd.Challenge.create({
         title: req.body.title,
         description: req.body.description,
         img_fond: req.body.img_fond,
+        echelle: req.body.echelle,
       }).then((challenge) => {
         debug('Création du challenge ' + challenge.id);
         res.json(challenge);
@@ -154,6 +160,11 @@ module.exports = {
 
         if (req.body.img_fond) {
           challenge.img_fond = req.body.img_fond;
+          edited = true;
+        }
+
+        if (req.body.echelle) {
+          challenge.echelle = req.body.echelle;
           edited = true;
         }
 

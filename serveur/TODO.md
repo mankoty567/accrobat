@@ -18,9 +18,11 @@ type:
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
+- [ ] Ajouter paramètre custom quand on crée un point
 - [ ] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
 - [ ] Vérification de la réponse à l'obstacle
 - [ ] Ajout d'un obstacle type action
 - [ ] Validation d'un obstacle type action
 - [ ] récupération des obstacles type action
+- [ ] Route pour créer des points à partir d'un tableau
