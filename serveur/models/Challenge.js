@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
-      img_fond: DataTypes.TEXT,
       echelle: DataTypes.FLOAT,
     },
     {}

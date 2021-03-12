@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       type: DataTypes.STRING,
       distance: DataTypes.FLOAT,
-      enigme_img: DataTypes.TEXT,
       enigme_awnser: DataTypes.STRING,
     },
     {}

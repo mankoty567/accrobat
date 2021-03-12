@@ -83,6 +83,31 @@ module.exports = {
           obj.entity = pointpassage;
           res.json(obj);
         });
+      } else if (events[0].type === 'obstacle:arrivee') {
+        obj.type = 'Obstacle';
+        bdd.Obstacle.findOne({
+          where: { id: Math.trunc(events[0].data) },
+          attributes: ['id', 'title', 'description', 'type', 'distance'],
+        }).then((obstacle) => {
+          obj.entity = obstacle;
+          obj.submitedImg = undefined;
+          res.json(obj);
+        });
+      } else if (events[0].type === 'obstacle:image') {
+        obj.type = 'Obstacle';
+        bdd.Obstacle.findOne({
+          where: { id: Math.trunc(events[1].data) },
+          attributes: ['id', 'title', 'description', 'type', 'distance'],
+        }).then((obstacle) => {
+          bdd.ImageSubmition.findOne({
+            where: { EventId: events[0].id },
+            attributes: ['createdAt', 'updatedAt', 'ok'],
+          }).then((img) => {
+            obj.entity = obstacle;
+            obj.submitedImg = img;
+            res.json(obj);
+          });
+        });
       } else {
         let distance = 0;
         let isOnPoint = false;
