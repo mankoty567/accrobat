@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new MapRequest(this,1);
+        new MapRequest(this,2);
     }
 
 

@@ -44,8 +44,8 @@ public class MapResponse implements APIListenner {
 
 
                 Point premierPoint = new Point(
-                        Integer.parseInt(((JSONObject) pointPassage.get(i)).get("x").toString()),
-                        Integer.parseInt(((JSONObject) pointPassage.get(i)).get("y").toString())
+                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("x")),
+                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("y"))
                 );
 
 
@@ -102,6 +102,10 @@ public class MapResponse implements APIListenner {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            Map.chemins = new ArrayList<>();
+            Chemin c = new Chemin();
+            Map.chemins.add(c);
+            Map.cheminActuel = c;
             Log.e("map", "err");
         }
 

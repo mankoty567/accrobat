@@ -143,7 +143,7 @@ public class Toile extends View {
 
                         float diffX = B.x - A.x;
                         float diffY = B.y - A.y;
-                        int pointsMax = (int) Math.floor(0.1*Chemin.getDistance(A,B));
+                        int pointsMax = (int) Math.floor(0.5*Chemin.getDistance(A,B));
                         int points = Math.round(pointsMax * rapport);
 
                         float intervalX = diffX / (pointsMax + 1);
