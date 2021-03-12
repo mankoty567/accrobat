@@ -74,8 +74,27 @@ public class Toile extends View {
         this.stylo.setTextSize(100);
 
         // Titre de la map
+        this.stylo.setFakeBoldText(false);
+        this.stylo.setColor(Color.BLACK);
         canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, 100 , this.stylo);
 
+        this.stylo.setFakeBoldText(true);
+        this.stylo.setColor(Color.BLACK);
+        if(Map.chemins != null && Map.chemins.size() > 0){
+            for(Chemin c : Map.chemins){
+                // Dessin nom chemin
+
+                if(c.points.size() > 0){
+                    canvas.drawText(
+                            c.title == null ?
+                                    "Indéfinis" : c.title ,
+                            ((float) c.points.get(0).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(0).y) / 100 * canvas.getHeight(),
+                            this.stylo
+                    );
+                }
+            }
+        }
     }
 
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
@@ -88,13 +107,11 @@ public class Toile extends View {
 
 
         for(Chemin c : Map.chemins) {
-            this.stylo.setColor(Color.BLUE);
-            canvas.drawText(
-                    c.title == null ? "Indéfinis" : c.title ,
-                    ((float) c.points.get(0).x) / 100 * canvas.getWidth(),
-                    ((float) c.points.get(0).y) / 100 * canvas.getHeight(),
-                    this.stylo
-            );
+
+
+
+            // ...
+
             sOrdinal++;
             this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
             if(c.points.size() == 0)
@@ -126,7 +143,7 @@ public class Toile extends View {
 
                         float diffX = B.x - A.x;
                         float diffY = B.y - A.y;
-                        int pointsMax = 20;
+                        int pointsMax = (int) Math.floor(0.1*Chemin.getDistance(A,B));
                         int points = Math.round(pointsMax * rapport);
 
                         float intervalX = diffX / (pointsMax + 1);
