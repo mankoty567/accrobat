@@ -30,6 +30,7 @@ app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
 // Obstacle
 app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
 app.get('/api/obstacle/:id/image', m.obstacle_ctrl.get_image);
+app.post('/api/obstacle/:id', m.obstacle_ctrl.update_obstacle);
 
 // Participation
 app.post('/api/participation', m.participation_ctrl.post_participation);
