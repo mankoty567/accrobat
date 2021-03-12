@@ -14,12 +14,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
+import ImageUploader from '../components/ImageUploader';
 
 /**
  * Todo :
- * Intégrer les champs éditable de l'obstacle (titre, description, type)
- * Si type enigme : soumettre une enigme et la réponse attendue
- * Si type image : soumettre un défi à faire en photo, et un moyen de l'upload (oskur)
+ * L'image est optionnelle pour l'énigme mais aussi pour le défi en image
  * Gérer la distance et donc le placement sur la liste de cet obstacle
  * Utiliser une icone custom sur la polyline pour l'obstacle sur la carte
  */
@@ -40,6 +39,10 @@ let ObstacleEditor = ({ open, setOpen }) => {
     <Dialog open={open} onClose={() => handleClose()}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
+        {/* <ImageUploader
+          callback={(file) => console.log(file)}
+          preview={true}
+        ></ImageUploader> */}
         <List>
           <ListItem>
             <FormControl>
@@ -83,7 +86,9 @@ let ObstacleEditor = ({ open, setOpen }) => {
             <>
               <ListItem>
                 <FormControl>
-                  <InputLabel htmlFor="title">Enigme</InputLabel>
+                  <InputLabel htmlFor="title">
+                    Description d'énigme
+                  </InputLabel>
                   <Input
                     multiline={true}
                     id="title"
@@ -98,7 +103,7 @@ let ObstacleEditor = ({ open, setOpen }) => {
               <ListItem>
                 <FormControl>
                   <InputLabel htmlFor="title">
-                    Titre de l'obstacle
+                    Réponse de l'énigme
                   </InputLabel>
                   <Input
                     id="title"
@@ -114,7 +119,9 @@ let ObstacleEditor = ({ open, setOpen }) => {
           ) : type === 'image' ? (
             <ListItem>
               <FormControl>
-                <InputLabel htmlFor="title">Défi en image</InputLabel>
+                <InputLabel htmlFor="title">
+                  Description du défi
+                </InputLabel>
                 <Input
                   multiline={true}
                   id="title"
