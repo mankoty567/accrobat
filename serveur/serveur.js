@@ -6,6 +6,8 @@ var app = express();
 
 app.use(express.json());
 
+app.get('/', (req, res) => res.send(require('./package.json').version));
+
 // Challenge
 app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
 app.post('/api/challenge', m.challenge_ctrl.post_challenge);
