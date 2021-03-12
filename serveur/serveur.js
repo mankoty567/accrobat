@@ -2,6 +2,8 @@ const express = require('express');
 const debug = require('debug')('serveur:main');
 const m = require('./modules');
 
+m.utils.check_folder();
+
 var app = express();
 
 app.use(express.json({ limit: '10mb' }));

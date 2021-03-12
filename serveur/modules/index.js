@@ -7,4 +7,5 @@ module.exports = {
   participation_ctrl: require('./controller/participation_ctrl'),
   imagesubmition_ctrl: require('./controller/imagesubmition_ctrl'),
   user_mdw: require('./middleware/user_mdw'),
+  utils: require('./utils'),
 };

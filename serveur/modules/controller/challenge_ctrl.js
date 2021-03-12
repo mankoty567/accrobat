@@ -1,5 +1,8 @@
 const bdd = require('../../models');
 const debug = require('debug')('serveur:challenge');
+const utils = require('../utils');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = {
   get_challenge_id: (req, res) => {
@@ -84,19 +87,9 @@ module.exports = {
       if (challenge === null) {
         res.status(404).send('Not found');
       } else {
-        let img = new Buffer.from(
-          challenge.img_fond.replace(/^.*base64,/, ''),
-          'base64'
+        res.sendFile(
+          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg')
         );
-        var mime = challenge.img_fond.match(
-          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
-        )[1];
-
-        res.writeHead(200, {
-          'Content-Type': mime,
-          'Content-Length': img.length,
-        });
-        res.end(img);
       }
     });
   },
@@ -115,8 +108,17 @@ module.exports = {
         img_fond: req.body.img_fond,
         echelle: req.body.echelle,
       }).then((challenge) => {
-        debug('Création du challenge ' + challenge.id);
-        res.json(challenge);
+        utils.pngParser(req.body.img_fond).then((buffer) => {
+          fs.writeFileSync(
+            path.join(
+              __dirname,
+              '../../data/challenge/' + challenge.id + '.jpg'
+            ),
+            buffer
+          );
+          debug('Création du challenge ' + challenge.id);
+          res.json(challenge);
+        });
       });
     }
   },
@@ -130,6 +132,12 @@ module.exports = {
           challenge
             .destroy()
             .then(() => {
+              fs.unlinkSync(
+                path.join(
+                  __dirname,
+                  '../../data/challenge/' + challenge.id + '.jpg'
+                )
+              );
               res.send('OK');
             })
             .catch((err) => {
@@ -159,8 +167,15 @@ module.exports = {
         }
 
         if (req.body.img_fond) {
-          challenge.img_fond = req.body.img_fond;
-          edited = true;
+          utils.pngParser(req.body.img_fond).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challenge/' + challenge.id + '.jpg'
+              ),
+              buffer
+            );
+          });
         }
 
         if (req.body.echelle) {

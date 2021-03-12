@@ -12,12 +12,15 @@ type:
 - obstacle:arrivee [Id de l'obstacle]
 - obstacle:image
 - obstacle:image_ok
+- obstacle:image_refused
 - obstacle:completed
 
 ## TODO TODAY
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
+- [ ] Sauvegarde des images sur le disque
+- [ ] Supprimer la description obligatoire du point de passage
 - [ ] Ajouter paramètre custom quand on crée un point
 - [ ] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
@@ -25,4 +28,5 @@ type:
 - [ ] Ajout d'un obstacle type action
 - [ ] Validation d'un obstacle type action
 - [ ] récupération des obstacles type action
-- [ ] Route pour créer des points à partir d'un tableau
+- [ ] Ajouter un status dans un obstacle (en cours, ou disponible)
+- [ ] Ajouter la possibilitée de dupliquer un obstacle

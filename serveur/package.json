@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "migrate": "^1.7.0",
     "mysql2": "^2.2.5",
+    "png-to-jpeg": "^1.0.1",
     "sequelize": "^6.5.0",
     "sequelize-cli": "^6.2.0"
   },
