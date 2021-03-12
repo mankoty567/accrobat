@@ -74,7 +74,6 @@ module.exports = {
 
       let obj = { segmentsParcourus };
 
-      // TODO : Ajouter la gestion des obstacles
       if (events[0].type === 'pointpassage:arrivee') {
         obj.type = 'PointPassage';
         bdd.PointPassage.findOne({

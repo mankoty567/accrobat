@@ -30,3 +30,4 @@ type:
 - [ ] récupération des obstacles type action
 - [ ] Ajouter un status dans un obstacle (en cours, ou disponible)
 - [ ] Ajouter la possibilitée de dupliquer un obstacle
+- [ ] Ajouter une route de vérification du challenge avant la publication
