@@ -6,6 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Chemin {
+    public String title;
+    public String desc;
 
     public boolean complete;
     public ArrayList<Point> points = new ArrayList<>();

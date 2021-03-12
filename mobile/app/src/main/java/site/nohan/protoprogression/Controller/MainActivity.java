@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import site.nohan.protoprogression.Network.Map.MapRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.Toile;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        new MapRequest(this,1);
     }
 
 

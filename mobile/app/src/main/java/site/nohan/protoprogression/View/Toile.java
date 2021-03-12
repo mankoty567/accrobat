@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -48,6 +49,7 @@ public class Toile extends View {
 
         canvas.drawBitmap(this.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo);
         this.dessinerChemins(canvas);
+        this.dessinerMapInfos(canvas);
 
         //Log.e("vue",""+((float) Chemin.points[1].x)/100*canvas.getWidth());
         invalidate();
@@ -65,11 +67,34 @@ public class Toile extends View {
         return true;
     }
 
+    private void dessinerMapInfos(Canvas canvas){
+
+
+        this.stylo.setColor(Color.BLACK);
+        this.stylo.setTextSize(100);
+
+        // Titre de la map
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, 100 , this.stylo);
+
+    }
+
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
+        if(Map.chemins == null || Map.chemins.size() == 0)
+            return;
 
         int sOrdinal = 0;
-        for(Chemin c : Map.chemins) {
 
+
+
+
+        for(Chemin c : Map.chemins) {
+            this.stylo.setColor(Color.BLUE);
+            canvas.drawText(
+                    c.title == null ? "Indéfinis" : c.title ,
+                    ((float) c.points.get(0).x) / 100 * canvas.getWidth(),
+                    ((float) c.points.get(0).y) / 100 * canvas.getHeight(),
+                    this.stylo
+            );
             sOrdinal++;
             this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
             if(c.points.size() == 0)
@@ -134,6 +159,8 @@ public class Toile extends View {
                         ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
                         this.stylo
                 );
+
+
             }
         }
     }

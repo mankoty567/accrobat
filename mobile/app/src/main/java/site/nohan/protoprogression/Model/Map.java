@@ -6,6 +6,9 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Map {
+    public static String libelle;
+    public static String desc;
+
     public static int accompli;
 
     public static Chemin cheminActuel;
@@ -15,7 +18,7 @@ public class Map {
 
     static{
         accompli = 0;
-
+        /*
         Chemin chemin = new Chemin();
         chemin.points = new ArrayList<>();
         chemin.points.add(new Point(20,20));
@@ -27,6 +30,8 @@ public class Map {
         cheminActuel = chemin;
         Map.chemins.add(chemin);
         Log.e("static", chemin.getLongueurAt(chemin.points.get(1))+"");
+
+         */
     }
 
 

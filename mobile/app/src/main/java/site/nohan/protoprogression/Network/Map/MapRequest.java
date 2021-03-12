@@ -13,7 +13,7 @@ public class MapRequest extends APIRequest {
 
 
     public MapRequest(Activity activity,  int mapId) {
-        super(activity, "challenge/"+mapId, new MapResponse());
+        super(activity, "challenge/"+mapId+"?include=pointsegment", new MapResponse());
         Log.e("net", this.getUrl());
         APIRequest.queue.add(this);
         APIRequest.queue.start();
