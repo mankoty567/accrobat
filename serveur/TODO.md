@@ -9,7 +9,7 @@ type:
 - velo [Distance]
 - pointpassage:arrivee
 - pointpassage:depart [Segment choisis]
-- obstacle:arrivee
+- obstacle:arrivee [Id de l'obstacle]
 - obstacle:image
 - obstacle:image_ok
 - obstacle:completed
@@ -17,7 +17,8 @@ type:
 ## TODO TODAY
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
-- [ ] Gestion de l'event obstacle
+- [x] Gestion de l'event obstacle
+- [ ] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
 - [ ] Vérification de la réponse à l'obstacle
 - [ ] Ajout d'un obstacle type action
