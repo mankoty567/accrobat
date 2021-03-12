@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
 MERGED from [com.google.android.material:material:1.2.1] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/b988cdf40af7cdf3e0317011f8e5bfe7/material-1.2.1/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/a527ad4f532df6b258c428a911debd89/appcompat-1.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.volley:volley:1.1.1] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/267d8731c7d0d057affb871d38785023/jetified-volley-1.1.1/AndroidManifest.xml:2:1-11:12
@@ -32,25 +32,33 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/nohanjaugey/.gr
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/af090a78eaea8296976d6555a3a135f2/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/4277c449ae4e7defb11901a027a49277/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/01339aeadc2379d14234ec1725fb1d1d/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
-INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
+INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
 	package
 		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:3:5-42
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-24:12
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:1-26:12
 		INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:4:5-67
+	android:name
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:4:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:5:5-79
+	android:name
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:5:22-76
 application
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:5:5-21:19
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:6:5-23:19
 MERGED from [com.google.android.material:material:1.2.1] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/b988cdf40af7cdf3e0317011f8e5bfe7/material-1.2.1/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.2.1] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/b988cdf40af7cdf3e0317011f8e5bfe7/material-1.2.1/AndroidManifest.xml:22:5-20
 MERGED from [com.android.volley:volley:1.1.1] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/267d8731c7d0d057affb871d38785023/jetified-volley-1.1.1/AndroidManifest.xml:9:5-20
@@ -62,33 +70,33 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/noha
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.3.0] /Users/nohanjaugey/.gradle/caches/transforms-2/files-2.1/8dcd1701ae68e2a64de609ba4b65471f/core-1.3.0/AndroidManifest.xml:24:18-86
 	android:supportsRtl
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:10:9-35
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:11:9-35
 	android:label
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:8:9-41
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:9:9-41
 	android:roundIcon
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:9:9-54
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:10:9-54
 	android:icon
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:7:9-43
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:8:9-43
 	android:allowBackup
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:6:9-35
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:7:9-35
 	android:theme
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:11:9-54
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:12:9-54
 activity#site.nohan.protoprogression.Controller.MainActivity
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:12:9-20:20
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:13:9-21:20
 	android:label
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:14:13-45
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:15:13-45
 	android:name
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:13:13-52
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:14:13-52
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:16:13-19:29
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:17:13-20:29
 action#android.intent.action.MAIN
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:17:17-69
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:18:17-69
 	android:name
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:17:25-66
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:18:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:18:17-77
+ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:19:17-77
 	android:name
-		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:18:27-74
+		ADDED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml:19:27-74
 uses-sdk
 INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/nohanjaugey/AndroidStudioProjects/ProtoProgression/app/src/main/AndroidManifest.xml
