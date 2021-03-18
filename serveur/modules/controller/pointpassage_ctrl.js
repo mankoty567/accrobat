@@ -46,7 +46,7 @@ module.exports = {
             ChallengeId: req.params.id,
           }).then((pointpassage) => {
             debug('Création point passage ' + pointpassage.id);
-            res.json(pointpassage);
+            res.json({ ...pointpassage, frontId: req.body.frontId });
           });
         }
       });
