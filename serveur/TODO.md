@@ -13,6 +13,7 @@ type:
 - obstacle:image
 - obstacle:image_ok
 - obstacle:image_refused [Id de l'obstacle]
+- obstacle:bad_answer [Id de l'obstacle]
 - obstacle:completed
 
 ## TODO TODAY
@@ -24,7 +25,7 @@ type:
 - [x] Ajouter paramètre custom quand on crée un point
 - [x] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
-- [ ] Vérification de la réponse à l'obstacle question
+- [x] Vérification de la réponse à l'obstacle question
 - [x] Ajout d'une image à obstacle type action
 - [x] Validation d'un obstacle type action
 - [x] récupération de toutes les images submitions type action

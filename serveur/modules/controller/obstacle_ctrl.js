@@ -124,4 +124,52 @@ module.exports = {
       }
     });
   },
+  awnser_obstacle: (req, res) => {
+    if (req.body.ParticipationId === undefined || !req.body.answer) {
+      res.status(400).send('Bad Request');
+    } else {
+      bdd.Participation.findOne({
+        where: { id: req.body.ParticipationId },
+        include: [{ model: bdd.Event }],
+        order: [[bdd.Event, 'id', 'DESC']],
+      }).then((participation) => {
+        if (participation === null) {
+          res.status(400).send('Bad request: Participation not found');
+        } else {
+          let lastEvent = participation.Events[0];
+          if (
+            lastEvent.type !== 'obstacle:arrivee' &&
+            lastEvent.type !== 'obstacle:bad_answer'
+          ) {
+            res.status(400).send('Bad request: Not in an obstacle');
+          } else {
+            bdd.Obstacle.findOne({
+              where: { id: Math.trunc(lastEvent.data) },
+            }).then((obstacle) => {
+              if (!obstacle.type === 'question') {
+                res.status(400).send('Bad request: Obstacle is not a question');
+              } else {
+                if (req.body.answer === obstacle.enigme_awnser) {
+                  bdd.Event.create({
+                    type: 'obstacle:completed',
+                    ParticipationId: participation.id,
+                  }).then(() => {
+                    res.json({ good: true });
+                  });
+                } else {
+                  bdd.Event.create({
+                    type: 'obstacle:bad_answer',
+                    ParticipationId: participation.id,
+                    data: obstacle.id,
+                  }).then(() => {
+                    res.json({ good: false });
+                  });
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+  },
 };
