@@ -22,12 +22,12 @@ type:
 - [x] Sauvegarde des images sur le disque
 - [x] Supprimer la description obligatoire du point de passage
 - [x] Ajouter paramètre custom quand on crée un point
-- [ ] Renvoit de l'image soumise à un obstacle
+- [x] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
-- [ ] Vérification de la réponse à l'obstacle
-- [ ] Ajout d'un obstacle type action
+- [ ] Vérification de la réponse à l'obstacle question
+- [x] Ajout d'une image à obstacle type action
 - [ ] Validation d'un obstacle type action
-- [ ] récupération des obstacles type action
-- [ ] Ajouter un status dans un obstacle (en cours, ou disponible)
-- [ ] Ajouter la possibilitée de dupliquer un obstacle
+- [ ] récupération de toutes les images submitions type action
+- [ ] Ajouter un status dans un challenge (en cours, ou disponible)
+- [ ] Ajouter la possibilitée de dupliquer un challenge
 - [ ] Ajouter une route de vérification du challenge avant la publication

@@ -36,6 +36,7 @@ app.post('/api/obstacle/:id', m.obstacle_ctrl.update_obstacle);
 
 // Image Submition
 app.get('/api/imagesubmition/:id/image', m.imagesubmition_ctrl.get_image);
+app.post('/api/imagesubmition', m.imagesubmition_ctrl.post_image);
 
 // Participation
 app.post('/api/participation', m.participation_ctrl.post_participation);

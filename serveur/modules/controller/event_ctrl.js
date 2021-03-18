@@ -8,9 +8,9 @@ const ALLOWED_TYPE = [
   'pointpassage:arrivee',
   'pointpassage:depart',
   'obstacle:arrivee',
-  'obstacle:image',
-  'obstacle:image_ok',
-  'obstacle:completed',
+  //'obstacle:image',
+  //'obstacle:image_ok',
+  //'obstacle:completed',
 ];
 const REQUIRED_DATA = [
   true,
@@ -19,9 +19,9 @@ const REQUIRED_DATA = [
   false,
   true,
   false,
-  true,
-  false,
-  false,
+  //true,
+  //false,
+  //false,
 ];
 
 module.exports = {
@@ -43,16 +43,17 @@ module.exports = {
           }).then((participation) => {
             if (participation === null) {
               res.status(400).send('Bad request: Participation not found');
+            } else {
+              bdd.Event.create({
+                ParticipationId: req.body.ParticipationId,
+                type: req.body.type,
+                data: req.body.data !== undefined ? req.body.data : null,
+              }).then((event) => {
+                // eslint-disable-next-line quotes
+                debug("Création de l'event " + event.id);
+                res.json(event);
+              });
             }
-          });
-          bdd.Event.create({
-            ParticipationId: req.body.ParticipationId,
-            type: req.body.type,
-            data: req.body.data !== undefined ? req.body.data : null,
-          }).then((event) => {
-            // eslint-disable-next-line quotes
-            debug("Création de l'event " + event.id);
-            res.json(event);
           });
         }
       }
