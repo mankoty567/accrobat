@@ -29,6 +29,6 @@ type:
 - [x] Ajout d'une image à obstacle type action
 - [x] Validation d'un obstacle type action
 - [x] récupération de toutes les images submitions type action
-- [ ] Ajouter un status dans un challenge (en cours, ou disponible)
+- [x] Ajouter un status dans un challenge (en cours, ou disponible)
 - [ ] Ajouter la possibilitée de dupliquer un challenge
 - [ ] Ajouter une route de vérification du challenge avant la publication

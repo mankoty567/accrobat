@@ -3,7 +3,6 @@ const debug = require('debug')('serveur:segment');
 
 module.exports = {
   post_segment: (req, res) => {
-    console.log(req.body);
     if (
       req.body.PointStartId === undefined ||
       req.body.PointEndId === undefined ||
@@ -11,16 +10,28 @@ module.exports = {
     ) {
       res.status(400).send('Bad request');
     } else {
-      bdd.PointPassage.findOne({ where: { id: req.body.PointStartId } }).then(
-        (ps) => {
+      bdd.PointPassage.findOne({
+        where: { id: req.body.PointStartId },
+        include: bdd.Challenge,
+      }).then((ps) => {
+        if (ps.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
+        } else {
           if (ps === null) {
             res.status(404).send('PointStart not found');
           } else {
             bdd.PointPassage.findOne({
               where: { id: req.body.PointEndId },
+              include: bdd.Challenge,
             }).then((pe) => {
               if (pe === null) {
                 res.status(404).send('PointEnd not found');
+              } else if (pe.Challenge.id !== ps.Challenge.id) {
+                res
+                  .status(400)
+                  .send(
+                    'Bad request: PointStart and PointEnd are not in the same challenge'
+                  );
               } else {
                 bdd.Segment.create({
                   PointStartId: req.body.PointStartId,
@@ -34,7 +45,7 @@ module.exports = {
             });
           }
         }
-      );
+      });
     }
   },
   get_segment: (req, res) => {
@@ -81,64 +92,79 @@ module.exports = {
     let segment = await bdd.Segment.findOne({
       where: { id: req.params.id },
       include: [
-        { model: bdd.PointPassage, as: 'pointStart' },
+        { model: bdd.PointPassage, as: 'pointStart', include: bdd.Challenge },
         { model: bdd.PointPassage, as: 'pointEnd' },
       ],
     });
-    if (segment === null) {
-      res.status(404).send('Not Found');
+    if (segment.pointStart.Challenge.published) {
+      res.status(400).send('Bad request: Challenge is published');
     } else {
-      let edited = false;
-      if (req.body.path !== undefined && Array.isArray(req.body.path)) {
-        segment.path = req.body.path;
-        edited = true;
-      }
-
-      if (req.body.PointStartId !== undefined) {
-        let pointStart = await bdd.PointPassage.findOne({
-          where: { id: req.body.PointStartId },
-        });
-        if (pointStart.ChallengeId === segment.pointStart.ChallengeId) {
-          segment.PointStartId = req.body.PointStartId;
-          edited = true;
-        }
-      }
-
-      if (req.body.PointEndId !== undefined) {
-        let pointEnd = await bdd.PointPassage.findOne({
-          where: { id: req.body.PointEndId },
-        });
-        if (pointEnd.ChallengeId === segment.pointEnd.ChallengeId) {
-          segment.PointEndId = req.body.PointEndId;
-          edited = true;
-        }
-      }
-
-      if (edited) {
-        debug('Update segment ' + segment.id);
-        await segment.save();
-        res.json({
-          id: segment.id,
-          distance: segment.distance,
-          path: segment.path,
-          PointStartId: segment.PointStartId,
-          PointEndId: segment.PointEndId,
-        });
+      if (segment === null) {
+        res.status(404).send('Not Found');
       } else {
-        res.json({
-          id: segment.id,
-          distance: segment.distance,
-          path: segment.path,
-          PointStartId: segment.PointStartId,
-          PointEndId: segment.PointEndId,
-        });
+        let edited = false;
+        if (req.body.path !== undefined && Array.isArray(req.body.path)) {
+          segment.path = req.body.path;
+          edited = true;
+        }
+
+        if (req.body.PointStartId !== undefined) {
+          let pointStart = await bdd.PointPassage.findOne({
+            where: { id: req.body.PointStartId },
+          });
+          if (pointStart.ChallengeId === segment.pointStart.ChallengeId) {
+            segment.PointStartId = req.body.PointStartId;
+            edited = true;
+          }
+        }
+
+        if (req.body.PointEndId !== undefined) {
+          let pointEnd = await bdd.PointPassage.findOne({
+            where: { id: req.body.PointEndId },
+          });
+          if (pointEnd.ChallengeId === segment.pointEnd.ChallengeId) {
+            segment.PointEndId = req.body.PointEndId;
+            edited = true;
+          }
+        }
+
+        if (edited) {
+          debug('Update segment ' + segment.id);
+          await segment.save();
+          res.json({
+            id: segment.id,
+            distance: segment.distance,
+            path: segment.path,
+            PointStartId: segment.PointStartId,
+            PointEndId: segment.PointEndId,
+          });
+        } else {
+          res.json({
+            id: segment.id,
+            distance: segment.distance,
+            path: segment.path,
+            PointStartId: segment.PointStartId,
+            PointEndId: segment.PointEndId,
+          });
+        }
       }
     }
   },
   delete_segment: (req, res) => {
-    bdd.Segment.findOne({ where: { id: req.params.id } }).then((segment) => {
-      debug('Suppression segment ' + segment.id);
-      segment.destroy().then(res.send('OK'));
+    bdd.Segment.findOne({
+      where: { id: req.params.id },
+      include: {
+        model: bdd.PointPassage,
+        as: 'pointStart',
+        include: bdd.Challenge,
+      },
+    }).then((segment) => {
+      if (segment.pointStart.Challenge.published) {
+        res.status(400).send('Bad request: Challenge is published');
+      } else {
+        debug('Suppression segment ' + segment.id);
+        segment.destroy().then(res.send('OK'));
+      }
     });
   },
 };

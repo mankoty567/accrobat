@@ -14,6 +14,8 @@ module.exports = {
             (challenge) => {
               if (challenge === null) {
                 res.status(400).send('Bad request: Challenge not found');
+              } else if (!challenge.published) {
+                res.status(400).send('Bad request: Challenge is not published');
               } else {
                 bdd.Participation.create({
                   startDate: new Date(),

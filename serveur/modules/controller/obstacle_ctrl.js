@@ -21,9 +21,16 @@ module.exports = {
     } else {
       bdd.Segment.findOne({
         where: { id: req.body.SegmentId },
+        include: {
+          model: bdd.PointPassage,
+          as: 'pointStart',
+          include: bdd.Challenge,
+        },
       }).then((segment) => {
         if (segment === null) {
           res.status(400).send('Bad Request: Segment not found');
+        } else if (segment.pointStart.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
         } else {
           if (req.body.distance > segment.distance) {
             res
@@ -58,9 +65,19 @@ module.exports = {
   update_obstacle: (req, res) => {
     bdd.Obstacle.findOne({
       where: { id: req.params.id },
+      include: {
+        model: bdd.Segment,
+        include: {
+          model: bdd.PointPassage,
+          as: 'pointStart',
+          include: bdd.Challenge,
+        },
+      },
     }).then((obstacle) => {
       if (obstacle === null) {
         res.status(404).send('Obstacle not found');
+      } else if (obstacle.Segment.pointStart.Challenge.published) {
+        res.status(400).send('Bad request: Challenge is published');
       } else {
         let edited = false;
         if (req.body.title) {
