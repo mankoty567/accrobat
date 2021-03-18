@@ -1,11 +1,15 @@
 import React from 'react';
 import './App.css';
 import ChallengeEditor from './scenes/ChallengeEditor';
+import AdminMenu from './scenes/adminPanel/AdminPanel';
+import MainPage from './scenes/MainPage';
 
 function App() {
   return (
     <div className="App">
-      <ChallengeEditor />
+      {/* <ChallengeEditor /> */}
+      {/* <AdminMenu /> */}
+      <MainPage />
     </div>
   );
 }
