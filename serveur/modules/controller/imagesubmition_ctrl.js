@@ -34,7 +34,10 @@ module.exports = {
           res.status(400).send('Bad request: Participation not found');
         } else {
           let lastEvent = participation.Events[0];
-          if (lastEvent.type !== 'obstacle:arrivee') {
+          if (
+            lastEvent.type !== 'obstacle:arrivee' &&
+            lastEvent.type !== 'obstacle:image_refused'
+          ) {
             res.status(400).send('Bad request: Not in an obstacle');
           } else {
             bdd.Obstacle.findOne({
@@ -80,5 +83,48 @@ module.exports = {
         res.json(imagesubmition);
       }
     );
+  },
+  juge_soumission: (req, res) => {
+    // TODO : Vérification que la personne est un admin
+    if (req.body.valide === undefined) {
+      res.status(400).send('Bad request');
+    } else {
+      bdd.ImageSubmition.findOne({
+        where: { EventId: req.params.id },
+      }).then((imagesubmition) => {
+        bdd.Event.findOne({
+          where: { id: imagesubmition.EventId },
+        }).then(async (event) => {
+          console.log(imagesubmition);
+          console.log(event);
+          if (req.body.valide) {
+            imagesubmition.ok = true;
+            await imagesubmition.save();
+
+            await bdd.Event.create({
+              type: 'obstacle:image_ok',
+              ParticipationId: event.ParticipationId,
+            });
+            await bdd.Event.create({
+              type: 'obstacle:completed',
+              ParticipationId: event.ParticipationId,
+            });
+
+            res.send('OK');
+          } else {
+            imagesubmition.rejected = true;
+            await imagesubmition.save();
+
+            await bdd.Event.create({
+              type: 'obstacle:image_refused',
+              ParticipationId: event.ParticipationId,
+              data: imagesubmition.ObstacleId,
+            });
+
+            res.send('OK');
+          }
+        });
+      });
+    }
   },
 };

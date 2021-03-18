@@ -12,7 +12,7 @@ type:
 - obstacle:arrivee [Id de l'obstacle]
 - obstacle:image
 - obstacle:image_ok
-- obstacle:image_refused
+- obstacle:image_refused [Id de l'obstacle]
 - obstacle:completed
 
 ## TODO TODAY
@@ -26,7 +26,7 @@ type:
 - [ ] Renvoit de la position par rapport à la personne
 - [ ] Vérification de la réponse à l'obstacle question
 - [x] Ajout d'une image à obstacle type action
-- [ ] Validation d'un obstacle type action
+- [x] Validation d'un obstacle type action
 - [x] récupération de toutes les images submitions type action
 - [ ] Ajouter un status dans un challenge (en cours, ou disponible)
 - [ ] Ajouter la possibilitée de dupliquer un challenge
