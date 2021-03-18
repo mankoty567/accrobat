@@ -26,7 +26,6 @@ module.exports = {
   post_pointpassage: (req, res) => {
     if (
       !req.body.title ||
-      !req.body.description ||
       !req.body.type ||
       !REQUIRED_TYPE.includes(req.body.type) ||
       req.body.x === undefined ||
@@ -40,7 +39,7 @@ module.exports = {
         } else {
           bdd.PointPassage.create({
             title: req.body.title,
-            description: req.body.description,
+            description: req.body.description ? req.body.description : null,
             type: req.body.type,
             x: req.body.x,
             y: req.body.y,

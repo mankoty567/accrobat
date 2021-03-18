@@ -20,7 +20,7 @@ type:
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
 - [x] Sauvegarde des images sur le disque
-- [ ] Supprimer la description obligatoire du point de passage
+- [x] Supprimer la description obligatoire du point de passage
 - [ ] Ajouter paramètre custom quand on crée un point
 - [ ] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
