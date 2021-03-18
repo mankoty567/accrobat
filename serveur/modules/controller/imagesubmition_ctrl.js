@@ -73,4 +73,12 @@ module.exports = {
       });
     }
   },
+  get_all_soumission: (req, res) => {
+    // TODO : Vérification que la personne est un admin/renvoyer uniquement les soumission qu'il a le droit
+    bdd.ImageSubmition.findAll({ where: { ok: false, rejected: false } }).then(
+      (imagesubmition) => {
+        res.json(imagesubmition);
+      }
+    );
+  },
 };
