@@ -156,17 +156,17 @@ module.exports = {
     });
   },
   get_image: (req, res) => {
-    bdd.Obstacle.findOne({
-      where: { id: req.params.id },
-    }).then((obstacle) => {
-      if (obstacle === null || obstacle.enigme_img === null) {
-        res.status(404).send('Not found');
-      } else {
-        res.sendFile(
-          path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
-        );
-      }
-    });
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+      );
+    } else {
+      res.status(404).send('Not found');
+    }
   },
   awnser_obstacle: (req, res) => {
     if (req.body.ParticipationId === undefined || !req.body.answer) {

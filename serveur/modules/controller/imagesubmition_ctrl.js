@@ -6,20 +6,23 @@ const debug = require('debug')('serveur:imagesubmition');
 
 module.exports = {
   get_image: (req, res) => {
-    bdd.ImageSubmition.findOne({
-      where: { EventId: req.params.id },
-    }).then((imagesubmition) => {
-      if (imagesubmition === null) {
-        res.status(404).send('Not found');
-      } else {
-        res.sendFile(
-          path.join(
-            __dirname,
-            '../../data/imageSumbition/' + imagesubmition.id + '.jpg'
-          )
-        );
-      }
-    });
+    if (
+      fs.existsSync(
+        path.join(
+          __dirname,
+          '../../data/imageSumbition/' + req.params.id + '.jpg'
+        )
+      )
+    ) {
+      res.sendFile(
+        path.join(
+          __dirname,
+          '../../data/imageSumbition/' + req.params.id + '.jpg'
+        )
+      );
+    } else {
+      res.status(404).send('Image not found');
+    }
   },
   post_image: (req, res) => {
     if (req.body.ParticipationId === undefined || !req.body.img_data) {
