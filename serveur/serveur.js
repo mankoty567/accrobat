@@ -13,16 +13,16 @@ app.use(express.json({ limit: '10mb' }));
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
 // Challenge
-app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
 app.get('/api/challenge', m.challenge_ctrl.get_all_challenge);
 app.get('/api/challenge/admin', m.challenge_ctrl.get_all_challenge_admin);
+app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
+app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
+app.get('/api/challenge/:id/avatar', m.challenge_ctrl.get_image_avatar);
+app.get('/api/challenge/:id/validity', m.challenge_ctrl.verif_validity);
 app.post('/api/challenge', m.challenge_ctrl.post_challenge);
 app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
-app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
-app.get('/api/challenge/:id/avatar', m.challenge_ctrl.get_image_avatar);
 app.post('/api/challenge/:id/clone', m.challenge_ctrl.clone_challenge);
-app.get('/api/challenge/:id/validity', m.challenge_ctrl.verif_validity);
 app.post('/api/challenge/:id/publish', m.challenge_ctrl.publish_challenge);
 
 // PointPassage

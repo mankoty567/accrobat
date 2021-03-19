@@ -217,6 +217,8 @@ async function pasBonChallenge() {
       [points[4].x, points[4].y],
     ],
   });
+
+  return challenge.id;
 }
 
 async function bonChallenge() {
