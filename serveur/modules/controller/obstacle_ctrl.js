@@ -128,6 +128,33 @@ module.exports = {
       }
     });
   },
+  delete_obstacle: (req, res) => {
+    bdd.Obstacle.findOne({ where: { id: req.params.id } }).then((obstacle) => {
+      if (obstacle === null) {
+        res.status(404).send('Obstacle not found');
+      } else {
+        if (
+          fs.existsSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
+          )
+        ) {
+          fs.unlinkSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
+          );
+        }
+        obstacle
+          .destroy()
+          .then(() => {
+            debug('Obstacle supprimé ' + obstacle.id);
+            res.send('OK');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(400).send('Error');
+          });
+      }
+    });
+  },
   get_image: (req, res) => {
     bdd.Obstacle.findOne({
       where: { id: req.params.id },
