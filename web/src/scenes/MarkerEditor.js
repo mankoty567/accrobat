@@ -16,7 +16,7 @@ let MarkerEditor = ({marker, setStartPoint, setEditMode, markers, setMarkers, se
   let updateMarker = (marker) => {
     setMarkers((current) => current.filter(val => {
       if (val.id == marker.id) val = marker;
-      return val;
+        return val;
     }));
   }
 

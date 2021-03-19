@@ -38,6 +38,7 @@ let ChallengeEditor = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [startPoint, setStartPoint] = useState(null);
+  const [mousePosition, setMousePosition] = useState({x:null, y:null});
 
   return (
     <div className={classes.root}>
@@ -106,7 +107,14 @@ let ChallengeEditor = () => {
             currentMarker={currentMarker}
             setStartPoint={setStartPoint}
             startPoint={startPoint}
+            mousePosition={mousePosition}
+            setMousePosition={setMousePosition}
           />
+          {editMode ? 
+          <>
+            <Polyline positions={[[currentMarker.x, currentMarker.y], [mousePosition.x, mousePosition.y]]} color={'black'} dashArray={5}></Polyline>
+          </>
+          : null}
           {lines.map((element, index) => {
             return (
               <Polyline positions={element.path} key={index} color={'black'}></Polyline>
