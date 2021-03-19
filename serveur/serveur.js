@@ -20,6 +20,7 @@ app.post('/api/challenge', m.challenge_ctrl.post_challenge);
 app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
 app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
+app.get('/api/challenge/:id/avatar', m.challenge_ctrl.get_image_avatar);
 app.post('/api/challenge/:id/clone', m.challenge_ctrl.clone_challenge);
 app.get('/api/challenge/:id/validity', m.challenge_ctrl.verif_validity);
 app.post('/api/challenge/:id/publish', m.challenge_ctrl.publish_challenge);

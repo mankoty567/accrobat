@@ -81,17 +81,36 @@ module.exports = {
     });
   },
   get_image: (req, res) => {
-    bdd.Challenge.findOne({
-      where: { id: req.params.id },
-    }).then((challenge) => {
-      if (challenge === null) {
-        res.status(404).send('Not found');
-      } else {
-        res.sendFile(
-          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg')
-        );
-      }
-    });
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+      );
+    } else {
+      res.status(404).send('Map not found');
+    }
+  },
+  get_image_avatar: (req, res) => {
+    if (
+      fs.existsSync(
+        path.join(
+          __dirname,
+          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+        )
+      )
+    ) {
+      res.sendFile(
+        path.join(
+          __dirname,
+          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+        )
+      );
+    } else {
+      res.status(404).send('Avatar not found');
+    }
   },
   post_challenge: (req, res) => {
     if (
@@ -115,8 +134,23 @@ module.exports = {
             ),
             buffer
           );
-          debug('Création du challenge ' + challenge.id);
-          res.json({ ...challenge, frontId: req.body.frontId });
+
+          if (req.body.img_avatar !== undefined) {
+            utils.pngParser(req.body.img_avatar).then((buffer) => {
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  '../../data/challengeAvatar/' + challenge.id + '.jpg'
+                ),
+                buffer
+              );
+              debug('Création du challenge ' + challenge.id);
+              res.json({ ...challenge, frontId: req.body.frontId });
+            });
+          } else {
+            debug('Création du challenge ' + challenge.id);
+            res.json({ ...challenge, frontId: req.body.frontId });
+          }
         });
       });
     }
@@ -171,6 +205,18 @@ module.exports = {
               path.join(
                 __dirname,
                 '../../data/challenge/' + challenge.id + '.jpg'
+              ),
+              buffer
+            );
+          });
+        }
+
+        if (req.body.img_avatar) {
+          utils.pngParser(req.body.img_avatar).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challengeAvatar/' + challenge.id + '.jpg'
               ),
               buffer
             );

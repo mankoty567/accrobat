@@ -33,5 +33,5 @@ type:
 - [x] Ajouter la possibilitée de dupliquer un challenge
 - [x] Ajouter une route de vérification du challenge avant la publication
 - [x] Ajouter une route qui publie un challenge
-- [ ] Ajouter un petit avatar pour le challenge
+- [x] Ajouter un petit avatar pour le challenge
 - [ ] Ajouter un moyen de mettre pleins de données de tests
