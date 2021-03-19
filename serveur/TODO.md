@@ -31,7 +31,7 @@ type:
 - [x] récupération de toutes les images submitions type action
 - [x] Ajouter un status dans un challenge (en cours, ou disponible)
 - [x] Ajouter la possibilitée de dupliquer un challenge
-- [ ] Ajouter une route de vérification du challenge avant la publication
-- [ ] Ajouter une route qui publie un challenge
+- [x] Ajouter une route de vérification du challenge avant la publication
+- [x] Ajouter une route qui publie un challenge
 - [ ] Ajouter un petit avatar pour le challenge
 - [ ] Ajouter un moyen de mettre pleins de données de tests
