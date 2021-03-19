@@ -317,4 +317,22 @@ module.exports = {
   verif_validity: async (req, res) => {
     res.json(await require('../challengeValidation')(req.params.id));
   },
+  publish_challenge: async (req, res) => {
+    const challenge = await bdd.Challenge.findOne({
+      where: { id: req.params.id },
+    });
+
+    if (challenge === null) {
+      res.status(404).send('Challenge not found');
+    } else {
+      const valid = await require('../challengeValidation')(challenge.id);
+      if (valid) {
+        challenge.published = true;
+        await challenge.save();
+        res.json(challenge);
+      } else {
+        res.status(400).send('Challenge is not valid');
+      }
+    }
+  },
 };

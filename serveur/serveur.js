@@ -21,6 +21,7 @@ app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
 app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
 app.post('/api/challenge/:id/clone', m.challenge_ctrl.clone_challenge);
 app.get('/api/challenge/:id/validity', m.challenge_ctrl.verif_validity);
+app.post('/api/challenge/:id/publish', m.challenge_ctrl.publish_challenge);
 
 // PointPassage
 app.get('/api/challenge/:id/point', m.pointpassage_ctrl.get_pointpassage);
