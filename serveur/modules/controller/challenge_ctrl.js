@@ -333,7 +333,7 @@ module.exports = {
       res.status(404).send('Challenge not found');
     } else {
       const valid = await require('../challengeValidation')(challenge.id);
-      if (valid) {
+      if (valid.valid) {
         challenge.published = true;
         await challenge.save();
         res.json(challenge);
