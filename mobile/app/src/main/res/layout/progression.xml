@@ -1,15 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayoutbtn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <!--
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="597dp"
+            android:scrollbars="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                              <ImageView
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  app:srcCompat="@drawable/map" >            </ImageView>
+
+
+                              <fragment
+                                  android:id="@+id/fragment"
+                                  android:name="site.nohan.protoprogression.View.MapFragment"
+                                  android:layout_width="1000dp"
+                                  android:layout_height="1000dp"
+                                  android:background="@drawable/map" />
+
+
+          </HorizontalScrollView>
+
+      </ScrollView>
+  -->
+ <!--
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="607dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <fragment
+                android:id="@+id/fragment"
+                android:name="site.nohan.protoprogression.View.MapFragment"
+                android:layout_width="503dp"
+                android:layout_height="947dp"
+                android:background="@drawable/map" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+-->
 
     <fragment
         android:id="@+id/fragment"
         android:name="site.nohan.protoprogression.View.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="469dp"
+        android:layout_height="462dp"
         android:background="@drawable/map" />
 
     <LinearLayout

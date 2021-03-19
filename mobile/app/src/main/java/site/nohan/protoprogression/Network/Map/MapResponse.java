@@ -44,8 +44,8 @@ public class MapResponse implements APIListenner {
 
 
                 Point premierPoint = new Point(
-                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("x")),
-                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("y"))
+                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("x")* 100),
+                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("y")* 100)
                 );
 
 
@@ -62,7 +62,8 @@ public class MapResponse implements APIListenner {
                     // On ajoute la position du pp en tant que premier point
                     chemin = new Chemin();
                     chemin.points.add(premierPoint);
-                    chemin.title = ((JSONObject) pointPassage.get(i)).getString("title");
+                    //chemin.title = ((JSONObject) pointPassage.get(i)).getString("title");
+                    chemin.title = ((JSONObject) pointPassage.get(i)).getString("id");
                     chemin.desc = ((JSONObject) pointPassage.get(i)).getString("description");
                     JSONArray path = (JSONArray) ((JSONObject) pointStart.get(j)).get("path");
                     // On parcours les points (path qui composent le chemin

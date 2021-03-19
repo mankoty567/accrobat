@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import site.nohan.protoprogression.Network.Map.MapRequest;
 import site.nohan.protoprogression.R;
 
 public class DashboardFragment extends Fragment {
@@ -28,6 +30,7 @@ public class DashboardFragment extends Fragment {
                 //textView.setText(s);
             }
         });
+        new MapRequest(this.getActivity(), 2);
         return root;
     }
 }
