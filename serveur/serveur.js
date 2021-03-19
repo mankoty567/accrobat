@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const debug = require('debug')('serveur:main');
 const m = require('./modules');
 
 m.utils.check_folder();
 
 var app = express();
+app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -18,6 +20,7 @@ app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
 app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
 app.post('/api/challenge/:id/clone', m.challenge_ctrl.clone_challenge);
+app.get('/api/challenge/:id/validity', m.challenge_ctrl.verif_validity);
 
 // PointPassage
 app.get('/api/challenge/:id/point', m.pointpassage_ctrl.get_pointpassage);

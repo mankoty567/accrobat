@@ -1,17 +1,19 @@
 {
   "name": "actrobat",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "server.js",
   "scripts": {
     "test": "eslint .",
     "dev": "nodemon --watch . node serveur.js",
     "start": "node serveur.js",
-    "sync": "node ./cli/bdd_sync.js"
+    "sync": "node ./cli/bdd_sync.js",
+    "fixture": "node ./cli/loadDataToBdd.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "debug": "^2.6.9",
     "express": "^4.17.1",
     "migrate": "^1.7.0",

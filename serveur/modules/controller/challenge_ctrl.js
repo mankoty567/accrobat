@@ -314,4 +314,7 @@ module.exports = {
       res.json(challenges);
     });
   },
+  verif_validity: async (req, res) => {
+    res.json(await require('../challengeValidation')(req.params.id));
+  },
 };
