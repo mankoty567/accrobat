@@ -15,6 +15,7 @@ app.get('/', (req, res) => res.send(require('./package.json').version));
 // Challenge
 app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
 app.get('/api/challenge', m.challenge_ctrl.get_all_challenge);
+app.get('/api/challenge/admin', m.challenge_ctrl.get_all_challenge_admin);
 app.post('/api/challenge', m.challenge_ctrl.post_challenge);
 app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);

@@ -314,6 +314,13 @@ module.exports = {
       res.json(challenges);
     });
   },
+  get_all_challenge_admin: (req, res) => {
+    bdd.Challenge.findAll({
+      attributes: ['id', 'title', 'description', 'echelle'],
+    }).then((challenges) => {
+      res.json(challenges);
+    });
+  },
   verif_validity: async (req, res) => {
     res.json(await require('../challengeValidation')(req.params.id));
   },
