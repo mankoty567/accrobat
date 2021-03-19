@@ -73,7 +73,7 @@ let checkStatus = (res) => {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data.point)
+            body: JSON.stringify(data.marker)
         }).then(checkStatus).then(res => res.json());
     },
     updateMarker: (data) => {
@@ -83,7 +83,7 @@ let checkStatus = (res) => {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data.point)
+            body: JSON.stringify(data.marker)
         }).then(checkStatus).then(res => res.json());
     },
     deleteMarker: (data) => {
