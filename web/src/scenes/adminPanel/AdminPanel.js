@@ -1,4 +1,5 @@
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import ChallengePanel from './ChallengePanel';
 import React from 'react';
 
 let AdminPanel = () => {
@@ -7,7 +8,6 @@ let AdminPanel = () => {
     'Rédiger les tests',
   ];
   let user = ['Roger', 'Bernard'];
-  let challenges = ['star wars', 'mordor'];
   return (
     <>
       <Typography variant="h3" style={{ paddingTop: '1vh' }}>
@@ -41,12 +41,7 @@ let AdminPanel = () => {
         <Grid item xs={12} align="left">
           <Paper>
             <div style={{ height: '50vh' }}>
-              <Typography variant="h4" align="center">
-                Liste des challenges
-              </Typography>
-              {challenges.map((key) => {
-                return <Typography>{key}</Typography>;
-              })}
+              <ChallengePanel />
             </div>
           </Paper>
         </Grid>
