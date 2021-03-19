@@ -1,9 +1,10 @@
+import { Marker, useMapEvent, Tooltip } from 'react-leaflet';
 import {
-  Marker,
-  useMapEvent,
-  Tooltip
-} from 'react-leaflet';
-import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons'
+  createCheckpointIcon,
+  createEndIcon,
+  createStartIcon,
+} from './MarkerIcons';
+import API from '../eventApi/eventApi';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -14,41 +15,57 @@ import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  * @param {Function} setLines Fonction pour update le state de lines
  */
-let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, startPoint }) => {
-
+let DraggableMarkers = ({
+  markers,
+  setMarkers,
+  editMode,
+  setEditMode,
+  lines,
+  setLines,
+  currentMarker,
+  setCurrentMarker,
+  setStartPoint,
+  startPoint,
+}) => {
   //Ajoute un marker
-  let addMarker = (event) => {
+  let addMarker = async (event) => {
     var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
     var newMarker = {
-      'id': id,
-      'title': 'Point ' + id,
-      'description': '',
-      'type': markers.length > 0 ? 'point' : 'start',
-      'x': event.latlng.lat,
-      'y': event.latlng.lng
+      title: 'Point ' + id,
+      description: '',
+      type: markers.length > 0 ? 'point' : 'start',
+      x: event.latlng.lat,
+      y: event.latlng.lng,
+      frontId: id,
     };
-    setMarkers((current) => [...current, newMarker]);
-    setStartPoint(newMarker);
-    return newMarker;
+    return API.createMarker(newMarker).then((res) => {
+      newMarker.id = res.id;
+      setMarkers((current) => [...current, res]);
+      setStartPoint(newMarker);
+      return newMarker;
+    });
   };
 
   //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
-      'PointStartId': start.id,
-      'PointEndId': end.id,
-      'path': [
+      frontId: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
+      PointStartId: start.id,
+      PointEndId: end.id,
+      path: [
         [start.x, start.y],
         [end.x, end.y],
-      ]
+      ],
     };
-    setLines((current) => [...current, newLines]);
-  }
+    return API.createSegment(newLines).then((res) => {
+      newLines.id = res.id;
+      setLines((current) => [...current, newLines]);
+    });
+  };
 
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
-    switch(marker.type) {
+    switch (marker.type) {
       case 'start':
         return createStartIcon(marker == currentMarker);
       case 'end':
@@ -56,7 +73,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       case 'point':
         return createCheckpointIcon(marker == currentMarker);
     }
-  }
+  };
 
   //Pour éditer les maps
   let mapEvent = useMapEvent({
@@ -92,13 +109,20 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    {currentMarker ? (currentMarker.id == item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
-                    if(editMode && item.type != 'start') {
+                    {
+                      currentMarker
+                        ? currentMarker.id == item.id
+                          ? setCurrentMarker(null)
+                          : setCurrentMarker(item)
+                        : setCurrentMarker(item);
+                    }
+                    if (editMode && item.type != 'start') {
                       setEditMode(false);
                       addLine(startPoint, item);
                       setStartPoint(item);
                     }
-                  }}}
+                  },
+                }}
               >
                 <Tooltip direction="top" offset={[0, -40]} permanent>
                   {item.title}
