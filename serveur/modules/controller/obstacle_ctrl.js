@@ -55,7 +55,7 @@ module.exports = {
                 buffer
               );
               debug('Création obstacle ' + obstacle.id);
-              res.json(obstacle);
+              res.json({ ...obstacle, frontId: req.body.frontId });
             });
           });
         }

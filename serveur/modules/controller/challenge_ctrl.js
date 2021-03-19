@@ -116,7 +116,7 @@ module.exports = {
             buffer
           );
           debug('Création du challenge ' + challenge.id);
-          res.json(challenge);
+          res.json({ ...challenge, frontId: req.body.frontId });
         });
       });
     }

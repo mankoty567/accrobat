@@ -39,7 +39,7 @@ module.exports = {
                   path: req.body.path,
                 }).then((segment) => {
                   debug('Création segment' + segment.id);
-                  res.json(segment);
+                  res.json({ ...segment, frondId: req.body.frontId });
                 });
               }
             });
