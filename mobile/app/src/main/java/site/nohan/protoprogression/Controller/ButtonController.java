@@ -24,7 +24,7 @@ public class ButtonController implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.e("controller", Map.chemins.toString());
+        //Log.e("controller", Map.chemins.toString());
         if(v.getId() == R.id.bEffacer){
             Map.chemins = new ArrayList<>();
             Chemin c = new Chemin();
@@ -34,7 +34,7 @@ public class ButtonController implements View.OnClickListener {
         }
 
         //Initialisation de l'objet permettant l'interaction avec le GPS et l'Accéléromètre
-        if(pedometerController == null) pedometerController = new PedometerController(activity);
+        if(pedometerController == null) pedometerController = new PedometerController(this.activity);
         //Bouton qui démarre/arrête le Podomètre
         if(v.getId() == R.id.bPodometre){
             pedometerController.pedometerAction();
@@ -82,5 +82,9 @@ public class ButtonController implements View.OnClickListener {
         Map.chemins.add(chemin);
         Map.cheminActuel = chemin;
 
+    }
+
+    public void stopPedometerAndGPS(){
+        pedometerController.stopPedometerAndGPS();
     }
 }

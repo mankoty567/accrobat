@@ -130,6 +130,24 @@ public class PedometerController implements SensorEventListener, StepListener {
     }
 
     /*****************************************************************
+     * Fontions d'arrêt du Podomètre et du GPS
+     *****************************************************************/
+    public void stopPedometerAndGPS(){
+        Toast.makeText(activity, "STOP ALL PEDO",Toast.LENGTH_SHORT).show();
+        if(isGPSOn){
+            stopLocationService();
+            isGPSOn = false;
+        }
+
+        if(isPedometerOn){
+            sensorManager.unregisterListener(this);
+            //tKilometres.setText("--- kms");
+            isPedometerOn = false;
+            bPodometre.setText("Start Podomètre");
+        }
+    }
+
+    /*****************************************************************
      * Fontions implémentées pour le podomètre
      *****************************************************************/
     @Override

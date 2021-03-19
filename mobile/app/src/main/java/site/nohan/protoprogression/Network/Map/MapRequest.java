@@ -11,7 +11,6 @@ public class MapRequest extends APIRequest {
 
     private Map map;
 
-
     public MapRequest(Activity activity,  int mapId) {
         super(activity, "challenge/"+mapId+"?include=pointsegment", new MapResponse());
         Log.e("net", this.getUrl());

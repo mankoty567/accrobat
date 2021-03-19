@@ -38,6 +38,7 @@ public class MapFragment extends Fragment {
         toile = new Toile(this.getContext());
         seekBarController = new SeekBarController();
         buttonController = new ButtonController(this.getActivity());
+        seekBarController.setButtonController(buttonController);
         return toile;
     }
 
