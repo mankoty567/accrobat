@@ -306,4 +306,12 @@ module.exports = {
       });
     });
   },
+  get_all_challenge: (req, res) => {
+    bdd.Challenge.findAll({
+      where: { published: true },
+      attributes: ['id', 'title', 'description', 'echelle'],
+    }).then((challenges) => {
+      res.json(challenges);
+    });
+  },
 };

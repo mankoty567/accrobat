@@ -12,6 +12,7 @@ app.get('/', (req, res) => res.send(require('./package.json').version));
 
 // Challenge
 app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
+app.get('/api/challenge', m.challenge_ctrl.get_all_challenge);
 app.post('/api/challenge', m.challenge_ctrl.post_challenge);
 app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
 app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
@@ -47,6 +48,7 @@ app.post(
 
 // Participation
 app.post('/api/participation', m.participation_ctrl.post_participation);
+app.get('/api/participation', m.participation_ctrl.get_my_participation);
 
 // Event
 app.post('/api/event', m.event_ctrl.post_event);

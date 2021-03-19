@@ -32,4 +32,15 @@ module.exports = {
       });
     }
   },
+  get_my_participation: (req, res) => {
+    // TODO : Changer ça par un vrai user
+    let user = { id: 1 };
+
+    bdd.Participation.findAll({
+      where: { UserId: user.id },
+      attributes: ['id', 'startDate', 'endDate', 'UserId', 'ChallengeId'],
+    }).then((participations) => {
+      res.json(participations);
+    });
+  },
 };
