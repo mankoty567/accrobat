@@ -14,10 +14,10 @@ let AdminPanel = () => {
         Menu d'administration
       </Typography>
       <Grid container spacing={4} style={{ padding: '3vh' }}>
-        <Grid item xs={4}>
+        <Grid item xs={4} align="left">
           <Paper>
             <div style={{ height: '30vh' }}>
-              <Typography ography variant="h4">
+              <Typography ography variant="h4" align="center">
                 Gestion des utilisateurs
               </Typography>
               {user.map((key) => {
@@ -26,10 +26,10 @@ let AdminPanel = () => {
             </div>
           </Paper>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={8} align="left">
           <Paper>
             <div style={{ height: '30vh' }}>
-              <Typography variant="h4">
+              <Typography variant="h4" align="center">
                 Proposition des joueurs
               </Typography>
               {propositions.map((key) => {
@@ -38,10 +38,10 @@ let AdminPanel = () => {
             </div>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} align="left">
           <Paper>
             <div style={{ height: '50vh' }}>
-              <Typography variant="h4">
+              <Typography variant="h4" align="center">
                 Liste des challenges
               </Typography>
               {challenges.map((key) => {
