@@ -1,9 +1,14 @@
 const express = require('express');
+const debug = require('debug')('serveur:main');
 const m = require('./modules');
+
+m.utils.check_folder();
 
 var app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+
+app.get('/', (req, res) => res.send(require('./package.json').version));
 
 // Challenge
 app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
@@ -26,6 +31,11 @@ app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
 
 // Obstacle
 app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
+app.get('/api/obstacle/:id/image', m.obstacle_ctrl.get_image);
+app.post('/api/obstacle/:id', m.obstacle_ctrl.update_obstacle);
+
+// Image Submition
+app.get('/api/imagesubmition/:id/image', m.imagesubmition_ctrl.get_image);
 
 // Participation
 app.post('/api/participation', m.participation_ctrl.post_participation);
@@ -34,4 +44,4 @@ app.post('/api/participation', m.participation_ctrl.post_participation);
 app.post('/api/event', m.event_ctrl.post_event);
 app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
 
-app.listen(1418, () => console.log('Serveur lancé sur le port 1418'));
+app.listen(1418, () => debug('Serveur lancé sur le port 1418'));

@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:event');
 
 const ALLOWED_TYPE = [
   'marche',
@@ -49,6 +50,8 @@ module.exports = {
             type: req.body.type,
             data: req.body.data !== undefined ? req.body.data : null,
           }).then((event) => {
+            // eslint-disable-next-line quotes
+            debug("Création de l'event " + event.id);
             res.json(event);
           });
         }
@@ -79,6 +82,31 @@ module.exports = {
         }).then((pointpassage) => {
           obj.entity = pointpassage;
           res.json(obj);
+        });
+      } else if (events[0].type === 'obstacle:arrivee') {
+        obj.type = 'Obstacle';
+        bdd.Obstacle.findOne({
+          where: { id: Math.trunc(events[0].data) },
+          attributes: ['id', 'title', 'description', 'type', 'distance'],
+        }).then((obstacle) => {
+          obj.entity = obstacle;
+          obj.submitedImg = undefined;
+          res.json(obj);
+        });
+      } else if (events[0].type === 'obstacle:image') {
+        obj.type = 'Obstacle';
+        bdd.Obstacle.findOne({
+          where: { id: Math.trunc(events[1].data) },
+          attributes: ['id', 'title', 'description', 'type', 'distance'],
+        }).then((obstacle) => {
+          bdd.ImageSubmition.findOne({
+            where: { EventId: events[0].id },
+            attributes: ['createdAt', 'updatedAt', 'ok'],
+          }).then((img) => {
+            obj.entity = obstacle;
+            obj.submitedImg = img;
+            res.json(obj);
+          });
         });
       } else {
         let distance = 0;
