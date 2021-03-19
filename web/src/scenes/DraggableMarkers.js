@@ -14,7 +14,7 @@ import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  * @param {Function} setLines Fonction pour update le state de lines
  */
-let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, startPoint, mousePosition, setMousePosition }) => {
+let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, startPoint }) => {
 
   //Ajoute un marker
   let addMarker = (event) => {
@@ -47,10 +47,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       'PointStartId': start.id,
       'PointEndId': end.id,
-      'path': [
-        [start.x, start.y],
-        [end.x, end.y],
-      ]
+      'path': []
     };
     setLines((current) => [...current, newLines]);
   }
@@ -68,7 +65,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
   }
 
   //Pour éditer les maps
-  let mapEvent = useMapEvent({
+  let map = useMapEvent({
     click: (event) => {
       if (inBounds(event)) {
         if (!markers.length > 0) {
@@ -79,27 +76,27 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
         }
       }
     },
-    mousemove: (event) => {
-      if (inBounds(event)) {
-        setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
-      }
-    }
+    // mousemove: (event) => {
+    //   if (inBounds(event)) {
+    //     setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
+    //   }
+    // }
   });
 
   return (
     <>
       {markers.length > 0 && markers[0][0] !== null
-        ? markers.map((item, index) => {
+        ? markers.map((item) => {
             return (
               <Marker
                 draggable={true}
-                marker_index={index}
-                key={index}
+                marker_index={item.id}
+                key={item.id}
                 position={[item.x, item.y]}
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    {currentMarker ? (currentMarker.id == item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
+                    {currentMarker ? (currentMarker.id === item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
                     if(editMode && item.type != 'start') {
                       setEditMode(false);
                       addLine(startPoint, item);
@@ -107,17 +104,8 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                     }
                   },
                   dragend: (event) => {
-                    item.x = event.target._latlng.lat;
-                    item.y = event.target._latlng.lng;
-                    setLines((current) => current.filter(val => {
-                      if(val.PointStartId == item.id) {
-                        val.path[0] = [event.target._latlng.lat, event.target._latlng.lat];
-                      }
-                      if(val.PointEndId == item.id) {
-                        val.path[1] = [event.target._latlng.lat, event.target._latlng.lat];
-                      }
-                      return val;
-                    }));
+                    setMarkers(markers => markers.map(m => m.id === item.id ? { ...m, x: event.target._latlng.lat, y: event.target._latlng.lng } : m));
+                    setEditMode(false);
                   }
                 }}
               >
