@@ -9,6 +9,7 @@ var app = express();
 app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
+app.use('/doc', express.static('./doc'));
 require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
