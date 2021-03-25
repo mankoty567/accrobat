@@ -1,4 +1,10 @@
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  Paper,
+  Typography,
+  Divider,
+} from '@material-ui/core';
 import ChallengePanel from './ChallengePanel';
 import React from 'react';
 
@@ -20,6 +26,8 @@ let AdminPanel = () => {
               <Typography ography variant="h4" align="center">
                 Gestion des utilisateurs
               </Typography>
+              <Divider orientation="horizontal" />
+
               {user.map((key) => {
                 return <Typography>{key}</Typography>;
               })}
@@ -32,6 +40,8 @@ let AdminPanel = () => {
               <Typography variant="h4" align="center">
                 Proposition des joueurs
               </Typography>
+              <Divider orientation="horizontal" />
+
               {propositions.map((key) => {
                 return <Typography>{key}</Typography>;
               })}
@@ -40,7 +50,7 @@ let AdminPanel = () => {
         </Grid>
         <Grid item xs={12} align="left">
           <Paper>
-            <div style={{ height: '50vh' }}>
+            <div>
               <ChallengePanel />
             </div>
           </Paper>

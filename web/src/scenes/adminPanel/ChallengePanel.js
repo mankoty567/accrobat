@@ -1,20 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
-import { List, ListItem, Typography } from '@material-ui/core';
+import FormChallenge from './FormChallenge';
+import {
+  List,
+  ListItem,
+  Typography,
+  Divider,
+  Button,
+} from '@material-ui/core';
+import API from '../../eventApi/eventApi';
+import AddIcon from '@material-ui/icons/Add';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 let ChallengePanel = () => {
-  let challenges = ['star wars', 'mordor'];
+  const [challenges, setChallenges] = useState([]);
+  const [addmode, setAddmode] = useState(false);
+
+  useEffect(
+    () =>
+      API.getAdminChallenges().then((res) => {
+        setChallenges(res);
+      }),
+    [],
+  );
 
   return (
     <>
       <Typography variant="h4" align="center">
-        Liste des challenges
+        {addmode ? 'Ajouter un challenge' : 'Liste des challenges'}
       </Typography>
-      <List>
-        <ListItem>
-          <ChallengeItem />
-        </ListItem>
-      </List>
+      <Divider orientation="horizontal" />
+      <Button
+        startIcon={<AddIcon />}
+        onClick={() => setAddmode(true)}
+      >
+        Ajouter un challenge
+      </Button>
+      <Button
+        startIcon={<MenuBookIcon />}
+        onClick={() => setAddmode(false)}
+      >
+        Consulter les challenge existants
+      </Button>
+      {addmode ? (
+        <FormChallenge />
+      ) : (
+        <List>
+          {challenges
+            ? challenges.map((key, idx) => {
+                return <ChallengeItem challenge={key} />;
+              })
+            : null}
+          <ListItem></ListItem>
+        </List>
+      )}
     </>
   );
 };

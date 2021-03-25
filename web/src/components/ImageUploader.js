@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
-import { Card } from '@material-ui/core';
+import { Input } from '@material-ui/core';
+
+//TODO : Changer le système de prévisu, et le permettre juste dans child, et mettre une liste MUI
 
 /**
  * Composant permettat d'uploader et faire un comportement directement derrière
@@ -40,12 +42,12 @@ let ImageUploader = ({ callback, preview = false, childs }) => {
   };
 
   return (
-    <Card style={{ padding: 10 }}>
-      <input
+    <>
+      <Input
         type="file"
         onChange={() => handleChange()}
-        ref={inputFile}
-      ></input>
+        inputRef={inputFile}
+      ></Input>
       {preview ? (
         <>
           <p>Prévisualisation :</p>
@@ -56,7 +58,7 @@ let ImageUploader = ({ callback, preview = false, childs }) => {
         </>
       ) : null}
       {childs ? childs : null}
-    </Card>
+    </>
   );
 };
 
