@@ -5,8 +5,12 @@ import {
   Input,
   List,
   ListItem,
+  Button,
+  Avatar,
+  CardMedia,
+  Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ImageUploader from '../../components/ImageUploader';
 
 let FormChallenge = () => {
@@ -14,14 +18,33 @@ let FormChallenge = () => {
   const [description, setDescription] = useState('');
   const [img_fond, setImg_fond] = useState(null);
   const [img_avatar, setImg_avatar] = useState(null);
-  //Il manque l'ID
+  const [err, setErr] = useState([false, false, false]);
+
+  const setError = (value, index) => {
+    console.log(err);
+    if (!value) {
+      err[parseInt(index)] = true;
+      setErr(err);
+    } else {
+      err[parseInt(index)] = false;
+      setErr(err);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!title || !description || !img_fond) {
+    }
+  };
+
   return (
     <List>
       <ListItem>
-        <FormControl style={{ width: '100%' }}>
-          <InputLabel htmlFor="title">Titre :</InputLabel>
+        <FormControl style={{ width: '100%' }} error={err[0]}>
+          <InputLabel htmlFor="title">Titre* :</InputLabel>
           <Input
+            required
             onChange={(e) => setTitle(e.target.value)}
+            onBlur={(e) => setError(e.target.value, 0)}
             id="title"
           ></Input>
           <FormHelperText id="title">
@@ -30,11 +53,13 @@ let FormChallenge = () => {
         </FormControl>
       </ListItem>
       <ListItem>
-        <FormControl style={{ width: '100%' }}>
-          <InputLabel htmlFor="desc">Description :</InputLabel>
+        <FormControl style={{ width: '100%' }} error={err[1]}>
+          <InputLabel htmlFor="desc">Description* :</InputLabel>
           <Input
+            required
             multiline
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
+            onBlur={(e) => setError(e.target.value, 1)}
             id="desc"
           ></Input>
           <FormHelperText id="desc">
@@ -42,18 +67,38 @@ let FormChallenge = () => {
           </FormHelperText>
         </FormControl>
       </ListItem>
+
       <ListItem>
-        <ImageUploader
-          preview={true}
-          callback={(image) => setImg_avatar(image)}
-        ></ImageUploader>
+        <FormControl error={err[2]}>
+          <Typography>Carte de fond* :</Typography>
+
+          <ImageUploader
+            callback={(image) => setImg_fond(image)}
+          ></ImageUploader>
+          <FormHelperText>
+            La carte sur laquelle vous souhaitez travailler
+          </FormHelperText>
+        </FormControl>
+        <CardMedia>
+          <img src={img_fond} height="100" width="100" />
+        </CardMedia>
       </ListItem>
       <ListItem>
-        <ImageUploader
-          preview={true}
-          callback={(image) => setImg_fond(image)}
-        ></ImageUploader>
+        <FormControl>
+          <Typography>Icone :</Typography>
+          <ImageUploader
+            callback={(image) => {
+              setImg_avatar(image);
+            }}
+          ></ImageUploader>
+          <FormHelperText></FormHelperText>
+        </FormControl>
+
+        <Avatar src={img_avatar}></Avatar>
       </ListItem>
+      <Button onClick={() => handleSubmit()} align="center" fullWidth>
+        Créer le challenge
+      </Button>
     </List>
   );
 };

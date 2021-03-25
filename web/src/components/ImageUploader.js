@@ -7,11 +7,9 @@ import { Input } from '@material-ui/core';
  * Composant permettat d'uploader et faire un comportement directement derrière
  *
  * @param {Function} callback Fonction permettant de récupérer l'image pour exécuter une fonction ensuite avec derrière
- * @param {Boolean} preview Booléen permettant de prévisualiser l'image avant d'accepter
  * @param {JSX.Element} childs Permet d'ajouter des composants sous le composant afin de le personnaliser
  */
-let ImageUploader = ({ callback, preview = false, childs }) => {
-  let previewImg = useRef(null);
+let ImageUploader = ({ callback, childs }) => {
   let inputFile = useRef(null);
 
   const toBase64 = (file) =>
@@ -30,8 +28,7 @@ let ImageUploader = ({ callback, preview = false, childs }) => {
       toBase64(file_img)
         .then((base64img) => {
           //Intégrer ici l'image
-          preview ? (previewImg.current.src = base64img) : null;
-          callback(file_img);
+          callback(base64img);
         })
         .catch((err) => {
           console.log(err);
@@ -48,15 +45,7 @@ let ImageUploader = ({ callback, preview = false, childs }) => {
         onChange={() => handleChange()}
         inputRef={inputFile}
       ></Input>
-      {preview ? (
-        <>
-          <p>Prévisualisation :</p>
-          <img
-            ref={previewImg}
-            style={{ width: '80%', height: '80%' }}
-          ></img>
-        </>
-      ) : null}
+
       {childs ? childs : null}
     </>
   );

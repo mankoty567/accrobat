@@ -45,14 +45,13 @@ let ChallengePanel = () => {
       {addmode ? (
         <FormChallenge />
       ) : (
-        <List>
+        <>
           {challenges
             ? challenges.map((key, idx) => {
-                return <ChallengeItem challenge={key} />;
+                return <ChallengeItem challenge={key} key={idx} />;
               })
             : null}
-          <ListItem></ListItem>
-        </List>
+        </>
       )}
     </>
   );
