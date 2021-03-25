@@ -9,6 +9,7 @@
     <div class="container">
       <h1>Documentation</h1>
       <p class="lastbuild">Dernière génération: {{ last_build_date }}</p>
+      <p class="lastbuild">Version: {{ version }}</p>
   
       {{#categories}}
         <div class="categorie">
@@ -26,8 +27,8 @@
                 </code></pre>
               {{/body}}
   
-              <h4>Réponses</h4>
               {{#result}}
+                <h4>Réponses</h4>
                 <p class="responseCode">{{code}}</p>
                 <pre><code class="json">{{content}}</code></pre>
               {{/result}}

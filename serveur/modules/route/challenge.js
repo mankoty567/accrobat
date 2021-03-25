@@ -10,7 +10,8 @@ module.exports.routes = [
     url: '/api/challenge',
     func: [m.user_mdw.put_user, m.challenge_ctrl.get_all_challenge],
     body: undefined,
-    description: undefined,
+    description:
+      'Récupération de tous les challenges accessibles à un utilisateur',
     result: [
       {
         code: 200,

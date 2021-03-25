@@ -39,6 +39,10 @@ h2 {
   margin-left: 10px;
 }
 
+h4 {
+  margin: 0;
+}
+
 .description {
   margin: 0;
   text-align: justify;

@@ -49,6 +49,7 @@ const template = fs.readFileSync(
 
 const html = mustache.render(template, {
   last_build_date: new Date(),
+  version: require('../../package.json').version,
   categories: categories,
 });
 
