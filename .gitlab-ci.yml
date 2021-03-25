@@ -4,7 +4,7 @@ eslint:
   script: 
     - cd serveur
     - npm i eslint
-    - npm run test
+    - npm run lint
   stage: test
 
 eslintweb: 

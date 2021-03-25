@@ -4,15 +4,17 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "eslint .",
+    "lint": "eslint .",
     "dev": "nodemon --watch . node serveur.js",
     "start": "node serveur.js",
     "sync": "node ./cli/bdd_sync.js",
-    "fixture": "node ./cli/loadDataToBdd.js"
+    "fixture": "node ./cli/loadDataToBdd.js",
+    "test": "node ./cli/test/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^3.0.0",
     "cors": "^2.8.5",
     "debug": "^2.6.9",
     "express": "^4.17.1",

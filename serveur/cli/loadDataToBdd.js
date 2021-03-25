@@ -406,4 +406,11 @@ async function bonChallenge() {
       [pointEnd.x, pointEnd.y],
     ],
   });
+
+  return challenge.id;
 }
+
+module.exports = {
+  bonChallenge,
+  pasBonChallenge,
+};
