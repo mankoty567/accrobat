@@ -76,3 +76,11 @@ h4 {
 pre {
   margin: 0;
 }
+
+li {
+  margin: 0;
+}
+
+.param {
+  text-decoration: underline;
+}

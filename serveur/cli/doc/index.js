@@ -6,6 +6,43 @@ let categories = [];
 
 function stringifyBody(body) {
   // Ajouter les suppressions de types et tout
+  if (body === undefined) return;
+
+  Object.keys(body).forEach((k) => {
+    if (typeof body[k] === 'object') {
+      let prefix = '';
+      if (body[k].required) prefix = '*';
+
+      if (body[k].type === 'string') {
+        body[prefix + k] = '';
+      }
+
+      if (body[k].type === 'data_url') {
+        body[prefix + k] = 'data:image/...';
+      }
+
+      if (body[k].type === 'number') {
+        body[prefix + k] = 0;
+      }
+
+      if (body[k.required]) delete body[k];
+    } else {
+      if (body[k] === 'string') {
+        body[k] = '';
+      }
+
+      if (body[k] === 'data_url') {
+        body[k] = 'data:image/...';
+      }
+
+      if (body[k] === 'number') {
+        body[k] = 0;
+      }
+
+      body['*' + k] = body[k];
+      delete body[k];
+    }
+  });
   return JSON.stringify(body, null, 2);
 }
 
@@ -28,6 +65,7 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
           method: r.method,
           url: r.url,
           body: stringifyBody(r.body),
+          query: r.query,
           description: r.description,
           result: r.result?.map((resu) => {
             return {
@@ -39,8 +77,6 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
       }),
     });
   });
-
-console.log(categories);
 
 const template = fs.readFileSync(
   path.join(__dirname, './template.mustache'),

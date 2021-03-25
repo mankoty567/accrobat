@@ -8,7 +8,14 @@ module.exports = {
   get_challenge_id: (req, res) => {
     let query = {
       where: { id: req.params.id },
-      attributes: ['id', 'title', 'description', 'createdAt', 'updatedAt'],
+      attributes: [
+        'id',
+        'title',
+        'description',
+        'echelle',
+        'createdAt',
+        'updatedAt',
+      ],
     };
 
     if (req.query.include === 'point') {

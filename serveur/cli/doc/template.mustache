@@ -20,15 +20,21 @@
               {{#description}}
                 <p class="description">{{description}}</p>
               {{/description}}
+
+              <h4>Body</h4>
               {{#body}}
-                <h4>Body</h4>
-                <pre><code class="json">
-                  {{body}}
-                </code></pre>
+                <pre><code class="json">{{body}}</code></pre>
               {{/body}}
+                
+              <h4>Query Params</h4>
+              <ul>
+              {{#query}}
+                  <li><span class="param">{{param}}</span> : {{desc}}</li>
+              {{/query}}
+              </ul>
   
+              <h4>Réponses</h4>
               {{#result}}
-                <h4>Réponses</h4>
                 <p class="responseCode">{{code}}</p>
                 <pre><code class="json">{{content}}</code></pre>
               {{/result}}
