@@ -34,4 +34,7 @@ type:
 - [x] Ajouter une route de vérification du challenge avant la publication
 - [x] Ajouter une route qui publie un challenge
 - [x] Ajouter un petit avatar pour le challenge
-- [ ] Ajouter un moyen de mettre pleins de données de tests
+- [x] Ajouter un moyen de mettre pleins de données de tests
+- [ ] Connection de l'utilisateur
+- [ ] Route whoami
+- [ ] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
