@@ -57,6 +57,11 @@ app.post(
 app.post('/api/participation', m.participation_ctrl.post_participation);
 app.get('/api/participation', m.participation_ctrl.get_my_participation);
 
+// Utilisateur
+app.post('/api/user/register', m.user_ctrl.create_user);
+app.post('/api/user/login', m.user_ctrl.login);
+app.get('/api/user/whoami', m.user_ctrl.whoami);
+
 // Event
 app.post('/api/event', m.event_ctrl.post_event);
 app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
