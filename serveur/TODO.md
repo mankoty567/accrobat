@@ -37,4 +37,6 @@ type:
 - [x] Ajouter un moyen de mettre pleins de données de tests
 - [x] Connection de l'utilisateur
 - [x] Route whoami
-- [ ] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
+- [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
+- [ ] Déplacer toutes les routes dans des fichiers séparés
+- [x] Vérification du body grâce à la déclaration
