@@ -9,57 +9,9 @@ var app = express();
 app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
+require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
-
-// Challenge
-app.get(
-  '/api/challenge',
-  m.user_mdw.put_user,
-  m.challenge_ctrl.get_all_challenge
-);
-app.get(
-  '/api/challenge/admin',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.get_all_challenge_admin
-);
-app.get(
-  '/api/challenge/:id',
-  m.user_mdw.put_user,
-  m.challenge_ctrl.get_challenge_id
-);
-app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
-app.get('/api/challenge/:id/avatar', m.challenge_ctrl.get_image_avatar);
-app.get(
-  '/api/challenge/:id/validity',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.verif_validity
-);
-app.post(
-  '/api/challenge',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.post_challenge
-);
-app.delete(
-  '/api/challenge/:id',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.delete_challenge
-);
-app.post(
-  '/api/challenge/:id',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.update_challenge
-);
-app.post(
-  '/api/challenge/:id/clone',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.clone_challenge
-);
-app.post(
-  '/api/challenge/:id/publish',
-  m.user_mdw.put_admin,
-  m.challenge_ctrl.publish_challenge
-);
 
 // PointPassage
 app.get(
