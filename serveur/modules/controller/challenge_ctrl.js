@@ -120,47 +120,35 @@ module.exports = {
     }
   },
   post_challenge: (req, res) => {
-    if (
-      !req.body.title ||
-      !req.body.description ||
-      !req.body.img_fond ||
-      !req.body.echelle
-    ) {
-      res.status(400).send('Bad request');
-    } else {
-      bdd.Challenge.create({
-        title: req.body.title,
-        description: req.body.description,
-        echelle: req.body.echelle,
-      }).then((challenge) => {
-        utils.pngParser(req.body.img_fond).then((buffer) => {
-          fs.writeFileSync(
-            path.join(
-              __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
-            ),
-            buffer
-          );
+    bdd.Challenge.create({
+      title: req.body.title,
+      description: req.body.description,
+      echelle: req.body.echelle,
+    }).then((challenge) => {
+      utils.pngParser(req.body.img_fond).then((buffer) => {
+        fs.writeFileSync(
+          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg'),
+          buffer
+        );
 
-          if (req.body.img_avatar !== undefined) {
-            utils.pngParser(req.body.img_avatar).then((buffer) => {
-              fs.writeFileSync(
-                path.join(
-                  __dirname,
-                  '../../data/challengeAvatar/' + challenge.id + '.jpg'
-                ),
-                buffer
-              );
-              debug('Création du challenge ' + challenge.id);
-              res.json({ ...challenge, frontId: req.body.frontId });
-            });
-          } else {
+        if (req.body.img_avatar !== undefined) {
+          utils.pngParser(req.body.img_avatar).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challengeAvatar/' + challenge.id + '.jpg'
+              ),
+              buffer
+            );
             debug('Création du challenge ' + challenge.id);
             res.json({ ...challenge, frontId: req.body.frontId });
-          }
-        });
+          });
+        } else {
+          debug('Création du challenge ' + challenge.id);
+          res.json({ ...challenge, frontId: req.body.frontId });
+        }
       });
-    }
+    });
   },
   delete_challenge: (req, res) => {
     bdd.Challenge.findOne({ where: { id: req.params.id } }).then(
