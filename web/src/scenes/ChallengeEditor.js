@@ -156,9 +156,9 @@ let ChallengeEditor = () => {
             const startMarker = markers.find(m => m.id === element.PointStartId);
             const endMarker = markers.find(m => m.id === element.PointEndId);
             const positions = [
-              [ startMarker.x, startMarker.y ],
+              [ startMarker.y, startMarker.x ],
               ...element.path,
-              [ endMarker.x, endMarker.y ],
+              [ endMarker.y, endMarker.x ],
             ];
             return (
               <Polyline positions={positions} key={element.id} color={'black'} />

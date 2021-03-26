@@ -24,8 +24,8 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       'title': 'Point ' + id,
       'description': '',
       'type': markers.length > 0 ? 'point' : 'start',
-      'x': event.latlng.lat,
-      'y': event.latlng.lng
+      'x': event.latlng.lng,
+      'y': event.latlng.lat
     };
     setMarkers((current) => [...current, newMarker]);
     setStartPoint(newMarker);
@@ -92,7 +92,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 draggable={true}
                 marker_index={item.id}
                 key={item.id}
-                position={[item.x, item.y]}
+                position={[item.y, item.x]}
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
