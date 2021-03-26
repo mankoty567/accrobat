@@ -410,6 +410,131 @@ async function bonChallenge() {
   return challenge.id;
 }
 
+async function challengeMobileTests() {
+  // Création d'un challenge pas bon
+  const challenge = await bdd.Challenge.create({
+    title: 'Challenge à ne pas supprimer',
+    // eslint-disable-next-line quotes
+    description: "Un challenge qui n'est pas bon au fond de lui même",
+    echelle: 1500,
+    published: false,
+  });
+
+  fs.copyFileSync(
+    path.join(__dirname, './fixture_data/map.jpg'),
+    path.join(__dirname, '../data/challenge/' + challenge.id + '.jpg')
+  );
+
+  const pointStart = await bdd.PointPassage.create({
+    title: 'Début',
+    description:
+      // eslint-disable-next-line quotes
+      "Ceci est le début",
+    type: 'start',
+    ChallengeId: challenge.id,
+    x: 0.24005026252525408,
+    y: 0.8846505819591299,
+  });
+
+  const pointEnd = await bdd.PointPassage.create({
+    title: 'Arrivée',
+    description:
+      // eslint-disable-next-line quotes
+      "Ceci est l'arrivée",
+    type: 'end',
+    ChallengeId: challenge.id,
+    x: 0.25176685495719053,
+    y: 0.3862949072178472,
+  });
+
+  const points = [];
+
+  points[0] = await bdd.PointPassage.create({
+    title: 'Point 1',
+    description: '',
+    type: 'point',
+    ChallengeId: challenge.id,
+    x: 0.534917838728991,
+    y: 0.824066166598425,
+  });
+
+  points[1] = await bdd.PointPassage.create({
+    title: 'Point 2',
+    description: '',
+    type: 'point',
+    ChallengeId: challenge.id,
+    x: 0.6930918365601348,
+    y: 0.7224406956707908,
+  });
+
+  points[2] = await bdd.PointPassage.create({
+    title: 'Point 3',
+    description: '',
+    type: 'point',
+    ChallengeId: challenge.id,
+    x: 0.462665518732049,
+    y: 0.4136556109291333,
+  });
+
+  points[3] = await bdd.PointPassage.create({
+    title: 'Point 4',
+    description: '',
+    type: 'point',
+    ChallengeId: challenge.id,
+    x: 0.25176685495719053,
+    y: 0.3862949072178472,
+  });
+
+  const segments = [];
+
+  segments[0] = await bdd.Segment.create({
+    PointStartId: pointStart.id,
+    PointEndId: points[0].id,
+    path: [
+      [pointStart.x, pointStart.y],
+      [points[0].x, points[0].y],
+    ],
+  });
+
+  segments[1] = await bdd.Segment.create({
+    PointStartId: points[0].id,
+    PointEndId: points[1].id,
+    path: [
+      [points[0].x, points[0].y],
+      [points[1].x, points[1].y],
+    ],
+  });
+
+  segments[2] = await bdd.Segment.create({
+    PointStartId: points[1].id,
+    PointEndId: points[2].id,
+    path: [
+      [points[1].x, points[1].y],
+      [points[2].x, points[2].y],
+    ],
+  });
+
+  segments[3] = await bdd.Segment.create({
+    PointStartId: points[2].id,
+    PointEndId: points[3].id,
+    path: [
+      [points[2].x, points[2].y],
+      [points[3].x, points[3].y],
+    ],
+  });
+
+  segments[4] = await bdd.Segment.create({
+    PointStartId: points[3].id,
+    PointEndId: pointEnd.id,
+    path: [
+      [points[3].x, points[3].y],
+      [pointEnd.x, pointEnd.y],
+    ],
+  });
+
+  return challenge.id;
+}
+
 module.exports = {
   bonChallenge,
   pasBonChallenge,
