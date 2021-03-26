@@ -1,7 +1,24 @@
 <resources>
+    <!-- APP -->
     <string name="app_name">ProtoProgression</string>
+
+    <!-- Navigation -->
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_challenge">Challenge</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <!-- Signin Fragment -->
+    <string name="txt_login">Login</string>
+    <string name="txt_password">Mot de passe</string>
+    <string name="txt_confirmation">Confirmer le mot de passe</string>
+    <string name="button_connect">Connexion</string>
+    <string name="button_inscription">Inscription</string>
+
+    <!-- Signup Fragment -->
+    <string name="txt_mail">Email</string>
+    <string name="txt_firstname">Prénom</string>
+    <string name="txt_lastname">Nom</string>
+    <string name="button_send_inscription">Valider</string>
+    <string name="button_back">Back</string>
 </resources>

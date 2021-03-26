@@ -9,13 +9,13 @@
         android:id="@+id/navigation_home"
         android:name="site.nohan.protoprogression.View.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_user_signin" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="site.nohan.protoprogression.View.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_challenge"
+        android:name="site.nohan.protoprogression.View.ui.challenge.ChallengeFragment"
+        android:label="@string/title_challenge"
+        tools:layout="@layout/fragment_challenge" />
 
     <fragment
         android:id="@+id/navigation_notifications"
