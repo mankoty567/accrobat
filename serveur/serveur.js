@@ -14,18 +14,6 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// Participation
-app.post(
-  '/api/participation',
-  m.user_mdw.put_user,
-  m.participation_ctrl.post_participation
-);
-app.get(
-  '/api/participation',
-  m.user_mdw.put_user,
-  m.participation_ctrl.get_my_participation
-);
-
 // Utilisateur
 app.post('/api/user/register', m.user_ctrl.create_user);
 app.post('/api/user/login', m.user_ctrl.login);

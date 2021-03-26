@@ -3,7 +3,7 @@
 const m = require('../index');
 
 module.exports.meta = {
-  title: 'Challenge',
+  title: 'ImageSubmition',
 };
 
 module.exports.routes = [
