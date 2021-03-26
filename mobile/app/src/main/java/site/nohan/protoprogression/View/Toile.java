@@ -81,24 +81,31 @@ public class Toile extends View {
 
         this.stylo.setFakeBoldText(true);
         this.stylo.setColor(Color.BLACK);
-        /*
-        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
-            for(Chemin c : Map.p){
-                // Dessin nom chemin
 
-                if(c.points.size() > 0){
+        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
+            for(PointPassage pointPassage : Map.pointPassages) {
+                if(pointPassage.chemins.size() > 0 && pointPassage.chemins.get(0).points.size() > 0) {
                     canvas.drawText(
-                            c.title == null ?
-                                    "Indéfinis" : c.title ,
-                            ((float) c.points.get(0).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(0).y) / 100 * canvas.getHeight(),
+                            pointPassage.titre == null ?
+                                    "Indéfinis" : pointPassage.titre,
+                            ((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth(),
+                            ((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight(),
+                            this.stylo
+                    );
+                }else{
+                    //Log.e("ee",pointPassage.titre);
+                    canvas.drawText(
+                            pointPassage.titre == null ?
+                                    "Indéfinis" : pointPassage.titre,
+                            0.1f * canvas.getWidth(),
+                            0.1f * canvas.getHeight(),
                             this.stylo
                     );
                 }
             }
         }
 
-         */
+
     }
 
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{

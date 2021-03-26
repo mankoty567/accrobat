@@ -67,6 +67,17 @@ public class MapResponse implements APIListenner {
 
                 JSONArray jpointsStart = jpointPassage.getJSONArray("pointStart");
 
+                // Si le point de passe n'a pas de path il ne passera pas dans la boucle suivante
+                // on ajoute donc son premier point
+                // TODO: tout les points de passage doivent avoir un point min
+                if(jpointsStart.length() == 0){
+                    chemin = new Chemin();
+                    // il n'as pas d'objectif
+                    chemin.objectifId = Chemin.NO_OJECTIF;
+                    chemin.points.add(premierPoint);
+                    pointPassage.chemins.add(chemin);
+                }
+
                 // Pour tout les chemins
                 for(int chemini=0; chemini < jpointsStart.length() ; chemini++){
                     JSONObject jchemin = jpointsStart.getJSONObject(chemini);
@@ -99,12 +110,13 @@ public class MapResponse implements APIListenner {
             Log.e("Model", Map.pointPassages.toString());
             for(PointPassage pointPassage1 : Map.pointPassages){
                 for(Chemin chemin1 : pointPassage1.chemins){
-                    chemin1.objectif = PointPassage.getById(chemin1.objectifId);
-                    // On connecte
-                    if(chemin1.objectif.chemins.size() > 0)
-                        chemin1.points.add(chemin1.objectif.chemins.get(0).points.get(0));
+                    if(chemin1.objectifId != Chemin.NO_OJECTIF) {
+                        chemin1.objectif = PointPassage.getById(chemin1.objectifId);
+                        // On connecte
+                        if (chemin1.objectif.chemins.size() > 0)
+                            chemin1.points.add(chemin1.objectif.chemins.get(0).points.get(0));
 
-
+                    }
                 }
             }
 

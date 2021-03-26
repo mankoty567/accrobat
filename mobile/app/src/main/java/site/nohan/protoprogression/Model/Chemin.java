@@ -6,6 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Chemin {
+    public static final int NO_OJECTIF = -1;
+
     public int objectifId;
 
     public boolean complete;
