@@ -25,6 +25,8 @@ function stringifyBody(body, display_required) {
         newBody[prefix + k] = 'data:image/...';
       } else if (body[k].type === 'number') {
         newBody[prefix + k] = 0;
+      } else if (body[k].type === 'boolean') {
+        newBody[prefix + k] = 'true/false';
       } else {
         newBody[prefix + k] = body[k].type;
       }
@@ -37,6 +39,8 @@ function stringifyBody(body, display_required) {
         newBody[k] = 'data:image/...';
       } else if (body[k] === 'number') {
         newBody[k] = 0;
+      } else if (body[k] === 'boolean') {
+        newBody[k] = 'true/false';
       } else {
         newBody[k] = body[k];
       }

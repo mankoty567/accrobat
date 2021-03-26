@@ -26,9 +26,60 @@ module.exports.routes = [
       img_data: 'data_url',
     },
     result: [
+      {
+        code: 200,
+        content: {
+          EventId: 0,
+          ObstacleId: 0,
+          ok: false,
+          rejected: false,
+          updatedAt: 'date',
+          createdAt: 'date',
+        },
+      },
       { code: 400, content: 'Bad request: Participation not found' },
       { code: 400, content: 'Bad request: Not in an obstacle' },
       { code: 400, content: 'Bad request: Obstacle is not an action' },
+    ],
+  },
+  {
+    method: 'GET',
+    url: '/api/imagesubmition',
+    func: [m.user_mdw.put_admin, m.imagesubmition_ctrl.get_all_soumission],
+    name: 'Récupération des soumissions',
+    description:
+      'Récupération de toutes les images soumisent pour validation mais pas encore validées',
+    result: [
+      {
+        code: 200,
+        content: [
+          {
+            ok: false,
+            rejected: false,
+            createdAt: 'date',
+            updatedAt: 'date',
+            EventId: 0,
+            ObstacleId: 0,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    method: 'POST',
+    url: '/api/imagesubmition/:id/judge',
+    func: [m.user_mdw.put_admin, m.imagesubmition_ctrl.juge_soumission],
+    name: "Jugement d'une soumission",
+    description: 'Valide ou invalide une image proposée',
+    body: {
+      valide: 'boolean',
+    },
+    result: [
+      { code: 200, content: 'OK' },
+      {
+        code: 404,
+        content: 'Not found',
+      },
     ],
   },
 ];

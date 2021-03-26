@@ -84,18 +84,15 @@ module.exports = {
     );
   },
   juge_soumission: (req, res) => {
-    // TODO : Vérification que la personne est un admin
-    if (req.body.valide === undefined) {
-      res.status(400).send('Bad request');
-    } else {
-      bdd.ImageSubmition.findOne({
-        where: { EventId: req.params.id },
-      }).then((imagesubmition) => {
+    bdd.ImageSubmition.findOne({
+      where: { EventId: req.params.id },
+    }).then((imagesubmition) => {
+      if (imagesubmition === null) {
+        res.status(404).send('Not found');
+      } else {
         bdd.Event.findOne({
           where: { id: imagesubmition.EventId },
         }).then(async (event) => {
-          console.log(imagesubmition);
-          console.log(event);
           if (req.body.valide) {
             imagesubmition.ok = true;
             await imagesubmition.save();
@@ -123,7 +120,7 @@ module.exports = {
             res.send('OK');
           }
         });
-      });
-    }
+      }
+    });
   },
 };
