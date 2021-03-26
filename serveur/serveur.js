@@ -14,28 +14,6 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// PointPassage
-app.get(
-  '/api/challenge/:id/point',
-  m.user_mdw.put_user,
-  m.pointpassage_ctrl.get_pointpassage
-);
-app.post(
-  '/api/challenge/:id/point',
-  m.user_mdw.put_admin,
-  m.pointpassage_ctrl.post_pointpassage
-);
-app.delete(
-  '/api/pointpassage/:id',
-  m.user_mdw.put_admin,
-  m.pointpassage_ctrl.delete_pointpassage
-);
-app.post(
-  '/api/pointpassage/:id',
-  m.user_mdw.put_admin,
-  m.pointpassage_ctrl.update_pointpassage
-);
-
 // Segment
 app.post('/api/segment', m.user_mdw.put_admin, m.segment_ctrl.post_segment);
 app.get('/api/segment/:id', m.user_mdw.put_user, m.segment_ctrl.get_segment);

@@ -16,7 +16,11 @@ function stringifyBody(body, display_required) {
       if (display_required && body[k].required) prefix = '*';
 
       if (body[k].type === 'string') {
-        newBody[prefix + k] = '';
+        if (body[k].value !== undefined) {
+          newBody[prefix + k] = body[k].value.join('/');
+        } else {
+          newBody[prefix + k] = '';
+        }
       }
 
       if (body[k].type === 'data_url') {
@@ -27,7 +31,7 @@ function stringifyBody(body, display_required) {
         newBody[prefix + k] = 0;
       }
 
-      if (display_required && body[k.required]) delete newBody[k];
+      if (display_required && body[k].required) delete newBody[k];
     } else {
       if (body[k] === 'string') {
         newBody[k] = '';

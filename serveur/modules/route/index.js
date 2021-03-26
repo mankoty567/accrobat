@@ -36,6 +36,11 @@ const checkBody = (req, res, next) => {
             correct = false;
           }
         }
+
+        // Vérification des valeurs des chaines
+        if (correctBody[k].value !== undefined && req.body[k] !== undefined) {
+          correct = correctBody[k].value.includes(req.body[k]);
+        }
       } else {
         if (req.body[k] === undefined) {
           correct = false;
