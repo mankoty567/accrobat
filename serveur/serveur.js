@@ -14,12 +14,4 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// Event
-app.post('/api/event', m.user_mdw.put_user, m.event_ctrl.post_event);
-app.get(
-  '/api/participation/:id/whereiam',
-  m.user_mdw.put_user,
-  m.event_ctrl.whereiam
-);
-
 app.listen(1418, () => debug('Serveur lancé sur le port 1418'));
