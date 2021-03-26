@@ -302,6 +302,7 @@ module.exports = {
               PointStartId: pointAssociation[segment.PointStartId],
               PointEndId: pointAssociation[segment.PointEndId],
               path: segment.path,
+              name: segment.name,
             });
 
             // Ajout des obstacles à la liste de tous les obstacles

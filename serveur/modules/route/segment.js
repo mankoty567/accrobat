@@ -20,6 +20,7 @@ module.exports.routes = [
         type: [[0, 0]],
         required: true,
       },
+      name: 'string',
     },
     result: [
       {
@@ -29,6 +30,7 @@ module.exports.routes = [
           PointStartId: 0,
           PointEndId: 0,
           path: [[0, 0]],
+          name: 'string',
           updatedAt: 'date',
           createdAt: 'date',
         },
@@ -55,6 +57,7 @@ module.exports.routes = [
         content: {
           id: 0,
           path: [[0, 0]],
+          name: '',
           PointStartId: 0,
           PointEndId: 0,
           pointStart: {
@@ -92,6 +95,10 @@ module.exports.routes = [
         type: [[0, 0]],
         required: false,
       },
+      name: {
+        type: 'string',
+        required: false,
+      },
       PointStartId: {
         type: 'number',
         required: false,
@@ -107,6 +114,7 @@ module.exports.routes = [
         content: {
           id: 0,
           path: [[0, 0]],
+          name: '',
           PointStartId: 0,
           PointEndId: 0,
         },

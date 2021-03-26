@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'Segment',
     {
       path: DataTypes.JSON,
+      name: DataTypes.STRING,
     },
     {}
   );

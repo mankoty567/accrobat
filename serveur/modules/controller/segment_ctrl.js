@@ -30,6 +30,7 @@ module.exports = {
                 PointStartId: req.body.PointStartId,
                 PointEndId: req.body.PointEndId,
                 path: req.body.path,
+                name: req.body.name,
               }).then((segment) => {
                 debug('Création segment' + segment.id);
                 res.json({ ...segment.dataValues, frondId: req.body.frontId });
@@ -43,7 +44,7 @@ module.exports = {
   get_segment: (req, res) => {
     bdd.Segment.findOne({
       where: { id: req.params.id },
-      attributes: ['id', 'path', 'PointStartId', 'PointEndId'],
+      attributes: ['id', 'path', 'name', 'PointStartId', 'PointEndId'],
       include: [
         {
           model: bdd.PointPassage,
@@ -100,6 +101,11 @@ module.exports = {
           edited = true;
         }
 
+        if (req.body.name !== undefined) {
+          segment.name = req.body.name;
+          edited = true;
+        }
+
         if (req.body.PointStartId !== undefined) {
           let pointStart = await bdd.PointPassage.findOne({
             where: { id: req.body.PointStartId },
@@ -127,6 +133,7 @@ module.exports = {
             id: segment.id,
             distance: segment.distance,
             path: segment.path,
+            name: segment.name,
             PointStartId: segment.PointStartId,
             PointEndId: segment.PointEndId,
           });
@@ -135,6 +142,7 @@ module.exports = {
             id: segment.id,
             distance: segment.distance,
             path: segment.path,
+            name: segment.name,
             PointStartId: segment.PointStartId,
             PointEndId: segment.PointEndId,
           });
