@@ -38,7 +38,7 @@ type:
 - [x] Connection de l'utilisateur
 - [x] Route whoami
 - [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
+- [ ] Ajouter propriété name au segment
 - [ ] Déplacer toutes les routes dans des fichiers séparés
 - [ ] Virer la vérification du body des controleurs
-- [ ] Ajout dynamiquement du PointStart/PointEnd dans le path d'un segment
 - [x] Vérification du body grâce à la déclaration

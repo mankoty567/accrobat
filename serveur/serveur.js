@@ -14,11 +14,6 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// Utilisateur
-app.post('/api/user/register', m.user_ctrl.create_user);
-app.post('/api/user/login', m.user_ctrl.login);
-app.get('/api/user/whoami', m.user_ctrl.whoami);
-
 // Event
 app.post('/api/event', m.user_mdw.put_user, m.event_ctrl.post_event);
 app.get(
