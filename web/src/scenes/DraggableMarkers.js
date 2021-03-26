@@ -29,6 +29,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     };
     setMarkers((current) => [...current, newMarker]);
     setStartPoint(newMarker);
+    console.log("New marker");
     return newMarker;
   };
 
@@ -50,6 +51,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       'path': []
     };
     setLines((current) => [...current, newLines]);
+    console.log("New line");
   }
 
   //Récupère l'icône en fonction du type du marker
@@ -97,10 +99,12 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 eventHandlers={{
                   click: () => {
                     {currentMarker ? (currentMarker.id === item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
-                    if(editMode && item.type != 'start') {
-                      setEditMode(false);
-                      addLine(startPoint, item);
-                      setStartPoint(item);
+                    if (currentMarker) {
+                      if(editMode && item.type != 'start' && currentMarker.id != item.id) {
+                        setEditMode(false);
+                        addLine(startPoint, item);
+                        setStartPoint(item);
+                      }
                     }
                   },
                   dragend: (event) => {

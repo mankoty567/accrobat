@@ -59,7 +59,7 @@ let NewPolyline = ({from}) => {
     }
   }), []));
 
-  return <Polyline positions={[[from.x, from.y], [mousePosition.x, mousePosition.y]]} color={'black'} dashArray={5} />
+  return <Polyline positions={[[from.y, from.x], [mousePosition.x, mousePosition.y]]} color={'black'} dashArray={5} />
 }
 
 let ChallengeEditor = () => {
