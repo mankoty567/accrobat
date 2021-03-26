@@ -42,3 +42,5 @@ type:
 - [x] Déplacer toutes les routes dans des fichiers séparés
 - [x] Virer la vérification du body des controleurs
 - [x] Vérification du body grâce à la déclaration
+- [ ] Mettre une transaction dans le clone de challenge
+- [ ] Voir un bulk create pour le clone
