@@ -4,6 +4,7 @@ const path = require('path');
 
 pasBonChallenge();
 bonChallenge();
+challengeMobileTests();
 
 async function pasBonChallenge() {
   // Création d'un challenge pas bon
@@ -429,7 +430,7 @@ async function challengeMobileTests() {
     title: 'Début',
     description:
       // eslint-disable-next-line quotes
-      "Ceci est le début",
+      'Ceci est le début',
     type: 'start',
     ChallengeId: challenge.id,
     x: 0.24005026252525408,
@@ -538,4 +539,5 @@ async function challengeMobileTests() {
 module.exports = {
   bonChallenge,
   pasBonChallenge,
+  challengeMobileTests,
 };

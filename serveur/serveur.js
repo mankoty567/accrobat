@@ -15,12 +15,6 @@ require('./modules/route')(app);
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
 // Image Submition
-app.get('/api/imagesubmition/:id/image', m.imagesubmition_ctrl.get_image);
-app.post(
-  '/api/imagesubmition',
-  m.user_mdw.put_user,
-  m.imagesubmition_ctrl.post_image
-);
 app.get(
   '/api/imagesubmition',
   m.user_mdw.put_admin,
