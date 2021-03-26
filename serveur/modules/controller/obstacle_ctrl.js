@@ -4,20 +4,10 @@ const path = require('path');
 const utils = require('../utils');
 const fs = require('fs');
 
-const TYPE = ['question', 'action'];
-
 module.exports = {
   post_obstacle: (req, res) => {
-    if (
-      !req.body.title ||
-      !req.body.description ||
-      !req.body.type ||
-      !TYPE.includes(req.body.type) ||
-      !req.body.distance ||
-      !req.body.SegmentId ||
-      (req.body.type === 'question' && !req.body.enigme_awnser)
-    ) {
-      res.status(400).send('Bad request: One request body is not correct');
+    if (req.body.type === 'question' && !req.body.enigme_awnser) {
+      res.status(400).send('Bad request');
     } else {
       bdd.Segment.findOne({
         where: { id: req.body.SegmentId },
@@ -32,11 +22,6 @@ module.exports = {
         } else if (segment.pointStart.Challenge.published) {
           res.status(400).send('Bad request: Challenge is published');
         } else {
-          if (req.body.distance > segment.distance) {
-            res
-              .status(400)
-              .send('Bad Request: Distance of the obstacle is to big');
-          }
           bdd.Obstacle.create({
             title: req.body.title,
             description: req.body.description,
@@ -55,7 +40,7 @@ module.exports = {
                 buffer
               );
               debug('Création obstacle ' + obstacle.id);
-              res.json({ ...obstacle, frontId: req.body.frontId });
+              res.json({ ...obstacle.dataValues, frontId: req.body.frontId });
             });
           });
         }
@@ -120,10 +105,10 @@ module.exports = {
         if (edited) {
           debug('Mise à jour de obstacle ' + obstacle.id);
           obstacle.save().then(() => {
-            res.json(obstacle);
+            res.json({ ...obstacle.dataValues, Segment: undefined });
           });
         } else {
-          res.json(obstacle);
+          res.json({ ...obstacle.dataValues, Segment: undefined });
         }
       }
     });
@@ -150,7 +135,7 @@ module.exports = {
           })
           .catch((err) => {
             console.log(err);
-            res.status(400).send('Error');
+            res.status(400).send('Bad Request');
           });
       }
     });
@@ -169,7 +154,7 @@ module.exports = {
     }
   },
   awnser_obstacle: (req, res) => {
-    if (req.body.ParticipationId === undefined || !req.body.answer) {
+    if (req.body.ParticipationId === undefined || !req.body.awnser) {
       res.status(400).send('Bad Request');
     } else {
       bdd.Participation.findOne({
@@ -193,7 +178,7 @@ module.exports = {
               if (!obstacle.type === 'question') {
                 res.status(400).send('Bad request: Obstacle is not a question');
               } else {
-                if (req.body.answer === obstacle.enigme_awnser) {
+                if (req.body.awnser === obstacle.enigme_awnser) {
                   bdd.Event.create({
                     type: 'obstacle:completed',
                     ParticipationId: participation.id,

@@ -14,25 +14,6 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// Obstacle
-app.post('/api/obstacle', m.user_mdw.put_admin, m.obstacle_ctrl.post_obstacle);
-app.post(
-  '/api/obstacle/awnser',
-  m.user_mdw.put_user,
-  m.obstacle_ctrl.awnser_obstacle
-);
-app.get('/api/obstacle/:id/image', m.obstacle_ctrl.get_image);
-app.post(
-  '/api/obstacle/:id',
-  m.user_mdw.put_admin,
-  m.obstacle_ctrl.update_obstacle
-);
-app.delete(
-  '/api/obstacle/:id',
-  m.user_mdw.put_admin,
-  m.obstacle_ctrl.delete_obstacle
-);
-
 // Image Submition
 app.get('/api/imagesubmition/:id/image', m.imagesubmition_ctrl.get_image);
 app.post(

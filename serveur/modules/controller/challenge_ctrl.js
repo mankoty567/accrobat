@@ -141,11 +141,11 @@ module.exports = {
               buffer
             );
             debug('Création du challenge ' + challenge.id);
-            res.json({ ...challenge, frontId: req.body.frontId });
+            res.json({ ...challenge.dataValues, frontId: req.body.frontId });
           });
         } else {
           debug('Création du challenge ' + challenge.id);
-          res.json({ ...challenge, frontId: req.body.frontId });
+          res.json({ ...challenge.dataValues, frontId: req.body.frontId });
         }
       });
     });
