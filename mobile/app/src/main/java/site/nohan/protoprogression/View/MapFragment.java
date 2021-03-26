@@ -36,7 +36,7 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
-        seekBarController = new SeekBarController();
+        seekBarController = new SeekBarController(this.getActivity());
         buttonController = new ButtonController(this.getActivity());
         seekBarController.setButtonController(buttonController);
         return toile;
@@ -53,9 +53,12 @@ public class MapFragment extends Fragment {
         bVelo.setOnClickListener(buttonController);
         bEtape = getActivity().findViewById(R.id.bPodometre);
         bEtape.setOnClickListener(buttonController);
+        /*
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);
         bAddCurrent = getActivity().findViewById(R.id.bAddCurrent);
         bAddCurrent.setOnClickListener(buttonController);
+
+         */
     }
 }

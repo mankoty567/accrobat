@@ -6,20 +6,18 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Chemin {
-    public String title;
-    public String desc;
+    public int objectifId;
 
     public boolean complete;
-    public ArrayList<Point> points = new ArrayList<>();
+    public ArrayList<Point> points;
 
-    public ArrayList<Chemin> origines;
-    public ArrayList<Chemin> suivants;
+    public PointPassage objectif;
+    public PointPassage origine;
 
     public Chemin(ArrayList<Point> points){
         this.points = points;
         this.complete = false;
-        origines = new ArrayList<>();
-        suivants = new ArrayList<>();
+
     }
 
     public Chemin(){
@@ -66,7 +64,6 @@ public class Chemin {
     @Override
     public String toString() {
         return "Chemin{" +
-                "\n   complete : " + complete +
                 "\n   points : " + points +
                 "\n}";
     }

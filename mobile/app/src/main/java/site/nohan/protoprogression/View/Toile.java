@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.R;
 
 public class Toile extends View {
@@ -80,8 +81,9 @@ public class Toile extends View {
 
         this.stylo.setFakeBoldText(true);
         this.stylo.setColor(Color.BLACK);
-        if(Map.chemins != null && Map.chemins.size() > 0){
-            for(Chemin c : Map.chemins){
+        /*
+        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
+            for(Chemin c : Map.p){
                 // Dessin nom chemin
 
                 if(c.points.size() > 0){
@@ -95,89 +97,87 @@ public class Toile extends View {
                 }
             }
         }
+
+         */
     }
 
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
-        if(Map.chemins == null || Map.chemins.size() == 0)
+        if(Map.pointPassages == null || Map.pointPassages.size() == 0)
             return;
 
         int sOrdinal = 0;
 
+        for(PointPassage pointPassage : Map.pointPassages) {
+            for (Chemin c : pointPassage.chemins) {
+                // ...
 
+                sOrdinal++;
+                this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
+                if (c.points.size() == 0)
+                    continue;
 
-
-        for(Chemin c : Map.chemins) {
-
-
-
-            // ...
-
-            sOrdinal++;
-            this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
-            if(c.points.size() == 0)
-                continue;
-
-            for (int i = 0; i < c.points.size() - 1; i++) {
-                if(c.complete){
-                    this.stylo.setStrokeWidth(40);
-                }else{
-                    this.stylo.setStrokeWidth(15);
-                }
-
-                // On dessine la progression uniquement du chemin sur lequel on est
-                if(c == Map.cheminActuel) {
-
-                    if (c.getLongueurAt(c.points.get(i)) < Map.accompli) {
+                for (int i = 0; i < c.points.size() - 1; i++) {
+                    if (c.complete) {
                         this.stylo.setStrokeWidth(40);
                     } else {
                         this.stylo.setStrokeWidth(15);
                     }
 
-                    // Si on est entre deux points
-                    if (Map.accompli > c.getLongueurAt(c.points.get(i)) && Map.accompli < c.getLongueurAt(c.points.get(i + 1))) {
+                    // On dessine la progression uniquement du chemin sur lequel on est
+                    if (c == Map.cheminActuel) {
 
-                        Point A = c.points.get(i);
-                        Point B = c.points.get(i + 1);
-
-                        float rapport = (float) (Map.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
-
-                        float diffX = B.x - A.x;
-                        float diffY = B.y - A.y;
-                        int pointsMax = (int) Math.floor(0.5*Chemin.getDistance(A,B));
-                        int points = Math.round(pointsMax * rapport);
-
-                        float intervalX = diffX / (pointsMax + 1);
-                        float intervalY = diffY / (pointsMax + 1);
-
-                        //this.stylo.setColor(Color.rgb(200,0,200));
-                        for (int j = 1; j <= points; j++) {
-                            canvas.drawCircle(
-                                    (A.x + intervalX * j) * canvas.getWidth() / 100,
-                                    (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                    30,
-                                    this.stylo);
+                        if (c.getLongueurAt(c.points.get(i)) < Map.accompli) {
+                            this.stylo.setStrokeWidth(40);
+                        } else {
+                            this.stylo.setStrokeWidth(15);
                         }
-                        this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
-                        // continue;
-                        this.stylo.setStrokeWidth(15);
+
+                        // Si on est entre deux points
+                        if (Map.accompli > c.getLongueurAt(c.points.get(i)) && Map.accompli < c.getLongueurAt(c.points.get(i + 1))) {
+
+                            Point A = c.points.get(i);
+                            Point B = c.points.get(i + 1);
+
+                            float rapport = (float) (Map.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
+
+                            float diffX = B.x - A.x;
+                            float diffY = B.y - A.y;
+                            int pointsMax = (int) Math.floor(10 * Chemin.getDistance(A, B));
+                            int points = Math.round(pointsMax * rapport);
+
+                            float intervalX = diffX / (pointsMax + 1);
+                            float intervalY = diffY / (pointsMax + 1);
+
+                            //this.stylo.setColor(Color.rgb(200,0,200));
+                            for (int j = 1; j <= points; j++) {
+                                canvas.drawCircle(
+                                        (A.x + intervalX * j) * canvas.getWidth() / 100,
+                                        (A.y + intervalY * j) * canvas.getHeight() / 100,
+                                        30,
+                                        this.stylo);
+                            }
+                            this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
+                            // continue;
+                            this.stylo.setStrokeWidth(15);
+                        }
                     }
+                    //}
+                    canvas.drawCircle(
+                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
+                            15,
+                            this.stylo
+                    );
+                    canvas.drawLine(
+                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
+                            ((float) c.points.get(i + 1).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
+                            this.stylo
+                    );
+
+
                 }
-                //}
-                canvas.drawCircle(
-                        ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                        ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
-                        15,
-                        this.stylo
-                );
-                canvas.drawLine(
-                        ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                        ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
-                        ((float) c.points.get(i + 1).x) / 100 * canvas.getWidth(),
-                        ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
-                        this.stylo
-                );
-
-
             }
         }
     }

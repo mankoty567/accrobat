@@ -26,10 +26,7 @@ public class ButtonController implements View.OnClickListener {
     public void onClick(View v) {
         //Log.e("controller", Map.chemins.toString());
         if(v.getId() == R.id.bEffacer){
-            Map.chemins = new ArrayList<>();
-            Chemin c = new Chemin();
-            Map.chemins.add(c);
-            Map.cheminActuel = c;
+            Map.pointPassages = new ArrayList<>();
             return;
         }
 
@@ -46,7 +43,7 @@ public class ButtonController implements View.OnClickListener {
             pedometerController.bikeAction();
             return;
         }
-
+        /*
         Chemin chemin = new Chemin();
 
         if(v.getId() == R.id.bAddCurrent){
@@ -81,7 +78,7 @@ public class ButtonController implements View.OnClickListener {
 
         Map.chemins.add(chemin);
         Map.cheminActuel = chemin;
-
+        */
     }
 
     public void stopPedometerAndGPS(){

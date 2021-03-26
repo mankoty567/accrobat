@@ -14,102 +14,109 @@ import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
 
 public class MapResponse implements APIListenner {
-
+// CHEMIN ID = ID DU START
 
     @Override
     public void onErrorResponse(VolleyError error) {
 
     }
 
+
     @Override
     public void onResponse(Object response) {
-
         Log.e("map", response.toString());
-        Map.chemins = new ArrayList<>();
 
-        try {
+        try{
+            // Log de la map
+            //Log.e("map", response.toString());
 
+            // Init des chemins
+            Map.pointPassages = new ArrayList<>();
+
+            // Conversion de la réponse en JSON
             JSONObject json = new JSONObject((String) response);
 
-            JSONArray pointPassage = json.getJSONArray("PointPassages");
+            // MAP
             Map.libelle = json.getString("title");
             Map.desc = json.getString("description");
 
-            for(int i=0; i<pointPassage.length(); i++){
-                Log.e("map", "i: "+i);
-                Chemin chemin;
+            JSONArray pointsPassage = json.getJSONArray("PointPassages");
 
+            Chemin chemin;
+            PointPassage pointPassage;
+
+            // On instantie les chemins
+            for (int pointPassagei = 0; pointPassagei <pointsPassage.length() ; pointPassagei++){
+                JSONObject jpointPassage = pointsPassage.getJSONObject(pointPassagei);
+
+                pointPassage = new PointPassage();
 
                 Point premierPoint = new Point(
-                        (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("y")* 100),
-                        100 - (int) Math.round(((JSONObject) pointPassage.get(i)).getDouble("x")* 100)
+                        (int) Math.round((jpointPassage.getDouble("x")* 100)),
+                        100- (int) Math.round((jpointPassage.getDouble("y")* 100) )
                 );
 
+                pointPassage.id = jpointPassage.getInt("id");
+                pointPassage.titre = jpointPassage.getString("title");
+                pointPassage.desc = jpointPassage.getString("description");
+                pointPassage.chemins = new ArrayList<>();
 
+                JSONArray jpointsStart = jpointPassage.getJSONArray("pointStart");
 
-                // On récurperes les points suivants
-                JSONArray pointStart  = ((JSONObject) pointPassage.get(i)).getJSONArray("pointStart");
-                //Log.e("pstart", pointStart.toString());
-                //Log.e("pstart", "len: "+ pointStart.length());
-                Log.e("pts", premierPoint.toString());
+                // Pour tout les chemins
+                for(int chemini=0; chemini < jpointsStart.length() ; chemini++){
+                    JSONObject jchemin = jpointsStart.getJSONObject(chemini);
 
-                // On parcours les points suivant du pp (en tant que chemin)
-                for (int j=0; j<pointStart.length();j++){
-                    //Log.e("map", "j: "+j);
-                    // On ajoute la position du pp en tant que premier point
                     chemin = new Chemin();
                     chemin.points.add(premierPoint);
-                    //chemin.title = ((JSONObject) pointPassage.get(i)).getString("title");
-                    chemin.title = ((JSONObject) pointPassage.get(i)).getString("id");
-                    chemin.desc = ((JSONObject) pointPassage.get(i)).getString("description");
-                    JSONArray path = (JSONArray) ((JSONObject) pointStart.get(j)).get("path");
-                    // On parcours les points (path qui composent le chemin
-                    for(int k=0; k<path.length();k++){
-                        Log.e("map", "k: "+k);
-                        JSONArray position = (JSONArray) path.get(k);
+                    chemin.objectifId = jchemin.getInt("PointEndId");
+                    chemin.origine = pointPassage;
+
+                    JSONArray jpath = jchemin.getJSONArray("path");
+                    // Pour tout les points qui le composent
+                    for(int pathi=0; pathi < jpath.length(); pathi++){
+                        JSONArray position = (JSONArray) jpath.get(pathi);
+                        // On l'ajoute à sa liste
                         chemin.points.add(
                                 new Point(
-                                        (int) Math.round( (double) position.get(1)*100),
-                                        100 - (int) Math.round( (double) position.get(0)*100)
-                                    )
+                                        ((int) Math.round( (double) position.get(0)*100)),
+                                        100 - ((int) Math.round( (double) position.get(1)*100))
+                                )
                         );
                     }
-                    Log.e("map", chemin.toString());
-                    Map.chemins.add(chemin);
+                    pointPassage.chemins.add(chemin);
+                }
+                Map.pointPassages.add(pointPassage);
+            }
+
+            // On assigne les pointeurs Chemin.objectif en f(x) Chemin.objectifId
+            // on le fais mtn il faut tout les pp dans le modele pour avoir tout les id
+
+            Log.e("Model", Map.pointPassages.toString());
+            for(PointPassage pointPassage1 : Map.pointPassages){
+                for(Chemin chemin1 : pointPassage1.chemins){
+                    chemin1.objectif = PointPassage.getById(chemin1.objectifId);
+                    // On connecte
+                    if(chemin1.objectif.chemins.size() > 0)
+                        chemin1.points.add(chemin1.objectif.chemins.get(0).points.get(0));
+
+
                 }
             }
-            Map.cheminActuel = Map.chemins.get(0);
-            Log.e("deb",Map.chemins.toString());
-            /*
-            //Log.e("deb",json.getJSONArray("PointPassages").toString());
-            JSONArray pointPassage = json.getJSONArray("PointPassages");
-            Chemin chemin = new Chemin();
 
-            for(int i=0; i<pointPassage.length(); i++){
-                int x, y;
-                x = Integer.parseInt(((JSONObject) pointPassage.get(i)).get("x")+"");
-                y = Integer.parseInt(((JSONObject) pointPassage.get(i)).get("y")+"");
+            Map.dernierPointPassage = Map.pointPassages.get(0);
+            Map.cheminActuel = Map.dernierPointPassage.chemins.get(0);
 
-                chemin.points.add(new Point(x,y));
 
-            }
 
-            Map.chemins.add(chemin);
-            Map.cheminActuel = chemin;
-             */
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Map.chemins = new ArrayList<>();
-            Chemin c = new Chemin();
-            Map.chemins.add(c);
-            Map.cheminActuel = c;
-            Log.e("map", "err");
+        }catch (JSONException jsonException){
+            jsonException.printStackTrace();
+            Map.pointPassages = new ArrayList<>();
         }
-
-
     }
+
 }

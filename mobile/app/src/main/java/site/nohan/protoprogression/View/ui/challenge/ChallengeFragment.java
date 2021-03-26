@@ -20,7 +20,7 @@ public class ChallengeFragment extends Fragment {
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.progression, container, false);
 
-        new MapRequest(this.getActivity(), 2);
+        new MapRequest(this.getActivity(), 15);
 
         return root;
     }

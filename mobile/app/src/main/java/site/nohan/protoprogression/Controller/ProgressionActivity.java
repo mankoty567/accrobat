@@ -22,7 +22,7 @@ public class ProgressionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new MapRequest(this,3);
+        //new MapRequest(this,6);
     }
 
 

@@ -11,9 +11,11 @@ public class Map {
 
     public static int accompli;
 
+    public static PointPassage dernierPointPassage;
     public static Chemin cheminActuel;
 
-    public static ArrayList<Chemin> chemins;
+    public static ArrayList<PointPassage> pointPassages;
+
 
 
     static{
