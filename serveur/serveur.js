@@ -14,20 +14,6 @@ require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
 
-// Segment
-app.post('/api/segment', m.user_mdw.put_admin, m.segment_ctrl.post_segment);
-app.get('/api/segment/:id', m.user_mdw.put_user, m.segment_ctrl.get_segment);
-app.post(
-  '/api/segment/:id',
-  m.user_mdw.put_admin,
-  m.segment_ctrl.update_segment
-);
-app.delete(
-  '/api/segment/:id',
-  m.user_mdw.put_admin,
-  m.segment_ctrl.delete_segment
-);
-
 // Obstacle
 app.post('/api/obstacle', m.user_mdw.put_admin, m.obstacle_ctrl.post_obstacle);
 app.post(

@@ -21,28 +21,24 @@ function stringifyBody(body, display_required) {
         } else {
           newBody[prefix + k] = '';
         }
-      }
-
-      if (body[k].type === 'data_url') {
+      } else if (body[k].type === 'data_url') {
         newBody[prefix + k] = 'data:image/...';
-      }
-
-      if (body[k].type === 'number') {
+      } else if (body[k].type === 'number') {
         newBody[prefix + k] = 0;
+      } else {
+        newBody[prefix + k] = body[k].type;
       }
 
       if (display_required && body[k].required) delete newBody[k];
     } else {
       if (body[k] === 'string') {
         newBody[k] = '';
-      }
-
-      if (body[k] === 'data_url') {
+      } else if (body[k] === 'data_url') {
         newBody[k] = 'data:image/...';
-      }
-
-      if (body[k] === 'number') {
+      } else if (body[k] === 'number') {
         newBody[k] = 0;
+      } else {
+        newBody[k] = body[k];
       }
 
       if (display_required) {
@@ -99,12 +95,6 @@ const html = mustache.render(template, {
   version: package.version,
   categories: categories,
 });
-
-/*categories.forEach((cate) => {
-  cate.routes.forEach((route) => {
-    console.log(route);
-  });
-});*/
 
 const json = JSON.stringify(
   {

@@ -1,9 +1,10 @@
-const fixture = require('../loadDataToBdd');
 const challengeValidation = require('../../modules/challengeValidation');
 
 module.exports = {
   description: 'Test si la fonction de vérification de challenge marche bien',
   test: async (test) => {
+    const fixture = require('../loadDataToBdd');
+
     let bonId = await fixture.bonChallenge();
     let pasBonId = await fixture.pasBonChallenge();
 
