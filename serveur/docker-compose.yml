@@ -7,6 +7,7 @@ services:
       - BDD_URL=mysql://acrobat:acrobat@database/database
       - DEBUG=serveur:*
       - JWT_SECRET=123456
+      - HOST=http://localhost:1418
     ports:
       - 1418:1418
     command: npm run dev

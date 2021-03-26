@@ -1,49 +1,54 @@
 const fs = require('fs');
 const path = require('path');
 const mustache = require('mustache');
+const package = require('../../package.json');
 
 let categories = [];
 
-function stringifyBody(body) {
-  // Ajouter les suppressions de types et tout
+function stringifyBody(body, display_required) {
   if (body === undefined) return;
+
+  let newBody = { ...body };
 
   Object.keys(body).forEach((k) => {
     if (typeof body[k] === 'object') {
       let prefix = '';
-      if (body[k].required) prefix = '*';
+      if (display_required && body[k].required) prefix = '*';
 
       if (body[k].type === 'string') {
-        body[prefix + k] = '';
+        newBody[prefix + k] = '';
       }
 
       if (body[k].type === 'data_url') {
-        body[prefix + k] = 'data:image/...';
+        newBody[prefix + k] = 'data:image/...';
       }
 
       if (body[k].type === 'number') {
-        body[prefix + k] = 0;
+        newBody[prefix + k] = 0;
       }
 
-      if (body[k.required]) delete body[k];
+      if (display_required && body[k.required]) delete newBody[k];
     } else {
       if (body[k] === 'string') {
-        body[k] = '';
+        newBody[k] = '';
       }
 
       if (body[k] === 'data_url') {
-        body[k] = 'data:image/...';
+        newBody[k] = 'data:image/...';
       }
 
       if (body[k] === 'number') {
-        body[k] = 0;
+        newBody[k] = 0;
       }
 
-      body['*' + k] = body[k];
-      delete body[k];
+      if (display_required) {
+        newBody['*' + k] = newBody[k];
+        delete newBody[k];
+      }
     }
   });
-  return JSON.stringify(body, null, 2);
+
+  return JSON.stringify(newBody, null, 2);
 }
 
 function stringifyResult(result) {
@@ -62,9 +67,11 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
       title: data.meta.title,
       routes: data.routes.map((r) => {
         return {
+          name: r.name,
           method: r.method,
           url: r.url,
-          body: stringifyBody(r.body),
+          body: stringifyBody(r.body, true),
+          bodyJSON: stringifyBody(r.body, false),
           query: r.query,
           description: r.description,
           result: r.result?.map((resu) => {
@@ -85,9 +92,84 @@ const template = fs.readFileSync(
 
 const html = mustache.render(template, {
   last_build_date: new Date(),
-  version: require('../../package.json').version,
+  version: package.version,
   categories: categories,
 });
+
+/*categories.forEach((cate) => {
+  cate.routes.forEach((route) => {
+    console.log(route);
+  });
+});*/
+
+const json = JSON.stringify(
+  {
+    info: {
+      name: 'Acrobatt',
+      _postman_id: 'acrobat-documentation',
+      version: package.version,
+      schema:
+        'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+    },
+    variable: [
+      {
+        key: 'baseURL',
+        value: process.env.HOST,
+        // eslint-disable-next-line quotes
+        name: "Host de l'API",
+      },
+    ],
+    auth: {
+      type: 'bearer',
+      bearer: [
+        {
+          key: 'token',
+          value: '[VOTRE JWT]',
+          type: 'string',
+        },
+      ],
+    },
+    item: categories.map((cate) => {
+      return {
+        name: cate.title,
+        item: cate.routes.map((route) => {
+          return {
+            name: route.name,
+            request: {
+              description: route.description,
+              method: route.method,
+              url: {
+                raw: '{{baseURL}}' + route.url,
+                host: ['{{baseURL}}'],
+                path: route.url.split('/').filter((r) => r !== ''),
+                variable: route.url
+                  .split('/')
+                  .filter((r) => r.includes(':'))
+                  .map((v) => {
+                    return {
+                      key: v.substr(1),
+                      value: '',
+                    };
+                  }),
+              },
+              body: {
+                mode: 'raw',
+                raw: route.bodyJSON,
+                options: {
+                  raw: {
+                    language: 'json',
+                  },
+                },
+              },
+            },
+          };
+        }),
+      };
+    }),
+  },
+  null,
+  2
+);
 
 // Export du résultat
 if (!fs.existsSync(path.join(__dirname, '../../doc'))) {
@@ -95,6 +177,7 @@ if (!fs.existsSync(path.join(__dirname, '../../doc'))) {
 }
 
 fs.writeFileSync(path.join(__dirname, '../../doc/index.html'), html);
+fs.writeFileSync(path.join(__dirname, '../../doc/collection.json'), json);
 
 // Copie de tous les fichiers statiques
 fs.readdirSync(path.join(__dirname, './static')).forEach((file) => {

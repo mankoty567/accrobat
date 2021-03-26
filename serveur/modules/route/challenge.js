@@ -11,7 +11,7 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge',
     func: [m.user_mdw.put_user, m.challenge_ctrl.get_all_challenge],
-    body: undefined,
+    name: 'Récupération de tous les challenges publiés',
     description:
       'Récupération de tous les challenges accessibles à un utilisateur',
     result: [
@@ -30,7 +30,7 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge/admin',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.get_all_challenge_admin],
-    body: undefined,
+    name: 'Récupération de tous les challenges',
     description:
       'Récupération de tous les challenges (accessible uniquement à un administrateur)',
     result: [
@@ -49,7 +49,6 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge/:id',
     func: [m.user_mdw.put_user, m.challenge_ctrl.get_challenge_id],
-    body: undefined,
     query: [
       {
         param: 'include=point',
@@ -66,6 +65,7 @@ module.exports.routes = [
           'Renvoit le challenge, ses points de passages, les segments et les obstacles associés',
       },
     ],
+    name: "Récupération d'un challenge",
     description:
       "Récupération des données d'un challenge en fonction de son ID",
     result: [
@@ -90,8 +90,9 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge/:id/image',
     func: [m.challenge_ctrl.get_image],
-    body: undefined,
-    description: "Récupération de l'image associée au challenge",
+    name: "Récupération de l'image",
+    description:
+      "Récupération de l'image associée au challenge comme un fichier classique",
     result: [
       {
         code: 200,
@@ -107,7 +108,7 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge/:id/avatar',
     func: [m.challenge_ctrl.get_image_avatar],
-    body: undefined,
+    name: "Récupération de l'avatar",
     description: "Récupération de l'avatar associée au challenge",
     result: [
       {
@@ -124,7 +125,7 @@ module.exports.routes = [
     method: 'GET',
     url: '/api/challenge/:id/validity',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.verif_validity],
-    body: undefined,
+    name: 'Vérification de la validité',
     description:
       "Vérifie la validitée d'un challenge. Le tableau error contient une liste d'erreurs",
     result: [
@@ -155,6 +156,7 @@ module.exports.routes = [
         required: false,
       },
     },
+    name: 'Création de challenge',
     description:
       'Crée un nouveau challenge. frontId est renvoyé de manière transparente au client',
     result: [
@@ -181,7 +183,7 @@ module.exports.routes = [
     method: 'DELETE',
     url: '/api/challenge/:id',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.delete_challenge],
-    body: undefined,
+    name: "Suppression d'un challenge",
     description: 'Supprime le challenge :id',
     result: [
       {
@@ -206,6 +208,7 @@ module.exports.routes = [
         required: false,
       },
     },
+    name: "Modification d'un challenge",
     description: 'Modifie le challenge :id',
     result: [
       {
@@ -235,6 +238,7 @@ module.exports.routes = [
     method: 'POST',
     url: '/api/challenge/:id/clone',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.clone_challenge],
+    name: "Dupplication d'un challenge",
     description: 'Clone un challenge, avec tout ses attributs et descendants',
     result: [
       {
@@ -256,6 +260,7 @@ module.exports.routes = [
     method: 'POST',
     url: '/api/challenge/:id/publish',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.publish_challenge],
+    name: "Publication d'un challenge",
     description:
       "Publie un challenge. Attention le challenge n'est plus modifiable par la suite",
     result: [

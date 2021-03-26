@@ -10,6 +10,10 @@
       <h1>Documentation</h1>
       <p class="lastbuild">Dernière génération: {{ last_build_date }}</p>
       <p class="lastbuild">Version: {{ version }}</p>
+      <div class="postmanContainer">
+        <img src="./postman.svg" />
+        <p class="postmanLink"><a href="./collection.json" download>Collection Postman</a></p>
+      </div>
   
       {{#categories}}
         <div class="categorie">

@@ -84,3 +84,23 @@ li {
 .param {
   text-decoration: underline;
 }
+
+.postmanContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.postmanLink {
+  text-align: center;
+}
+
+.postmanLink a {
+  color: black;
+}
+
+.postmanContainer img {
+  width: 25px;
+  height: 25px;
+  margin: 5px;
+}
