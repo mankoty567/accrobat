@@ -416,7 +416,7 @@ async function challengeMobileTests() {
   const challenge = await bdd.Challenge.create({
     title: 'Challenge à ne pas supprimer',
     // eslint-disable-next-line quotes
-    description: "Un challenge qui n'est pas bon au fond de lui même",
+    description: 'Un qui est propre pour le mobile',
     echelle: 1500,
     published: false,
   });
