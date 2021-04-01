@@ -4,12 +4,5 @@ eslint:
   script: 
     - cd serveur
     - npm i eslint
-    - npm run test
-  stage: test
-
-eslintweb: 
-  script: 
-    - cd web
-    - npm install
-    - npm run test
+    - npm run lint
   stage: test
