@@ -30,15 +30,29 @@ export const userApi = {
     }
   },
   login: ({ username, password }) => {
-    fetch(`${host}/api/user/whoami`, {
+    fetch(`${host}/api/user/login`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
       },
       body: JSON.stringify({
         username,
         password,
+      }),
+    })
+      .then(checkStatus)
+      .then(res.json());
+  },
+  register: ({ username, password, email }) => {
+    fetch(`${host}/api/user/register`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        email,
       }),
     })
       .then(checkStatus)
@@ -72,6 +86,13 @@ userApi
   .catch((err) => {
     // Erreur, mauvais username ou mot de passe
   });
+*/
+
+/*
+ Code de déconnection
+
+localStorage.setItem("jwt", undefined);
+setUserState(undefined)
 */
 
 export function CheckLogged({ children }) {
