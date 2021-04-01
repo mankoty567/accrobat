@@ -37,11 +37,13 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                 Log.e("chld", ""+linearLayout.getChildCount());
                 //Log.e("suiv",Map.cheminActuel.suivants.get(0).title);
 
-                for(Chemin c : Map.cheminActuel.origine.chemins){
+                for(Chemin c : Map.cheminActuel.objectif.chemins){
+                    if(c.objectif == null)
+                        break;
                     Log.e("suiv",c.objectif.titre);
                     Button button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c.objectif));
-                    button.setText(c.objectif.titre);
+                    button.setOnClickListener(new DirectionController(c));
+                    button.setText(c.objectif.titre + " - " + c.nom);
 
                     linearLayout.addView(button);
                 }
@@ -57,15 +59,6 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
         Map.accompli = (int) Math.floor(((float) progress*Map.cheminActuel.getLongueur())/100);
 
-        //Log.e("controller", progress + "% ; "+Map.accompli+" /" +Map.cheminActuel.getLongueur()+ "");
-        /*
-        int i=0;
-        for(Point p : Map.cheminActuel.points){
-            i++;
-            Log.e("p"+i, Map.cheminActuel.getLongueurAt(p)+"");
-        }
-
-         */
 
     }
 
