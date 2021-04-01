@@ -4,9 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { RecoilRoot } from 'recoil';
+
 ReactDOM.render(
-  <App />,
-  document.getElementById('root')
+  <RecoilRoot>
+    <App />
+  </RecoilRoot>,
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
