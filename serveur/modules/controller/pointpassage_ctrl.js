@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:pointpassage');
 
 const REQUIRED_TYPE = ['start', 'end', 'point'];
 
@@ -45,6 +46,7 @@ module.exports = {
             y: req.body.y,
             ChallengeId: req.params.id,
           }).then((pointpassage) => {
+            debug('Création point passage ' + pointpassage.id);
             res.json(pointpassage);
           });
         }
@@ -57,6 +59,7 @@ module.exports = {
         if (pointpassage === null) {
           res.status(404).send('PointPassage not found');
         } else {
+          debug('Suppression point passage ' + pointpassage.id);
           pointpassage
             .destroy()
             .then(() => {
@@ -99,6 +102,7 @@ module.exports = {
         }
 
         if (edited) {
+          debug('Update point passage ' + pointpassage.id);
           pointpassage.save().then(() => {
             res.json(pointpassage);
           });

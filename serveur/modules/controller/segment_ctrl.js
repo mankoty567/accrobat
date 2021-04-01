@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:segment');
 
 module.exports = {
   post_segment: (req, res) => {
@@ -26,6 +27,7 @@ module.exports = {
                   PointEndId: req.body.PointEndId,
                   path: req.body.path,
                 }).then((segment) => {
+                  debug('Création segment' + segment.id);
                   res.json(segment);
                 });
               }
@@ -113,6 +115,7 @@ module.exports = {
       }
 
       if (edited) {
+        debug('Update segment ' + segment.id);
         await segment.save();
         res.json({
           id: segment.id,
@@ -134,6 +137,7 @@ module.exports = {
   },
   delete_segment: (req, res) => {
     bdd.Segment.findOne({ where: { id: req.params.id } }).then((segment) => {
+      debug('Suppression segment ' + segment.id);
       segment.destroy().then(res.send('OK'));
     });
   },

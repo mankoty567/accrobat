@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:challenge');
 
 module.exports = {
   get_challenge_id: (req, res) => {
@@ -66,6 +67,7 @@ module.exports = {
         description: req.body.description,
         img_fond: req.body.img_fond,
       }).then((challenge) => {
+        debug('Création du challenge ' + challenge.id);
         res.json(challenge);
       });
     }
@@ -76,6 +78,7 @@ module.exports = {
         if (challenge === null) {
           res.status(404).send('Not found');
         } else {
+          debug('Suppression du challenge ' + challenge.id);
           challenge
             .destroy()
             .then(() => {
@@ -113,6 +116,7 @@ module.exports = {
         }
 
         if (edited) {
+          debug('Mise à jour du challenge ' + challenge.id);
           challenge.save().then(() => {
             res.json(challenge);
           });

@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:obstacle');
 
 const TYPE = ['question', 'action'];
 
@@ -37,6 +38,7 @@ module.exports = {
               req.body.type === 'question' ? req.body.enigme_awnser : null,
             SegmentId: req.body.SegmentId,
           }).then((ostacle) => {
+            debug('Création obstacle ' + ostacle.id);
             res.json(ostacle);
           });
         }

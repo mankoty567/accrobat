@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const debug = require('debug')('serveur:event');
 
 const ALLOWED_TYPE = [
   'marche',
@@ -49,6 +50,8 @@ module.exports = {
             type: req.body.type,
             data: req.body.data !== undefined ? req.body.data : null,
           }).then((event) => {
+            // eslint-disable-next-line quotes
+            debug("Création de l'event " + event.id);
             res.json(event);
           });
         }
