@@ -1,14 +1,18 @@
 import { host, checkStatus } from './eventApi';
 
+import { useRecoilState } from 'recoil';
+
+import { useHistory } from 'react-router-dom';
 import { atom } from 'recoil';
+import { useEffect } from 'react';
 
 export const userAtom = atom({
   key: 'userState',
   default: undefined,
 });
 
-export const duringConnectionAtom = atom({
-  key: 'duringConnection',
+export const doneConnectionAtom = atom({
+  key: 'doneConnection',
   default: false,
 });
 
@@ -53,7 +57,7 @@ function refreshJWT() {
       setTimeout(refreshJWT, JWT_VALIDITY);
     })
     .catch((err) => {
-      setDuringConnection(true);
+      // Erreur
     });
 }
 
@@ -69,3 +73,21 @@ userApi
     // Erreur, mauvais username ou mot de passe
   });
 */
+
+export function CheckLogged({ children }) {
+  const [userState] = useRecoilState(userAtom);
+  const [doneConnectionState] = useRecoilState(doneConnectionAtom);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (doneConnectionState && userState === undefined) {
+      history.push('/login');
+    }
+  }, [userState, duringConnectionState]);
+
+  return !doneConnectionState || userState === undefined ? (
+    <></>
+  ) : (
+    <>{children}</>
+  );
+}

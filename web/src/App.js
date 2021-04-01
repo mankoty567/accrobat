@@ -16,9 +16,7 @@ const JWT_VALIDITY = 2 * 60 * 60 * 1000;
 function App() {
   // Tentative de connection automatique de l'utilisateur
   const [, setUserState] = useRecoilState(userAtom);
-  const [, setDuringConnection] = useRecoilState(
-    duringConnectionAtom,
-  );
+  const [, setDoneConnection] = useRecoilState(doneConnectionAtom);
 
   useEffect(() => {
     launchConnection();
@@ -27,13 +25,13 @@ function App() {
         .whoami()
         .then((data) => {
           localStorage.setItem('jwt', data.jwt);
-          setDuringConnection(true);
+          setDoneConnection(true);
           setUserState(data);
 
           setTimeout(launchConnection, JWT_VALIDITY);
         })
         .catch((err) => {
-          setDuringConnection(true);
+          setDoneConnection(true);
         });
     }
   }, []);
