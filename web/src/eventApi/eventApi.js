@@ -55,11 +55,11 @@ const API = {
     return fetch(`${host}/api/challenge`, {
       method: 'POST',
       headers: {
-        Authorization:
-          'Bearer ' + window.localStorage.getItem('token'),
+        // Authorization:
+        //   'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.challenge),
+      body: JSON.stringify(data),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -80,23 +80,26 @@ const API = {
   deleteChallenge: (data) => {
     return fetch(`${host}/api/challenge/${data.challenge_id}`, {
       method: 'DELETE',
-      headers: {
-        Authorization:
-          'Bearer ' + window.localStorage.getItem('token'),
-      },
+      // headers: {
+      //   Authorization:
+      //     'Bearer ' + window.localStorage.getItem('token'),
+      // },
     })
       .then(checkStatus)
-      .then((res) => res.json());
+      .then((res) => res.text());
   },
   cloneChallenge: (data) => {
-    return fetch(`${host}/api/challenge/${data.challenge_id}/clone`, {
-      method: 'POST',
-      headers: {
-        Authorization:
-          'Bearer ' + window.localStorage.getItem('token'),
-        'Content-Type': 'application/json',
+    return fetch(
+      `${host}/api/challenge/${data.challenge_id + 1}/clone`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization:
+            'Bearer ' + window.localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
       .then(checkStatus)
       .then((res) => res.json());
   },

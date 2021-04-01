@@ -2,18 +2,13 @@ import {
   Typography,
   List,
   ListItem,
-  IconButton,
-  Paper,
   Grid,
   Avatar,
-  Button,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import LayersIcon from '@material-ui/icons/Layers';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+
 import React from 'react';
 
-let ChallengeItem = ({ challenge }) => {
+let ChallengeItem = ({ challenge, index, menuComponents }) => {
   return (
     <>
       <Grid container>
@@ -25,7 +20,7 @@ let ChallengeItem = ({ challenge }) => {
           alignContent="center"
           justify="center"
         >
-          <Avatar>T</Avatar>
+          <Avatar> </Avatar>
         </Grid>
         <Grid item xs={8}>
           <List>
@@ -40,19 +35,15 @@ let ChallengeItem = ({ challenge }) => {
           </List>
         </Grid>
         <Grid item xs={3} align="right">
-          <Button startIcon={<EditIcon />}>Modifier</Button>
+          {menuComponents}
+          {/* <Button startIcon={<EditIcon />}>Modifier</Button>
           <Button startIcon={<LayersIcon />}>Dupliquer</Button>
-          <Button startIcon={<DeleteOutlineIcon />}>Supprimer</Button>
-
-          {/* <IconButton>
-            <EditIcon />
-          </IconButton>
-          <IconButton>
-            <LayersIcon />
-          </IconButton>
-          <IconButton>
-            <DeleteOutlineIcon />
-          </IconButton> */}
+          <Button
+            startIcon={<DeleteOutlineIcon />}
+            onClick={() => handleDelete(index)}
+          >
+            Supprimer
+          </Button> */}
         </Grid>
       </Grid>
     </>
