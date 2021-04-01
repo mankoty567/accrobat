@@ -8,6 +8,8 @@ services:
       - DEBUG=serveur:*
       - JWT_SECRET=123456
       - HOST=http://localhost:1418
+      - DOC_NAME=Acrobatt
+      - DOC_HOST=http://localhost:1418
     ports:
       - 1418:1418
     command: npm run dev

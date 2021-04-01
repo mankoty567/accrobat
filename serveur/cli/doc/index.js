@@ -105,6 +105,7 @@ const template = fs.readFileSync(
 );
 
 const html = mustache.render(template, {
+  doc_name: process.env.DOC_NAME,
   last_build_date: new Date(),
   version: package.version,
   categories: categories,

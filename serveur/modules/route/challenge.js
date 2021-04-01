@@ -254,6 +254,7 @@ module.exports.routes = [
           createdAt: 'date',
         },
       },
+      { code: 400, content: 'Something went wrong' },
     ],
   },
   {

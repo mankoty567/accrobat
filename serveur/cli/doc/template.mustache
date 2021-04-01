@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Documentation</title>
+    {{#doc_name}}
+      <title>{{doc_name}} - Documentation</title>
+    {{/doc_name}}
+    {{^doc_name}}
+      <title>Documentation</title>
+    {{/doc_name}}
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/atom-one-dark.min.css">
   </head>
   <body>
-    <h1>Documentation</h1>
+    {{#doc_name}}
+      <h1>{{doc_name}} - Documentation</h1>
+    {{/doc_name}}
+    {{^doc_name}}
+      <h1>Documentation</h1>
+    {{/doc_name}}
     <p class="lastbuild">Dernière génération: {{ last_build_date }}</p>
     <p class="lastbuild">Version: {{ version }}</p>
     <div class="postmanContainer">
