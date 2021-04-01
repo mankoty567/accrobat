@@ -1,4 +1,5 @@
 import React, {
+  useEffect,
   useMemo,
   useState
 } from 'react';
@@ -79,6 +80,10 @@ let ChallengeEditor = () => {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [startPoint, setStartPoint] = useState(null);
 
+  useEffect(() => {
+    console.log(currentMarker);
+  }, [currentMarker])
+
   return (
     <div className={classes.root}>
       <AppBar position='fixed' className={classes.appBar}>
@@ -147,11 +152,11 @@ let ChallengeEditor = () => {
             setStartPoint={setStartPoint}
             startPoint={startPoint}
           />
-          {editMode ? 
+          {currentMarker ? (currentMarker.type != 'end' ?
           <>
             <NewPolyline from={currentMarker} />
           </>
-          : null}
+          : null) : null}
           {lines.map((element) => {
             const startMarker = markers.find(m => m.id === element.PointStartId);
             const endMarker = markers.find(m => m.id === element.PointEndId);

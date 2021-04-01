@@ -29,7 +29,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     };
     setMarkers((current) => [...current, newMarker]);
     setStartPoint(newMarker);
-    console.log("New marker");
+    setCurrentMarker(newMarker);
     return newMarker;
   };
 
@@ -51,7 +51,6 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       'path': []
     };
     setLines((current) => [...current, newLines]);
-    console.log("New line");
   }
 
   //Récupère l'icône en fonction du type du marker
@@ -74,7 +73,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
           addMarker(event);
         } else {
           var newMarker = addMarker(event);
-          addLine(startPoint, newMarker);
+          addLine(currentMarker, newMarker);
         }
       }
     },
@@ -98,17 +97,20 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    {currentMarker ? (currentMarker.id === item.id ? setCurrentMarker(null) : setCurrentMarker(item)) : setCurrentMarker(item)}
+                    // {currentMarker ? (currentMarker.id === item.id ? (editMode ? null : setCurrentMarker(null)) : setCurrentMarker(item)) : setCurrentMarker(item)}
+                    var newCurrent = item;
                     if (currentMarker) {
-                      if(editMode && item.type != 'start' && currentMarker.id != item.id) {
-                        setEditMode(false);
-                        addLine(startPoint, item);
-                        setStartPoint(item);
-                      }
+                      if (currentMarker.id === item.id && editMode) newCurrent = null;
+                    }
+                    setCurrentMarker(newCurrent);
+                    if(editMode && item.type != 'start' && currentMarker.id != item.id) {
+                      setEditMode(false);
+                      addLine(currentMarker, item);
+                      // setStartPoint(item);
                     }
                   },
                   dragend: (event) => {
-                    setMarkers(markers => markers.map(m => m.id === item.id ? { ...m, x: event.target._latlng.lat, y: event.target._latlng.lng } : m));
+                    setMarkers(markers => markers.map(m => m.id === item.id ? { ...m, x: event.target._latlng.lng, y: event.target._latlng.lat } : m));
                     setEditMode(false);
                   }
                 }}
