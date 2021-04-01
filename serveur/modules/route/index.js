@@ -26,20 +26,35 @@ const checkBody = (req, res, next) => {
   if (correctBody === undefined) {
     next();
   } else {
+    let correct = checkBodyOfOne(correctBody);
+
+    if (correct) {
+      next();
+    } else {
+      res.status(400).send('Bad request');
+    }
+  }
+
+  function checkBodyOfOne(obj) {
+    // TODO : Peut-être faire la vérif du type
     let correct = true;
 
-    // TODO : Peut-être faire la vérif du type
-    Object.keys(correctBody).forEach((k) => {
-      if (typeof correctBody[k] === 'object') {
-        if (correctBody[k].required) {
+    Object.keys(obj).forEach((k) => {
+      if (typeof obj[k] === 'object') {
+        // Vérification de si c'est un sous objet
+        if (obj[k].type === 'object') {
+          correct = checkBodyOfOne(obj[k].attributes);
+        }
+
+        if (obj[k].required) {
           if (req.body[k] === undefined) {
             correct = false;
           }
         }
 
         // Vérification des valeurs des chaines
-        if (correctBody[k].value !== undefined && req.body[k] !== undefined) {
-          correct = correctBody[k].value.includes(req.body[k]);
+        if (obj[k].value !== undefined && req.body[k] !== undefined) {
+          correct = obj[k].value.includes(req.body[k]);
         }
       } else {
         if (req.body[k] === undefined) {
@@ -48,10 +63,6 @@ const checkBody = (req, res, next) => {
       }
     });
 
-    if (correct) {
-      next();
-    } else {
-      res.status(400).send('Bad request');
-    }
+    return correct;
   }
 };

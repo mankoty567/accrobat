@@ -1,56 +1,66 @@
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const mustache = require('mustache');
 const package = require('../../package.json');
+const chalk = require('chalk');
 
 let categories = [];
 
 function stringifyBody(body, display_required) {
   if (body === undefined) return;
 
-  let newBody = { ...body };
+  let newBody = convertObj(body);
 
-  Object.keys(body).forEach((k) => {
-    if (typeof body[k] === 'object') {
-      let prefix = '';
-      if (display_required && body[k].required) prefix = '*';
+  function convertObj(obj) {
+    let newObj = { ...obj };
 
-      if (body[k].type === 'string') {
-        if (body[k].value !== undefined) {
-          newBody[prefix + k] = body[k].value.join('/');
+    Object.keys(obj).forEach((k) => {
+      if (typeof obj[k] === 'object') {
+        let prefix = '';
+        if (display_required && obj[k].required) prefix = '*';
+
+        if (obj[k].type === 'string') {
+          if (obj[k].value !== undefined) {
+            newObj[prefix + k] = obj[k].value.join('/');
+          } else {
+            newObj[prefix + k] = '';
+          }
+        } else if (obj[k].type === 'data_url') {
+          newObj[prefix + k] = 'data:image/...';
+        } else if (obj[k].type === 'number') {
+          newObj[prefix + k] = 0;
+        } else if (obj[k].type === 'boolean') {
+          newObj[prefix + k] = 'true/false';
+        } else if (obj[k].type === 'object') {
+          newObj[prefix + k] = convertObj(obj[k].attributes);
         } else {
-          newBody[prefix + k] = '';
+          newObj[prefix + k] = obj[k].type;
         }
-      } else if (body[k].type === 'data_url') {
-        newBody[prefix + k] = 'data:image/...';
-      } else if (body[k].type === 'number') {
-        newBody[prefix + k] = 0;
-      } else if (body[k].type === 'boolean') {
-        newBody[prefix + k] = 'true/false';
-      } else {
-        newBody[prefix + k] = body[k].type;
-      }
 
-      if (display_required && body[k].required) delete newBody[k];
-    } else {
-      if (body[k] === 'string') {
-        newBody[k] = '';
-      } else if (body[k] === 'data_url') {
-        newBody[k] = 'data:image/...';
-      } else if (body[k] === 'number') {
-        newBody[k] = 0;
-      } else if (body[k] === 'boolean') {
-        newBody[k] = 'true/false';
+        if (display_required && obj[k].required) delete newObj[k];
       } else {
-        newBody[k] = body[k];
-      }
+        if (obj[k] === 'string') {
+          newObj[k] = '';
+        } else if (obj[k] === 'data_url') {
+          newObj[k] = 'data:image/...';
+        } else if (obj[k] === 'number') {
+          newObj[k] = 0;
+        } else if (obj[k] === 'boolean') {
+          newObj[k] = 'true/false';
+        } else {
+          newObj[k] = obj[k];
+        }
 
-      if (display_required) {
-        newBody['*' + k] = newBody[k];
-        delete newBody[k];
+        if (display_required) {
+          newObj['*' + k] = newObj[k];
+          delete newObj[k];
+        }
       }
-    }
-  });
+    });
+
+    return newObj;
+  }
 
   return JSON.stringify(newBody, null, 2);
 }
@@ -103,8 +113,8 @@ const html = mustache.render(template, {
 const json = JSON.stringify(
   {
     info: {
-      name: 'Acrobatt',
-      _postman_id: 'acrobat-documentation',
+      name: process.env.DOC_NAME || 'Documentation',
+      _postman_id: `${process.env.DOC_NAME || 'undefined'}-documentation`,
       version: package.version,
       schema:
         'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
@@ -112,7 +122,7 @@ const json = JSON.stringify(
     variable: [
       {
         key: 'baseURL',
-        value: process.env.HOST,
+        value: process.env.DOC_HOST,
         // eslint-disable-next-line quotes
         name: "Host de l'API",
       },
@@ -184,3 +194,6 @@ fs.readdirSync(path.join(__dirname, './static')).forEach((file) => {
     path.join(__dirname, '../../doc/', file)
   );
 });
+
+console.log(chalk.bold.green('Documentation générée!'));
+process.exit();
