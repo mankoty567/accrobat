@@ -31,31 +31,35 @@ let DraggableMarkers = ({
   let addMarker = async (event) => {
     var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
     var newMarker = {
+      id: id,
       title: 'Point ' + id,
       description: '',
       type: markers.length > 0 ? 'point' : 'start',
-      x: event.latlng.lat,
-      y: event.latlng.lng,
-      frontId: id,
+      x: event.latlng.lng,
+      y: event.latlng.lat,
     };
-    return API.createMarker(newMarker).then((res) => {
-      newMarker.id = res.id;
-      setMarkers((current) => [...current, res]);
-      setStartPoint(newMarker);
-      return newMarker;
-    });
+    setMarkers((current) => [...current, newMarker]);
+    setStartPoint(newMarker);
+    setCurrentMarker(newMarker);
+    return newMarker;
+  };
+
+  let inBounds = (event) => {
+    return !(
+      event.latlng.lat < 0 ||
+      event.latlng.lat > 1 ||
+      event.latlng.lng < 0 ||
+      event.latlng.lng > 1
+    );
   };
 
   //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      frontId: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
+      id: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       PointStartId: start.id,
       PointEndId: end.id,
-      path: [
-        [start.x, start.y],
-        [end.x, end.y],
-      ],
+      path: [],
     };
     return API.createSegment(newLines).then((res) => {
       newLines.id = res.id;
@@ -76,51 +80,67 @@ let DraggableMarkers = ({
   };
 
   //Pour éditer les maps
-  let mapEvent = useMapEvent({
+  let map = useMapEvent({
     click: (event) => {
-      if (
-        !(
-          event.latlng.lat < 0 ||
-          event.latlng.lat > 1 ||
-          event.latlng.lng < 0 ||
-          event.latlng.lng > 1
-        )
-      ) {
+      if (inBounds(event)) {
         if (!markers.length > 0) {
           addMarker(event);
         } else {
           var newMarker = addMarker(event);
-          addLine(startPoint, newMarker);
+          addLine(currentMarker, newMarker);
         }
       }
     },
+    // mousemove: (event) => {
+    //   if (inBounds(event)) {
+    //     setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
+    //   }
+    // }
   });
 
   return (
     <>
       {markers.length > 0 && markers[0][0] !== null
-        ? markers.map((item, index) => {
+        ? markers.map((item) => {
             return (
               <Marker
-                draggable={false}
-                marker_index={index}
-                key={index}
-                position={[item.x, item.y]}
+                draggable={true}
+                marker_index={item.id}
+                key={item.id}
+                position={[item.y, item.x]}
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    {
-                      currentMarker
-                        ? currentMarker.id == item.id
-                          ? setCurrentMarker(null)
-                          : setCurrentMarker(item)
-                        : setCurrentMarker(item);
+                    // {currentMarker ? (currentMarker.id === item.id ? (editMode ? null : setCurrentMarker(null)) : setCurrentMarker(item)) : setCurrentMarker(item)}
+                    var newCurrent = item;
+                    if (currentMarker) {
+                      if (currentMarker.id === item.id && editMode)
+                        newCurrent = null;
                     }
-                    if (editMode && item.type != 'start') {
+                    setCurrentMarker(newCurrent);
+                    if (
+                      editMode &&
+                      item.type != 'start' &&
+                      currentMarker.id != item.id
+                    ) {
                       setEditMode(false);
-                      addLine(startPoint, item);
-                      setStartPoint(item);
+                      addLine(currentMarker, item);
+                      // setStartPoint(item);
                     }
+                  },
+                  dragend: (event) => {
+                    setMarkers((markers) =>
+                      markers.map((m) =>
+                        m.id === item.id
+                          ? {
+                              ...m,
+                              x: event.target._latlng.lng,
+                              y: event.target._latlng.lat,
+                            }
+                          : m,
+                      ),
+                    );
+                    setEditMode(false);
                   },
                 }}
               >

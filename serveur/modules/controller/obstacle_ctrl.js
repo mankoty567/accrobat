@@ -4,32 +4,24 @@ const path = require('path');
 const utils = require('../utils');
 const fs = require('fs');
 
-const TYPE = ['question', 'action'];
-
 module.exports = {
   post_obstacle: (req, res) => {
-    if (
-      !req.body.title ||
-      !req.body.description ||
-      !req.body.type ||
-      !TYPE.includes(req.body.type) ||
-      !req.body.distance ||
-      !req.body.SegmentId ||
-      (req.body.type === 'question' && !req.body.enigme_awnser)
-    ) {
-      res.status(400).send('Bad request: One request body is not correct');
+    if (req.body.type === 'question' && !req.body.enigme_awnser) {
+      res.status(400).send('Bad request');
     } else {
       bdd.Segment.findOne({
         where: { id: req.body.SegmentId },
+        include: {
+          model: bdd.PointPassage,
+          as: 'pointStart',
+          include: bdd.Challenge,
+        },
       }).then((segment) => {
         if (segment === null) {
           res.status(400).send('Bad Request: Segment not found');
+        } else if (segment.pointStart.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
         } else {
-          if (req.body.distance > segment.distance) {
-            res
-              .status(400)
-              .send('Bad Request: Distance of the obstacle is to big');
-          }
           bdd.Obstacle.create({
             title: req.body.title,
             description: req.body.description,
@@ -48,7 +40,7 @@ module.exports = {
                 buffer
               );
               debug('Création obstacle ' + obstacle.id);
-              res.json(obstacle);
+              res.json({ ...obstacle.dataValues, frontId: req.body.frontId });
             });
           });
         }
@@ -58,9 +50,19 @@ module.exports = {
   update_obstacle: (req, res) => {
     bdd.Obstacle.findOne({
       where: { id: req.params.id },
+      include: {
+        model: bdd.Segment,
+        include: {
+          model: bdd.PointPassage,
+          as: 'pointStart',
+          include: bdd.Challenge,
+        },
+      },
     }).then((obstacle) => {
       if (obstacle === null) {
         res.status(404).send('Obstacle not found');
+      } else if (obstacle.Segment.pointStart.Challenge.published) {
+        res.status(400).send('Bad request: Challenge is published');
       } else {
         let edited = false;
         if (req.body.title) {
@@ -103,25 +105,100 @@ module.exports = {
         if (edited) {
           debug('Mise à jour de obstacle ' + obstacle.id);
           obstacle.save().then(() => {
-            res.json(obstacle);
+            res.json({ ...obstacle.dataValues, Segment: undefined });
           });
         } else {
-          res.json(obstacle);
+          res.json({ ...obstacle.dataValues, Segment: undefined });
         }
       }
     });
   },
-  get_image: (req, res) => {
-    bdd.Obstacle.findOne({
-      where: { id: req.params.id },
-    }).then((obstacle) => {
-      if (obstacle === null || obstacle.enigme_img === null) {
-        res.status(404).send('Not found');
+  delete_obstacle: (req, res) => {
+    bdd.Obstacle.findOne({ where: { id: req.params.id } }).then((obstacle) => {
+      if (obstacle === null) {
+        res.status(404).send('Obstacle not found');
       } else {
-        res.sendFile(
-          path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
-        );
+        if (
+          fs.existsSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
+          )
+        ) {
+          fs.unlinkSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.jpg')
+          );
+        }
+        obstacle
+          .destroy()
+          .then(() => {
+            debug('Obstacle supprimé ' + obstacle.id);
+            res.send('OK');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(400).send('Bad Request');
+          });
       }
     });
+  },
+  get_image: (req, res) => {
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+      );
+    } else {
+      res.status(404).send('Not found');
+    }
+  },
+  awnser_obstacle: (req, res) => {
+    if (req.body.ParticipationId === undefined || !req.body.awnser) {
+      res.status(400).send('Bad Request');
+    } else {
+      bdd.Participation.findOne({
+        where: { id: req.body.ParticipationId },
+        include: [{ model: bdd.Event }],
+        order: [[bdd.Event, 'id', 'DESC']],
+      }).then((participation) => {
+        if (participation === null) {
+          res.status(400).send('Bad request: Participation not found');
+        } else {
+          let lastEvent = participation.Events[0];
+          if (
+            lastEvent.type !== 'obstacle:arrivee' &&
+            lastEvent.type !== 'obstacle:bad_answer'
+          ) {
+            res.status(400).send('Bad request: Not in an obstacle');
+          } else {
+            bdd.Obstacle.findOne({
+              where: { id: Math.trunc(lastEvent.data) },
+            }).then((obstacle) => {
+              if (!obstacle.type === 'question') {
+                res.status(400).send('Bad request: Obstacle is not a question');
+              } else {
+                if (req.body.awnser === obstacle.enigme_awnser) {
+                  bdd.Event.create({
+                    type: 'obstacle:completed',
+                    ParticipationId: participation.id,
+                  }).then(() => {
+                    res.json({ good: true });
+                  });
+                } else {
+                  bdd.Event.create({
+                    type: 'obstacle:bad_answer',
+                    ParticipationId: participation.id,
+                    data: obstacle.id,
+                  }).then(() => {
+                    res.json({ good: false });
+                  });
+                }
+              }
+            });
+          }
+        }
+      });
+    }
   },
 };

@@ -12,7 +12,8 @@ type:
 - obstacle:arrivee [Id de l'obstacle]
 - obstacle:image
 - obstacle:image_ok
-- obstacle:image_refused
+- obstacle:image_refused [Id de l'obstacle]
+- obstacle:bad_answer [Id de l'obstacle]
 - obstacle:completed
 
 ## TODO TODAY
@@ -20,13 +21,25 @@ type:
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
 - [x] Sauvegarde des images sur le disque
-- [ ] Supprimer la description obligatoire du point de passage
-- [ ] Ajouter paramètre custom quand on crée un point
-- [ ] Renvoit de l'image soumise à un obstacle
+- [x] Supprimer la description obligatoire du point de passage
+- [x] Ajouter paramètre custom quand on crée un point
+- [x] Renvoit de l'image soumise à un obstacle
 - [ ] Renvoit de la position par rapport à la personne
-- [ ] Vérification de la réponse à l'obstacle
-- [ ] Ajout d'un obstacle type action
-- [ ] Validation d'un obstacle type action
-- [ ] récupération des obstacles type action
-- [ ] Ajouter un status dans un obstacle (en cours, ou disponible)
-- [ ] Ajouter la possibilitée de dupliquer un obstacle
+- [x] Vérification de la réponse à l'obstacle question
+- [x] Ajout d'une image à obstacle type action
+- [x] Validation d'un obstacle type action
+- [x] récupération de toutes les images submitions type action
+- [x] Ajouter un status dans un challenge (en cours, ou disponible)
+- [x] Ajouter la possibilitée de dupliquer un challenge
+- [x] Ajouter une route de vérification du challenge avant la publication
+- [x] Ajouter une route qui publie un challenge
+- [x] Ajouter un petit avatar pour le challenge
+- [x] Ajouter un moyen de mettre pleins de données de tests
+- [x] Connection de l'utilisateur
+- [x] Route whoami
+- [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
+- [ ] Ajouter propriété name au segment
+- [x] Déplacer toutes les routes dans des fichiers séparés
+- [x] Virer la vérification du body des controleurs
+- [x] Vérification du body grâce à la déclaration
+- [ ] Mettre une transaction dans le clone de challenge

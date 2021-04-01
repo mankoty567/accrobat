@@ -26,6 +26,10 @@ module.exports = {
       fs.mkdirSync(path.join(__dirname, '../data/challenge'));
     }
 
+    if (!fs.existsSync(path.join(__dirname, '../data/challengeAvatar'))) {
+      fs.mkdirSync(path.join(__dirname, '../data/challengeAvatar'));
+    }
+
     if (!fs.existsSync(path.join(__dirname, '../data/imageSubmition'))) {
       fs.mkdirSync(path.join(__dirname, '../data/imageSubmition'));
     }

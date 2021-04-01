@@ -1,6 +1,23 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { CRS } from 'leaflet';
 import { MapContainer, ImageOverlay, Polyline } from 'react-leaflet';
+=======
+import React, {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+import {
+  CRS
+} from 'leaflet';
+import {
+  MapContainer,
+  ImageOverlay,
+  Polyline,
+  useMapEvent
+} from 'react-leaflet';
+>>>>>>> d63a6a2b7cccc5d29694c697d9c7cb0f416619a1
 import {
   List,
   AppBar,
@@ -8,13 +25,54 @@ import {
   Typography,
   Drawer,
   Divider,
+<<<<<<< HEAD
   Button,
+=======
+  Button
+>>>>>>> d63a6a2b7cccc5d29694c697d9c7cb0f416619a1
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
 import ObstacleEditor from './ObstacleEditor';
+
+
+let inBounds = (event) => {
+  return!(
+    event.latlng.lat < 0 ||
+    event.latlng.lat > 1 ||
+    event.latlng.lng < 0 ||
+    event.latlng.lng > 1
+  );
+};
+
+// let useMousePosition = () => {
+//   const [mousePosition, setMousePosition] = useState({x:null, y:null});
+
+//   useEffect(() => {
+//     const f = (e) => { setMousePosition(e.cursor.x) };
+//     window.addEventListener('mousemove', f);
+//     return () => window.removeEventListener('mousemove', f);
+//   }, []);
+
+//   return mousePosition;
+// };
+
+let NewPolyline = ({from}) => {
+  // let mousePosition = useMousePosition();
+  const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+  let map = useMapEvent(useMemo(() => ({
+    mousemove: (event) => {
+      if (inBounds(event)) {
+        setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
+      }
+    }
+  }), []));
+
+  return <Polyline positions={[[from.y, from.x], [mousePosition.x, mousePosition.y]]} color={'black'} dashArray={5} />
+}
 
 let ChallengeEditor = () => {
   //Utilisation des classes CSS
@@ -32,8 +90,14 @@ let ChallengeEditor = () => {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [startPoint, setStartPoint] = useState(null);
 
+<<<<<<< HEAD
   //Une variable temporaire, utilisée plus tard pour la création d'un obstacle
   const [editObstacle, setEditObstacle] = useState(false);
+=======
+  useEffect(() => {
+    console.log(currentMarker);
+  }, [currentMarker])
+>>>>>>> d63a6a2b7cccc5d29694c697d9c7cb0f416619a1
 
   return (
     <div className={classes.root}>
@@ -63,6 +127,7 @@ let ChallengeEditor = () => {
             Édition d'un point
           </Typography>
           <Divider />
+<<<<<<< HEAD
           {currentMarker ? (
             <MarkerEditor
               marker={currentMarker}
@@ -81,11 +146,24 @@ let ChallengeEditor = () => {
             Test obstacle
           </Button>
           {/* <Button variant='contained' color='primary' onClick={() => {
+=======
+          {currentMarker ? 
+          <MarkerEditor 
+            marker={currentMarker}
+            setStartPoint={setStartPoint}
+            setEditMode={setEditMode}
+            setMarkers={setMarkers}
+            markers={markers}
+            setLines={setLines}
+          />
+          : <Typography variant='h6' className={classes.margin_top}>Sélectionner un point à modifier</Typography>}
+          <Button variant='contained' color='primary' onClick={() => {
+>>>>>>> d63a6a2b7cccc5d29694c697d9c7cb0f416619a1
             console.log(lines);
             console.log(markers);
           }}>
             Logs
-          </Button> */}
+          </Button>
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -114,13 +192,29 @@ let ChallengeEditor = () => {
             setStartPoint={setStartPoint}
             startPoint={startPoint}
           />
-          {lines.map((element, index) => {
+          {currentMarker ? (currentMarker.type != 'end' ?
+          <>
+            <NewPolyline from={currentMarker} />
+          </>
+          : null) : null}
+          {lines.map((element) => {
+            const startMarker = markers.find(m => m.id === element.PointStartId);
+            const endMarker = markers.find(m => m.id === element.PointEndId);
+            const positions = [
+              [ startMarker.y, startMarker.x ],
+              ...element.path,
+              [ endMarker.y, endMarker.x ],
+            ];
             return (
+<<<<<<< HEAD
               <Polyline
                 positions={element.path}
                 key={index}
                 color={'black'}
               ></Polyline>
+=======
+              <Polyline positions={positions} key={element.id} color={'black'} />
+>>>>>>> d63a6a2b7cccc5d29694c697d9c7cb0f416619a1
             );
           })}
         </MapContainer>
