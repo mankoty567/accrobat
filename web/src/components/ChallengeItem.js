@@ -2,8 +2,6 @@ import {
   Typography,
   List,
   ListItem,
-  IconButton,
-  Paper,
   Grid,
   Avatar,
   Button,

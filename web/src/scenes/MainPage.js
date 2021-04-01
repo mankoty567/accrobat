@@ -11,11 +11,16 @@ import {
 } from 'react-router-dom';
 
 let MainPage = () => {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   return (
     <>
       <Router>
         <AppBar position="static">
-          <Tabs fullWidth>
+          <Tabs value={value} onChange={handleChange}>
             <Tab label="Accueil" component={Link} to="/home" />
             <Tab
               label="Espace personnel"
