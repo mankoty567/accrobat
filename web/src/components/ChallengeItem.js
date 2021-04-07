@@ -5,10 +5,9 @@ import {
   Grid,
   Avatar,
 } from '@material-ui/core';
-
 import React from 'react';
 
-let ChallengeItem = ({ challenge, index, menuComponents }) => {
+let ChallengeItem = ({ challenge, actionComponents }) => {
   return (
     <>
       <Grid container>

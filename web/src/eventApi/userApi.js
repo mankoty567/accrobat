@@ -1,4 +1,4 @@
-import { host, checkStatus } from './eventApi';
+import { host } from './eventApi';
 
 import { useRecoilState } from 'recoil';
 

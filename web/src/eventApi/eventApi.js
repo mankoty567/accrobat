@@ -1,7 +1,7 @@
 export const host =
   process.env.REACT_APP_HOST || 'https://api.acrobat.bigaston.dev';
 
-export let checkStatus = (res) => {
+let checkStatus = (res) => {
   if (res.ok) {
     return res;
   } else {

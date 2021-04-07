@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import ChallengeEditor from './scenes/ChallengeEditor';
 import AdminMenu from './scenes/adminPanel/AdminPanel';
@@ -8,6 +8,7 @@ import {
   userApi,
   userAtom,
   duringConnectionAtom,
+  doneConnectionAtom,
 } from './eventApi/userApi';
 import { useRecoilState } from 'recoil';
 
@@ -18,23 +19,23 @@ function App() {
   const [, setUserState] = useRecoilState(userAtom);
   const [, setDoneConnection] = useRecoilState(doneConnectionAtom);
 
-  useEffect(() => {
-    launchConnection();
-    function launchConnection() {
-      userApi
-        .whoami()
-        .then((data) => {
-          localStorage.setItem('jwt', data.jwt);
-          setDoneConnection(true);
-          setUserState(data);
+  // useEffect(() => {
+  //   launchConnection();
+  //   function launchConnection() {
+  //     userApi
+  //       .whoami()
+  //       .then((data) => {
+  //         localStorage.setItem('jwt', data.jwt);
+  //         setDoneConnection(true);
+  //         setUserState(data);
 
-          setTimeout(launchConnection, JWT_VALIDITY);
-        })
-        .catch((err) => {
-          setDoneConnection(true);
-        });
-    }
-  }, []);
+  //         setTimeout(launchConnection, JWT_VALIDITY);
+  //       })
+  //       .catch((err) => {
+  //         setDoneConnection(true);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <div className="App">

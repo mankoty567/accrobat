@@ -16,6 +16,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import React, { useState, useRef } from 'react';
 import ImageUploader from '../../components/ImageUploader';
+import API from '../../eventApi/eventApi';
 
 let FormChallenge = ({ callback }) => {
   //Ajouter la prise en charge de l'échelle et de l'id

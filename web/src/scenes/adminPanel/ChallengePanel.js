@@ -7,6 +7,7 @@ import {
   Typography,
   Divider,
   Button,
+  Grid,
 } from '@material-ui/core';
 import API from '../../eventApi/eventApi';
 import AddIcon from '@material-ui/icons/Add';
