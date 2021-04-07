@@ -23,13 +23,13 @@ let AdminPanel = () => {
         <Grid item xs={4} align="left">
           <Paper>
             <div style={{ height: '30vh' }}>
-              <Typography ography variant="h4" align="center">
+              <Typography variant="h4" align="center">
                 Gestion des utilisateurs
               </Typography>
               <Divider orientation="horizontal" />
 
-              {user.map((key) => {
-                return <Typography>{key}</Typography>;
+              {user.map((key, idx) => {
+                return <Typography key={idx}>{key}</Typography>;
               })}
             </div>
           </Paper>
@@ -42,8 +42,8 @@ let AdminPanel = () => {
               </Typography>
               <Divider orientation="horizontal" />
 
-              {propositions.map((key) => {
-                return <Typography>{key}</Typography>;
+              {propositions.map((key, idx) => {
+                return <Typography key={idx}>{key}</Typography>;
               })}
             </div>
           </Paper>
