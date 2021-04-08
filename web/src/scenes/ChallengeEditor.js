@@ -14,6 +14,7 @@ import {
   Drawer,
   Divider,
   Button,
+  Modal,
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
@@ -89,6 +90,7 @@ let ChallengeEditor = ({ challenge_id }) => {
   const [currentLine, setCurrentLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(true);
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -131,140 +133,148 @@ let ChallengeEditor = ({ challenge_id }) => {
 
   return (
     <div className={classes.root}>
-      {isLoading ? (
-        <>
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <Typography variant="h6" noWrap>
-                Éditeur de challenge
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{ paper: classes.drawerPaper }}
-            anchor="left"
-          >
-            <div className={classes.toolbar} />
-            <List>
-              <Typography variant="h5">Menu d'édition</Typography>
-              <Divider />
-              <Typography variant="h6" className={classes.margin_top}>
-                Édition du challenge
-              </Typography>
-              <Divider />
-              <ChallengeInfosEditor />
-              <Typography variant="h6" className={classes.margin_top}>
-                Édition d'un point
-              </Typography>
-              <Divider />
-              {currentMarker ? (
-                <MarkerEditor
-                  marker={currentMarker}
-                  setStartPoint={setStartPoint}
-                  setEditMode={setEditMode}
-                  setMarkers={setMarkers}
-                  markers={markers}
-                  setLines={setLines}
-                />
-              ) : (
+      <Modal open={open}>
+        {isLoading ? (
+          <>
+            <AppBar position="fixed" className={classes.appBar}>
+              <Toolbar>
+                <Typography variant="h6" noWrap>
+                  Éditeur de challenge
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              className={classes.drawer}
+              variant="permanent"
+              classes={{ paper: classes.drawerPaper }}
+              anchor="left"
+            >
+              <div className={classes.toolbar} />
+              <List>
+                <Typography variant="h5">Menu d'édition</Typography>
+                <Divider />
                 <Typography
                   variant="h6"
                   className={classes.margin_top}
                 >
-                  Sélectionner un point à modifier
+                  Édition du challenge
                 </Typography>
-              )}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  console.log(lines);
-                  console.log(markers);
-                }}
-              >
-                Logs
-              </Button>
-            </List>
-          </Drawer>
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <MapContainer
-              style={{ height: '90vh', width: '84vw' }}
-              crs={CRS.Simple}
-              center={[bounds[1][0] / 2, bounds[1][1] / 2]}
-              bounds={bounds}
-              maxBounds={bounds}
-              style={{ height: '90vh', width: '84vw' }}
-            >
-              <ImageOverlay
-                url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
+                <Divider />
+                <ChallengeInfosEditor />
+                <Typography
+                  variant="h6"
+                  className={classes.margin_top}
+                >
+                  Édition d'un point
+                </Typography>
+                <Divider />
+                {currentMarker ? (
+                  <MarkerEditor
+                    marker={currentMarker}
+                    setStartPoint={setStartPoint}
+                    setEditMode={setEditMode}
+                    setMarkers={setMarkers}
+                    markers={markers}
+                    setLines={setLines}
+                  />
+                ) : (
+                  <Typography
+                    variant="h6"
+                    className={classes.margin_top}
+                  >
+                    Sélectionner un point à modifier
+                  </Typography>
+                )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    console.log(lines);
+                    console.log(markers);
+                  }}
+                >
+                  Logs
+                </Button>
+              </List>
+            </Drawer>
+            <main className={classes.content}>
+              <div className={classes.toolbar} />
+              <MapContainer
+                style={{ height: '90vh', width: '84vw' }}
+                crs={CRS.Simple}
+                center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
-              ></ImageOverlay>
-              <DraggableMarkers
-                markers={markers}
-                setMarkers={setMarkers}
-                editMode={editMode}
-                setEditMode={setEditMode}
-                lines={lines}
-                setLines={setLines}
-                setCurrentMarker={setCurrentMarker}
-                setCurrentLine={setCurrentLine}
-                currentLine={currentLine}
-                currentMarker={currentMarker}
-                setStartPoint={setStartPoint}
-                startPoint={startPoint}
-                CHALLENGE_ID={challenge_id}
-              />
-              {lines.map((element) => {
-                try {
-                  const startMarker = markers.find(
-                    (m) => m.id === element.PointStartId,
-                  );
-                  const endMarker = markers.find(
-                    (m) => m.id === element.PointEndId,
-                  );
+                maxBounds={bounds}
+                style={{ height: '90vh', width: '84vw' }}
+              >
+                <ImageOverlay
+                  url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
+                  bounds={bounds}
+                ></ImageOverlay>
+                <DraggableMarkers
+                  markers={markers}
+                  setMarkers={setMarkers}
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  lines={lines}
+                  setLines={setLines}
+                  setCurrentMarker={setCurrentMarker}
+                  setCurrentLine={setCurrentLine}
+                  currentLine={currentLine}
+                  currentMarker={currentMarker}
+                  setStartPoint={setStartPoint}
+                  startPoint={startPoint}
+                  CHALLENGE_ID={challenge_id}
+                />
+                {lines.map((element) => {
+                  try {
+                    const startMarker = markers.find(
+                      (m) => m.id === element.PointStartId,
+                    );
+                    const endMarker = markers.find(
+                      (m) => m.id === element.PointEndId,
+                    );
 
-                  const positions = [
-                    [startMarker.y, startMarker.x],
-                    ...element.path.map((elem) => {
-                      return [elem[1], elem[0]];
-                    }),
-                    [endMarker.y, endMarker.x],
-                  ];
-                  console.log(positions);
-                  return (
+                    const positions = [
+                      [startMarker.y, startMarker.x],
+                      ...element.path.map((elem) => {
+                        return [elem[1], elem[0]];
+                      }),
+                      [endMarker.y, endMarker.x],
+                    ];
+                    console.log(positions);
+                    return (
+                      <Polyline
+                        positions={positions}
+                        key={element.id}
+                        color={'black'}
+                      />
+                    );
+                  } catch (err) {
+                    console.error(err);
+                  }
+                })}
+                {currentMarker ? (
+                  <>
                     <Polyline
-                      positions={positions}
-                      key={element.id}
+                      positions={[
+                        [currentMarker.y, currentMarker.x],
+                        ...currentLine,
+                      ]}
                       color={'black'}
                     />
-                  );
-                } catch (err) {
-                  console.error(err);
-                }
-              })}
-              {currentMarker ? (
-                <>
-                  <Polyline
-                    positions={[
-                      [currentMarker.y, currentMarker.x],
-                      ...currentLine,
-                    ]}
-                    color={'black'}
-                  />
-                  {currentMarker.type != 'end' ? (
-                    <NewPolyline from={currentLine} />
-                  ) : null}
-                </>
-              ) : null}
-            </MapContainer>
-          </main>
-        </>
-      ) : (
-        <p>Chargement en cours ...</p>
-      )}
+                    {currentMarker.type != 'end' ? (
+                      <NewPolyline from={currentLine} />
+                    ) : null}
+                  </>
+                ) : null}
+              </MapContainer>
+            </main>
+          </>
+        ) : (
+          <p>Chargement en cours ...</p>
+        )}
+      </Modal>
     </div>
   );
 };
