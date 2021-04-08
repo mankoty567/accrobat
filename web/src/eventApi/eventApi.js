@@ -77,7 +77,7 @@ let checkStatus = (res) => {
         }).then(checkStatus).then(res => res.json());
     },
     updateMarker: (data) => {
-        return fetch(`${host}/api/pointpassage/${data.marker_id}`, {
+        return fetch(`${host}/api/pointpassage/${data.marker.id}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),

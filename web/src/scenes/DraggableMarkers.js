@@ -159,15 +159,22 @@ let DraggableMarkers = ({
                   },
                   dragend: (event) => {
                     setMarkers((markers) =>
-                      markers.map((m) =>
-                        m.id === item.id
-                          ? {
-                              ...m,
-                              x: event.target._latlng.lng,
-                              y: event.target._latlng.lat,
-                            }
-                          : m,
-                      ),
+                      markers.map((m) => {
+                        if (m.id === item.id) {
+                          let newM = {...m,
+                            x: event.target._latlng.lng,
+                            y: event.target._latlng.lat,
+                          }
+
+                          API.updateMarker({marker: newM}).catch(err => {
+                            console.log(err);
+                          })
+
+                          return newM;
+                        } else {
+                          return m;
+                        }
+                      }),
                     );
                     setEditMode(false);
                   },
