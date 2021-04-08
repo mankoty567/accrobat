@@ -1,38 +1,17 @@
 const express = require('express');
+const cors = require('cors');
 const debug = require('debug')('serveur:main');
 const m = require('./modules');
 
+m.utils.check_folder();
+
 var app = express();
+app.use(cors());
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use('/doc', express.static('./doc'));
+require('./modules/route')(app);
 
-// Challenge
-app.get('/api/challenge/:id', m.challenge_ctrl.get_challenge_id);
-app.post('/api/challenge', m.challenge_ctrl.post_challenge);
-app.delete('/api/challenge/:id', m.challenge_ctrl.delete_challenge);
-app.post('/api/challenge/:id', m.challenge_ctrl.update_challenge);
-app.get('/api/challenge/:id/image', m.challenge_ctrl.get_image);
-
-// PointPassage
-app.get('/api/challenge/:id/point', m.pointpassage_ctrl.get_pointpassage);
-app.post('/api/challenge/:id/point', m.pointpassage_ctrl.post_pointpassage);
-app.delete('/api/pointpassage/:id', m.pointpassage_ctrl.delete_pointpassage);
-app.post('/api/pointpassage/:id', m.pointpassage_ctrl.update_pointpassage);
-
-// Segment
-app.post('/api/segment', m.segment_ctrl.post_segment);
-app.get('/api/segment/:id', m.segment_ctrl.get_segment);
-app.post('/api/segment/:id', m.segment_ctrl.update_segment);
-app.delete('/api/segment/:id', m.segment_ctrl.delete_segment);
-
-// Obstacle
-app.post('/api/obstacle', m.obstacle_ctrl.post_obstacle);
-
-// Participation
-app.post('/api/participation', m.participation_ctrl.post_participation);
-
-// Event
-app.post('/api/event', m.event_ctrl.post_event);
-app.get('/api/participation/:id/whereiam', m.event_ctrl.whereiam);
+app.get('/', (req, res) => res.send(require('./package.json').version));
 
 app.listen(1418, () => debug('Serveur lancé sur le port 1418'));

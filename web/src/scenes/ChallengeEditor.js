@@ -1,4 +1,6 @@
 import React, {
+  useEffect,
+  useMemo,
   useState
 } from 'react';
 import {
@@ -7,7 +9,8 @@ import {
 import {
   MapContainer,
   ImageOverlay,
-  Polyline
+  Polyline,
+  useMapEvent
 } from 'react-leaflet';
 import {
   List,
@@ -16,11 +19,53 @@ import {
   Typography,
   Drawer,
   Divider,
+  Button
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers'
 import useStyles from './MaterialUI'
 import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
+
+
+let inBounds = (event) => {
+  return!(
+    event.latlng.lat < 0 ||
+    event.latlng.lat > 1 ||
+    event.latlng.lng < 0 ||
+    event.latlng.lng > 1
+  );
+};
+
+// let useMousePosition = () => {
+//   const [mousePosition, setMousePosition] = useState({x:null, y:null});
+
+//   useEffect(() => {
+//     const f = (e) => { setMousePosition(e.cursor.x) };
+//     window.addEventListener('mousemove', f);
+//     return () => window.removeEventListener('mousemove', f);
+//   }, []);
+
+//   return mousePosition;
+// };
+
+let NewPolyline = ({from}) => {
+  // let mousePosition = useMousePosition();
+  const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+  let map = useMapEvent(useMemo(() => ({
+    mousemove: (event) => {
+      if (inBounds(event)) {
+        setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
+      }
+    }
+  }), []));
+  if (from.length == 0) return <></>;
+  var positions = [
+    from[from.length-1],
+    [mousePosition.x, mousePosition.y]
+  ]
+  return <Polyline positions={positions} color={'black'} dashArray={5} />
+}
 
 let ChallengeEditor = () => {
 
@@ -37,6 +82,7 @@ let ChallengeEditor = () => {
   const [lines, setLines] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
+  const [currentLine, setCurrentLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
 
   return (
@@ -73,12 +119,12 @@ let ChallengeEditor = () => {
             setLines={setLines}
           />
           : <Typography variant='h6' className={classes.margin_top}>Sélectionner un point à modifier</Typography>}
-          {/* <Button variant='contained' color='primary' onClick={() => {
+          <Button variant='contained' color='primary' onClick={() => {
             console.log(lines);
             console.log(markers);
           }}>
             Logs
-          </Button> */}
+          </Button>
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -103,15 +149,29 @@ let ChallengeEditor = () => {
             lines={lines}
             setLines={setLines}
             setCurrentMarker={setCurrentMarker}
+            setCurrentLine={setCurrentLine}
+            currentLine={currentLine}
             currentMarker={currentMarker}
             setStartPoint={setStartPoint}
             startPoint={startPoint}
           />
-          {lines.map((element, index) => {
+          {lines.map((element) => {
+            const startMarker = markers.find(m => m.id === element.PointStartId);
+            const endMarker = markers.find(m => m.id === element.PointEndId);
+            const positions = [
+              [ startMarker.y, startMarker.x ],
+              ...element.path,
+              [ endMarker.y, endMarker.x ],
+            ];
             return (
-              <Polyline positions={element.path} key={index} color={'black'}></Polyline>
+              <Polyline positions={positions} key={element.id} color={'black'} />
             );
           })}
+          {currentMarker ? 
+          <>
+            <Polyline positions={[[currentMarker.y, currentMarker.x], ...currentLine]} color={'black'} />
+            {currentMarker.type != "end" ? <NewPolyline from={currentLine} /> : null}
+          </> : null}
         </MapContainer>
       </main>
     </div>

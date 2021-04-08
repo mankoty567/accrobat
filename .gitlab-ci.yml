@@ -4,30 +4,5 @@ eslint:
   script: 
     - cd serveur
     - npm i eslint
-    - npm run test
+    - npm run lint
   stage: test
-
-eslintweb: 
-  script: 
-    - cd web
-    - npm install
-    - npm run test
-  stage: test
-
-build_serveur_master:
-  stage: build
-  only: 
-    - master
-  script:
-    - cd serveur
-    - docker build -t registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur:latest .
-    - docker push registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur:latest
-
-build_serveur_develop:
-  stage: build
-  only: 
-    - develop
-  script:
-    - cd serveur
-    - docker build -t registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur:beta .
-    - docker push registry.app.unistra.fr/equipe-3/projet-acrobatt/serveur:beta

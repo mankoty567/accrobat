@@ -4,7 +4,14 @@ module.exports = (sequelize, DataTypes) => {
   const ImageSubmition = sequelize.define(
     'ImageSubmition',
     {
-      img: DataTypes.TEXT,
+      ok: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      rejected: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {}
   );
