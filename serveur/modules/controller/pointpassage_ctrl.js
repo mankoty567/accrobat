@@ -99,6 +99,11 @@ module.exports = {
             edited = true;
           }
 
+          if (req.body.type !== undefined) {
+            pointpassage.type = req.body.type;
+            edited = true;
+          }
+
           if (edited) {
             debug('Update point passage ' + pointpassage.id);
             pointpassage.save().then(() => {
