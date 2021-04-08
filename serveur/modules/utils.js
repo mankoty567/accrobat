@@ -37,6 +37,10 @@ module.exports = {
     if (!fs.existsSync(path.join(__dirname, '../data/obstacle'))) {
       fs.mkdirSync(path.join(__dirname, '../data/obstacle'));
     }
+
+    if (!fs.existsSync(path.join(__dirname, '../data/user'))) {
+      fs.mkdirSync(path.join(__dirname, '../data/user'));
+    }
   },
   pngParser: (img) => {
     return new Promise((resolve) => {

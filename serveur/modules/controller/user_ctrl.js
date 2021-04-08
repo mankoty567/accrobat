@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const utils = require('../utils');
+const fs = require('fs');
+const path = require('path');
 
 const bdd = require('../../models');
 
@@ -18,7 +21,16 @@ module.exports = {
             permission: 0,
             level: 0,
             xp: 0,
-          }).then(() => {
+          }).then((user) => {
+            if (req.body.avatar !== undefined) {
+              utils.pngParser(req.body.avatar).then((buffer) => {
+                fs.writeFileSync(
+                  path.join(__dirname, '../../data/user/' + user.id + '.jpg'),
+                  buffer
+                );
+              });
+            }
+
             res.send('OK');
           });
         }
@@ -103,6 +115,44 @@ module.exports = {
           }
         });
       }
+    }
+  },
+  edit_user: async (req, res) => {
+    let edited = false;
+
+    if (req.body.username !== undefined) {
+      let otherUserWithUsername = await bdd.User.findOne({
+        where: { username: req.body.username },
+      });
+
+      if (otherUserWithUsername === null) {
+        req.user.username = req.body.username;
+        edited = true;
+      } else {
+        res.status(400).send('Bad Request: Username already exist');
+        return;
+      }
+    }
+
+    if (req.body.email !== undefined) {
+      req.user.email = req.body.email;
+      edited = true;
+    }
+
+    if (req.body.avatar !== undefined) {
+      utils.pngParser(req.body.avatar).then((buffer) => {
+        fs.writeFileSync(
+          path.join(__dirname, '../../data/user/' + req.user.id + '.jpg'),
+          buffer
+        );
+      });
+    }
+
+    if (edited) {
+      await req.user.save();
+      res.json(req.user);
+    } else {
+      res.json(req.user);
     }
   },
 };
