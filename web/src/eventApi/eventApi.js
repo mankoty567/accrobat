@@ -106,7 +106,7 @@ let checkStatus = (res) => {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data.segment)
+            body: JSON.stringify({...data.segment, path: data.segment.path.map(e => [e[1], e[0]])})
         }).then(checkStatus).then(res => res.json());
     },
     updateSegment: (data) => {
@@ -116,7 +116,7 @@ let checkStatus = (res) => {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data.segment)
+            body: JSON.stringify({...data.segment, path: data.segment.path.map(e => [e[1], e[0]])})
         }).then(checkStatus).then(res => res.json());
     },
     deleteSegment: (data) => {
