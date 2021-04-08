@@ -74,7 +74,7 @@ let NewPolyline = ({ from }) => {
   );
 };
 
-let ChallengeEditor = ({ challenge_id }) => {
+let ChallengeEditor = ({ challenge_id, setSelected }) => {
   //Utilisation des classes CSS
   const classes = useStyles();
 
@@ -181,6 +181,7 @@ let ChallengeEditor = ({ challenge_id }) => {
                   variant="contained"
                   color="secondary"
                   onClick={() => {
+                    setSelected(null);
                     setOpen(false);
                   }}
                 >
