@@ -14,6 +14,7 @@ let AdminPanel = () => {
     'Rédiger les tests',
   ];
   let user = ['Roger', 'Bernard'];
+
   return (
     <>
       <Typography variant="h3" style={{ paddingTop: '1vh' }}>

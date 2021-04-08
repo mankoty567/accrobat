@@ -8,10 +8,12 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import ChallengeEditor from '../ChallengeEditor';
 
 let ChallengePanel = () => {
   const [challenges, setChallenges] = useState([]);
   const [addmode, setAddmode] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const addChallenge = (
     title,
@@ -39,8 +41,8 @@ let ChallengePanel = () => {
       img_fond,
     })
       .then((res) => {
-        console.log(res);
         setChallenges((current) => [...current, res]);
+        setSelected(res.id);
       })
       .catch((err) => console.error(err));
   };
@@ -65,10 +67,14 @@ let ChallengePanel = () => {
       );
     };
     const handleClone = () => {};
-    const handleEdit = () => {};
+    const handleEdit = () => {
+      setSelected(index);
+    };
     return (
       <>
-        <Button startIcon={<EditIcon />}>Modifier</Button>
+        <Button startIcon={<EditIcon />} onClick={() => handleEdit()}>
+          Modifier
+        </Button>
         <Button startIcon={<LayersIcon />}>Dupliquer</Button>
         <Button
           startIcon={<DeleteOutlineIcon />}
@@ -116,6 +122,7 @@ let ChallengePanel = () => {
             : null}
         </>
       )}
+      {selected ? <ChallengeEditor challenge_id={selected} /> : null}
     </>
   );
 };
