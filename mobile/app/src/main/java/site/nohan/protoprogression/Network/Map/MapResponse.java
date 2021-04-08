@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
 
+import android.widget.Button;
+import android.widget.LinearLayout;
+
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
