@@ -156,6 +156,10 @@ module.exports = {
         if (challenge === null) {
           res.status(404).send('Not found');
         } else {
+          if (challenge.published) {
+            res.status(400).send('Bad Request: Challenge is published');
+            return;
+          }
           debug('Suppression du challenge ' + challenge.id);
           challenge
             .destroy()
@@ -183,6 +187,11 @@ module.exports = {
       if (challenge === null) {
         res.status(404).send('Challenge not found');
       } else {
+        if (challenge.published) {
+          res.status(400).send('Bad Request: Challenge is published');
+          return;
+        }
+
         let edited = false;
         if (req.body.title) {
           challenge.title = req.body.title;
