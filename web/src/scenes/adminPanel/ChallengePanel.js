@@ -51,7 +51,7 @@ let ChallengePanel = () => {
     () =>
       API.getAdminChallenges().then((res) => {
         setChallenges(res);
-        console.log(res);
+        // console.log(res);
       }),
     [],
   );

@@ -10,10 +10,13 @@ import React from 'react';
 
 let AdminPanel = () => {
   let propositions = [
-    'Ajouter une vraie première map',
-    'Rédiger les tests',
+    'Créer un challenge pour se balader sur Namek',
+    'Faire une thématique à propos de Kaamelot !',
+    'Naviguer autour du système solaire',
+    'Parcourir le monde de Oui-Oui',
+    'THEMATIQUE A PROPOS DE HARRY POTTER',
   ];
-  let user = ['Roger', 'Bernard'];
+  let user = ['Jules Poulain', 'Xavier Schuszter', 'Céleste Lavigne', 'Nohan Jaugey', 'Vincent Seyller'];
 
   return (
     <>

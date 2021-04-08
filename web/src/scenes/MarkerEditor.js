@@ -18,6 +18,7 @@ let MarkerEditor = ({
   markers,
   setMarkers,
   setLines,
+  setCurrentLine
 }) => {
   //Update un marker
   let updateMarker = (marker) => {
@@ -43,7 +44,16 @@ let MarkerEditor = ({
           val.PointEndId != marker.id,
       ),
     );
-    setStartPoint(markers.slice(-1)[0]);
+    var newCurrent = markers.slice(-1)[0];
+    if (newCurrent.type !== "end") {
+      setCurrentLine([{
+        lng: newCurrent.x,
+        lat: newCurrent.y
+      }]);
+    } else {
+      setCurrentLine([]);
+    }
+    setStartPoint(newCurrent);
     
     API.deleteMarker(marker).catch(err => {
       console.log(err)
@@ -105,7 +115,7 @@ let MarkerEditor = ({
                 setStartPoint(marker);
               }}
             >
-              Créer un nouveau segment à partir de ce point
+              Lier à un autre checkpoint
             </Button>
           </ListItem>
         ) : null}

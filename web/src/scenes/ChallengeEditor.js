@@ -20,9 +20,7 @@ import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
-import ObstacleEditor from './ObstacleEditor';
 import API from '../eventApi/eventApi';
-import { useHistory } from 'react-router';
 
 let inBounds = (event) => {
   return !(
@@ -130,8 +128,7 @@ let ChallengeEditor = ({ challenge_id }) => {
       });
   };
 
-  useEffect(() => initializeMap(challenge_id), []);
-  let history = useHistory();
+  // useEffect(() => initializeMap(challenge_id), []);
 
   return (
     <div className={classes.root}>
@@ -188,6 +185,7 @@ let ChallengeEditor = ({ challenge_id }) => {
                     setMarkers={setMarkers}
                     markers={markers}
                     setLines={setLines}
+                    setCurrentLine={setCurrentLine}
                   />
                 ) : (
                   <Typography
@@ -254,7 +252,7 @@ let ChallengeEditor = ({ challenge_id }) => {
                       }),
                       [endMarker.y, endMarker.x],
                     ];
-                    console.log(positions);
+                    // console.log(positions);
                     return (
                       <Polyline
                         positions={positions}
@@ -266,7 +264,7 @@ let ChallengeEditor = ({ challenge_id }) => {
                     console.error(err);
                   }
                 })}
-                {currentMarker ? (
+                {currentMarker ? (currentMarker.type !== 'end' ?
                   <>
                     <Polyline
                       positions={[
@@ -275,11 +273,9 @@ let ChallengeEditor = ({ challenge_id }) => {
                       ]}
                       color={'black'}
                     />
-                    {currentMarker.type != 'end' ? (
                       <NewPolyline from={currentLine} />
-                    ) : null}
                   </>
-                ) : null}
+                  : null) : null}
               </MapContainer>
             </main>
           </>

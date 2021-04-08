@@ -41,7 +41,7 @@ let DraggableMarkers = ({
         y: event.latlng.lat,
       };
 
-      console.log(newMarker);
+      // console.log(newMarker);
 
       let data = await API.createMarker({
         marker: newMarker,
@@ -69,6 +69,7 @@ let DraggableMarkers = ({
 
   //Ajoute une ligne
   let addLine = (start, end) => {
+    currentLine.shift();
     var newLines = {
       PointStartId: start.id,
       PointEndId: end.id,
@@ -76,7 +77,7 @@ let DraggableMarkers = ({
       name: 'Segment ' + lines.length,
     };
 
-    console.log(newLines);
+    // console.log(newLines);
     return API.createSegment({ segment: newLines })
       .then((res) => {
         res.path = res.path.map((e) => [e[0], e[1]]);
@@ -115,12 +116,17 @@ let DraggableMarkers = ({
           addMarker(event);
         } else {
           if (event.originalEvent.ctrlKey) {
-            addCurrentLine(event);
+            if (currentMarker?.type !== "end") {
+              addCurrentLine(event);
+              setEditMode(true);
+            }
           } else {
             if (currentMarker) {
               var newMarker = await addMarker(event);
-              addLine(currentMarker, newMarker);
-              setCurrentLine([event.latlng]);
+              if (currentMarker.type !== "end") {
+                addLine(currentMarker, newMarker);
+                setCurrentLine([event.latlng]);
+              }
             } else {
               await addMarker(event);
               setCurrentLine([event.latlng]);
@@ -153,18 +159,23 @@ let DraggableMarkers = ({
                     var newCurrent = item;
                     if (currentMarker) {
                       if (currentMarker.id === item.id && editMode)
-                        newCurrent = null;
+                        newCurrent = null; 
                     }
-                    setCurrentMarker(newCurrent);
                     if (
                       editMode &&
                       item.type != 'start' &&
-                      currentMarker.id != item.id
+                      currentMarker.id != item.id &&
+                      currentMarker.type != "end"
                     ) {
                       setEditMode(false);
                       addLine(currentMarker, item);
                       // setStartPoint(item);
                     }
+                    setCurrentMarker(newCurrent);
+                    setCurrentLine([{
+                      lng: newCurrent.x,
+                      lat: newCurrent.y
+                    }]);
                   },
                   dragend: (event) => {
                     setMarkers((markers) =>
