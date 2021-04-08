@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
 import FormChallenge from './FormChallenge';
-import {
-  List,
-  ListItem,
-  Typography,
-  Divider,
-  Button,
-  Grid,
-} from '@material-ui/core';
+import { Typography, Divider, Button } from '@material-ui/core';
 import API from '../../eventApi/eventApi';
 import AddIcon from '@material-ui/icons/Add';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
@@ -56,15 +49,18 @@ let ChallengePanel = () => {
     () =>
       API.getAdminChallenges().then((res) => {
         setChallenges(res);
+        console.log(res);
       }),
     [],
   );
 
-  const Menu = (index) => {
-    const handleDelete = (index) => {
-      API.deleteChallenge({ challenge_id: index }).then(() =>
+  const Menu = ({ index }) => {
+    const handleDelete = () => {
+      API.deleteChallenge({
+        challenge_id: index,
+      }).then(() =>
         setChallenges((current) =>
-          current.filter((elem) => elem.id === index),
+          current.filter((elem) => elem.id !== index),
         ),
       );
     };
@@ -76,7 +72,7 @@ let ChallengePanel = () => {
         <Button startIcon={<LayersIcon />}>Dupliquer</Button>
         <Button
           startIcon={<DeleteOutlineIcon />}
-          onClick={() => handleDelete(index)}
+          onClick={() => handleDelete()}
         >
           Supprimer
         </Button>
@@ -113,7 +109,7 @@ let ChallengePanel = () => {
                     challenge={key}
                     index={key.id}
                     key={idx}
-                    menuComponents={<Menu index={key.id} />}
+                    actionComponents={<Menu index={key.id} />}
                   />
                 );
               })

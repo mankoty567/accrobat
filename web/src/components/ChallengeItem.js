@@ -34,7 +34,7 @@ let ChallengeItem = ({ challenge, actionComponents }) => {
           </List>
         </Grid>
         <Grid item xs={3} align="right">
-          {menuComponents}
+          {actionComponents}
           {/* <Button startIcon={<EditIcon />}>Modifier</Button>
           <Button startIcon={<LayersIcon />}>Dupliquer</Button>
           <Button
