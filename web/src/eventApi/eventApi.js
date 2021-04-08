@@ -458,6 +458,17 @@ const API = {
     })
       .then(checkStatus)
       .then(res => res.json());
+  },
+  publishChallenge: (id) => {
+    return fetch(`${host}/api/challenge/${id}/publish`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+        'Bearer ' + window.localStorage.getItem('token'),
+      }
+    })
+      .then(checkStatus)
+      .then(res => res.json());
   }
 };
 

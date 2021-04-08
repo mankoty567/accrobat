@@ -156,6 +156,16 @@ let ChallengeEditor = ({ challenge_id }) => {
     })
   }
 
+  const [publishMessage, setPublishMessage] = useState("");
+  function handlePublish() {
+    API.publishChallenge(challenge_id).then(data => {
+      setOpen(false);
+    }).catch(err => {
+      setPublishMessage("Le challenge n'est pas valide!")
+      console.log(err);
+    })
+  }
+
   return (
     <div className={classes.root}>
       <Modal open={open}>
@@ -240,6 +250,16 @@ let ChallengeEditor = ({ challenge_id }) => {
                 </Button>
                 <br/>
                 <p style={{color: checkMessage.valid ? "green": "red"}}>{checkMessage.message}</p>
+                <Divider />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handlePublish}
+                >
+                  Publier
+                </Button>
+                <br/>
+                <p style={{color: "red"}}>{publishMessage}</p>
               </List>
             </Drawer>
             <main className={classes.content}>
