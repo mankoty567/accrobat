@@ -104,6 +104,11 @@ module.exports.routes = [
         type: 'string',
         required: false,
       },
+      type: {
+        type: "string",
+        required: false,
+        value: ["start", "point", "end"]
+      },
       x: {
         type: 'number',
         required: false,

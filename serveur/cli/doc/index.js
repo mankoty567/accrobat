@@ -4,6 +4,8 @@ const path = require('path');
 const mustache = require('mustache');
 const package = require('../../package.json');
 const chalk = require('chalk');
+const sequelizeErd = require('sequelize-erd');
+const bdd = require('../../models');
 
 let categories = [];
 
@@ -196,5 +198,10 @@ fs.readdirSync(path.join(__dirname, './static')).forEach((file) => {
   );
 });
 
-console.log(chalk.bold.green('Documentation générée!'));
-process.exit();
+// Génération du modèle de la BDD
+sequelizeErd({ source: bdd.sequelize }).then((svg) => {
+  fs.writeFileSync(path.join(__dirname, '../../doc/bdd.svg'), svg);
+
+  console.log(chalk.bold.green('Documentation générée!'));
+  process.exit();
+});

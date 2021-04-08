@@ -15,3 +15,9 @@ document.querySelectorAll('.route h3').forEach((cate) => {
       .classList.toggle('hidden');
   });
 });
+
+const bddTitle = document.querySelector('.bddTitle');
+bddTitle.addEventListener('click', () => {
+  document.querySelector('.bdd').classList.toggle('hidden');
+  bddTitle.classList.toggle('opened');
+});

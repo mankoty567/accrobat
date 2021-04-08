@@ -114,3 +114,27 @@ li {
   height: 25px;
   margin: 5px;
 }
+
+/* Base de donnée */
+.bddTitle {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.bddTitle::before {
+  content: "▶";
+}
+
+.bddTitle.opened::before {
+  content: "▼";
+}
+
+.bdd {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bdd:not(.hidden) {
+  display: block;
+}
