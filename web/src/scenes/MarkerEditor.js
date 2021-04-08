@@ -21,6 +21,10 @@ let MarkerEditor = ({
 }) => {
   //Update un marker
   let updateMarker = (marker) => {
+    API.updateMarker({marker}).catch(err => {
+      console.log(err);
+    })
+
     setMarkers((current) =>
       current.filter((val) => {
         if (val.id == marker.id) val = marker;
@@ -31,17 +35,19 @@ let MarkerEditor = ({
 
   //Supprime un marker
   let removeMarker = (marker) => {
-    return API.deleteMarker(marker).then(() => {
-      setMarkers((current) => current.filter((val) => val != marker));
-      setLines((current) =>
-        current.filter(
-          (val) =>
-            val.PointStartId != marker.id &&
-            val.PointEndId != marker.id,
-        ),
-      );
-      setStartPoint(markers.slice(-1)[0]);
-    });
+    setMarkers((current) => current.filter((val) => val != marker));
+    setLines((current) =>
+      current.filter(
+        (val) =>
+          val.PointStartId != marker.id &&
+          val.PointEndId != marker.id,
+      ),
+    );
+    setStartPoint(markers.slice(-1)[0]);
+    
+    API.deleteMarker(marker).catch(err => {
+      console.log(err)
+    })
   };
 
   return (

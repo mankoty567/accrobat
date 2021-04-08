@@ -258,6 +258,154 @@ const API = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  getMarkers: () => {
+    return fetch(
+      `${host}/api/challenge/${data.challenge_id}/point?include=${data.include}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization:
+            'Bearer ' + window.localStorage.getItem('token'),
+        },
+      },
+    )
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  createMarker: (data) => {
+    return fetch(`${host}/api/challenge/${data.challenge_id}/point`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data.marker),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  updateMarker: (data) => {
+    return fetch(`${host}/api/pointpassage/${data.marker.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data.marker),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  deleteMarker: (marker) => {
+    return fetch(`${host}/api/pointpassage/${marker.id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.text());
+  },
+
+  getSegment: () => {
+    return fetch(
+      `${host}/api/segment/${data.segment_id}?include=${data.include}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization:
+            'Bearer ' + window.localStorage.getItem('token'),
+        },
+      },
+    )
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  createSegment: (data) => {
+    return fetch(`${host}/api/segment`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data.segment,
+        path: data.segment.path.map((e) => [e[1], e[0]]),
+      }),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  updateSegment: (data) => {
+    return fetch(`${host}/api/segment/${data.segment_id}`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data.segment,
+        path: data.segment.path.map((e) => [e[1], e[0]]),
+      }),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  deleteSegment: (data) => {
+    return fetch(`${host}/api/segment/${data.segment_id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.text());
+  },
+
+  createObstacle: (data) => {
+    return fetch(`${host}/api/obstacle`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data.obstacle),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  updateObstacle: (data) => {
+    return fetch(`${host}/api/obstacle/${data.obstacle_id}`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data.obstacle),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  deleteObstacle: (data) => {
+    return fetch(`${host}/api/obstacle/${data.obstacle_id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.text());
+  },
 
   getParticipations: (data) => {
     return fetch(`${host}/api/participation`, {
