@@ -9,6 +9,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
@@ -37,7 +39,7 @@ public class WhoAmIResponse implements APIListenner {
     public void onErrorResponse(VolleyError error) {
         Log.e("ERROR_WHOAMI_REQUEST: ", "\n\n\n" + error.networkResponse + "");
         //Retour sur le Fragment de connexion
-        homeFragment.ShowSigninFragment();
+        DataBase.token_user = null;
         Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
     }
 
@@ -58,6 +60,7 @@ public class WhoAmIResponse implements APIListenner {
             DataBase.level_user = json.getInt("level");
             DataBase.xp_user = json.getInt("xp");
             DataBase.token_user = json.getString("jwt");
+            DataBase.token_last_update = new Date();
         } catch (JSONException e) {
             e.printStackTrace();
         }

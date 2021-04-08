@@ -45,7 +45,7 @@ public class SignupResponse implements APIListenner {
     public void onResponse(Object response) {
         //Log.d("theTag",response.toString());
         //Retour sur le Fragment de connexion
-        signupFragment.ShowSigninFragment();
+        signupFragment.ShowFragment(SignupFragment.newInstance());
         Toast.makeText(activity,"User successfully created !", Toast.LENGTH_SHORT).show();
     }
 }

@@ -7,6 +7,7 @@ public class PointPassage {
     public int id;
     public String titre;
     public String desc;
+    public TypePointPassage type;
 
     public ArrayList<Chemin> chemins;
 

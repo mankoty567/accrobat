@@ -16,10 +16,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import site.nohan.protoprogression.Controller.DirectionController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.R;
 
 public class MapResponse implements APIListenner {
 
@@ -74,6 +77,16 @@ public class MapResponse implements APIListenner {
                 pointPassage.id = jpointPassage.getInt("id");
                 pointPassage.titre = jpointPassage.getString("title");
                 pointPassage.desc = jpointPassage.getString("description");
+                switch (jpointPassage.getString("type")){
+                    case "start":
+                        pointPassage.type = TypePointPassage.DEPART;
+                        break;
+                    case "end":
+                        pointPassage.type = TypePointPassage.ARRIVEE;
+                        break;
+                    case "type":
+                        pointPassage.type = TypePointPassage.POINT;
+                }
                 pointPassage.chemins = new ArrayList<>();
 
                 JSONArray jpointsStart = jpointPassage.getJSONArray("pointStart");
@@ -135,8 +148,17 @@ public class MapResponse implements APIListenner {
                 }
             }
             Log.e("Model", Map.pointPassages.toString());
-            Map.dernierPointPassage = Map.pointPassages.get(0);
-            Map.cheminActuel = Map.dernierPointPassage.chemins.get(0);
+            LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
+            for(Chemin c : Map.getDepart().chemins){
+                if(c.objectif == null)
+                    break;
+                Log.e("suiv",c.objectif.titre);
+                Button button = new Button(this.activity);
+                button.setOnClickListener(new DirectionController(c));
+                button.setText(c.objectif.titre + " - " + c.nom);
+
+                linearLayout.addView(button);
+            }
 
 
         }catch (JSONException jsonException){
