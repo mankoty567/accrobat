@@ -28,6 +28,9 @@ let useStyles = makeStyles((theme) => ({
   },
   margin_top: {
     marginTop: theme.spacing(4)
+  },
+  back_button: {
+    margin_righ: theme.spacing(2)
   }
 }));
 
