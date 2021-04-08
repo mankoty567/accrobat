@@ -77,7 +77,7 @@ let checkStatus = (res) => {
         }).then(checkStatus).then(res => res.json());
     },
     updateMarker: (data) => {
-        return fetch(`${host}/api/pointpassage/${data.marker_id}`, {
+        return fetch(`${host}/api/pointpassage/${data.marker.id}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
@@ -86,11 +86,11 @@ let checkStatus = (res) => {
             body: JSON.stringify(data.marker)
         }).then(checkStatus).then(res => res.json());
     },
-    deleteMarker: (data) => {
-        return fetch(`${host}/api/pointpassage/${data.marker_id}`, {
+    deleteMarker: (marker) => {
+        return fetch(`${host}/api/pointpassage/${marker.id}`, {
             method: 'DELETE',
             headers: { 'Authorization': 'Bearer ' + window.localStorage.getItem('token') }
-        }).then(checkStatus).then(res => res.json());
+        }).then(checkStatus).then(res => res.text());
     },
 
     getSegment: () => {
@@ -123,7 +123,7 @@ let checkStatus = (res) => {
         return fetch(`${host}/api/segment/${data.segment_id}`, {
             method: 'DELETE',
             headers: { 'Authorization': 'Bearer ' + window.localStorage.getItem('token') }
-        }).then(checkStatus).then(res => res.json());
+        }).then(checkStatus).then(res => res.text());
     },
 
     createObstacle: (data) => {
@@ -153,7 +153,7 @@ let checkStatus = (res) => {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             }
-        }).then(checkStatus).then(res => res.json());
+        }).then(checkStatus).then(res => res.text());
     },
 
     getParticipations: (data) => {
@@ -185,4 +185,5 @@ let checkStatus = (res) => {
     }
 };
 
+export {host, checkStatus};
 export default API;

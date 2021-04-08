@@ -6,6 +6,9 @@ import {
 } from './MarkerIcons';
 import API from '../eventApi/eventApi';
 
+// TODO : Mettre ça correctement
+const CHALLENGE_ID = 23;
+
 /**
  * Permet de créer des markers au click et leurs lignes associées
  * @param {Object[]} markers La liste des markers à afficher sur la map
@@ -30,19 +33,28 @@ let DraggableMarkers = ({
 }) => {
   //Ajoute un marker
   let addMarker = async (event) => {
-    var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
-    var newMarker = {
-      id: id,
-      title: 'Point ' + id,
-      description: '',
-      type: markers.length > 0 ? 'point' : 'start',
-      x: event.latlng.lng,
-      y: event.latlng.lat,
-    };
-    setMarkers((current) => [...current, newMarker]);
-    setStartPoint(newMarker);
-    setCurrentMarker(newMarker);
-    return newMarker;
+    try {
+      var id = markers.length;
+      var newMarker = {
+        title: 'Point ' + id,
+        description: '',
+        type: markers.length > 0 ? 'point' : 'start',
+        x: event.latlng.lng,
+        y: event.latlng.lat,
+      };
+
+      console.log(newMarker);
+
+      let data = await API.createMarker({marker: newMarker, challenge_id: CHALLENGE_ID});
+
+      setMarkers((current) => [...current, data]);
+      setStartPoint(data);
+      setCurrentMarker(data);
+
+      return data;
+    } catch(err) {
+      console.log(err);
+    }
   };
 
   let inBounds = (event) => {
@@ -57,14 +69,17 @@ let DraggableMarkers = ({
   //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      id: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine,
+      path: currentLine.map(p => [p.lat, p.lng]),
+      name: "Segment " + lines.length
     };
-    return API.createSegment(newLines).then((res) => {
-      newLines.id = res.id;
-      setLines((current) => [...current, newLines]);
+
+    console.log(newLines)
+    return API.createSegment({segment: newLines}).then((res) => {
+      setLines((current) => [...current, res]);
+    }).catch(err => {
+      console.log(err)
     });
   };
 
@@ -90,7 +105,7 @@ let DraggableMarkers = ({
 
   //Pour éditer les maps
   let map = useMapEvent({
-    click: (event) => {
+    click: async (event) => {
       if (inBounds(event)) {
         if (!markers.length > 0) {
           addMarker(event);
@@ -98,7 +113,7 @@ let DraggableMarkers = ({
           if (event.originalEvent.ctrlKey) {
             addCurrentLine(event);
           } else {
-            var newMarker = addMarker(event);
+            var newMarker = await addMarker(event);
             addLine(currentMarker, newMarker);
             setCurrentLine([event.latlng]);
           }
@@ -144,15 +159,22 @@ let DraggableMarkers = ({
                   },
                   dragend: (event) => {
                     setMarkers((markers) =>
-                      markers.map((m) =>
-                        m.id === item.id
-                          ? {
-                              ...m,
-                              x: event.target._latlng.lng,
-                              y: event.target._latlng.lat,
-                            }
-                          : m,
-                      ),
+                      markers.map((m) => {
+                        if (m.id === item.id) {
+                          let newM = {...m,
+                            x: event.target._latlng.lng,
+                            y: event.target._latlng.lat,
+                          }
+
+                          API.updateMarker({marker: newM}).catch(err => {
+                            console.log(err);
+                          })
+
+                          return newM;
+                        } else {
+                          return m;
+                        }
+                      }),
                     );
                     setEditMode(false);
                   },

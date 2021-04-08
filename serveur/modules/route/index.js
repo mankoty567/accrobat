@@ -28,16 +28,17 @@ const checkBody = (req, res, next) => {
   } else {
     let correct = checkBodyOfOne(correctBody);
 
-    if (correct) {
+    if (correct.correct) {
       next();
     } else {
-      res.status(400).send('Bad request');
+      res.status(400).send('Bad request: ' + correct.error_message);
     }
   }
 
   function checkBodyOfOne(obj) {
     // TODO : Peut-être faire la vérif du type
     let correct = true;
+    let error_message = "";
 
     Object.keys(obj).forEach((k) => {
       if (typeof obj[k] === 'object') {
@@ -49,6 +50,7 @@ const checkBody = (req, res, next) => {
         if (obj[k].required) {
           if (req.body[k] === undefined) {
             correct = false;
+            error_message = k + " est requis";
           }
         }
 
@@ -63,6 +65,6 @@ const checkBody = (req, res, next) => {
       }
     });
 
-    return correct;
+    return {correct, error_message};
   }
 };
