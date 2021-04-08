@@ -33,22 +33,28 @@ let DraggableMarkers = ({
 }) => {
   //Ajoute un marker
   let addMarker = async (event) => {
-    var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
-    var newMarker = {
-      id: id,
-      title: 'Point ' + id,
-      description: '',
-      type: markers.length > 0 ? 'point' : 'start',
-      x: event.latlng.lng,
-      y: event.latlng.lat,
-    };
-    setMarkers((current) => [...current, newMarker]);
-    setStartPoint(newMarker);
-    setCurrentMarker(newMarker);
+    try {
+      var id = markers.length;
+      var newMarker = {
+        title: 'Point ' + id,
+        description: '',
+        type: markers.length > 0 ? 'point' : 'start',
+        x: event.latlng.lng,
+        y: event.latlng.lat,
+      };
 
-    
+      console.log(newMarker);
 
-    return newMarker;
+      let data = await API.createMarker({marker: newMarker, challenge_id: CHALLENGE_ID});
+
+      setMarkers((current) => [...current, data]);
+      setStartPoint(data);
+      setCurrentMarker(data);
+
+      return data;
+    } catch(err) {
+      console.log(err);
+    }
   };
 
   let inBounds = (event) => {
@@ -63,14 +69,17 @@ let DraggableMarkers = ({
   //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      id: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine,
+      path: currentLine.map(p => [p.lat, p.lng]),
+      name: "Segment " + lines.length
     };
-    return API.createSegment(newLines).then((res) => {
-      newLines.id = res.id;
-      setLines((current) => [...current, newLines]);
+
+    console.log(newLines)
+    return API.createSegment({segment: newLines}).then((res) => {
+      setLines((current) => [...current, res]);
+    }).catch(err => {
+      console.log(err)
     });
   };
 
@@ -96,7 +105,7 @@ let DraggableMarkers = ({
 
   //Pour éditer les maps
   let map = useMapEvent({
-    click: (event) => {
+    click: async (event) => {
       if (inBounds(event)) {
         if (!markers.length > 0) {
           addMarker(event);
@@ -104,7 +113,7 @@ let DraggableMarkers = ({
           if (event.originalEvent.ctrlKey) {
             addCurrentLine(event);
           } else {
-            var newMarker = addMarker(event);
+            var newMarker = await addMarker(event);
             addLine(currentMarker, newMarker);
             setCurrentLine([event.latlng]);
           }

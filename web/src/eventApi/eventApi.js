@@ -185,4 +185,5 @@ let checkStatus = (res) => {
     }
 };
 
+export {host, checkStatus};
 export default API;
