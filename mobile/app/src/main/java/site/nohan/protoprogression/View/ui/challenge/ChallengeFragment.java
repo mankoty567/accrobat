@@ -51,18 +51,24 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
              if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
          }
 
-         //Récupération du Challenge à afficher
-        if(DataBase.id_challenge_request == -1) {
-            new MapRequest(this.getActivity(), 20); //default = 15 bonne = 20
-            new ImageMapRequest(this.getActivity(), 20);
-
-        }
-        else {
-            new MapRequest(this.getActivity(), DataBase.id_challenge_request);
-            new ImageMapRequest(this.getActivity(), DataBase.id_challenge_request);
-        }
-
         return root;
+     }
+
+     @Override
+     public void onResume() {
+         super.onResume();
+
+         //Récupération du Challenge à afficher
+         if(DataBase.isTokenValid() && DataBase.isTokenDateValid(new Date())){
+             if (DataBase.id_challenge_request == -1) {
+                 new MapRequest(this.getActivity(), 20); //default = 15 bonne = 20
+                 new ImageMapRequest(this.getActivity(), 20);
+
+             } else {
+                 new MapRequest(this.getActivity(), DataBase.id_challenge_request);
+                 new ImageMapRequest(this.getActivity(), DataBase.id_challenge_request);
+             }
+         }
      }
 
      /******************************************

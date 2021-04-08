@@ -53,7 +53,7 @@ public class Toile extends View {
         invalidate();
     }
 
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
@@ -63,7 +63,7 @@ public class Toile extends View {
                 new Point(Math.round(x / this.getWidth() * 100), Math.round(y / this.getHeight() * 100))
         );
         return true;
-    }
+    }*/
 
 
     private void dessinerMapInfos(Canvas canvas){

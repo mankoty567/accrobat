@@ -8,7 +8,6 @@ import site.nohan.protoprogression.Model.PointPassage;
 
 public class DirectionController implements View.OnClickListener {
 
-
     private final Chemin direction;
 
     public DirectionController(Chemin direction){
@@ -22,7 +21,5 @@ public class DirectionController implements View.OnClickListener {
         Map.cheminActuel = this.direction;
         Map.accompli = 0;
     }
-
-
 
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
-
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -14,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import site.nohan.protoprogression.Controller.DirectionController;
@@ -148,6 +148,7 @@ public class MapResponse implements APIListenner {
                 }
             }
             Log.e("Model", Map.pointPassages.toString());
+
             LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
             for(Chemin c : Map.getDepart().chemins){
                 if(c.objectif == null)
@@ -159,6 +160,8 @@ public class MapResponse implements APIListenner {
 
                 linearLayout.addView(button);
             }
+            //Map.dernierPointPassage = Map.pointPassages.get(0);
+            //Map.cheminActuel = Map.dernierPointPassage.chemins.get(0);
 
 
         }catch (JSONException jsonException){
