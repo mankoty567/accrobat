@@ -6,9 +6,6 @@ import {
 } from './MarkerIcons';
 import API from '../eventApi/eventApi';
 
-// TODO : Mettre ça correctement
-const CHALLENGE_ID = 23;
-
 /**
  * Permet de créer des markers au click et leurs lignes associées
  * @param {Object[]} markers La liste des markers à afficher sur la map
@@ -30,6 +27,7 @@ let DraggableMarkers = ({
   setStartPoint,
   currentLine,
   setCurrentLine,
+  CHALLENGE_ID,
 }) => {
   //Ajoute un marker
   let addMarker = async (event) => {
@@ -81,7 +79,7 @@ let DraggableMarkers = ({
     console.log(newLines);
     return API.createSegment({ segment: newLines })
       .then((res) => {
-        res.path = res.path.map(e => [e[1], e[0]])
+        res.path = res.path.map((e) => [e[0], e[1]]);
         setLines((current) => [...current, res]);
       })
       .catch((err) => {

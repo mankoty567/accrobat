@@ -215,6 +215,7 @@ let ChallengeEditor = ({ challenge_id }) => {
                 currentMarker={currentMarker}
                 setStartPoint={setStartPoint}
                 startPoint={startPoint}
+                CHALLENGE_ID={challenge_id}
               />
               {lines.map((element) => {
                 try {
