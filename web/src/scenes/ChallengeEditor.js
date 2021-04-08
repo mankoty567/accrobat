@@ -133,6 +133,39 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   useEffect(() => initializeMap(challenge_id), []);
   let history = useHistory();
 
+  const [checkMessage, setCheckMessage] = useState({});
+
+  function handleCheck() {
+    API.checkValidity(challenge_id).then(data => {
+      console.log(data);
+      if (data.valid) {
+        setCheckMessage({valid: true, message: "Le challenge est valide!"});
+      } else {
+        let obj = {valid: false, message: "Le challenge n'est pas valide parceque :"}
+
+        data.error.forEach(e => {
+          if (e === "not_1_start") obj.message = obj.message + "Il n'y a pas de départ, ";
+          if (e === "not_1_end") obj.message = obj.message + "Il n'y a pas d'arrivée, ";
+          if (e.startsWith("point_impasse")) obj.message = obj.message + "Un point est une impasse : " + e.replace("point_impasse:", "") + ", ";
+          if (e.startsWith("point_inaccessible")) obj.message = obj.message + "Un point est inaccessible : " + e.replace("point_inaccessible:", "") + ", ";
+          if (e.startsWith("arrive_inaccessible")) obj.message = obj.message + "Un point ne peut pas arriver à l'Arrivée : " + e.replace("arrive_inaccessible:", "") + ", ";
+        })
+
+        setCheckMessage(obj);
+      }
+    })
+  }
+
+  const [publishMessage, setPublishMessage] = useState("");
+  function handlePublish() {
+    API.publishChallenge(challenge_id).then(data => {
+      setOpen(false);
+    }).catch(err => {
+      setPublishMessage("Le challenge n'est pas valide!")
+      console.log(err);
+    })
+  }
+
   return (
     <div className={classes.root}>
       <Modal open={open}>
@@ -208,6 +241,26 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 >
                   Logs
                 </Button>
+                <Divider />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleCheck}
+                >
+                  Vérifier
+                </Button>
+                <br/>
+                <p style={{color: checkMessage.valid ? "green": "red"}}>{checkMessage.message}</p>
+                <Divider />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handlePublish}
+                >
+                  Publier
+                </Button>
+                <br/>
+                <p style={{color: "red"}}>{publishMessage}</p>
               </List>
             </Drawer>
             <main className={classes.content}>
