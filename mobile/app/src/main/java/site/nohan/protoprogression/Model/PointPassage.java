@@ -8,6 +8,8 @@ public class PointPassage {
     public String titre;
     public String desc;
 
+    public TypePointPassage type;
+
     public ArrayList<Chemin> chemins;
 
     public static PointPassage getById(int id){

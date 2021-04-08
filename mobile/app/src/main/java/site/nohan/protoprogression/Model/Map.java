@@ -53,4 +53,21 @@ public class Map {
     }
 
 
+    public static PointPassage getDepart() {
+        for(PointPassage p : Map.pointPassages){
+            if(p.type == TypePointPassage.DEPART){
+                return p;
+            }
+        }
+        throw new RuntimeException("Aucun départ dans la map");
+    }
+
+    public static PointPassage getArrivee() {
+        for(PointPassage p : Map.pointPassages){
+            if(p.type == TypePointPassage.ARRIVEE){
+                return p;
+            }
+        }
+        throw new RuntimeException("Aucune arrivée dans la map");
+    }
 }
