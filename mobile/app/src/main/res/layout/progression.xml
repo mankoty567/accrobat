@@ -4,7 +4,9 @@
     android:id="@+id/linearLayoutbtn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="25dp"
+    android:paddingBottom="30dp">
     <!--
 
         <ScrollView
@@ -54,14 +56,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 -->
-
-    <fragment
-        android:id="@+id/fragment"
-        android:name="site.nohan.protoprogression.View.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="402dp"
-        android:background="@drawable/map" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,4 +107,13 @@
             android:layout_weight="1"
             android:text="--- ms"/>
     </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="site.nohan.protoprogression.View.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/map" />
+
+
 </LinearLayout>
