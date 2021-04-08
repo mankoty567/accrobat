@@ -94,7 +94,9 @@ let ChallengePanel = () => {
       <Divider orientation="horizontal" />
       <Button
         startIcon={<AddIcon />}
-        onClick={() => setAddmode(true)}
+        onClick={() => {
+          setAddmode(true), setSelected(null);
+        }}
       >
         Ajouter un challenge
       </Button>
@@ -122,7 +124,12 @@ let ChallengePanel = () => {
             : null}
         </>
       )}
-      {selected ? <ChallengeEditor challenge_id={selected} /> : null}
+      {selected ? (
+        <ChallengeEditor
+          challenge_id={selected}
+          setSelected={setSelected}
+        />
+      ) : null}
     </>
   );
 };

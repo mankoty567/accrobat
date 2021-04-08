@@ -37,8 +37,8 @@ let MainPage = () => {
         </AppBar>
         <Switch>
           <Route path="/home">
-            {/* <PublicPage /> */}
-            <ChallengeEditor challenge_id={25} />
+            <PublicPage />
+            {/* <ChallengeEditor challenge_id={25} /> */}
           </Route>
           <Route path="/profile">
             <ProfilePage />
