@@ -61,16 +61,13 @@ let NewPolyline = ({ from }) => {
       [],
     ),
   );
-
+  if (from.length == 0) return <></>;
+  var positions = [
+    from[from.length - 1],
+    [mousePosition.x, mousePosition.y],
+  ];
   return (
-    <Polyline
-      positions={[
-        [from.y, from.x],
-        [mousePosition.x, mousePosition.y],
-      ]}
-      color={'black'}
-      dashArray={5}
-    />
+    <Polyline positions={positions} color={'black'} dashArray={5} />
   );
 };
 
@@ -88,11 +85,8 @@ let ChallengeEditor = () => {
   const [lines, setLines] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
+  const [currentLine, setCurrentLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
-
-  useEffect(() => {
-    console.log(currentMarker);
-  }, [currentMarker]);
 
   return (
     <div className={classes.root}>
@@ -170,17 +164,12 @@ let ChallengeEditor = () => {
             lines={lines}
             setLines={setLines}
             setCurrentMarker={setCurrentMarker}
+            setCurrentLine={setCurrentLine}
+            currentLine={currentLine}
             currentMarker={currentMarker}
             setStartPoint={setStartPoint}
             startPoint={startPoint}
           />
-          {currentMarker ? (
-            currentMarker.type != 'end' ? (
-              <>
-                <NewPolyline from={currentMarker} />
-              </>
-            ) : null
-          ) : null}
           {lines.map((element) => {
             const startMarker = markers.find(
               (m) => m.id === element.PointStartId,
@@ -201,6 +190,20 @@ let ChallengeEditor = () => {
               />
             );
           })}
+          {currentMarker ? (
+            <>
+              <Polyline
+                positions={[
+                  [currentMarker.y, currentMarker.x],
+                  ...currentLine,
+                ]}
+                color={'black'}
+              />
+              {currentMarker.type != 'end' ? (
+                <NewPolyline from={currentLine} />
+              ) : null}
+            </>
+          ) : null}
         </MapContainer>
         {editObstacle ? (
           <ObstacleEditor

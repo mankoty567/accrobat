@@ -25,7 +25,8 @@ let DraggableMarkers = ({
   currentMarker,
   setCurrentMarker,
   setStartPoint,
-  startPoint,
+  currentLine,
+  setCurrentLine,
 }) => {
   //Ajoute un marker
   let addMarker = async (event) => {
@@ -59,12 +60,20 @@ let DraggableMarkers = ({
       id: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       PointStartId: start.id,
       PointEndId: end.id,
-      path: [],
+      path: currentLine,
     };
     return API.createSegment(newLines).then((res) => {
       newLines.id = res.id;
       setLines((current) => [...current, newLines]);
     });
+  };
+
+  let addCurrentLine = (newPoint) => {
+    if (currentLine == []) {
+      setCurrentLine([newPoint.latlng]);
+    } else {
+      setCurrentLine((current) => [...current, newPoint.latlng]);
+    }
   };
 
   //Récupère l'icône en fonction du type du marker
@@ -86,8 +95,13 @@ let DraggableMarkers = ({
         if (!markers.length > 0) {
           addMarker(event);
         } else {
-          var newMarker = addMarker(event);
-          addLine(currentMarker, newMarker);
+          if (event.originalEvent.ctrlKey) {
+            addCurrentLine(event);
+          } else {
+            var newMarker = addMarker(event);
+            addLine(currentMarker, newMarker);
+            setCurrentLine([event.latlng]);
+          }
         }
       }
     },
