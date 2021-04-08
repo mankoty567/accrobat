@@ -21,6 +21,10 @@ let MarkerEditor = ({
 }) => {
   //Update un marker
   let updateMarker = (marker) => {
+    API.updateMarker({marker}).catch(err => {
+      console.log(err);
+    })
+
     setMarkers((current) =>
       current.filter((val) => {
         if (val.id == marker.id) val = marker;
