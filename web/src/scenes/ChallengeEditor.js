@@ -128,7 +128,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       });
   };
 
-  // useEffect(() => initializeMap(challenge_id), []);
+  useEffect(() => initializeMap(challenge_id), []);
 
   const [checkMessage, setCheckMessage] = useState({});
 
