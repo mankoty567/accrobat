@@ -98,10 +98,10 @@ public class MapResponse implements APIListenner {
 
             Log.e("Model", Map.pointPassages.toString());
             for(PointPassage pointPassage1 : Map.pointPassages){
-                for(Chemin chemin1 : pointPassage1.chemins){
+                for(Chemin chemin1 : pointPassage1.chemins) {
                     chemin1.objectif = PointPassage.getById(chemin1.objectifId);
                     // On connecte
-                    if(chemin1.objectif.chemins.size() > 0)
+                    if (chemin1.objectif.chemins.size() > 0)
                         chemin1.points.add(chemin1.objectif.chemins.get(0).points.get(0));
 
 

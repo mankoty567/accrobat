@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.ui.home.HomeFragment" >
+    tools:context=".View.ui.home.SigninFragment" >
 
         <LinearLayout
             android:id="@+id/framelayout_signin"
@@ -26,7 +26,7 @@
                     android:layout_marginBottom="20dp"/>
 
                 <EditText
-                    android:id="@+id/txtin_signin_login"
+                    android:id="@+id/et_signin_login"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"/>
@@ -40,7 +40,7 @@
                     android:layout_marginBottom="20dp" />
 
                 <EditText
-                    android:id="@+id/txtin_signin_mdp"
+                    android:id="@+id/et_signin_password"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"/>
@@ -59,14 +59,14 @@
             android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btn_val_connect"
+                    android:id="@+id/btn_signin_connection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/button_connect" />
 
                 <Button
-                    android:id="@+id/btn_val_inscription"
+                    android:id="@+id/btn_signin_inscription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
