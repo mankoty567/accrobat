@@ -45,14 +45,17 @@ let DraggableMarkers = ({
 
       console.log(newMarker);
 
-      let data = await API.createMarker({marker: newMarker, challenge_id: CHALLENGE_ID});
+      let data = await API.createMarker({
+        marker: newMarker,
+        challenge_id: CHALLENGE_ID,
+      });
 
       setMarkers((current) => [...current, data]);
       setStartPoint(data);
       setCurrentMarker(data);
 
       return data;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   };
@@ -71,16 +74,19 @@ let DraggableMarkers = ({
     var newLines = {
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine.map(p => [p.lat, p.lng]),
-      name: "Segment " + lines.length
+      path: currentLine.map((p) => [p.lat, p.lng]),
+      name: 'Segment ' + lines.length,
     };
 
-    console.log(newLines)
-    return API.createSegment({segment: newLines}).then((res) => {
-      setLines((current) => [...current, res]);
-    }).catch(err => {
-      console.log(err)
-    });
+    console.log(newLines);
+    return API.createSegment({ segment: newLines })
+      .then((res) => {
+        res.path = res.path.map(e => [e[1], e[0]])
+        setLines((current) => [...current, res]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let addCurrentLine = (newPoint) => {
@@ -161,14 +167,17 @@ let DraggableMarkers = ({
                     setMarkers((markers) =>
                       markers.map((m) => {
                         if (m.id === item.id) {
-                          let newM = {...m,
+                          let newM = {
+                            ...m,
                             x: event.target._latlng.lng,
                             y: event.target._latlng.lat,
-                          }
+                          };
 
-                          API.updateMarker({marker: newM}).catch(err => {
-                            console.log(err);
-                          })
+                          API.updateMarker({ marker: newM }).catch(
+                            (err) => {
+                              console.log(err);
+                            },
+                          );
 
                           return newM;
                         } else {
