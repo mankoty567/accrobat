@@ -1,9 +1,10 @@
+import { Marker, useMapEvent, Tooltip } from 'react-leaflet';
 import {
-  Marker,
-  useMapEvent,
-  Tooltip
-} from 'react-leaflet';
-import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons'
+  createCheckpointIcon,
+  createEndIcon,
+  createStartIcon,
+} from './MarkerIcons';
+import API from '../eventApi/eventApi';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -14,18 +15,29 @@ import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  * @param {Function} setLines Fonction pour update le state de lines
  */
-let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, currentLine, setCurrentLine}) => {
-
+let DraggableMarkers = ({
+  markers,
+  setMarkers,
+  editMode,
+  setEditMode,
+  lines,
+  setLines,
+  currentMarker,
+  setCurrentMarker,
+  setStartPoint,
+  currentLine,
+  setCurrentLine,
+}) => {
   //Ajoute un marker
-  let addMarker = (event) => {
+  let addMarker = async (event) => {
     var id = markers.length > 0 ? markers.slice(-1)[0].id + 1 : 0;
     var newMarker = {
-      'id': id,
-      'title': 'Point ' + id,
-      'description': '',
-      'type': markers.length > 0 ? 'point' : 'start',
-      'x': event.latlng.lng,
-      'y': event.latlng.lat
+      id: id,
+      title: 'Point ' + id,
+      description: '',
+      type: markers.length > 0 ? 'point' : 'start',
+      x: event.latlng.lng,
+      y: event.latlng.lat,
     };
     setMarkers((current) => [...current, newMarker]);
     setStartPoint(newMarker);
@@ -34,24 +46,27 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
   };
 
   let inBounds = (event) => {
-    return!(
+    return !(
       event.latlng.lat < 0 ||
       event.latlng.lat > 1 ||
       event.latlng.lng < 0 ||
       event.latlng.lng > 1
     );
-  }
+  };
 
   //Ajoute une ligne
   let addLine = (start, end) => {
     var newLines = {
-      'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
-      'PointStartId': start.id,
-      'PointEndId': end.id,
-      'path': currentLine
+      id: lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
+      PointStartId: start.id,
+      PointEndId: end.id,
+      path: currentLine,
     };
-    setLines((current) => [...current, newLines]);
-  }
+    return API.createSegment(newLines).then((res) => {
+      newLines.id = res.id;
+      setLines((current) => [...current, newLines]);
+    });
+  };
 
   let addCurrentLine = (newPoint) => {
     if (currentLine == []) {
@@ -59,11 +74,11 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     } else {
       setCurrentLine((current) => [...current, newPoint.latlng]);
     }
-  }
+  };
 
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
-    switch(marker.type) {
+    switch (marker.type) {
       case 'start':
         return createStartIcon(marker == currentMarker);
       case 'end':
@@ -71,7 +86,7 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       case 'point':
         return createCheckpointIcon(marker == currentMarker);
     }
-  }
+  };
 
   //Pour éditer les maps
   let map = useMapEvent({
@@ -113,19 +128,34 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
                     // {currentMarker ? (currentMarker.id === item.id ? (editMode ? null : setCurrentMarker(null)) : setCurrentMarker(item)) : setCurrentMarker(item)}
                     var newCurrent = item;
                     if (currentMarker) {
-                      if (currentMarker.id === item.id && editMode) newCurrent = null;
+                      if (currentMarker.id === item.id && editMode)
+                        newCurrent = null;
                     }
                     setCurrentMarker(newCurrent);
-                    if(editMode && item.type != 'start' && currentMarker.id != item.id) {
+                    if (
+                      editMode &&
+                      item.type != 'start' &&
+                      currentMarker.id != item.id
+                    ) {
                       setEditMode(false);
                       addLine(currentMarker, item);
                       // setStartPoint(item);
                     }
                   },
                   dragend: (event) => {
-                    setMarkers(markers => markers.map(m => m.id === item.id ? { ...m, x: event.target._latlng.lng, y: event.target._latlng.lat } : m));
+                    setMarkers((markers) =>
+                      markers.map((m) =>
+                        m.id === item.id
+                          ? {
+                              ...m,
+                              x: event.target._latlng.lng,
+                              y: event.target._latlng.lat,
+                            }
+                          : m,
+                      ),
+                    );
                     setEditMode(false);
-                  }
+                  },
                 }}
               >
                 <Tooltip direction="top" offset={[0, -40]} permanent>
