@@ -131,6 +131,18 @@ const API = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  getChallengeImage: (data) => {
+    return fetch(`${host}/api/challenge/${data.challenge_id}/image`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
   updateMarker: (data) => {
     return fetch(`${host}/api/pointpassage/${data.marker_id}`, {
       method: 'POST',

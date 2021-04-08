@@ -3,6 +3,7 @@ import React from 'react';
 import PublicPage from './PublicPage';
 import ProfilePage from './ProfilePage';
 import AdminPanel from './adminPanel/AdminPanel';
+import ChallengeEditor from './ChallengeEditor';
 import {
   BrowserRouter as Router,
   Route,
@@ -36,7 +37,8 @@ let MainPage = () => {
         </AppBar>
         <Switch>
           <Route path="/home">
-            <PublicPage />
+            {/* <PublicPage /> */}
+            <ChallengeEditor challenge_id={25} />
           </Route>
           <Route path="/profile">
             <ProfilePage />

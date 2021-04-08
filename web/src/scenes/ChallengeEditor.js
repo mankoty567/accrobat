@@ -20,6 +20,7 @@ import useStyles from './MaterialUI';
 import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
 import ObstacleEditor from './ObstacleEditor';
+import API from '../eventApi/eventApi';
 
 let inBounds = (event) => {
   return !(
@@ -71,7 +72,7 @@ let NewPolyline = ({ from }) => {
   );
 };
 
-let ChallengeEditor = () => {
+let ChallengeEditor = ({ challenge_id }) => {
   //Utilisation des classes CSS
   const classes = useStyles();
 
@@ -87,131 +88,182 @@ let ChallengeEditor = () => {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [currentLine, setCurrentLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const initializeMap = async (challenge_id) => {
+    await API.getChallenge({
+      challenge_id,
+      include: 'pointsegmentobstacle',
+    })
+      .then((res) => {
+        res.PointPassages.forEach((element) => {
+          setMarkers((current) => [
+            ...current,
+            {
+              id: element.id,
+              title: element.title,
+              description: element.description,
+              type: element.type,
+              x: element.x,
+              y: element.y,
+            },
+          ]);
+        });
+        let newLines = [];
+        res.PointPassages.forEach((pp) => {
+          pp.pointStart.forEach((segment) => {
+            newLines.push({
+              id: segment.id,
+              PointStartId: segment.PointStartId,
+              PointEndId: segment.PointEndId,
+              path: segment.path,
+            });
+          });
+        });
+        setLines(newLines);
+      })
+      .then(() => {
+        setIsLoading(true);
+      });
+  };
+
+  useEffect(() => initializeMap(challenge_id), []);
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Éditeur de challenge
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{ paper: classes.drawerPaper }}
-        anchor="left"
-      >
-        <div className={classes.toolbar} />
-        <List>
-          <Typography variant="h5">Menu d'édition</Typography>
-          <Divider />
-          <Typography variant="h6" className={classes.margin_top}>
-            Édition du challenge
-          </Typography>
-          <Divider />
-          <ChallengeInfosEditor />
-          <Typography variant="h6" className={classes.margin_top}>
-            Édition d'un point
-          </Typography>
-          <Divider />
-          {currentMarker ? (
-            <MarkerEditor
-              marker={currentMarker}
-              setStartPoint={setStartPoint}
-              setEditMode={setEditMode}
-              setMarkers={setMarkers}
-              markers={markers}
-              setLines={setLines}
-            />
-          ) : (
-            <Typography variant="h6" className={classes.margin_top}>
-              Sélectionner un point à modifier
-            </Typography>
-          )}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              console.log(lines);
-              console.log(markers);
-            }}
+      {isLoading ? (
+        <>
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Typography variant="h6" noWrap>
+                Éditeur de challenge
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+            anchor="left"
           >
-            Logs
-          </Button>
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <MapContainer
-          style={{ height: '90vh', width: '84vw' }}
-          crs={CRS.Simple}
-          center={[bounds[1][0] / 2, bounds[1][1] / 2]}
-          bounds={bounds}
-          maxBounds={bounds}
-          style={{ height: '90vh', width: '84vw' }}
-        >
-          <ImageOverlay
-            url={'/map.png'}
-            bounds={bounds}
-          ></ImageOverlay>
-          <DraggableMarkers
-            markers={markers}
-            setMarkers={setMarkers}
-            editMode={editMode}
-            setEditMode={setEditMode}
-            lines={lines}
-            setLines={setLines}
-            setCurrentMarker={setCurrentMarker}
-            setCurrentLine={setCurrentLine}
-            currentLine={currentLine}
-            currentMarker={currentMarker}
-            setStartPoint={setStartPoint}
-            startPoint={startPoint}
-          />
-          {lines.map((element) => {
-            const startMarker = markers.find(
-              (m) => m.id === element.PointStartId,
-            );
-            const endMarker = markers.find(
-              (m) => m.id === element.PointEndId,
-            );
-            const positions = [
-              [startMarker.y, startMarker.x],
-              ...element.path,
-              [endMarker.y, endMarker.x],
-            ];
-            return (
-              <Polyline
-                positions={positions}
-                key={element.id}
-                color={'black'}
+            <div className={classes.toolbar} />
+            <List>
+              <Typography variant="h5">Menu d'édition</Typography>
+              <Divider />
+              <Typography variant="h6" className={classes.margin_top}>
+                Édition du challenge
+              </Typography>
+              <Divider />
+              <ChallengeInfosEditor />
+              <Typography variant="h6" className={classes.margin_top}>
+                Édition d'un point
+              </Typography>
+              <Divider />
+              {currentMarker ? (
+                <MarkerEditor
+                  marker={currentMarker}
+                  setStartPoint={setStartPoint}
+                  setEditMode={setEditMode}
+                  setMarkers={setMarkers}
+                  markers={markers}
+                  setLines={setLines}
+                />
+              ) : (
+                <Typography
+                  variant="h6"
+                  className={classes.margin_top}
+                >
+                  Sélectionner un point à modifier
+                </Typography>
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  console.log(lines);
+                  console.log(markers);
+                }}
+              >
+                Logs
+              </Button>
+            </List>
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <MapContainer
+              style={{ height: '90vh', width: '84vw' }}
+              crs={CRS.Simple}
+              center={[bounds[1][0] / 2, bounds[1][1] / 2]}
+              bounds={bounds}
+              maxBounds={bounds}
+              style={{ height: '90vh', width: '84vw' }}
+            >
+              <ImageOverlay
+                url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
+                bounds={bounds}
+              ></ImageOverlay>
+              <DraggableMarkers
+                markers={markers}
+                setMarkers={setMarkers}
+                editMode={editMode}
+                setEditMode={setEditMode}
+                lines={lines}
+                setLines={setLines}
+                setCurrentMarker={setCurrentMarker}
+                setCurrentLine={setCurrentLine}
+                currentLine={currentLine}
+                currentMarker={currentMarker}
+                setStartPoint={setStartPoint}
+                startPoint={startPoint}
               />
-            );
-          })}
-          {currentMarker ? (
-            <>
-              <Polyline
-                positions={[
-                  [currentMarker.y, currentMarker.x],
-                  ...currentLine,
-                ]}
-                color={'black'}
-              />
-              {currentMarker.type != 'end' ? (
-                <NewPolyline from={currentLine} />
+              {lines.map((element) => {
+                try {
+                  const startMarker = markers.find(
+                    (m) => m.id === element.PointStartId,
+                  );
+                  const endMarker = markers.find(
+                    (m) => m.id === element.PointEndId,
+                  );
+
+                  const positions = [
+                    [startMarker.y, startMarker.x],
+                    ...element.path.map((elem) => {
+                      return [elem[1], elem[0]];
+                    }),
+                    [endMarker.y, endMarker.x],
+                  ];
+                  console.log(positions);
+                  return (
+                    <Polyline
+                      positions={positions}
+                      key={element.id}
+                      color={'black'}
+                    />
+                  );
+                } catch (err) {
+                  console.error(err);
+                }
+              })}
+              {currentMarker ? (
+                <>
+                  <Polyline
+                    positions={[
+                      [currentMarker.y, currentMarker.x],
+                      ...currentLine,
+                    ]}
+                    color={'black'}
+                  />
+                  {currentMarker.type != 'end' ? (
+                    <NewPolyline from={currentLine} />
+                  ) : null}
+                </>
               ) : null}
-            </>
-          ) : null}
-        </MapContainer>
-        {editObstacle ? (
-          <ObstacleEditor
-            open={editObstacle}
-            setOpen={setEditObstacle}
-          ></ObstacleEditor>
-        ) : null}
-      </main>
+            </MapContainer>
+          </main>
+        </>
+      ) : (
+        <p>Chargement en cours ...</p>
+      )}
     </div>
   );
 };
