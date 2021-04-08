@@ -77,7 +77,8 @@ public class Toile extends View {
         this.stylo.setTextSize(70);
         this.stylo.setColor(Color.BLACK);
         canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.getDistanceTotale()/2f)+" Km au total", 0, 100 , this.stylo);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.cheminActuel.getLongueur()-Map.accompli)/2f+" Km restants", 0, 200 , this.stylo);
+        if(Map.cheminActuel != null)
+            canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.cheminActuel.getLongueur()-Map.accompli)/2f+" Km restants", 0, 200 , this.stylo);
         canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, canvas.getHeight()-100 , this.stylo);
 
 
