@@ -73,7 +73,9 @@ public class Toile extends View {
         // Titre de la map
         this.stylo.setFakeBoldText(false);
         this.stylo.setColor(Color.BLACK);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, 100 , this.stylo);
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.getDistanceTotale()+" Km au total", 0, 100 , this.stylo);
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.cheminActuel.getLongueur()-Map.accompli+" Km restants", 0, 200 , this.stylo);
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, canvas.getHeight()-100 , this.stylo);
 
 
 
@@ -178,9 +180,7 @@ public class Toile extends View {
                                     Log.e("af", ""+ (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*100));
                                     this.stylo.setARGB(
                                             255,
-                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200),
-                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200),
-                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200)
+                                            200,0,0
                                     );
                                 } else {
                                     this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));

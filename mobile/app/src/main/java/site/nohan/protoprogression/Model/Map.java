@@ -18,6 +18,19 @@ public class Map {
 
 
 
+    public static int getDistanceTotale(){
+        double distance = 0d;
+        for(PointPassage pointPassage : Map.pointPassages){
+            for(Chemin chemin : pointPassage.chemins){
+                if(chemin.complete)
+                    distance += chemin.getLongueur(); //TODO: lors de l'implementation de la distance d'un chemin l'ajouter chemin.getKm()
+            }
+        }
+        distance += (double) Map.accompli;
+        return (int) Math.round(distance);
+    }
+
+
     static{
         accompli = 0;
         /*
