@@ -21,6 +21,7 @@ import MarkerEditor from './MarkerEditor';
 import ChallengeInfosEditor from './ChallengeInfosEditor';
 import ObstacleEditor from './ObstacleEditor';
 import API from '../eventApi/eventApi';
+import { useHistory } from 'react-router';
 
 let inBounds = (event) => {
   return !(
@@ -128,6 +129,7 @@ let ChallengeEditor = ({ challenge_id }) => {
   };
 
   useEffect(() => initializeMap(challenge_id), []);
+  let history = useHistory();
 
   return (
     <div className={classes.root}>
@@ -135,9 +137,19 @@ let ChallengeEditor = ({ challenge_id }) => {
         <>
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-              <Typography variant="h6" noWrap>
+              <Typography variant="h6" noWrap style={{ flex: 1 }}>
                 Éditeur de challenge
               </Typography>
+              <Button
+                className={classes.back_button}
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                Retour
+              </Button>
             </Toolbar>
           </AppBar>
           <Drawer
