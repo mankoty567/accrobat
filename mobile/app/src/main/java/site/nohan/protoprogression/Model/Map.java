@@ -1,5 +1,6 @@
     package site.nohan.protoprogression.Model;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -15,6 +16,8 @@ public class Map {
     public static Chemin cheminActuel;
 
     public static ArrayList<PointPassage> pointPassages;
+
+    public static Bitmap background;
 
 
 

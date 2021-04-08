@@ -36,7 +36,8 @@ public class Toile extends View {
         this.stylo.setAntiAlias(true);
         this.stylo.setStrokeWidth(20);
 
-        background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
+        //background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
+        Map.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
     }
 
@@ -44,7 +45,7 @@ public class Toile extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(this.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo);
+        canvas.drawBitmap(Map.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo);
         this.dessinerChemins(canvas);
         this.dessinerMapInfos(canvas);
 
@@ -64,17 +65,19 @@ public class Toile extends View {
         return true;
     }
 
+
     private void dessinerMapInfos(Canvas canvas){
 
 
         this.stylo.setColor(Color.BLACK);
-        this.stylo.setTextSize(100);
+        this.stylo.setTextSize(70);
 
         // Titre de la map
         this.stylo.setFakeBoldText(false);
+        this.stylo.setTextSize(70);
         this.stylo.setColor(Color.BLACK);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.getDistanceTotale()+" Km au total", 0, 100 , this.stylo);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.cheminActuel.getLongueur()-Map.accompli+" Km restants", 0, 200 , this.stylo);
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.getDistanceTotale()/2f)+" Km au total", 0, 100 , this.stylo);
+        canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.cheminActuel.getLongueur()-Map.accompli)/2f+" Km restants", 0, 200 , this.stylo);
         canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, canvas.getHeight()-100 , this.stylo);
 
 
@@ -175,21 +178,38 @@ public class Toile extends View {
 
                             //this.stylo.setColor(Color.rgb(200,0,200));
 
+                            int taille;
                             for (int j = 1; j <= points; j++) {
                                 if(j==points) {
-                                    Log.e("af", ""+ (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*100));
+                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * -1 / 20f);
+                                    Log.e("af", ""+ taille);
                                     this.stylo.setARGB(
                                             255,
-                                            200,0,0
+                                            200-taille*3,0,255-(taille*2)
                                     );
+                                    canvas.drawCircle(
+                                            (A.x + intervalX * j) * canvas.getWidth() / 100,
+                                            (A.y + intervalY * j) * canvas.getHeight() / 100,
+                                            taille*2,
+                                            this.stylo);
+                                    this.stylo.setARGB(
+                                            255,
+                                            200-taille*3,100 , 100+(taille*2)
+                                    );
+                                    canvas.drawCircle(
+                                            (A.x + intervalX * j) * canvas.getWidth() / 100,
+                                            (A.y + intervalY * j) * canvas.getHeight() / 100,
+                                            Math.max(taille, 30),
+                                            this.stylo);
                                 } else {
+
                                     this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
+                                    canvas.drawCircle(
+                                            (A.x + intervalX * j) * canvas.getWidth() / 100,
+                                            (A.y + intervalY * j) * canvas.getHeight() / 100,
+                                            15,
+                                            this.stylo);
                                 }
-                                canvas.drawCircle(
-                                        (A.x + intervalX * j) * canvas.getWidth() / 100,
-                                        (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                        15,
-                                        this.stylo);
                             }
                             this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
                             // continue;
