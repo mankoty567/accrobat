@@ -58,14 +58,22 @@ let DraggableMarkers = ({
     }
   };
 
-  let inBounds = (event) => {
+  let inBounds = (coords) => {
     return !(
-      event.latlng.lat < 0 ||
-      event.latlng.lat > 1 ||
-      event.latlng.lng < 0 ||
-      event.latlng.lng > 1
+      coords.lat < 0 ||
+      coords.lat > 1 ||
+      coords.lng < 0 ||
+      coords.lng > 1
     );
   };
+
+  let fitInBounds = (coords) => {
+    if (coords.lat < 0) coords.lat = 0;
+    if (coords.lat > 1) coords.lat = 1;
+    if (coords.lng < 0) coords.lng = 0;
+    if (coords.lng > 1) coords.lng = 1;
+    return coords;
+  }
 
   //Ajoute une ligne
   let addLine = (start, end) => {
@@ -111,7 +119,7 @@ let DraggableMarkers = ({
   //Pour éditer les maps
   let map = useMapEvent({
     click: async (event) => {
-      if (inBounds(event)) {
+      if (inBounds(event.latlng)) {
         if (!markers.length > 0) {
           addMarker(event);
         } else {
@@ -178,13 +186,17 @@ let DraggableMarkers = ({
                     }]);
                   },
                   dragend: (event) => {
+                    var coords = event.target._latlng;
+                    if(!inBounds(coords)) {
+                      coords = fitInBounds(coords);
+                    }
                     setMarkers((markers) =>
                       markers.map((m) => {
                         if (m.id === item.id) {
                           let newM = {
                             ...m,
-                            x: event.target._latlng.lng,
-                            y: event.target._latlng.lat,
+                            x: coords.lng,
+                            y: coords.lat,
                           };
 
                           API.updateMarker({ marker: newM }).catch(
