@@ -14,7 +14,7 @@ import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  * @param {Function} setLines Fonction pour update le state de lines
  */
-let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, startPoint }) => {
+let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, setLines, currentMarker, setCurrentMarker, setStartPoint, currentLine, setCurrentLine}) => {
 
   //Ajoute un marker
   let addMarker = (event) => {
@@ -48,9 +48,17 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
       'id': lines.length > 0 ? lines.slice(-1)[0].id + 1 : 0,
       'PointStartId': start.id,
       'PointEndId': end.id,
-      'path': []
+      'path': currentLine
     };
     setLines((current) => [...current, newLines]);
+  }
+
+  let addCurrentLine = (newPoint) => {
+    if (currentLine == []) {
+      setCurrentLine([newPoint.latlng]);
+    } else {
+      setCurrentLine((current) => [...current, newPoint.latlng]);
+    }
   }
 
   //Récupère l'icône en fonction du type du marker
@@ -72,8 +80,13 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
         if (!markers.length > 0) {
           addMarker(event);
         } else {
-          var newMarker = addMarker(event);
-          addLine(currentMarker, newMarker);
+          if (event.originalEvent.ctrlKey) {
+            addCurrentLine(event);
+          } else {
+            var newMarker = addMarker(event);
+            addLine(currentMarker, newMarker);
+            setCurrentLine([event.latlng]);
+          }
         }
       }
     },
