@@ -1,4 +1,4 @@
-package site.nohan.protoprogression.Model;
+    package site.nohan.protoprogression.Model;
 
 import android.graphics.Point;
 import android.util.Log;

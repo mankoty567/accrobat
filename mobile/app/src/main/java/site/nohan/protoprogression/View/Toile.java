@@ -26,6 +26,7 @@ public class Toile extends View {
     Context context;
 
     Bitmap background;
+    Bitmap flag;
 
     public Toile(Context context) {
         super(context);
@@ -35,14 +36,9 @@ public class Toile extends View {
         this.stylo.setAntiAlias(true);
         this.stylo.setStrokeWidth(20);
 
-        Drawable myDrawable = getResources().getDrawable(R.drawable.map);
-
-        background = ((BitmapDrawable) myDrawable).getBitmap();
-
-
+        background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
+        flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
     }
-
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -79,26 +75,41 @@ public class Toile extends View {
         this.stylo.setColor(Color.BLACK);
         canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, 100 , this.stylo);
 
-        this.stylo.setFakeBoldText(true);
-        this.stylo.setColor(Color.BLACK);
-        /*
-        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
-            for(Chemin c : Map.p){
-                // Dessin nom chemin
 
-                if(c.points.size() > 0){
+
+
+        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
+            for(PointPassage pointPassage : Map.pointPassages) {
+                if(pointPassage.chemins.size() > 0 && pointPassage.chemins.get(0).points.size() > 0) {
+                    this.stylo.setARGB(200, 200, 200, 255);
+                    canvas.drawCircle(
+                            (((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth()),
+                            (((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight()) ,
+                            20,
+                            this.stylo
+                    );
+                    this.stylo.setFakeBoldText(true);
+                    this.stylo.setTextSize(60);
+                    this.stylo.setARGB(200,10,10,10);
+                    canvas.drawBitmap(
+                            this.flag,
+                            (((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth()),
+                            (((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight()) - this.flag.getHeight(),
+                            this.stylo
+                            );
+
                     canvas.drawText(
-                            c.title == null ?
-                                    "Indéfinis" : c.title ,
-                            ((float) c.points.get(0).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(0).y) / 100 * canvas.getHeight(),
+                            pointPassage.titre == null ?
+                                    "Indéfinis" : pointPassage.titre,
+                            ((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth() + this.flag.getWidth(),
+                            ((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight(),
                             this.stylo
                     );
                 }
             }
         }
+        this.stylo.reset();
 
-         */
     }
 
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
@@ -116,24 +127,36 @@ public class Toile extends View {
                 if (c.points.size() == 0)
                     continue;
 
-                for (int i = 0; i < c.points.size() - 1; i++) {
-                    if (c.complete) {
+                // Pour tout les points qui composent le chemin
+                for (int i = 0; i < c.points.size()-1; i++) {
+
+                    if (c.complete || (c.getLongueurAt(c.points.get(i+1)) < Map.accompli && c == Map.cheminActuel)) {
                         this.stylo.setStrokeWidth(40);
                     } else {
                         this.stylo.setStrokeWidth(15);
                     }
 
+                    canvas.drawCircle(
+                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
+                            15,
+                            this.stylo
+                    );
+                    canvas.drawLine(
+                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
+                            ((float) c.points.get(i + 1).x) / 100 * canvas.getWidth(),
+                            ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
+                            this.stylo
+                    );
+
                     // On dessine la progression uniquement du chemin sur lequel on est
                     if (c == Map.cheminActuel) {
 
-                        if (c.getLongueurAt(c.points.get(i)) < Map.accompli) {
-                            this.stylo.setStrokeWidth(40);
-                        } else {
-                            this.stylo.setStrokeWidth(15);
-                        }
-
+                        this.stylo.setStrokeWidth(15);
                         // Si on est entre deux points
-                        if (Map.accompli > c.getLongueurAt(c.points.get(i)) && Map.accompli < c.getLongueurAt(c.points.get(i + 1))) {
+                        if (/*Map.accompli > c.getLongueurAt(c.points.get(i)) &&*/ Map.accompli <= c.getLongueurAt(c.points.get(i + 1))) {
+
 
                             Point A = c.points.get(i);
                             Point B = c.points.get(i + 1);
@@ -149,11 +172,23 @@ public class Toile extends View {
                             float intervalY = diffY / (pointsMax + 1);
 
                             //this.stylo.setColor(Color.rgb(200,0,200));
+
                             for (int j = 1; j <= points; j++) {
+                                if(j==points) {
+                                    Log.e("af", ""+ (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*100));
+                                    this.stylo.setARGB(
+                                            255,
+                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200),
+                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200),
+                                            (int) Math.round(Math.cos(((float) Math.round((System.currentTimeMillis()%(Math.pow(2,32)))/100f)%100)/100)*200)
+                                    );
+                                } else {
+                                    this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
+                                }
                                 canvas.drawCircle(
                                         (A.x + intervalX * j) * canvas.getWidth() / 100,
                                         (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                        30,
+                                        15,
                                         this.stylo);
                             }
                             this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
@@ -162,20 +197,6 @@ public class Toile extends View {
                         }
                     }
                     //}
-                    canvas.drawCircle(
-                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
-                            15,
-                            this.stylo
-                    );
-                    canvas.drawLine(
-                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
-                            ((float) c.points.get(i + 1).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
-                            this.stylo
-                    );
-
 
                 }
             }
