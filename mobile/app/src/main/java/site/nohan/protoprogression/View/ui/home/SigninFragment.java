@@ -13,8 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import site.nohan.protoprogression.Network.Signin.SigninRequest;
-import site.nohan.protoprogression.Network.Signup.SignupRequest;
+import site.nohan.protoprogression.Network.Authenticate.Signin.SigninRequest;
+import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 public class SigninFragment extends Fragment{
@@ -48,7 +49,7 @@ public class SigninFragment extends Fragment{
         btn_inscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowSignupFragment();
+                ShowFragment(signup);
             }
         });
 
@@ -79,21 +80,11 @@ public class SigninFragment extends Fragment{
     }
 
     /******************************************
-     * Méthode utilisé pour afficher le fragment Signup dans le framelayout
+     * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowSignupFragment() {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, signup);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    /******************************************
-     * Méthode utilisé pour afficher le fragment Home dans le framelayout
-     ******************************************/
-    public void ShowHomeFragment() {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, home);
+    public void ShowFragment(Fragment fragment) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -112,7 +103,7 @@ public class SigninFragment extends Fragment{
 
         if(ok){
             //Lancement de la requête de connexion
-            new SigninRequest(getActivity(), et_login.getText()+"", et_password.getText()+"", this);
+            new SigninRequest(getActivity(), et_login.getText()+"", et_password.getText()+"",this);
         }
     }
 }

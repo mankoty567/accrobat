@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import site.nohan.protoprogression.Network.Signup.SignupRequest;
+import site.nohan.protoprogression.Network.Authenticate.Signup.SignupRequest;
 import site.nohan.protoprogression.R;
 
 public class SignupFragment extends Fragment {
@@ -50,7 +50,7 @@ public class SignupFragment extends Fragment {
         btn_back_to_connection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowSigninFragment();
+                ShowFragment(signin);
             }
         });
 
@@ -83,11 +83,11 @@ public class SignupFragment extends Fragment {
     }
 
     /******************************************
-     * Méthode utilisé pour afficher le fragment Signin dans le framelayout
+     * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowSigninFragment() {
+    public void ShowFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, signin);
+        transaction.replace(R.id.nav_host_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

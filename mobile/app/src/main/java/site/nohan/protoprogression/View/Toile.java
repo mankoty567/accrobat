@@ -101,7 +101,7 @@ public class Toile extends View {
                             (((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth()),
                             (((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight()) - this.flag.getHeight(),
                             this.stylo
-                            );
+                    );
 
                     canvas.drawText(
                             pointPassage.titre == null ?

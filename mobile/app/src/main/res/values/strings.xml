@@ -8,7 +8,11 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_main">MainActivity</string>
 
+    <!-- Home Fragment -->
+    <string name="title_challenges">Tous les challenges</string>
+
     <!-- Signin Fragment -->
+    <string name="title_signin">Espace de Connexion</string>
     <string name="txt_login">Login</string>
     <string name="txt_password">Mot de passe</string>
     <string name="txt_confirmation">Confirmer le mot de passe</string>
@@ -16,6 +20,7 @@
     <string name="button_inscription">Inscription</string>
 
     <!-- Signup Fragment -->
+    <string name="title_signup">Espace d\'Inscription</string>
     <string name="txt_mail">Email</string>
     <string name="txt_firstname">Prénom</string>
     <string name="txt_lastname">Nom</string>

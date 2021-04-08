@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="25dp"
-    android:paddingBottom="30dp">
+    android:paddingBottom="55dp">
     <!--
 
         <ScrollView
@@ -109,35 +108,32 @@
             android:text="--- ms"/>
     </LinearLayout>
 
-
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment"
-            android:name="site.nohan.protoprogression.View.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:visibility="visible" />
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment"
+        android:name="site.nohan.protoprogression.View.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible" />
 
     <!--
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent">
 
-                    <fragment
-                        android:id="@+id/fragment"
-                        android:name="site.nohan.protoprogression.View.MapFragment"
-                        android:layout_width="700dp"
-                        android:layout_height="700dp"
-                        android:background="@drawable/map" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-        </LinearLayout>
-    </ScrollView>
--->
+                        <fragment
+                            android:id="@+id/fragment"
+                            android:name="site.nohan.protoprogression.View.MapFragment"
+                            android:layout_width="700dp"
+                            android:layout_height="700dp"
+                            android:background="@drawable/map" />
+
+            </LinearLayout>
+        </ScrollView>
+    -->
 
 </LinearLayout>

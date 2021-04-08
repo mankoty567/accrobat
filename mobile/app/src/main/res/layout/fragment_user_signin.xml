@@ -5,73 +5,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.ui.home.SigninFragment" >
+    tools:context=".View.ui.home.SigninFragment"
+    android:paddingBottom="55dp" >
 
         <LinearLayout
-            android:id="@+id/framelayout_signin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/linearlayout_signin"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/txt_signin_login"
+                    android:id="@+id/txt_signin_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/txt_login"
-                    android:layout_marginBottom="20dp"/>
+                    android:text="@string/title_signin"
+                    android:textSize="20dp"
+                    android:layout_marginBottom="10dp"/>
 
-                <EditText
-                    android:id="@+id/et_signin_login"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"/>
+                <LinearLayout
+                    android:id="@+id/ll_signin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/txt_signin_mdp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/txt_password"
-                    android:layout_marginBottom="20dp" />
+                        <TextView
+                            android:id="@+id/txt_signin_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/txt_login"/>
 
-                <EditText
-                    android:id="@+id/et_signin_password"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"/>
+                        <EditText
+                            android:id="@+id/et_signin_login"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"/>
 
+                        <TextView
+                            android:id="@+id/txt_signin_mdp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/txt_password" />
+
+                        <EditText
+                            android:id="@+id/et_signin_password"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"/>
+
+                        <LinearLayout
+                            android:id="@+id/ll_signin_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                                <Button
+                                    android:id="@+id/btn_signin_connection"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="@string/button_connect" />
+
+                                <Button
+                                    android:id="@+id/btn_signin_inscription"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="@string/button_inscription" />
+
+                        </LinearLayout>
+                </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearlayout_signin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/framelayout_signin"
-            android:gravity="center"
-            android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/btn_signin_connection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/button_connect" />
-
-                <Button
-                    android:id="@+id/btn_signin_inscription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/button_inscription" />
-
-        </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

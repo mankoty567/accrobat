@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
-import android.widget.Button;
 
 import com.android.volley.VolleyError;
 
@@ -14,7 +13,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import site.nohan.protoprogression.Controller.DirectionController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.PointPassage;

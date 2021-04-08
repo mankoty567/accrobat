@@ -1,4 +1,4 @@
-    package site.nohan.protoprogression.Model;
+package site.nohan.protoprogression.Model;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -51,6 +51,5 @@ public class Map {
 
          */
     }
-
 
 }
