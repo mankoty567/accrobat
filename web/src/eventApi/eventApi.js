@@ -448,6 +448,17 @@ const API = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  checkValidity: (id) => {
+    return fetch(`${host}/api/challenge/${id}/validity`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+        'Bearer ' + window.localStorage.getItem('token'),
+      }
+    })
+      .then(checkStatus)
+      .then(res => res.json());
+  }
 };
 
 export default API;
