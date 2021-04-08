@@ -5,6 +5,9 @@ import {
 } from 'react-leaflet';
 import{createCheckpointIcon, createEndIcon, createStartIcon} from './MarkerIcons'
 
+// TODO : Mettre ça correctement
+const CHALLENGE_ID = 23;
+
 /**
  * Permet de créer des markers au click et leurs lignes associées
  * @param {Object[]} markers La liste des markers à afficher sur la map
@@ -30,6 +33,9 @@ let DraggableMarkers = ({ markers, setMarkers, editMode, setEditMode, lines, set
     setMarkers((current) => [...current, newMarker]);
     setStartPoint(newMarker);
     setCurrentMarker(newMarker);
+
+    
+
     return newMarker;
   };
 
