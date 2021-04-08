@@ -117,9 +117,14 @@ let DraggableMarkers = ({
           if (event.originalEvent.ctrlKey) {
             addCurrentLine(event);
           } else {
-            var newMarker = await addMarker(event);
-            addLine(currentMarker, newMarker);
-            setCurrentLine([event.latlng]);
+            if (currentMarker) {
+              var newMarker = await addMarker(event);
+              addLine(currentMarker, newMarker);
+              setCurrentLine([event.latlng]);
+            } else {
+              await addMarker(event);
+              setCurrentLine([event.latlng]);
+            }
           }
         }
       }
