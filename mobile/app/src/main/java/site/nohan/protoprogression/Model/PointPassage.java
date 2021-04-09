@@ -12,7 +12,7 @@ public class PointPassage {
     public ArrayList<Chemin> chemins;
 
     public static PointPassage getById(int id){
-        for(PointPassage pointPassage : Map.pointPassages){
+        for(PointPassage pointPassage : Map.mapActuelle.pointPassages){
             if(pointPassage.id == id){
                 return pointPassage;
             }
@@ -21,7 +21,7 @@ public class PointPassage {
     }
 
     public static boolean exists(int id){
-        for(PointPassage pointPassage : Map.pointPassages){
+        for(PointPassage pointPassage : Map.mapActuelle.pointPassages){
             if(pointPassage.id == id){
                 return true;
             }

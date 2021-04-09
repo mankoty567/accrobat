@@ -25,10 +25,6 @@ public class ButtonController implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         //Log.e("controller", Map.chemins.toString());
-        if(v.getId() == R.id.bEffacer){
-            Map.pointPassages = new ArrayList<>();
-            return;
-        }
 
         //Initialisation de l'objet permettant l'interaction avec le GPS et l'Accéléromètre
         if(pedometerController == null) pedometerController = new PedometerController(this.activity);

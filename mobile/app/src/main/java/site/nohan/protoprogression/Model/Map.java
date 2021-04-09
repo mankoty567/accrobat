@@ -7,53 +7,40 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Map {
-    public static String libelle;
-    public static String desc;
+    public static Map mapActuelle;
 
-    public static int accompli;
+    public static ArrayList<Map> maps;
 
-    public static PointPassage dernierPointPassage;
-    public static Chemin cheminActuel;
+    public int id;
 
-    public static ArrayList<PointPassage> pointPassages;
+    public String libelle;
+    public String desc;
 
-    public static Bitmap background;
+    public int accompli;
+
+    public PointPassage dernierPointPassage;
+    public Chemin cheminActuel;
+
+    public ArrayList<PointPassage> pointPassages;
+
+    public Bitmap background;
 
 
 
-    public static int getDistanceTotale(){
+    public int getDistanceTotale(){
         double distance = 0d;
-        for(PointPassage pointPassage : Map.pointPassages){
+        for(PointPassage pointPassage : this.pointPassages){
             for(Chemin chemin : pointPassage.chemins){
                 if(chemin.complete)
                     distance += chemin.getLongueur(); //TODO: lors de l'implementation de la distance d'un chemin l'ajouter chemin.getKm()
             }
         }
-        distance += (double) Map.accompli;
+        distance += (double) this.accompli;
         return (int) Math.round(distance);
     }
 
-
-    static{
-        accompli = 0;
-        /*
-        Chemin chemin = new Chemin();
-        chemin.points = new ArrayList<>();
-        chemin.points.add(new Point(20,20));
-        chemin.points.add(new Point(50,50));
-        chemin.points.add(new Point(60,60));
-        chemin.points.add(new Point(80,90));
-
-        Map.chemins = new ArrayList<>();
-        cheminActuel = chemin;
-        Map.chemins.add(chemin);
-        Log.e("static", chemin.getLongueurAt(chemin.points.get(1))+"");
-
-         */
-    }
-
-    public static PointPassage getDepart() {
-        for(PointPassage p : Map.pointPassages){
+    public PointPassage getDepart() {
+        for(PointPassage p : this.pointPassages){
             if(p.type == TypePointPassage.DEPART){
                 return p;
             }
@@ -61,8 +48,8 @@ public class Map {
         throw new RuntimeException("Aucun départ dans la map");
     }
 
-    public static PointPassage getArrivee() {
-        for(PointPassage p : Map.pointPassages){
+    public PointPassage getArrivee() {
+        for(PointPassage p : this.pointPassages){
             if(p.type == TypePointPassage.ARRIVEE){
                 return p;
             }

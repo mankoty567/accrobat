@@ -37,7 +37,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                 Log.e("chld", ""+linearLayout.getChildCount());
                 //Log.e("suiv",Map.cheminActuel.suivants.get(0).title);
 
-                for(Chemin c : Map.cheminActuel.objectif.chemins){
+                for(Chemin c : Map.mapActuelle.cheminActuel.objectif.chemins){
                     if(c.objectif == null)
                         break;
                     Log.e("suiv",c.objectif.titre);
@@ -57,7 +57,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        Map.accompli = (int) Math.floor(((float) progress*Map.cheminActuel.getLongueur())/100);
+        Map.mapActuelle.accompli = (int) Math.floor(((float) progress*Map.mapActuelle.cheminActuel.getLongueur())/100);
 
 
     }

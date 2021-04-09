@@ -16,10 +16,10 @@ public class DirectionController implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(Map.cheminActuel != null)
-            Map.cheminActuel.complete = true;
-        Map.cheminActuel = this.direction;
-        Map.accompli = 0;
+        if(Map.mapActuelle.cheminActuel != null)
+            Map.mapActuelle.cheminActuel.complete = true;
+        Map.mapActuelle.cheminActuel = this.direction;
+        Map.mapActuelle.accompli = 0;
     }
 
 }

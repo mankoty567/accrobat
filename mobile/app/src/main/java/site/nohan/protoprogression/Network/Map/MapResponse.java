@@ -27,8 +27,10 @@ import site.nohan.protoprogression.R;
 public class MapResponse implements APIListenner {
 
     private final Activity activity;
+    private final Map map;
 
-    public MapResponse(Activity activity){
+    public MapResponse(Activity activity, Map map){
+        this.map = map;
         this.activity = activity;
     }
 
@@ -46,17 +48,16 @@ public class MapResponse implements APIListenner {
         try{
             // Log de la map
             //Log.e("map", response.toString());
-
             // Init des chemins
-            Map.pointPassages = new ArrayList<>();
+           this.map.pointPassages = new ArrayList<>();
 
             // Conversion de la réponse en JSON
             JSONObject json = new JSONObject((String) response);
 
             // MAP
-            Map.libelle = json.getString("title");
+           this.map.libelle = json.getString("title");
 
-            Map.desc = json.getString("description");
+           this.map.desc = json.getString("description");
 
             JSONArray pointsPassage = json.getJSONArray("PointPassages");
 
@@ -126,14 +127,14 @@ public class MapResponse implements APIListenner {
                     }
                     pointPassage.chemins.add(chemin);
                 }
-                Map.pointPassages.add(pointPassage);
+               this.map.pointPassages.add(pointPassage);
             }
 
             // On assigne les pointeurs Chemin.objectif en f(x) Chemin.objectifId
             // on le fais mtn il faut tout les pp dans le modele pour avoir tout les id
 
 
-            for(PointPassage pointPassage1 : Map.pointPassages){
+            for(PointPassage pointPassage1 :this.map.pointPassages){
                 for(Chemin chemin1 : pointPassage1.chemins){
                     if(chemin1.objectifId != Chemin.NO_OJECTIF) {
                         chemin1.objectif = PointPassage.getById(chemin1.objectifId);
@@ -147,10 +148,10 @@ public class MapResponse implements APIListenner {
                     }
                 }
             }
-            Log.e("Model", Map.pointPassages.toString());
+            Log.e("Model",this.map.pointPassages.toString());
 
             LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
-            for(Chemin c : Map.getDepart().chemins){
+            for(Chemin c :this.map.getDepart().chemins){
                 if(c.objectif == null)
                     break;
                 Log.e("suiv",c.objectif.titre);
@@ -160,13 +161,13 @@ public class MapResponse implements APIListenner {
 
                 linearLayout.addView(button);
             }
-            //Map.dernierPointPassage = Map.pointPassages.get(0);
-            //Map.cheminActuel = Map.dernierPointPassage.chemins.get(0);
+            //Map.mapActuelle.dernierPointPassage =this.map.pointPassages.get(0);
+            //Map.mapActuelle.cheminActuel =this.map.dernierPointPassage.chemins.get(0);
 
 
         }catch (JSONException jsonException){
             jsonException.printStackTrace();
-            Map.pointPassages = new ArrayList<>();
+           this.map.pointPassages = new ArrayList<>();
         }
     }
 

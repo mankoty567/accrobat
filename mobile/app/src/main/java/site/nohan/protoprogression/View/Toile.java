@@ -37,7 +37,7 @@ public class Toile extends View {
         this.stylo.setStrokeWidth(20);
 
         //background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
-        Map.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
+        //Map.mapActuelle.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
     }
 
@@ -45,7 +45,12 @@ public class Toile extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(Map.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo);
+        // On ne dessine pas la carte s'il n'y en a pas
+        if(Map.mapActuelle == null)
+            return;
+
+
+        if(Map.mapActuelle.background != null) canvas.drawBitmap(Map.mapActuelle.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo) ;
         this.dessinerChemins(canvas);
         this.dessinerMapInfos(canvas);
 
@@ -53,17 +58,6 @@ public class Toile extends View {
         invalidate();
     }
 
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        //Log.e("vue", Chemin.points.toString());
-        //Log.e("vue", ""+((SeekBar) this.context.findViewById(R.id.seekBar)).getScrollX());
-        Map.cheminActuel.points.add(
-                new Point(Math.round(x / this.getWidth() * 100), Math.round(y / this.getHeight() * 100))
-        );
-        return true;
-    }*/
 
 
     private void dessinerMapInfos(Canvas canvas){
@@ -76,16 +70,14 @@ public class Toile extends View {
         this.stylo.setFakeBoldText(false);
         this.stylo.setTextSize(70);
         this.stylo.setColor(Color.WHITE);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.getDistanceTotale()/2f)+" Km au total", 0, 100 , this.stylo);
-        if(Map.cheminActuel != null)
-            canvas.drawText(Map.libelle == null ? "Indéfinis" : (Map.cheminActuel.getLongueur()-Map.accompli)/2f+" Km restants", 0, 200 , this.stylo);
-        canvas.drawText(Map.libelle == null ? "Indéfinis" : Map.libelle, 100, canvas.getHeight()-100 , this.stylo);
+        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.getDistanceTotale()/2f)+" Km au total", 0, 100 , this.stylo);
+        if(Map.mapActuelle.cheminActuel != null)
+            canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli)/2f+" Km restants", 0, 200 , this.stylo);
+        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : Map.mapActuelle.libelle, 100, canvas.getHeight()-100 , this.stylo);
 
 
-
-
-        if(Map.pointPassages != null && Map.pointPassages.size() > 0){
-            for(PointPassage pointPassage : Map.pointPassages) {
+        if(Map.mapActuelle.pointPassages != null && Map.mapActuelle.pointPassages.size() > 0){
+            for(PointPassage pointPassage : Map.mapActuelle.pointPassages) {
                 if(pointPassage.chemins.size() > 0 && pointPassage.chemins.get(0).points.size() > 0) {
                     this.stylo.setARGB(200, 200, 200, 255);
                     canvas.drawCircle(
@@ -121,12 +113,12 @@ public class Toile extends View {
     }
 
     private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
-        if(Map.pointPassages == null || Map.pointPassages.size() == 0)
+        if(Map.mapActuelle.pointPassages == null || Map.mapActuelle.pointPassages.size() == 0)
             return;
 
         int sOrdinal = 0;
 
-        for(PointPassage pointPassage : Map.pointPassages) {
+        for(PointPassage pointPassage : Map.mapActuelle.pointPassages) {
             for (Chemin c : pointPassage.chemins) {
                 // ...
 
@@ -138,7 +130,7 @@ public class Toile extends View {
                 // Pour tout les points qui composent le chemin
                 for (int i = 0; i < c.points.size()-1; i++) {
 
-                    if (c.complete || (c.getLongueurAt(c.points.get(i+1)) < Map.accompli && c == Map.cheminActuel)) {
+                    if (c.complete || (c.getLongueurAt(c.points.get(i+1)) < Map.mapActuelle.accompli && c == Map.mapActuelle.cheminActuel)) {
                         this.stylo.setStrokeWidth(40);
                     } else {
                         this.stylo.setStrokeWidth(15);
@@ -159,17 +151,17 @@ public class Toile extends View {
                     );
 
                     // On dessine la progression uniquement du chemin sur lequel on est
-                    if (c == Map.cheminActuel) {
+                    if (c == Map.mapActuelle.cheminActuel) {
 
                         this.stylo.setStrokeWidth(15);
                         // Si on est entre deux points
-                        if (/*Map.accompli > c.getLongueurAt(c.points.get(i)) &&*/ Map.accompli <= c.getLongueurAt(c.points.get(i + 1))) {
+                        if (/*Map.accompli > c.getLongueurAt(c.points.get(i)) &&*/ Map.mapActuelle.accompli <= c.getLongueurAt(c.points.get(i + 1))) {
 
 
                             Point A = c.points.get(i);
                             Point B = c.points.get(i + 1);
 
-                            float rapport = (float) (Map.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
+                            float rapport = (float) (Map.mapActuelle.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
 
                             float diffX = B.x - A.x;
                             float diffY = B.y - A.y;
@@ -185,7 +177,6 @@ public class Toile extends View {
                             for (int j = 1; j <= points; j++) {
                                 if(j==points) {
                                     taille = (int) Math.round((int) System.currentTimeMillis()%1000 * -1 / 20f);
-                                    Log.e("af", ""+ taille);
                                     this.stylo.setARGB(
                                             255,
                                             200-taille*3,0,255-(taille*2)

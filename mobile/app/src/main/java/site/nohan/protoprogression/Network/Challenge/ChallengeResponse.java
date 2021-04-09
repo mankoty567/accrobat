@@ -2,6 +2,7 @@ package site.nohan.protoprogression.Network.Challenge;
 
 import android.app.Activity;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -10,9 +11,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
+import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
 
 public class ChallengeResponse implements APIListenner {
 
@@ -20,12 +26,14 @@ public class ChallengeResponse implements APIListenner {
      * Création des variables globales
      ******************************************/
     private Activity activity;
+    private HomeListChallengesAdapter homeListChallengesAdapter;
 
     /******************************************
      * Constructeur de la réponse
      ******************************************/
-    public ChallengeResponse(Activity activity) {
+    public ChallengeResponse(Activity activity, HomeListChallengesAdapter homeListChallengesAdapter) {
         this.activity = activity;
+        this.homeListChallengesAdapter = homeListChallengesAdapter;
     }
 
     /******************************************
@@ -46,19 +54,31 @@ public class ChallengeResponse implements APIListenner {
 
         // Conversion de la réponse en JSON
         try {
+
+            /*
+            Map carte = new Map();
+            carte.
+
+            HomeListChallengesAdapter.cartes.add()
+            */
+
+
             JSONArray jsonArray = new JSONArray((String) response);
             //(JSONArray) response;
+            Log.e("info","Reception de "+jsonArray.length()+" map(s)");
+            Map.maps = new ArrayList<>();
 
-            DataBase.list_id = new int[jsonArray.length()];
-            DataBase.txt_list_title = new String[jsonArray.length()];
-            DataBase.txt_list_description = new String[jsonArray.length()];
-
-            for(int i=0; i<jsonArray.length(); i++){
-               JSONObject json = jsonArray.getJSONObject(i);
-               DataBase.list_id[i] = json.getInt("id");
-               DataBase.txt_list_title[i] = json.getString("title");
-               DataBase.txt_list_description[i] = json.getString("description");
+            for(int i=0; i<jsonArray.length();i++){
+                JSONObject jMap = (JSONObject) jsonArray.get(i);
+                Map map = new Map();
+                map.id = jMap.getInt("id");
+                map.libelle = jMap.getString("title");
+                map.desc = jMap.getString("description");
+                Map.maps.add(map);
             }
+
+            homeListChallengesAdapter.notifyDataSetChanged();
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.ui.MapsAdaptaterListenner;
 import site.nohan.protoprogression.Network.Challenge.ChallengesRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
@@ -48,18 +49,12 @@ public class HomeFragment extends Fragment {
         }
 
         //Affichage de tous les challenges
-        new ChallengesRequest(this.getActivity());
         HomeListChallengesAdapter challengesAdapter = new HomeListChallengesAdapter(this.getActivity());
+        new ChallengesRequest(this.getActivity(), challengesAdapter);
+
         lv_home_challenges = (ListView) root.findViewById(R.id.lv_home_challenges);
         lv_home_challenges.setAdapter(challengesAdapter);
-        lv_home_challenges.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Sélection du challenge
-                if(DataBase.list_id != null) DataBase.id_challenge_request = DataBase.list_id[position];
-                ShowFragment(challenge);
-            }
-        });
+        lv_home_challenges.setOnItemClickListener(new MapsAdaptaterListenner(this));
 
         return root;
     }

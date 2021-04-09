@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
@@ -42,11 +43,6 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
         signin = R.id.navigation_signin;
 
-         //Vérification que l'utilisateur est connecté
-         if(!DataBase.isTokenValid()) ShowFragment(signin);
-         else {
-             if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
-         }
 
         return root;
      }
@@ -57,14 +53,7 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
          //Récupération du Challenge à afficher
          if(DataBase.isTokenValid() && DataBase.isTokenDateValid(new Date())){
-             if (DataBase.id_challenge_request == -1) {
-                 new MapRequest(this.getActivity(), 20); //default = 15 bonne = 20
-                 new ImageMapRequest(this.getActivity(), 20);
-
-             } else {
-                 new MapRequest(this.getActivity(), DataBase.id_challenge_request);
-                 new ImageMapRequest(this.getActivity(), DataBase.id_challenge_request);
-             }
+             // TODO: ????
          }
      }
 
