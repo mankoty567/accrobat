@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       permission: DataTypes.INTEGER,
       level: DataTypes.INTEGER,
       xp: DataTypes.INTEGER,
+      googleToken: DataTypes.STRING,
     },
     {}
   );
