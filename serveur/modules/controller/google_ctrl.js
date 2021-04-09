@@ -67,15 +67,11 @@ module.exports = {
                 sendUser(res, user);
               });
             } else {
-              if (user.googleToken === null) {
-                user.googleToken = token.tokens.refresh_token;
+              user.googleToken = token.tokens.refresh_token;
 
-                user.save().then(() => {
-                  sendUser(res, user);
-                });
-              } else {
+              user.save().then(() => {
                 sendUser(res, user);
-              }
+              });
             }
           });
         }
