@@ -18,7 +18,7 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
     private final Activity context;
 
     public HomeListChallengesAdapter(Activity context) {
-        super(context, R.layout.home_list_challenges, DataBase.txt_list_title);
+        super(context, R.layout.home_list_challenges, new String[]{"Chargement"} );
         // TODO Auto-generated constructor stub
 
         //Mise en place des données de la DB
