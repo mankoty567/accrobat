@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { CRS } from 'leaflet';
 import {
   MapContainer,
@@ -18,9 +18,9 @@ import {
 } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
-import MarkerEditor from './MarkerEditor';
-import ChallengeInfosEditor from './ChallengeInfosEditor';
 import API from '../eventApi/eventApi';
+import ContextMenu from './ContextMenu';
+import PopUp from './PopUp';
 
 let inBounds = (event) => {
   return !(
@@ -31,20 +31,7 @@ let inBounds = (event) => {
   );
 };
 
-// let useMousePosition = () => {
-//   const [mousePosition, setMousePosition] = useState({x:null, y:null});
-
-//   useEffect(() => {
-//     const f = (e) => { setMousePosition(e.cursor.x) };
-//     window.addEventListener('mousemove', f);
-//     return () => window.removeEventListener('mousemove', f);
-//   }, []);
-
-//   return mousePosition;
-// };
-
 let NewPolyline = ({ from }) => {
-  // let mousePosition = useMousePosition();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   let map = useMapEvent(
@@ -88,8 +75,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [currentLine, setCurrentLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
+  const [contextMenu, setContextEvent] = useState(undefined);
+  const contextRef = useRef(undefined);
+  const [addingLine, setAddingLine] = useState(false);
+  const [modifyMarker, setModifyMarker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(true);
+  const [checkMessage, setCheckMessage] = useState({});
+  const [publishMessage, setPublishMessage] = useState('');
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -128,40 +121,161 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       });
   };
 
-  useEffect(() => initializeMap(challenge_id), []);
+  //Ajoute un marker
+  let addMarker = async (event) => {
+    try {
+      var newMarker = {
+        title: 'Point ' + markers.length,
+        description: '',
+        type: markers.length > 0 ? 'point' : 'start',
+        x: event.latlng.lng,
+        y: event.latlng.lat,
+      };
+      let data = await API.createMarker({
+        marker: newMarker,
+        challenge_id: challenge_id,
+      });
+      setMarkers((current) => [...current, data]);
+      setStartPoint(data);
+      setCurrentMarker(data);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const [checkMessage, setCheckMessage] = useState({});
+  //Supprime un marker
+  let removeMarker = (marker) => {
+    setMarkers((current) => current.filter((val) => val != marker));
+    setLines((current) =>
+      current.filter(
+        (val) =>
+          val.PointStartId != marker.id &&
+          val.PointEndId != marker.id,
+      ),
+    );
+    setStartPoint(markers.slice(-1)[0]);
+    API.deleteMarker(marker).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  //Ajoute une ligne
+  let addLine = (start, end) => {
+    currentLine.shift();
+    var newLines = {
+      PointStartId: start.id,
+      PointEndId: end.id,
+      path: currentLine.map((p) => [p.lat, p.lng]),
+      name: 'Segment ' + lines.length,
+    };
+    return API.createSegment({ segment: newLines })
+      .then((res) => {
+        res.path = res.path.map((e) => [e[0], e[1]]);
+        setLines((current) => [...current, res]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  let addCurrentLine = (newPoint) => {
+    if (currentLine == []) {
+      setCurrentLine([newPoint.latlng]);
+    } else {
+      setCurrentLine((current) => [...current, newPoint.latlng]);
+    }
+  };
+
+  let handleContext = (event, type) => {
+    // console.log(type);
+    event.originalEvent.preventDefault();
+    setContextEvent({ event: event, type: type });
+  };
+
+  let handleContextEvent = async (event) => {
+    // console.log(event);
+    if (event === 'addMarker') {
+      addMarker(contextMenu.event);
+      if (addingLine) {
+        setAddingLine(false);
+      }
+    }
+    if (event === 'addLine') {
+      setAddingLine(true);
+      addCurrentLine(contextMenu.event);
+    }
+    if (event === 'addMarkerJoined') {
+      var newMarker = await addMarker(contextMenu.event);
+      addCurrentLine(contextMenu.event);
+      addLine(currentMarker, newMarker);
+      setAddingLine(false);
+      setCurrentLine([]);
+    }
+    if (event === 'updateMarker') {
+      setModifyMarker(true);
+    }
+    if (event === 'deleteMarker') {
+      removeMarker(currentMarker);
+    }
+    setContextEvent(undefined);
+  };
 
   function handleCheck() {
-    API.checkValidity(challenge_id).then(data => {
-      console.log(data);
+    API.checkValidity(challenge_id).then((data) => {
+      // console.log(data);
       if (data.valid) {
-        setCheckMessage({valid: true, message: "Le challenge est valide!"});
+        setCheckMessage({
+          valid: true,
+          message: 'Le challenge est valide!',
+        });
       } else {
-        let obj = {valid: false, message: "Le challenge n'est pas valide parceque :"}
+        let obj = {
+          valid: false,
+          message: "Le challenge n'est pas valide parceque :",
+        };
 
-        data.error.forEach(e => {
-          if (e === "not_1_start") obj.message = obj.message + "Il n'y a pas de départ, ";
-          if (e === "not_1_end") obj.message = obj.message + "Il n'y a pas d'arrivée, ";
-          if (e.startsWith("point_impasse")) obj.message = obj.message + "Un point est une impasse : " + e.replace("point_impasse:", "") + ", ";
-          if (e.startsWith("point_inaccessible")) obj.message = obj.message + "Un point est inaccessible : " + e.replace("point_inaccessible:", "") + ", ";
-          if (e.startsWith("arrive_inaccessible")) obj.message = obj.message + "Un point ne peut pas arriver à l'Arrivée : " + e.replace("arrive_inaccessible:", "") + ", ";
-        })
-
+        data.error.forEach((e) => {
+          if (e === 'not_1_start')
+            obj.message = obj.message + "Il n'y a pas de départ, ";
+          if (e === 'not_1_end')
+            obj.message = obj.message + "Il n'y a pas d'arrivée, ";
+          if (e.startsWith('point_impasse'))
+            obj.message =
+              obj.message +
+              'Un point est une impasse : ' +
+              e.replace('point_impasse:', '') +
+              ', ';
+          if (e.startsWith('point_inaccessible'))
+            obj.message =
+              obj.message +
+              'Un point est inaccessible : ' +
+              e.replace('point_inaccessible:', '') +
+              ', ';
+          if (e.startsWith('arrive_inaccessible'))
+            obj.message =
+              obj.message +
+              "Un point ne peut pas arriver à l'Arrivée : " +
+              e.replace('arrive_inaccessible:', '') +
+              ', ';
+        });
         setCheckMessage(obj);
       }
-    })
+    });
   }
 
-  const [publishMessage, setPublishMessage] = useState("");
   function handlePublish() {
-    API.publishChallenge(challenge_id).then(data => {
-      setOpen(false);
-    }).catch(err => {
-      setPublishMessage("Le challenge n'est pas valide!")
-      console.log(err);
-    })
+    API.publishChallenge(challenge_id)
+      .then((data) => {
+        setOpen(false);
+      })
+      .catch((err) => {
+        setPublishMessage("Le challenge n'est pas valide!");
+        console.log(err);
+      });
   }
+
+  useEffect(() => initializeMap(challenge_id), []);
 
   return (
     <div className={classes.root}>
@@ -195,7 +309,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
               <div className={classes.toolbar} />
               <List>
                 <Typography variant="h5">Menu d'édition</Typography>
-                <Divider />
+                {/* <Divider />
                 <Typography
                   variant="h6"
                   className={classes.margin_top}
@@ -239,7 +353,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 >
                   Logs
                 </Button>
-                <Divider />
+                <Divider /> */}
                 <Button
                   variant="contained"
                   color="primary"
@@ -247,8 +361,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 >
                   Vérifier
                 </Button>
-                <br/>
-                <p style={{color: checkMessage.valid ? "green": "red"}}>{checkMessage.message}</p>
+                <br />
+                <p
+                  style={{
+                    color: checkMessage.valid ? 'green' : 'red',
+                  }}
+                >
+                  {checkMessage.message}
+                </p>
                 <Divider />
                 <Button
                   variant="contained"
@@ -257,26 +377,29 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 >
                   Publier
                 </Button>
-                <br/>
-                <p style={{color: "red"}}>{publishMessage}</p>
+                <br />
+                <p style={{ color: 'red' }}>{publishMessage}</p>
               </List>
             </Drawer>
             <main className={classes.content}>
               <div className={classes.toolbar} />
               <MapContainer
-                style={{ height: '90vh', width: '84vw' }}
+                style={{ height: '85vh', width: '84vw' }}
                 crs={CRS.Simple}
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                style={{ height: '90vh', width: '84vw' }}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
                   bounds={bounds}
                 ></ImageOverlay>
                 <DraggableMarkers
+                  addingLine={addingLine}
+                  addCurrentLine={addCurrentLine}
+                  setAddingLine={setAddingLine}
                   markers={markers}
+                  handleContext={handleContext}
                   setMarkers={setMarkers}
                   editMode={editMode}
                   setEditMode={setEditMode}
@@ -288,7 +411,12 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   currentMarker={currentMarker}
                   setStartPoint={setStartPoint}
                   startPoint={startPoint}
-                  CHALLENGE_ID={challenge_id}
+                  setCurrentLine={setCurrentLine}
+                  setContextEvent={setContextEvent}
+                  contextRef={contextRef}
+                  addLine={addLine}
+                  setAddingLine={setAddingLine}
+                  setCurrentLine={setCurrentLine}
                 />
                 {lines.map((element) => {
                   try {
@@ -298,7 +426,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     const endMarker = markers.find(
                       (m) => m.id === element.PointEndId,
                     );
-
                     const positions = [
                       [startMarker.y, startMarker.x],
                       ...element.path.map((elem) => {
@@ -306,7 +433,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                       }),
                       [endMarker.y, endMarker.x],
                     ];
-                    // console.log(positions);
                     return (
                       <Polyline
                         positions={positions}
@@ -318,7 +444,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     console.error(err);
                   }
                 })}
-                {currentMarker ? (currentMarker.type !== 'end' ?
+                {currentMarker ? (
                   <>
                     <Polyline
                       positions={[
@@ -327,10 +453,26 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                       ]}
                       color={'black'}
                     />
+                    {currentMarker.type != 'end' ? (
                       <NewPolyline from={currentLine} />
+                    ) : null}
                   </>
-                  : null) : null}
+                ) : null}
               </MapContainer>
+              <ContextMenu
+                data={contextMenu}
+                onEvent={handleContextEvent}
+              />
+              {currentMarker ? (
+                <PopUp
+                  modifyMarker={modifyMarker}
+                  setModifyMarker={setModifyMarker}
+                  setMarkers={setMarkers}
+                  currentMarker={currentMarker}
+                  markers={markers}
+                  setStartPoint={setStartPoint}
+                />
+              ) : null}
             </main>
           </>
         ) : (

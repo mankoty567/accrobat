@@ -1,6 +1,4 @@
-import {
-    makeStyles
-  } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 //Du style CSS de Material ui
 const drawerWidth = 240;
@@ -10,7 +8,7 @@ let useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: '100%',
     marginLeft: drawerWidth,
   },
   drawer: {
@@ -27,11 +25,19 @@ let useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   margin_top: {
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
   },
-  back_button: {
-    margin_righ: theme.spacing(2)
-  }
+  modal_test: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper_test: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
 
 export default useStyles;
