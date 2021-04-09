@@ -31,6 +31,11 @@ module.exports = {
         if (user === null) {
           res.status(403).send('Bad username or password');
         } else {
+          if (user.password === null) {
+            res.status(403).send('Bad username or password');
+            return;
+          }
+
           if (bcrypt.compareSync(req.body.password, user.password)) {
             let token = jwt.sign(
               {

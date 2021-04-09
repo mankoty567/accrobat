@@ -68,7 +68,6 @@ module.exports = {
               });
             } else {
               if (user.googleToken === null) {
-                console.log('ICI');
                 user.googleToken = token.tokens.refresh_token;
 
                 user.save().then(() => {
