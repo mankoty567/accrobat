@@ -6,14 +6,17 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
-import site.nohan.protoprogression.Network.Map.MapRequest;
 import site.nohan.protoprogression.R;
 
 public class ButtonController implements View.OnClickListener {
 
     private final Activity activity;
+
+    //Objet permettant l'interaction avec le GPS et l'Accéléromètre
+    private PedometerController pedometerController;
 
     public ButtonController(Activity activity){
         this.activity = activity;
@@ -21,22 +24,26 @@ public class ButtonController implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.e("controller", Map.chemins.toString());
+        //Log.e("controller", Map.chemins.toString());
         if(v.getId() == R.id.bEffacer){
-            Map.chemins = new ArrayList<>();
-            Chemin c = new Chemin();
-            Map.chemins.add(c);
-            Map.cheminActuel = c;
+            Map.pointPassages = new ArrayList<>();
             return;
         }
 
-
-        if(v.getId() == R.id.bTelecharger){
-            new MapRequest(this.activity, 0);
+        //Initialisation de l'objet permettant l'interaction avec le GPS et l'Accéléromètre
+        if(pedometerController == null) pedometerController = new PedometerController(this.activity);
+        //Bouton qui démarre/arrête le Podomètre
+        if(v.getId() == R.id.bPodometre){
+            pedometerController.pedometerAction();
             return;
         }
 
-
+        //Bouton qui démarre/arrête le GPS
+        if(v.getId() == R.id.bModePodometre){
+            pedometerController.bikeAction();
+            return;
+        }
+        /*
         Chemin chemin = new Chemin();
 
         if(v.getId() == R.id.bAddCurrent){
@@ -71,6 +78,10 @@ public class ButtonController implements View.OnClickListener {
 
         Map.chemins.add(chemin);
         Map.cheminActuel = chemin;
+        */
+    }
 
+    public void stopPedometerAndGPS(){
+        pedometerController.stopPedometerAndGPS();
     }
 }

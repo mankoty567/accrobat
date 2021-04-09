@@ -8,7 +8,14 @@ module.exports = {
   get_challenge_id: (req, res) => {
     let query = {
       where: { id: req.params.id },
-      attributes: ['id', 'title', 'description', 'createdAt', 'updatedAt'],
+      attributes: [
+        'id',
+        'title',
+        'description',
+        'echelle',
+        'createdAt',
+        'updatedAt',
+      ],
     };
 
     if (req.query.include === 'point') {
@@ -81,45 +88,67 @@ module.exports = {
     });
   },
   get_image: (req, res) => {
-    bdd.Challenge.findOne({
-      where: { id: req.params.id },
-    }).then((challenge) => {
-      if (challenge === null) {
-        res.status(404).send('Not found');
-      } else {
-        res.sendFile(
-          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg')
-        );
-      }
-    });
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+      );
+    } else {
+      res.status(404).send('Map not found');
+    }
+  },
+  get_image_avatar: (req, res) => {
+    if (
+      fs.existsSync(
+        path.join(
+          __dirname,
+          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+        )
+      )
+    ) {
+      res.sendFile(
+        path.join(
+          __dirname,
+          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+        )
+      );
+    } else {
+      res.status(404).send('Avatar not found');
+    }
   },
   post_challenge: (req, res) => {
-    if (
-      !req.body.title ||
-      !req.body.description ||
-      !req.body.img_fond ||
-      !req.body.echelle
-    ) {
-      res.status(400).send('Bad request');
-    } else {
-      bdd.Challenge.create({
-        title: req.body.title,
-        description: req.body.description,
-        echelle: req.body.echelle,
-      }).then((challenge) => {
-        utils.pngParser(req.body.img_fond).then((buffer) => {
-          fs.writeFileSync(
-            path.join(
-              __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
-            ),
-            buffer
-          );
+    bdd.Challenge.create({
+      title: req.body.title,
+      description: req.body.description,
+      echelle: req.body.echelle,
+    }).then((challenge) => {
+      utils.pngParser(req.body.img_fond).then((buffer) => {
+        fs.writeFileSync(
+          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg'),
+          buffer
+        );
+
+        if (req.body.img_avatar !== undefined) {
+          utils.pngParser(req.body.img_avatar).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challengeAvatar/' + challenge.id + '.jpg'
+              ),
+              buffer
+            );
+            debug('Création du challenge ' + challenge.id);
+            res.json({ ...challenge.dataValues, frontId: req.body.frontId });
+          });
+        } else {
           debug('Création du challenge ' + challenge.id);
-          res.json(challenge);
-        });
+          res.json({ ...challenge.dataValues, frontId: req.body.frontId });
+        }
       });
-    }
+    });
   },
   delete_challenge: (req, res) => {
     bdd.Challenge.findOne({ where: { id: req.params.id } }).then(
@@ -127,6 +156,10 @@ module.exports = {
         if (challenge === null) {
           res.status(404).send('Not found');
         } else {
+          if (challenge.published) {
+            res.status(400).send('Bad Request: Challenge is published');
+            return;
+          }
           debug('Suppression du challenge ' + challenge.id);
           challenge
             .destroy()
@@ -154,6 +187,11 @@ module.exports = {
       if (challenge === null) {
         res.status(404).send('Challenge not found');
       } else {
+        if (challenge.published) {
+          res.status(400).send('Bad Request: Challenge is published');
+          return;
+        }
+
         let edited = false;
         if (req.body.title) {
           challenge.title = req.body.title;
@@ -177,6 +215,18 @@ module.exports = {
           });
         }
 
+        if (req.body.img_avatar) {
+          utils.pngParser(req.body.img_avatar).then((buffer) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challengeAvatar/' + challenge.id + '.jpg'
+              ),
+              buffer
+            );
+          });
+        }
+
         if (req.body.echelle) {
           challenge.echelle = req.body.echelle;
           edited = true;
@@ -192,5 +242,174 @@ module.exports = {
         }
       }
     });
+  },
+  clone_challenge: (req, res) => {
+    bdd.Challenge.findOne({
+      where: { id: req.params.id },
+      include: {
+        model: bdd.PointPassage,
+        include: [
+          {
+            model: bdd.Segment,
+            include: bdd.Obstacle,
+            as: 'pointStart',
+          },
+        ],
+      },
+    }).then(async (challenge) => {
+      try {
+        let t = await bdd.sequelize.transaction();
+        let newChallenge = await bdd.Challenge.create(
+          {
+            title: challenge.title,
+            description: challenge.description,
+            echelle: challenge.echelle,
+            published: false,
+          },
+          { transaction: t }
+        );
+        if (
+          fs.existsSync(
+            path.join(
+              __dirname,
+              '../../data/challenge/' + challenge.id + '.jpg'
+            )
+          )
+        ) {
+          fs.copyFileSync(
+            path.join(
+              __dirname,
+              '../../data/challenge/' + challenge.id + '.jpg'
+            ),
+            path.join(
+              __dirname,
+              '../../data/challenge/' + newChallenge.id + '.jpg'
+            )
+          );
+        }
+
+        let segments = [];
+        let obstacles = [];
+        let pointAssociation = {};
+        let segmentAssociation = {};
+
+        // Clone des points de passages
+        for (const point of challenge.PointPassages) {
+          const newPoint = await bdd.PointPassage.create(
+            {
+              title: point.title,
+              description: point.description,
+              type: point.type,
+              x: point.x,
+              y: point.y,
+              ChallengeId: newChallenge.id,
+            },
+            { transaction: t }
+          );
+
+          // Ajout du segment à la liste de tous les segments
+          point.pointStart.forEach((s) => segments.push(s));
+
+          // Association des anciens points de passages aux nouveaux
+          pointAssociation[point.id] = newPoint.id;
+        }
+
+        // Clone des segments
+        for (const segment of segments) {
+          const newSegment = await bdd.Segment.create(
+            {
+              PointStartId: pointAssociation[segment.PointStartId],
+              PointEndId: pointAssociation[segment.PointEndId],
+              path: segment.path,
+              name: segment.name,
+            },
+            { transaction: t }
+          );
+
+          // Ajout des obstacles à la liste de tous les obstacles
+          segment.Obstacles.forEach((o) => obstacles.push(o));
+
+          // Association des anciens segments aux nouveaux
+          segmentAssociation[segment.id] = newSegment.id;
+        }
+
+        for (const obstacle of obstacles) {
+          const newObstacle = await bdd.Obstacle.create(
+            {
+              title: obstacle.title,
+              description: obstacle.description,
+              type: obstacle.type,
+              distance: obstacle.distance,
+              enigme_awnser: obstacle.enigme_awnser,
+              SegmentId: segmentAssociation[obstacle.SegmentId],
+            },
+            { transaction: t }
+          );
+
+          if (
+            fs.existsSync(
+              path.join(
+                __dirname,
+                '../../data/obstacle/' + obstacle.id + '.jpg'
+              )
+            )
+          ) {
+            fs.copyFileSync(
+              path.join(
+                __dirname,
+                '../../data/obstacle/' + obstacle.id + '.jpg'
+              ),
+              path.join(
+                __dirname,
+                '../../data/obstacle/' + newObstacle.id + '.jpg'
+              )
+            );
+          }
+        }
+
+        await t.commit();
+        res.json(newChallenge);
+      } catch (err) {
+        console.log(err);
+        debug(err);
+        res.status(400).send('Something went wrong');
+      }
+    });
+  },
+  get_all_challenge: (req, res) => {
+    bdd.Challenge.findAll({
+      where: { published: true },
+      attributes: ['id', 'title', 'description', 'echelle'],
+    }).then((challenges) => {
+      res.json(challenges);
+    });
+  },
+  get_all_challenge_admin: (req, res) => {
+    bdd.Challenge.findAll({
+      attributes: ['id', 'title', 'description', 'echelle'],
+    }).then((challenges) => {
+      res.json(challenges);
+    });
+  },
+  verif_validity: async (req, res) => {
+    res.json(await require('../challengeValidation')(req.params.id));
+  },
+  publish_challenge: async (req, res) => {
+    const challenge = await bdd.Challenge.findOne({
+      where: { id: req.params.id },
+    });
+
+    if (challenge === null) {
+      res.status(404).send('Challenge not found');
+    } else {
+      const valid = await require('../challengeValidation')(challenge.id);
+      if (valid.valid) {
+        challenge.published = true;
+        await challenge.save();
+        res.json(challenge);
+      } else {
+        res.status(400).send('Challenge is not valid');
+      }
+    }
   },
 };

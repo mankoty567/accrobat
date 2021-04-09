@@ -20,7 +20,8 @@ public class MapFragment extends Fragment {
     Toile toile;
 
     SeekBar seekBar;
-    Button bEffacer;
+    Button bPodometre;
+    Button bVelo;
     Button bEtape;
     Button bAddPrev;
     Button bAddCurrent;
@@ -35,8 +36,9 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
-        seekBarController = new SeekBarController();
+        seekBarController = new SeekBarController(this.getActivity());
         buttonController = new ButtonController(this.getActivity());
+        seekBarController.setButtonController(buttonController);
         return toile;
     }
 
@@ -45,13 +47,18 @@ public class MapFragment extends Fragment {
         super.onResume();
         seekBar = getActivity().findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarController);
-        bEffacer = getActivity().findViewById(R.id.bEffacer);
-        bEffacer.setOnClickListener(buttonController);
-        bEtape = getActivity().findViewById(R.id.bTelecharger);
+        bPodometre = getActivity().findViewById(R.id.bEffacer);
+        bPodometre.setOnClickListener(buttonController);
+        bVelo = getActivity().findViewById(R.id.bModePodometre);
+        bVelo.setOnClickListener(buttonController);
+        bEtape = getActivity().findViewById(R.id.bPodometre);
         bEtape.setOnClickListener(buttonController);
+        /*
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);
         bAddCurrent = getActivity().findViewById(R.id.bAddCurrent);
         bAddCurrent.setOnClickListener(buttonController);
+
+         */
     }
 }
