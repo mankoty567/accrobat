@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,7 @@ public class SigninFragment extends Fragment{
     private int signup;
     private int home;
 
-    private Button btn_inscription;
+    private TextView txt_inscription;
     private Button btn_connection;
     private EditText et_login;
     private EditText et_password;
@@ -42,8 +43,8 @@ public class SigninFragment extends Fragment{
         home = R.id.navigation_home;
 
         //Initialisation du bouton d'inscritption
-        btn_inscription = root.findViewById(R.id.btn_signin_inscription);
-        btn_inscription.setOnClickListener(new View.OnClickListener() {
+        txt_inscription = root.findViewById(R.id.txt_signin_inscription);
+        txt_inscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShowFragment(signup);

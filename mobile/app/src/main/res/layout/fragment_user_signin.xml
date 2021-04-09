@@ -19,14 +19,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/txt_signin_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_signin"
-                    android:textSize="20dp"
-                    android:layout_marginBottom="10dp"/>
-
                 <LinearLayout
                     android:id="@+id/ll_signin"
                     android:layout_width="match_parent"
@@ -34,34 +26,52 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/txt_signin_login"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/txt_login"/>
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:background="@color/white"
+                            android:src="@drawable/logo_runslike"
+                            android:layout_marginBottom="40dp"/>
 
-                        <EditText
-                            android:id="@+id/et_signin_login"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_login"
                             android:layout_width="250dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"/>
+                            android:layout_marginBottom="20dp">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_signin_login"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:hint="@string/txt_login"/>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            android:id="@+id/txt_signin_mdp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/txt_password" />
-
-                        <EditText
-                            android:id="@+id/et_signin_password"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_password"
                             android:layout_width="250dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"/>
+                            app:passwordToggleEnabled="true"
+                            android:layout_marginBottom="10dp">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_signin_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/txt_password"
+                                android:inputType="textPassword"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/txt_signin_inscription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="@string/txt_go_to_inscription" />
 
                         <LinearLayout
                             android:id="@+id/ll_signin_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -72,14 +82,8 @@
                                     android:layout_gravity="center_horizontal"
                                     android:text="@string/button_connect" />
 
-                                <Button
-                                    android:id="@+id/btn_signin_inscription"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_horizontal"
-                                    android:text="@string/button_inscription" />
-
                         </LinearLayout>
+
                 </LinearLayout>
         </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

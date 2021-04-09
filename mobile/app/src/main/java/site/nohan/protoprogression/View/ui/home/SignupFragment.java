@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,7 @@ public class SignupFragment extends Fragment {
      ************************************************************************/
     private int signin;
 
-    private Button btn_back_to_connection;
+    private TextView txt_signup_back_to_connection;
     private Button btn_send_inscription;
     private EditText et_login;
     private EditText et_password;
@@ -43,8 +44,8 @@ public class SignupFragment extends Fragment {
         signin = R.id.navigation_signin;
 
         //Initialisation du bouton de retour à la connexion
-        btn_back_to_connection = root.findViewById(R.id.btn_signup_back_to_connection);
-        btn_back_to_connection.setOnClickListener(new View.OnClickListener() {
+        txt_signup_back_to_connection = root.findViewById(R.id.txt_signup_back_to_connection);
+        txt_signup_back_to_connection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShowFragment(signin);
