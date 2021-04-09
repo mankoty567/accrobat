@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import java.util.Date;
 
@@ -25,24 +26,20 @@ public class HomeFragment extends Fragment {
     /************************************************************************
      * Création des variables globales
      ************************************************************************/
-    private Fragment signin;
-    private Fragment challenge;
+    private int signin;
+    private int challenge;
 
     private ListView lv_home_challenges;
 
     /************************************************************************
      * Création de la class et de la vue
      ************************************************************************/
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        signin = SigninFragment.newInstance();
-        challenge = ChallengeFragment.newInstance();
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        signin = R.id.navigation_signin;
+        challenge = R.id.navigation_challenge;
 
         //Vérification que l'utilisateur est connecté
         if(!DataBase.isTokenValid()) ShowFragment(signin);
@@ -68,22 +65,9 @@ public class HomeFragment extends Fragment {
     }
 
     /******************************************
-     * Méthode utilisé pour créer l'instance HomeFragment
-     ******************************************/
-    public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /******************************************
      * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public void ShowFragment(int fragment) {
+        Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
     }
 }

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import site.nohan.protoprogression.Network.Authenticate.Signup.SignupRequest;
 import site.nohan.protoprogression.R;
@@ -23,7 +24,7 @@ public class SignupFragment extends Fragment {
     /************************************************************************
      * Création des variables globales
      ************************************************************************/
-    private Fragment signin;
+    private int signin;
 
     private Button btn_back_to_connection;
     private Button btn_send_inscription;
@@ -35,15 +36,11 @@ public class SignupFragment extends Fragment {
     /************************************************************************
      * Création de la class et de la vue
      ************************************************************************/
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        signin = SigninFragment.newInstance();
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_user_signup, container, false);
+
+        signin = R.id.navigation_signin;
 
         //Initialisation du bouton de retour à la connexion
         btn_back_to_connection = root.findViewById(R.id.btn_signup_back_to_connection);
@@ -73,23 +70,10 @@ public class SignupFragment extends Fragment {
     }
 
     /******************************************
-     * Méthode utilisé pour créer l'instance SignupFragment
-     ******************************************/
-    public static SignupFragment newInstance() {
-        SignupFragment fragment = new SignupFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /******************************************
      * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public void ShowFragment(int fragment) {
+        Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
     }
 
     /******************************************

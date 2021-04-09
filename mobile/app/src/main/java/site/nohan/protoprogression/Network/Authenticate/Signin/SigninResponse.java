@@ -13,6 +13,7 @@ import java.util.Date;
 
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
 import site.nohan.protoprogression.View.ui.home.SigninFragment;
 
@@ -64,7 +65,7 @@ public class SigninResponse implements APIListenner {
         }
 
         //Passage sur le Fragment de Home
-        signinFragment.ShowFragment(HomeFragment.newInstance());
+        signinFragment.ShowFragment(R.id.navigation_home);
         Toast.makeText(activity,"User successfully connected !", Toast.LENGTH_SHORT).show();
     }
 }

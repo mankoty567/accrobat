@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import site.nohan.protoprogression.Network.Authenticate.Signin.SigninRequest;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
@@ -22,8 +23,8 @@ public class SigninFragment extends Fragment{
     /************************************************************************
      * Création des variables globales
      ************************************************************************/
-    private Fragment signup;
-    private Fragment home;
+    private int signup;
+    private int home;
 
     private Button btn_inscription;
     private Button btn_connection;
@@ -33,16 +34,12 @@ public class SigninFragment extends Fragment{
     /************************************************************************
      * Création de la class et de la vue
      ************************************************************************/
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        signup = SignupFragment.newInstance();
-        home = HomeFragment.newInstance();
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_user_signin, container, false);
+
+        signup = R.id.navigation_signup;
+        home = R.id.navigation_home;
 
         //Initialisation du bouton d'inscritption
         btn_inscription = root.findViewById(R.id.btn_signin_inscription);
@@ -70,23 +67,10 @@ public class SigninFragment extends Fragment{
     }
 
     /******************************************
-     * Méthode utilisé pour créer l'instance HomeFragment
-     ******************************************/
-    public static SigninFragment newInstance() {
-        SigninFragment fragment = new SigninFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /******************************************
      * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public void ShowFragment(int fragment) {
+        Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
     }
 
     /******************************************
