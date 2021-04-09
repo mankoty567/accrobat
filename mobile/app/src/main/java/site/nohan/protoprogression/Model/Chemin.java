@@ -6,18 +6,22 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Chemin {
+    public static final int NO_OJECTIF = -1;
+
+    public int objectifId;
 
     public boolean complete;
-    public ArrayList<Point> points = new ArrayList<>();
+    public ArrayList<Point> points;
 
-    public ArrayList<Chemin> origines;
-    public ArrayList<Chemin> suivants;
+    public PointPassage objectif;
+    public PointPassage origine;
+
+    public String nom;
 
     public Chemin(ArrayList<Point> points){
         this.points = points;
         this.complete = false;
-        origines = new ArrayList<>();
-        suivants = new ArrayList<>();
+
     }
 
     public Chemin(){
@@ -36,7 +40,7 @@ public class Chemin {
     // Renvoi la longueur jusqu'au dernier segment
     public int getLongueur(){
         double longueur = 0;
-        for(int i=0; i<this.points.size()-2;i++){
+        for(int i=0; i<this.points.size()-1;i++){
             longueur = longueur + Chemin.getDistance(points.get(i), points.get(i+1));
         }
         return (int) Math.floor(longueur);
@@ -64,7 +68,6 @@ public class Chemin {
     @Override
     public String toString() {
         return "Chemin{" +
-                "\n   complete : " + complete +
                 "\n   points : " + points +
                 "\n}";
     }

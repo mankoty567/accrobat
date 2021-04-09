@@ -1,17 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayoutbtn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="55dp">
+    <!--
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="site.nohan.protoprogression.View.MapFragment"
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="597dp"
+            android:scrollbars="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                              <ImageView
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  app:srcCompat="@drawable/map" >            </ImageView>
+
+
+                              <fragment
+                                  android:id="@+id/fragment"
+                                  android:name="site.nohan.protoprogression.View.MapFragment"
+                                  android:layout_width="1000dp"
+                                  android:layout_height="1000dp"
+                                  android:background="@drawable/map" />
+
+
+          </HorizontalScrollView>
+
+      </ScrollView>
+  -->
+ <!--
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="596dp"
-        android:background="@drawable/map" />
+        android:layout_height="607dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <fragment
+                android:id="@+id/fragment"
+                android:name="site.nohan.protoprogression.View.MapFragment"
+                android:layout_width="503dp"
+                android:layout_height="947dp"
+                android:background="@drawable/map" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,35 +69,71 @@
             android:text="Effacer" />
 
         <Button
-            android:id="@+id/bTelecharger"
+            android:id="@+id/bPodometre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Telecharger" />
+            android:text="Start Podomètre" />
+
+        <Button
+            android:id="@+id/bModePodometre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Vélo" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/routeSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bAddPrev"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="750px"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="+ à partir précedent" />
+            android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/bAddCurrent"
+        <TextView
+            android:id="@+id/tKilometres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="+ à partir ici" />
+            android:text="--- ms"/>
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/seekBar"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment"
+        android:name="site.nohan.protoprogression.View.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        tools:visibility="visible" />
+
+    <!--
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                        <fragment
+                            android:id="@+id/fragment"
+                            android:name="site.nohan.protoprogression.View.MapFragment"
+                            android:layout_width="700dp"
+                            android:layout_height="700dp"
+                            android:background="@drawable/map" />
+
+            </LinearLayout>
+        </ScrollView>
+    -->
+
 </LinearLayout>

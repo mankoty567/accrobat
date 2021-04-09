@@ -1,24 +1,47 @@
 site/nohan/protoprogression/Network/APIListenner.java
  site.nohan.protoprogression.Network.APIListenner
+site/nohan/protoprogression/Controller/Pedometer/LocationService.java
+ site.nohan.protoprogression.Controller.Pedometer.LocationService
+ site.nohan.protoprogression.Controller.Pedometer.LocationService$1
+site/nohan/protoprogression/Controller/Pedometer/PedometerController.java
+ site.nohan.protoprogression.Controller.Pedometer.PedometerController
+site/nohan/protoprogression/Network/Map/MapResponse.java
+ site.nohan.protoprogression.Network.Map.MapResponse
+site/nohan/protoprogression/Controller/Pedometer/SensorFilter.java
+ site.nohan.protoprogression.Controller.Pedometer.SensorFilter
+site/nohan/protoprogression/View/ui/notifications/NotificationsFragment.java
+ site.nohan.protoprogression.View.ui.notifications.NotificationsFragment
+site/nohan/protoprogression/View/MapFragment.java
+ site.nohan.protoprogression.View.MapFragment
+site/nohan/protoprogression/View/Toile.java
+ site.nohan.protoprogression.View.Toile
+site/nohan/protoprogression/Controller/Pedometer/StepDetector.java
+ site.nohan.protoprogression.Controller.Pedometer.StepDetector
+site/nohan/protoprogression/Model/Map.java
+ site.nohan.protoprogression.Model.Map
+site/nohan/protoprogression/Controller/Pedometer/StepListener.java
+ site.nohan.protoprogression.Controller.Pedometer.StepListener
 site/nohan/protoprogression/Controller/SeekBarController.java
  site.nohan.protoprogression.Controller.SeekBarController
 site/nohan/protoprogression/Controller/MainActivity.java
  site.nohan.protoprogression.Controller.MainActivity
+site/nohan/protoprogression/Controller/ProgressionActivity.java
+ site.nohan.protoprogression.Controller.ProgressionActivity
 site/nohan/protoprogression/Model/Chemin.java
  site.nohan.protoprogression.Model.Chemin
-site/nohan/protoprogression/Network/Map/MapResponse.java
- site.nohan.protoprogression.Network.Map.MapResponse
-site/nohan/protoprogression/Model/Map.java
- site.nohan.protoprogression.Model.Map
-site/nohan/protoprogression/View/MapFragment.java
- site.nohan.protoprogression.View.MapFragment
-site/nohan/protoprogression/BuildConfig.java
- site.nohan.protoprogression.BuildConfig
-site/nohan/protoprogression/Network/APIRequest.java
- site.nohan.protoprogression.Network.APIRequest
-site/nohan/protoprogression/View/Toile.java
- site.nohan.protoprogression.View.Toile
 site/nohan/protoprogression/Network/Map/MapRequest.java
  site.nohan.protoprogression.Network.Map.MapRequest
+site/nohan/protoprogression/BuildConfig.java
+ site.nohan.protoprogression.BuildConfig
+site/nohan/protoprogression/View/ui/challenge/ChallengeFragment.java
+ site.nohan.protoprogression.View.ui.challenge.ChallengeFragment
+site/nohan/protoprogression/Network/APIRequest.java
+ site.nohan.protoprogression.Network.APIRequest
 site/nohan/protoprogression/Controller/ButtonController.java
  site.nohan.protoprogression.Controller.ButtonController
+site/nohan/protoprogression/View/ui/home/SignupFragment.java
+ site.nohan.protoprogression.View.ui.home.SignupFragment
+ site.nohan.protoprogression.View.ui.home.SignupFragment$1
+site/nohan/protoprogression/View/ui/home/HomeFragment.java
+ site.nohan.protoprogression.View.ui.home.HomeFragment
+ site.nohan.protoprogression.View.ui.home.HomeFragment$1
