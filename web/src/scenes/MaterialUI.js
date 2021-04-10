@@ -6,9 +6,7 @@ let useStyles = makeStyles((theme) => ({
   },
   toolbar: theme.mixins.toolbar,
   content: {
-    flexGrow: 1,
     width: '35%',
-    height: '65%',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(2),
     position: 'relative',
@@ -19,7 +17,7 @@ let useStyles = makeStyles((theme) => ({
   mapContainer: {
     border: '0.5px solid black',
     width: 'auto',
-    height: '87%',
+    height: '60vh',
   },
   margin_top: {
     marginTop: theme.spacing(4),
@@ -37,13 +35,13 @@ let useStyles = makeStyles((theme) => ({
   },
   actionButtons: {
     // height: '25%',
-    position: 'relative',
-    left: '50%',
-    marginTop: theme.spacing(3),
-    transform: 'translate(-50%, -50%)',
-    display: 'inline-block',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // position: 'relative',
+    // left: '50%',
+    marginTop: theme.spacing(2),
+    // transform: 'translate(-50%, -50%)',
+    // display: 'inline-block',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 }));
 

@@ -285,14 +285,18 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   return (
     <div className={classes.root}>
-      <Modal aria-labelledby="title" open={open}>
+      <Modal
+        aria-labelledby="title"
+        aria-describedby="content"
+        open={open}
+      >
         {isLoading ? (
           <>
             <ContextMenu
               data={contextMenu}
               onEvent={handleContextEvent}
             />
-            <main className={classes.content}>
+            <main id="content" className={classes.content}>
               <Grid
                 id="title"
                 style={{
@@ -393,29 +397,32 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   </>
                 ) : null}
               </MapContainer>
-              <div className={classes.actionButtons}>
-                {valid ? (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handlePublish}
-                    >
-                      Publier
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleCheck}
-                    >
-                      Vérifier
-                    </Button>
-                  </>
-                )}
-              </div>
+              <Grid container justify="center">
+                <div className={classes.actionButtons}>
+                  {valid ? (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handlePublish}
+                      >
+                        Publier
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleCheck}
+                      >
+                        Vérifier
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </Grid>
+
               {currentMarker ? (
                 <ModifyPopUp
                   modifyMarker={modifyMarker}
