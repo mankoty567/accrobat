@@ -6,21 +6,12 @@ import {
   Polyline,
   useMapEvent,
 } from 'react-leaflet';
-import {
-  List,
-  AppBar,
-  Toolbar,
-  Typography,
-  Drawer,
-  Divider,
-  Button,
-  Modal,
-} from '@material-ui/core';
+import { Grid, Button, Modal } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import API from '../eventApi/eventApi';
 import ContextMenu from './ContextMenu';
-import PopUp from './PopUp';
+import ModifyPopUp from './ModifyPopUp';
 
 let inBounds = (event) => {
   return !(
@@ -83,6 +74,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [open, setOpen] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [publishMessage, setPublishMessage] = useState('');
+  const [valid, setValid] = useState(false);
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -138,6 +130,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       setMarkers((current) => [...current, data]);
       setStartPoint(data);
       setCurrentMarker(data);
+      setValid(false);
       return data;
     } catch (err) {
       console.log(err);
@@ -158,6 +151,21 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     API.deleteMarker(marker).catch((err) => {
       console.log(err);
     });
+    setValid(false);
+  };
+
+  //Update un marker
+  let updateMarker = (marker) => {
+    API.updateMarker({ marker }).catch((err) => {
+      console.log(err);
+    });
+    setValid(false);
+    setMarkers((current) =>
+      current.filter((val) => {
+        if (val.id == marker.id) val = marker;
+        return val;
+      }),
+    );
   };
 
   //Ajoute une ligne
@@ -173,6 +181,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       .then((res) => {
         res.path = res.path.map((e) => [e[0], e[1]]);
         setLines((current) => [...current, res]);
+        setValid(false);
       })
       .catch((err) => {
         console.log(err);
@@ -224,6 +233,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   function handleCheck() {
     API.checkValidity(challenge_id).then((data) => {
       // console.log(data);
+      setValid(data.valid);
       if (data.valid) {
         setCheckMessage({
           valid: true,
@@ -276,13 +286,18 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   }
 
   useEffect(() => initializeMap(challenge_id), []);
+  useEffect(() => {
+    if (!valid) {
+      setCheckMessage('');
+    }
+  }, [valid]);
 
   return (
     <div className={classes.root}>
       <Modal open={open}>
         {isLoading ? (
           <>
-            <AppBar position="fixed" className={classes.appBar}>
+            {/* <AppBar position="fixed" className={classes.appBar}>
               <Toolbar>
                 <Typography variant="h6" noWrap style={{ flex: 1 }}>
                   Éditeur de challenge
@@ -309,7 +324,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
               <div className={classes.toolbar} />
               <List>
                 <Typography variant="h5">Menu d'édition</Typography>
-                {/* <Divider />
+                 <Divider />
                 <Typography
                   variant="h6"
                   className={classes.margin_top}
@@ -353,38 +368,26 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 >
                   Logs
                 </Button>
-                <Divider /> */}
+                <Divider />
+              </List>
+            </Drawer> */}
+            <main className={classes.content}>
+              <Grid container justify="flex-end">
                 <Button
+                  className={classes.backButton}
                   variant="contained"
-                  color="primary"
-                  onClick={handleCheck}
-                >
-                  Vérifier
-                </Button>
-                <br />
-                <p
-                  style={{
-                    color: checkMessage.valid ? 'green' : 'red',
+                  color="secondary"
+                  onClick={() => {
+                    setSelected(null);
+                    setOpen(false);
                   }}
                 >
-                  {checkMessage.message}
-                </p>
-                <Divider />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handlePublish}
-                >
-                  Publier
+                  X
                 </Button>
-                <br />
-                <p style={{ color: 'red' }}>{publishMessage}</p>
-              </List>
-            </Drawer>
-            <main className={classes.content}>
-              <div className={classes.toolbar} />
+              </Grid>
               <MapContainer
-                style={{ height: '85vh', width: '84vw' }}
+                className={classes.mapContainer}
+                // style={{ height: '85vh', width: '84vw' }}
                 crs={CRS.Simple}
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
@@ -417,6 +420,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   addLine={addLine}
                   setAddingLine={setAddingLine}
                   setCurrentLine={setCurrentLine}
+                  setValid={setValid}
                 />
                 {lines.map((element) => {
                   try {
@@ -463,14 +467,46 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 data={contextMenu}
                 onEvent={handleContextEvent}
               />
+              <div className={classes.actionButtons}>
+                {valid ? (
+                  <>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handlePublish}
+                    >
+                      Publier
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCheck}
+                    >
+                      Vérifier
+                    </Button>
+                    <div
+                      style={{
+                        color: checkMessage.valid ? 'green' : 'red',
+                      }}
+                    >
+                      {checkMessage.message}
+                    </div>
+                  </>
+                )}
+              </div>
+              <p style={{ color: 'red' }}>{publishMessage}</p>
               {currentMarker ? (
-                <PopUp
+                <ModifyPopUp
                   modifyMarker={modifyMarker}
                   setModifyMarker={setModifyMarker}
                   setMarkers={setMarkers}
                   currentMarker={currentMarker}
                   markers={markers}
                   setStartPoint={setStartPoint}
+                  updateMarker={updateMarker}
                 />
               ) : null}
             </main>

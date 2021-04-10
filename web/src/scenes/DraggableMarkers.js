@@ -30,6 +30,7 @@ let DraggableMarkers = ({
   addLine,
   setAddingLine,
   setCurrentLine,
+  setValid,
 }) => {
   let inBounds = (coords) => {
     return !(
@@ -146,12 +147,12 @@ let DraggableMarkers = ({
                             x: coords.lng,
                             y: coords.lat,
                           };
-
                           API.updateMarker({ marker: newM }).catch(
                             (err) => {
                               console.log(err);
                             },
                           );
+                          setValid(false);
                           return newM;
                         } else {
                           return m;
