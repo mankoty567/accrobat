@@ -288,6 +288,10 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       <Modal aria-labelledby="title" open={open}>
         {isLoading ? (
           <>
+            <ContextMenu
+              data={contextMenu}
+              onEvent={handleContextEvent}
+            />
             <main className={classes.content}>
               <Grid
                 id="title"
@@ -389,10 +393,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   </>
                 ) : null}
               </MapContainer>
-              <ContextMenu
-                data={contextMenu}
-                onEvent={handleContextEvent}
-              />
               <div className={classes.actionButtons}>
                 {valid ? (
                   <>

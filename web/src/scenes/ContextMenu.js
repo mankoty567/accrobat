@@ -15,8 +15,8 @@ export default function ContextMenu({ data, onEvent }) {
         style={{
           position: 'absolute',
           zIndex: 999,
-          top: y - 147,
-          left: x - 607,
+          top: y,
+          left: x,
           display: 'inline-block',
         }}
       >
