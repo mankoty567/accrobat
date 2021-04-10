@@ -12,6 +12,7 @@ import useStyles from './MaterialUI';
 import API from '../eventApi/eventApi';
 import ContextMenu from './ContextMenu';
 import ModifyPopUp from './ModifyPopUp';
+import ErrorView from './ErrorView';
 
 let inBounds = (event) => {
   return !(
@@ -73,7 +74,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
-  const [publishMessage, setPublishMessage] = useState('');
   const [valid, setValid] = useState(false);
 
   const initializeMap = async (challenge_id) => {
@@ -232,42 +232,34 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   function handleCheck() {
     API.checkValidity(challenge_id).then((data) => {
-      // console.log(data);
       setValid(data.valid);
       if (data.valid) {
         setCheckMessage({
           valid: true,
-          message: 'Le challenge est valide!',
+          message: ['Le challenge est valide !'],
         });
       } else {
         let obj = {
           valid: false,
-          message: "Le challenge n'est pas valide parceque :",
+          message: [],
         };
 
         data.error.forEach((e) => {
+          var marker = markers.filter((val) => {
+            if (val.id == e.match(/(\d+)/)[0]) return val;
+          })[0];
           if (e === 'not_1_start')
-            obj.message = obj.message + "Il n'y a pas de départ, ";
+            obj.message.push("- Il n'y a pas de départ");
           if (e === 'not_1_end')
-            obj.message = obj.message + "Il n'y a pas d'arrivée, ";
+            obj.message.push("- Il n'y a pas d'arrivée");
           if (e.startsWith('point_impasse'))
-            obj.message =
-              obj.message +
-              'Un point est une impasse : ' +
-              e.replace('point_impasse:', '') +
-              ', ';
+            obj.message.push(`- ${marker.title} est une impasse`);
           if (e.startsWith('point_inaccessible'))
-            obj.message =
-              obj.message +
-              'Un point est inaccessible : ' +
-              e.replace('point_inaccessible:', '') +
-              ', ';
+            obj.message.push(`- ${marker.title} est inaccessible`);
           if (e.startsWith('arrive_inaccessible'))
-            obj.message =
-              obj.message +
-              "Un point ne peut pas arriver à l'Arrivée : " +
-              e.replace('arrive_inaccessible:', '') +
-              ', ';
+            obj.message.push(
+              `- ${marker.title} n'atteint pas l'arrivée`,
+            );
         });
         setCheckMessage(obj);
       }
@@ -280,7 +272,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
         setOpen(false);
       })
       .catch((err) => {
-        setPublishMessage("Le challenge n'est pas valide!");
         console.log(err);
       });
   }
@@ -288,93 +279,27 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   useEffect(() => initializeMap(challenge_id), []);
   useEffect(() => {
     if (!valid) {
-      setCheckMessage('');
+      setCheckMessage({});
     }
   }, [valid]);
 
   return (
     <div className={classes.root}>
-      <Modal open={open}>
+      <Modal aria-labelledby="title" open={open}>
         {isLoading ? (
           <>
-            {/* <AppBar position="fixed" className={classes.appBar}>
-              <Toolbar>
-                <Typography variant="h6" noWrap style={{ flex: 1 }}>
-                  Éditeur de challenge
-                </Typography>
-                <Button
-                  className={classes.back_button}
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    setSelected(null);
-                    setOpen(false);
-                  }}
-                >
-                  Retour
-                </Button>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              className={classes.drawer}
-              variant="permanent"
-              classes={{ paper: classes.drawerPaper }}
-              anchor="left"
-            >
-              <div className={classes.toolbar} />
-              <List>
-                <Typography variant="h5">Menu d'édition</Typography>
-                 <Divider />
-                <Typography
-                  variant="h6"
-                  className={classes.margin_top}
-                >
-                  Édition du challenge
-                </Typography>
-                <Divider />
-                <ChallengeInfosEditor />
-                <Typography
-                  variant="h6"
-                  className={classes.margin_top}
-                >
-                  Édition d'un point
-                </Typography>
-                <Divider />
-                {currentMarker ? (
-                  <MarkerEditor
-                    marker={currentMarker}
-                    setStartPoint={setStartPoint}
-                    setEditMode={setEditMode}
-                    setMarkers={setMarkers}
-                    markers={markers}
-                    setLines={setLines}
-                    setCurrentLine={setCurrentLine}
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    className={classes.margin_top}
-                  >
-                    Sélectionner un point à modifier
-                  </Typography>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    console.log(lines);
-                    console.log(markers);
-                  }}
-                >
-                  Logs
-                </Button>
-                <Divider />
-              </List>
-            </Drawer> */}
             <main className={classes.content}>
-              <Grid container justify="flex-end">
+              <Grid
+                id="title"
+                style={{
+                  marginTop: 0,
+                  marginBottom: 10,
+                  display: 'flex',
+                }}
+                justify="space-between"
+              >
+                <h2 style={{ margin: 0 }}>Éditeur de challenge</h2>
                 <Button
-                  className={classes.backButton}
                   variant="contained"
                   color="secondary"
                   onClick={() => {
@@ -392,6 +317,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
+                zoom={9}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -487,17 +413,9 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     >
                       Vérifier
                     </Button>
-                    <div
-                      style={{
-                        color: checkMessage.valid ? 'green' : 'red',
-                      }}
-                    >
-                      {checkMessage.message}
-                    </div>
                   </>
                 )}
               </div>
-              <p style={{ color: 'red' }}>{publishMessage}</p>
               {currentMarker ? (
                 <ModifyPopUp
                   modifyMarker={modifyMarker}
@@ -510,6 +428,16 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 />
               ) : null}
             </main>
+            {Object.keys(checkMessage).length === 0 ? null : (
+              <>
+                {!valid ? (
+                  <ErrorView
+                    checkMessage={checkMessage}
+                    setCheckMessage={setCheckMessage}
+                  />
+                ) : null}
+              </>
+            )}
           </>
         ) : (
           <p>Chargement en cours ...</p>

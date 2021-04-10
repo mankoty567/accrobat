@@ -9,6 +9,7 @@ import {
   TextField,
   InputLabel,
   Modal,
+  Grid,
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 
@@ -90,13 +91,18 @@ let ModifyPopUp = ({
               </Select>
             </ListItem>
           ) : null}
-          <Button
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            Fermer
-          </Button>
+          <br />
+          <Grid container justify="center">
+            {' '}
+            <Button
+              color="secondary"
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              Fermer
+            </Button>
+          </Grid>
         </List>
       </div>
     </Modal>

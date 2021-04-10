@@ -2,16 +2,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 let useStyles = makeStyles((theme) => ({
   root: {
-    // display: 'flex',
-  },
-  appBar: {
-    width: '70%',
+    display: 'flex',
   },
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    width: '40%',
-    height: '70%',
+    width: '35%',
+    height: '65%',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(2),
     position: 'relative',
@@ -20,8 +17,9 @@ let useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
   },
   mapContainer: {
+    border: '0.5px solid black',
     width: 'auto',
-    height: '85%',
+    height: '87%',
   },
   margin_top: {
     marginTop: theme.spacing(4),
@@ -38,19 +36,14 @@ let useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   actionButtons: {
+    // height: '25%',
     position: 'relative',
     left: '50%',
-    marginTop: theme.spacing(7),
+    marginTop: theme.spacing(3),
     transform: 'translate(-50%, -50%)',
     display: 'inline-block',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  backButton: {
-    zIndex: 999,
-    position: 'absolute',
-    marginTop: 10,
-    marginRight: 10,
   },
 }));
 
