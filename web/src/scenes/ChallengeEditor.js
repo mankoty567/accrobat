@@ -64,6 +64,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   const [markers, setMarkers] = useState([]);
   const [lines, setLines] = useState([]);
+  const [obstacles, setObstacles] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [currentLine, setCurrentLine] = useState([]);
@@ -82,6 +83,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     echelle: 0,
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
+  const [selectedLine, setSelectedLine] = useState(null);
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -280,7 +282,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     setContextEvent(undefined);
   };
 
-  function handleCheck() {
+  let handleCheck = () => {
     updateChallenge(challenge);
     setErrorMarkers([]);
     API.checkValidity(challenge_id).then((data) => {
@@ -318,13 +320,9 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
         setCheckMessage(obj);
       }
     });
-  }
+  };
 
-  // useEffect(() => {
-  //   console.log(errorMarkers);
-  // }, [errorMarkers]);
-
-  function handlePublish() {
+  let handlePublish = () => {
     API.publishChallenge(challenge_id)
       .then((data) => {
         setOpen(false);
@@ -332,7 +330,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   useEffect(() => initializeMap(challenge_id), []);
   useEffect(() => {
@@ -441,6 +439,15 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     ];
                     return (
                       <Polyline
+                        eventHandlers={{
+                          contextmenu: (event) => {
+                            setSelectedLine(element);
+                            event.originalEvent.view.L.DomEvent.stopPropagation(
+                              event,
+                            );
+                            handleContext(event, 'line');
+                          },
+                        }}
                         positions={positions}
                         key={element.id}
                         color={'black'}
