@@ -13,6 +13,7 @@ import API from '../eventApi/eventApi';
 import ContextMenu from './ContextMenu';
 import ModifyPopUp from './ModifyPopUp';
 import ErrorView from './ErrorView';
+import ModifyChallenge from './ModifyChallenge';
 
 let inBounds = (event) => {
   return !(
@@ -75,6 +76,11 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [open, setOpen] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
+  const [challenge, setChallenge] = useState({
+    title: '',
+    description: '',
+    echelle: 0,
+  });
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -82,6 +88,11 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       include: 'pointsegmentobstacle',
     })
       .then((res) => {
+        setChallenge({
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
         res.PointPassages.forEach((element) => {
           setMarkers((current) => [
             ...current,
@@ -110,6 +121,23 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       })
       .then(() => {
         setIsLoading(true);
+      });
+  };
+
+  let updateChallenge = async (challenge) => {
+    API.updateChallenge({
+      challenge_id: challenge_id,
+      challenge: challenge,
+    })
+      .then((res) => {
+        setChallenge({
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -231,6 +259,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   function handleCheck() {
+    updateChallenge(challenge);
     API.checkValidity(challenge_id).then((data) => {
       setValid(data.valid);
       if (data.valid) {
@@ -304,9 +333,12 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   marginBottom: 10,
                   display: 'flex',
                 }}
+                container
                 justify="space-between"
               >
-                <h2 style={{ margin: 0 }}>Éditeur de challenge</h2>
+                <h2 style={{ margin: 0 }}>
+                  Édition de {challenge.title}
+                </h2>
                 <Button
                   variant="contained"
                   color="secondary"
@@ -318,6 +350,10 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   X
                 </Button>
               </Grid>
+              <ModifyChallenge
+                challenge={challenge}
+                setChallenge={setChallenge}
+              />
               <MapContainer
                 className={classes.mapContainer}
                 // style={{ height: '85vh', width: '84vw' }}
@@ -416,7 +452,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                         color="primary"
                         onClick={handleCheck}
                       >
-                        Vérifier
+                        Vérifier / Mettre à jour
                       </Button>
                     </>
                   )}

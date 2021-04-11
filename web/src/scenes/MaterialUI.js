@@ -34,14 +34,7 @@ let useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   actionButtons: {
-    // height: '25%',
-    // position: 'relative',
-    // left: '50%',
     marginTop: theme.spacing(2),
-    // transform: 'translate(-50%, -50%)',
-    // display: 'inline-block',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
 }));
 
