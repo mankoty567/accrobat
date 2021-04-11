@@ -6,21 +6,14 @@ import {
   Polyline,
   useMapEvent,
 } from 'react-leaflet';
-import {
-  List,
-  AppBar,
-  Toolbar,
-  Typography,
-  Drawer,
-  Divider,
-  Button,
-  Modal,
-} from '@material-ui/core';
+import { Grid, Button, Modal } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import API from '../eventApi/eventApi';
 import ContextMenu from './ContextMenu';
-import PopUp from './PopUp';
+import ModifyPopUp from './ModifyPopUp';
+import ErrorView from './ErrorView';
+import ModifyChallenge from './ModifyChallenge';
 
 let inBounds = (event) => {
   return !(
@@ -82,7 +75,13 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
-  const [publishMessage, setPublishMessage] = useState('');
+  const [valid, setValid] = useState(false);
+  const [challenge, setChallenge] = useState({
+    title: '',
+    description: '',
+    echelle: 0,
+  });
+  const [errorMarkers, setErrorMarkers] = useState([]);
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -90,6 +89,11 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       include: 'pointsegmentobstacle',
     })
       .then((res) => {
+        setChallenge({
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
         res.PointPassages.forEach((element) => {
           setMarkers((current) => [
             ...current,
@@ -121,6 +125,40 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       });
   };
 
+  let inBounds = (coords) => {
+    return !(
+      coords.lat < 0 ||
+      coords.lat > 1 ||
+      coords.lng < 0 ||
+      coords.lng > 1
+    );
+  };
+
+  let fitInBounds = (coords) => {
+    if (coords.lat < 0) coords.lat = 0;
+    if (coords.lat > 1) coords.lat = 1;
+    if (coords.lng < 0) coords.lng = 0;
+    if (coords.lng > 1) coords.lng = 1;
+    return coords;
+  };
+
+  let updateChallenge = async (challenge) => {
+    API.updateChallenge({
+      challenge_id: challenge_id,
+      challenge: challenge,
+    })
+      .then((res) => {
+        setChallenge({
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   //Ajoute un marker
   let addMarker = async (event) => {
     try {
@@ -138,6 +176,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       setMarkers((current) => [...current, data]);
       setStartPoint(data);
       setCurrentMarker(data);
+      setValid(false);
       return data;
     } catch (err) {
       console.log(err);
@@ -158,6 +197,21 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     API.deleteMarker(marker).catch((err) => {
       console.log(err);
     });
+    setValid(false);
+  };
+
+  //Update un marker
+  let updateMarker = (marker) => {
+    API.updateMarker({ marker }).catch((err) => {
+      console.log(err);
+    });
+    setValid(false);
+    setMarkers((current) =>
+      current.filter((val) => {
+        if (val.id == marker.id) val = marker;
+        return val;
+      }),
+    );
   };
 
   //Ajoute une ligne
@@ -173,6 +227,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       .then((res) => {
         res.path = res.path.map((e) => [e[0], e[1]]);
         setLines((current) => [...current, res]);
+        setValid(false);
       })
       .catch((err) => {
         console.log(err);
@@ -180,10 +235,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   let addCurrentLine = (newPoint) => {
+    var coords = newPoint.latlng;
+    if (!inBounds(coords)) {
+      coords = fitInBounds(coords);
+    }
     if (currentLine == []) {
-      setCurrentLine([newPoint.latlng]);
+      setCurrentLine([coords]);
     } else {
-      setCurrentLine((current) => [...current, newPoint.latlng]);
+      setCurrentLine((current) => [...current, coords]);
     }
   };
 
@@ -222,47 +281,48 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   function handleCheck() {
+    updateChallenge(challenge);
+    setErrorMarkers([]);
     API.checkValidity(challenge_id).then((data) => {
-      // console.log(data);
+      setValid(data.valid);
       if (data.valid) {
         setCheckMessage({
           valid: true,
-          message: 'Le challenge est valide!',
+          message: ['Le challenge est valide !'],
         });
       } else {
         let obj = {
           valid: false,
-          message: "Le challenge n'est pas valide parceque :",
+          message: [],
         };
 
         data.error.forEach((e) => {
+          var marker = markers.filter((val) => {
+            if (val.id == e.match(/(\d+)/)[0]) return val;
+          })[0];
           if (e === 'not_1_start')
-            obj.message = obj.message + "Il n'y a pas de départ, ";
+            obj.message.push("- Il n'y a pas de départ");
           if (e === 'not_1_end')
-            obj.message = obj.message + "Il n'y a pas d'arrivée, ";
+            obj.message.push("- Il n'y a pas d'arrivée");
           if (e.startsWith('point_impasse'))
-            obj.message =
-              obj.message +
-              'Un point est une impasse : ' +
-              e.replace('point_impasse:', '') +
-              ', ';
+            obj.message.push(`- ${marker.title} est une impasse`);
           if (e.startsWith('point_inaccessible'))
-            obj.message =
-              obj.message +
-              'Un point est inaccessible : ' +
-              e.replace('point_inaccessible:', '') +
-              ', ';
+            obj.message.push(`- ${marker.title} est inaccessible`);
           if (e.startsWith('arrive_inaccessible'))
-            obj.message =
-              obj.message +
-              "Un point ne peut pas arriver à l'Arrivée : " +
-              e.replace('arrive_inaccessible:', '') +
-              ', ';
+            obj.message.push(
+              `- ${marker.title} n'atteint pas l'arrivée`,
+            );
+          if (marker != undefined)
+            setErrorMarkers((current) => [...current, marker]);
         });
         setCheckMessage(obj);
       }
     });
   }
+
+  // useEffect(() => {
+  //   console.log(errorMarkers);
+  // }, [errorMarkers]);
 
   function handlePublish() {
     API.publishChallenge(challenge_id)
@@ -270,25 +330,45 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
         setOpen(false);
       })
       .catch((err) => {
-        setPublishMessage("Le challenge n'est pas valide!");
         console.log(err);
       });
   }
 
   useEffect(() => initializeMap(challenge_id), []);
+  useEffect(() => {
+    if (!valid) {
+      setCheckMessage({});
+    }
+  }, [valid]);
 
   return (
     <div className={classes.root}>
-      <Modal open={open}>
+      <Modal
+        aria-labelledby="title"
+        aria-describedby="content"
+        open={open}
+      >
         {isLoading ? (
           <>
-            <AppBar position="fixed" className={classes.appBar}>
-              <Toolbar>
-                <Typography variant="h6" noWrap style={{ flex: 1 }}>
-                  Éditeur de challenge
-                </Typography>
+            <ContextMenu
+              data={contextMenu}
+              onEvent={handleContextEvent}
+            />
+            <main id="content" className={classes.content}>
+              <Grid
+                id="title"
+                style={{
+                  marginTop: 0,
+                  marginBottom: 10,
+                  display: 'flex',
+                }}
+                container
+                justify="space-between"
+              >
+                <h2 style={{ margin: 0 }}>
+                  Édition de {challenge.title}
+                </h2>
                 <Button
-                  className={classes.back_button}
                   variant="contained"
                   color="secondary"
                   onClick={() => {
@@ -296,99 +376,21 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     setOpen(false);
                   }}
                 >
-                  Retour
+                  X
                 </Button>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              className={classes.drawer}
-              variant="permanent"
-              classes={{ paper: classes.drawerPaper }}
-              anchor="left"
-            >
-              <div className={classes.toolbar} />
-              <List>
-                <Typography variant="h5">Menu d'édition</Typography>
-                {/* <Divider />
-                <Typography
-                  variant="h6"
-                  className={classes.margin_top}
-                >
-                  Édition du challenge
-                </Typography>
-                <Divider />
-                <ChallengeInfosEditor />
-                <Typography
-                  variant="h6"
-                  className={classes.margin_top}
-                >
-                  Édition d'un point
-                </Typography>
-                <Divider />
-                {currentMarker ? (
-                  <MarkerEditor
-                    marker={currentMarker}
-                    setStartPoint={setStartPoint}
-                    setEditMode={setEditMode}
-                    setMarkers={setMarkers}
-                    markers={markers}
-                    setLines={setLines}
-                    setCurrentLine={setCurrentLine}
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    className={classes.margin_top}
-                  >
-                    Sélectionner un point à modifier
-                  </Typography>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    console.log(lines);
-                    console.log(markers);
-                  }}
-                >
-                  Logs
-                </Button>
-                <Divider /> */}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleCheck}
-                >
-                  Vérifier
-                </Button>
-                <br />
-                <p
-                  style={{
-                    color: checkMessage.valid ? 'green' : 'red',
-                  }}
-                >
-                  {checkMessage.message}
-                </p>
-                <Divider />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handlePublish}
-                >
-                  Publier
-                </Button>
-                <br />
-                <p style={{ color: 'red' }}>{publishMessage}</p>
-              </List>
-            </Drawer>
-            <main className={classes.content}>
-              <div className={classes.toolbar} />
+              </Grid>
+              <ModifyChallenge
+                challenge={challenge}
+                setChallenge={setChallenge}
+              />
               <MapContainer
-                style={{ height: '85vh', width: '84vw' }}
+                className={classes.mapContainer}
+                // style={{ height: '85vh', width: '84vw' }}
                 crs={CRS.Simple}
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
+                zoom={9}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -417,6 +419,10 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   addLine={addLine}
                   setAddingLine={setAddingLine}
                   setCurrentLine={setCurrentLine}
+                  setValid={setValid}
+                  errorMarkers={errorMarkers}
+                  inBounds={inBounds}
+                  fitInBounds={fitInBounds}
                 />
                 {lines.map((element) => {
                   try {
@@ -459,21 +465,54 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   </>
                 ) : null}
               </MapContainer>
-              <ContextMenu
-                data={contextMenu}
-                onEvent={handleContextEvent}
-              />
+              <Grid container justify="center">
+                <div className={classes.actionButtons}>
+                  {valid ? (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handlePublish}
+                      >
+                        Publier
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleCheck}
+                      >
+                        Vérifier / Mettre à jour
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </Grid>
+
               {currentMarker ? (
-                <PopUp
+                <ModifyPopUp
                   modifyMarker={modifyMarker}
                   setModifyMarker={setModifyMarker}
                   setMarkers={setMarkers}
                   currentMarker={currentMarker}
                   markers={markers}
                   setStartPoint={setStartPoint}
+                  updateMarker={updateMarker}
                 />
               ) : null}
             </main>
+            {Object.keys(checkMessage).length === 0 ? null : (
+              <>
+                {!valid ? (
+                  <ErrorView
+                    checkMessage={checkMessage}
+                    setCheckMessage={setCheckMessage}
+                  />
+                ) : null}
+              </>
+            )}
           </>
         ) : (
           <p>Chargement en cours ...</p>

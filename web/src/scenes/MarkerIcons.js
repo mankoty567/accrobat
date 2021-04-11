@@ -1,15 +1,29 @@
 const checkpoint = process.env.PUBLIC_URL + '/icons/Checkpoint.png';
 const checkpointS = process.env.PUBLIC_URL + '/icons/CheckpointS.png';
+const checkpointE = process.env.PUBLIC_URL + '/icons/CheckpointE.png';
+const checkpointES =
+  process.env.PUBLIC_URL + '/icons/CheckpointES.png';
 const start = process.env.PUBLIC_URL + '/icons/Start.png';
 const startS = process.env.PUBLIC_URL + '/icons/StartS.png';
+const startE = process.env.PUBLIC_URL + '/icons/StartE.png';
+const startES = process.env.PUBLIC_URL + '/icons/StartES.png';
 const end = process.env.PUBLIC_URL + '/icons/End.png';
 const endS = process.env.PUBLIC_URL + '/icons/EndS.png';
+const endE = process.env.PUBLIC_URL + '/icons/EndE.png';
+const endES = process.env.PUBLIC_URL + '/icons/EndES.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
-let createCheckpointIcon = (selected) => {
+let createCheckpointIcon = (selected, error) => {
+  var ES = selected && error;
   return new L.Icon({
-    iconUrl: selected ? checkpointS : checkpoint,
+    iconUrl: ES
+      ? checkpointES
+      : selected
+      ? checkpointS
+      : error
+      ? checkpointE
+      : checkpoint,
     shadowUrl: shadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -18,9 +32,10 @@ let createCheckpointIcon = (selected) => {
   });
 };
 
-let createEndIcon = (selected) => {
+let createEndIcon = (selected, error) => {
+  var ES = selected && error;
   return new L.Icon({
-    iconUrl: selected ? endS : end,
+    iconUrl: ES ? endES : selected ? endS : error ? endE : end,
     shadowUrl: shadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -29,9 +44,16 @@ let createEndIcon = (selected) => {
   });
 };
 
-let createStartIcon = (selected) => {
+let createStartIcon = (selected, error) => {
+  var ES = selected && error;
   return new L.Icon({
-    iconUrl: selected ? startS : start,
+    iconUrl: ES
+      ? startES
+      : selected
+      ? startS
+      : error
+      ? startE
+      : start,
     shadowUrl: shadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41],

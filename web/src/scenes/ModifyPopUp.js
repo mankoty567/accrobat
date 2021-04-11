@@ -9,32 +9,19 @@ import {
   TextField,
   InputLabel,
   Modal,
+  Grid,
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
-import API from '../eventApi/eventApi';
 
-let PopUp = ({
+let ModifyPopUp = ({
   currentMarker,
   setStartPoint,
   markers,
-  setMarkers,
+  updateMarker,
   modifyMarker,
   setModifyMarker,
 }) => {
   const classes = useStyles();
-
-  //Update un marker
-  let updateMarker = (marker) => {
-    API.updateMarker({ marker }).catch((err) => {
-      console.log(err);
-    });
-    setMarkers((current) =>
-      current.filter((val) => {
-        if (val.id == marker.id) val = marker;
-        return val;
-      }),
-    );
-  };
 
   let handleClose = () => {
     setModifyMarker(false);
@@ -44,7 +31,7 @@ let PopUp = ({
     <Modal
       aria-labelledby="title"
       aria-describedby="content"
-      className={classes.modal_test}
+      className={classes.modifyModal}
       open={modifyMarker}
       onClose={() => {
         handleClose();
@@ -55,7 +42,7 @@ let PopUp = ({
         timeout: 500,
       }}
     >
-      <div className={classes.paper_test}>
+      <div className={classes.modifyPaper}>
         <h2 id="title">Modifier le point</h2>
         <List id="content">
           <ListItem>
@@ -104,17 +91,22 @@ let PopUp = ({
               </Select>
             </ListItem>
           ) : null}
-          <Button
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            Fermer
-          </Button>
+          <br />
+          <Grid container justify="center">
+            {' '}
+            <Button
+              color="secondary"
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              Fermer
+            </Button>
+          </Grid>
         </List>
       </div>
     </Modal>
   );
 };
 
-export default PopUp;
+export default ModifyPopUp;
