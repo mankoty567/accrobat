@@ -31,6 +31,7 @@ let DraggableMarkers = ({
   setAddingLine,
   setCurrentLine,
   setValid,
+  errorMarkers,
 }) => {
   let inBounds = (coords) => {
     return !(
@@ -51,13 +52,25 @@ let DraggableMarkers = ({
 
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
+    var error = errorMarkers.filter((val) => {
+      if (val.id == marker.id) return val;
+    });
     switch (marker.type) {
       case 'start':
-        return createStartIcon(marker == currentMarker);
+        return createStartIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
       case 'end':
-        return createEndIcon(marker == currentMarker);
+        return createEndIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
       case 'point':
-        return createCheckpointIcon(marker == currentMarker);
+        return createCheckpointIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
     }
   };
 

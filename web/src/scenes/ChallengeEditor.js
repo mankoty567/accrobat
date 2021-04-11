@@ -81,6 +81,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     description: '',
     echelle: 0,
   });
+  const [errorMarkers, setErrorMarkers] = useState([]);
 
   const initializeMap = async (challenge_id) => {
     await API.getChallenge({
@@ -260,6 +261,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   function handleCheck() {
     updateChallenge(challenge);
+    setErrorMarkers([]);
     API.checkValidity(challenge_id).then((data) => {
       setValid(data.valid);
       if (data.valid) {
@@ -289,11 +291,17 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
             obj.message.push(
               `- ${marker.title} n'atteint pas l'arrivée`,
             );
+          if (marker != undefined)
+            setErrorMarkers((current) => [...current, marker]);
         });
         setCheckMessage(obj);
       }
     });
   }
+
+  // useEffect(() => {
+  //   console.log(errorMarkers);
+  // }, [errorMarkers]);
 
   function handlePublish() {
     API.publishChallenge(challenge_id)
@@ -391,6 +399,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   setAddingLine={setAddingLine}
                   setCurrentLine={setCurrentLine}
                   setValid={setValid}
+                  errorMarkers={errorMarkers}
                 />
                 {lines.map((element) => {
                   try {

@@ -32,8 +32,10 @@ let ErrorView = ({ checkMessage, setCheckMessage }) => {
           Challenge invalide
         </h2>
         <div id="content">
-          {checkMessage.message.map((message) => {
-            return <p>{message}</p>;
+          {checkMessage.message.map((message, idx) => {
+            console.log(idx);
+            console.log(message);
+            return <p key={idx}>{message}</p>;
           })}
           <Grid container justify="center">
             <Button
