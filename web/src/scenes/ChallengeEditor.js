@@ -125,6 +125,23 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       });
   };
 
+  let inBounds = (coords) => {
+    return !(
+      coords.lat < 0 ||
+      coords.lat > 1 ||
+      coords.lng < 0 ||
+      coords.lng > 1
+    );
+  };
+
+  let fitInBounds = (coords) => {
+    if (coords.lat < 0) coords.lat = 0;
+    if (coords.lat > 1) coords.lat = 1;
+    if (coords.lng < 0) coords.lng = 0;
+    if (coords.lng > 1) coords.lng = 1;
+    return coords;
+  };
+
   let updateChallenge = async (challenge) => {
     API.updateChallenge({
       challenge_id: challenge_id,
@@ -218,10 +235,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   let addCurrentLine = (newPoint) => {
+    var coords = newPoint.latlng;
+    if (!inBounds(coords)) {
+      coords = fitInBounds(coords);
+    }
     if (currentLine == []) {
-      setCurrentLine([newPoint.latlng]);
+      setCurrentLine([coords]);
     } else {
-      setCurrentLine((current) => [...current, newPoint.latlng]);
+      setCurrentLine((current) => [...current, coords]);
     }
   };
 
@@ -400,6 +421,8 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   setCurrentLine={setCurrentLine}
                   setValid={setValid}
                   errorMarkers={errorMarkers}
+                  inBounds={inBounds}
+                  fitInBounds={fitInBounds}
                 />
                 {lines.map((element) => {
                   try {

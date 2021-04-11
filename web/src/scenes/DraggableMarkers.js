@@ -32,24 +32,9 @@ let DraggableMarkers = ({
   setCurrentLine,
   setValid,
   errorMarkers,
+  inBounds,
+  fitInBounds,
 }) => {
-  let inBounds = (coords) => {
-    return !(
-      coords.lat < 0 ||
-      coords.lat > 1 ||
-      coords.lng < 0 ||
-      coords.lng > 1
-    );
-  };
-
-  let fitInBounds = (coords) => {
-    if (coords.lat < 0) coords.lat = 0;
-    if (coords.lat > 1) coords.lat = 1;
-    if (coords.lng < 0) coords.lng = 0;
-    if (coords.lng > 1) coords.lng = 1;
-    return coords;
-  };
-
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
     var error = errorMarkers.filter((val) => {
@@ -83,29 +68,6 @@ let DraggableMarkers = ({
       if (addingLine) {
         addCurrentLine(event);
       }
-      // if (inBounds(event.latlng)) {
-      //   if (!markers.length > 0) {
-      //     addMarker(event);
-      //   } else {
-      //     if (event.originalEvent.ctrlKey) {
-      //       if (currentMarker?.type !== 'end') {
-      //         addCurrentLine(event);
-      //         setEditMode(true);
-      //       }
-      //     } else {
-      //       if (currentMarker) {
-      //         var newMarker = await addMarker(event);
-      //         if (currentMarker.type !== 'end') {
-      //           addLine(currentMarker, newMarker);
-      //           setCurrentLine([event.latlng]);
-      //         }
-      //       } else {
-      //         await addMarker(event);
-      //         setCurrentLine([event.latlng]);
-      //       }
-      //     }
-      //   }
-      // }
     },
     contextmenu: (event) => {
       if (event.originalEvent.target !== contextRef.current) {
