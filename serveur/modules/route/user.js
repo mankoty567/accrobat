@@ -112,4 +112,12 @@ module.exports.routes = [
       { code: 400, content: 'Bad Request: Username already exist' },
     ],
   },
+  {
+    method: 'GET',
+    url: '/api/user/:id/avatar',
+    func: [m.obstacle_ctrl.get_avatar],
+    name: "Récupération de l'avatar d'un utilisateur",
+    description:
+      "Récupération de de l'avatar d'un utilisateur sous la forme d'un fichier tout basique",
+  },
 ];

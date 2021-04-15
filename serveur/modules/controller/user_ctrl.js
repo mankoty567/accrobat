@@ -155,4 +155,17 @@ module.exports = {
       res.json(req.user);
     }
   },
+  get_avatar: (req, res) => {
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.jpg')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.jpg')
+      );
+    } else {
+      res.status(404).send('Not found');
+    }
+  },
 };
