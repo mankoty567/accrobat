@@ -57,6 +57,8 @@ module.exports.routes = [
           title: 'string',
           description: 'string',
           echelle: 0,
+          isAdmin: 'true/false',
+          isAuthor: 'true/false',
         },
       },
     ],

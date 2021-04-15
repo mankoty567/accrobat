@@ -466,8 +466,31 @@ module.exports = {
   get_all_challenge_admin: (req, res) => {
     bdd.Challenge.findAll({
       attributes: ['id', 'title', 'description', 'echelle'],
+      include: [
+        { model: bdd.User, where: { id: req.user.id }, required: false },
+      ],
     }).then((challenges) => {
-      res.json(challenges);
+      let challengeReturn = challenges.map((k) => {
+        let obj = JSON.parse(JSON.stringify(k));
+        if (obj.Users.length !== 0) {
+          obj.isAdmin = true;
+
+          if (obj.Users[0].UserChallengeAdmin.isAuthor) {
+            obj.isAuthor = true;
+          } else {
+            obj.isAuthor = false;
+          }
+        } else {
+          obj.isAdmin = false;
+          obj.isAuthor = false;
+        }
+
+        delete obj.Users;
+
+        return obj;
+      });
+
+      res.json(challengeReturn);
     });
   },
   verif_validity: async (req, res) => {
