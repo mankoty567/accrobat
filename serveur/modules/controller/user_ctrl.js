@@ -168,5 +168,11 @@ module.exports = {
       res.status(404).send('Not found');
     }
   },
-  check_username: (req, res) => {},
+  check_username: async (req, res) => {
+    let otherUserWithUsername = await bdd.User.findOne({
+      where: { username: req.body.username },
+    });
+
+    res.json({ valid: otherUserWithUsername === null });
+  },
 };
