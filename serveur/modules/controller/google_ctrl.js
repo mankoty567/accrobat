@@ -57,7 +57,7 @@ module.exports = {
           bdd.User.findOne({ where: { email: data.email } }).then((user) => {
             if (user === null) {
               bdd.User.create({
-                username: data.email.split('@')[0],
+                username: data.email.split('@')[0] + Date.now(),
                 email: data.email,
                 permission: 0,
                 level: 0,
