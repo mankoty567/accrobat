@@ -14,6 +14,22 @@ module.exports.routes = [
     name: 'Récupération de tous les challenges publiés',
     description:
       'Récupération de tous les challenges accessibles à un utilisateur',
+    query: [
+      {
+        param: 'include=point',
+        desc: 'Renvoit le challenge et ses points de passages',
+      },
+      {
+        param: 'include=pointsegment',
+        desc:
+          'Renvoit le challenge, ses points de passages et les segments associés',
+      },
+      {
+        param: 'include=pointsegmentobstacle',
+        desc:
+          'Renvoit le challenge, ses points de passages, les segments et les obstacles associés',
+      },
+    ],
     result: [
       {
         code: 200,
