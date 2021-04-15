@@ -129,4 +129,12 @@ module.exports.routes = [
       "Verifie si le nom d'utilisateur passé en paramètre est encore disponible",
     result: [{ code: 200, content: { valid: 'true/false' } }],
   },
+  {
+    method: 'GET',
+    url: '/api/user/get_all_admin',
+    func: [m.user_mdw.put_admin, m.user_ctrl.get_all_admin],
+    name: 'Récupération des admins',
+    description: 'Récupère tous les administrateurs',
+    result: [{ code: 200, content: [{ id: 0, username: '' }] }],
+  },
 ];

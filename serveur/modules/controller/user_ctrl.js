@@ -175,4 +175,12 @@ module.exports = {
 
     res.json({ valid: otherUserWithUsername === null });
   },
+  get_all_admin: (req, res) => {
+    bdd.User.findAll({
+      where: { permission: 100 },
+      attributes: ['id', 'username'],
+    }).then((users) => {
+      res.json(users);
+    });
+  },
 };
