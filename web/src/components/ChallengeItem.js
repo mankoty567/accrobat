@@ -19,7 +19,11 @@ let ChallengeItem = ({ challenge, actionComponents }) => {
           alignContent="center"
           justify="center"
         >
-          <Avatar> </Avatar>
+          <Avatar>
+            <img
+              src={`https://api.acrobat.bigaston.dev/api/challenge/${challenge.id}/avatar`}
+            ></img>
+          </Avatar>
         </Grid>
         <Grid item xs={8}>
           <List>
