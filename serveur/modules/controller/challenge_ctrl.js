@@ -131,22 +131,28 @@ module.exports = {
           buffer
         );
 
-        if (req.body.img_avatar !== undefined) {
-          utils.pngParser(req.body.img_avatar).then((buffer) => {
-            fs.writeFileSync(
-              path.join(
-                __dirname,
-                '../../data/challengeAvatar/' + challenge.id + '.jpg'
-              ),
-              buffer
-            );
+        bdd.UserChallengeAdmin.create({
+          isAuthor: true,
+          UserId: req.user.id,
+          ChallengeId: challenge.id,
+        }).then(() => {
+          if (req.body.img_avatar !== undefined) {
+            utils.pngParser(req.body.img_avatar).then((buffer) => {
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  '../../data/challengeAvatar/' + challenge.id + '.jpg'
+                ),
+                buffer
+              );
+              debug('Création du challenge ' + challenge.id);
+              res.json({ ...challenge.dataValues, frontId: req.body.frontId });
+            });
+          } else {
             debug('Création du challenge ' + challenge.id);
             res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-          });
-        } else {
-          debug('Création du challenge ' + challenge.id);
-          res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-        }
+          }
+        });
       });
     });
   },
@@ -268,6 +274,16 @@ module.exports = {
           },
           { transaction: t }
         );
+
+        await bdd.UserChallengeAdmin.create(
+          {
+            isAuthor: true,
+            ChallengeId: newChallenge.id,
+            UserId: req.user.id,
+          },
+          { transaction: t }
+        );
+
         if (
           fs.existsSync(
             path.join(
@@ -474,5 +490,20 @@ module.exports = {
         res.status(400).send('Challenge is not valid');
       }
     }
+  },
+  add_challenge_admin: (req, res) => {
+    bdd.User.findOne({ where: { id: req.body.user_id } }).then((toAddUser) => {
+      if (toAddUser === null) {
+        res.status(400).send('Bad Request: User not exist');
+      } else {
+        bdd.UserChallengeAdmin.create({
+          isAuthor: false,
+          UserId: req.body.user_id,
+          ChallengeId: req.params.id,
+        }).then(() => {
+          res.send('OK');
+        });
+      }
+    });
   },
 };

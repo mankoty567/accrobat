@@ -9,5 +9,6 @@ module.exports = {
   user_ctrl: require('./controller/user_ctrl'),
   google_ctrl: require('./controller/google_ctrl'),
   user_mdw: require('./middleware/user_mdw'),
+  challenge_mdw: require('./middleware/challenge_mdw'),
   utils: require('./utils'),
 };
