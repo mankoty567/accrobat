@@ -71,7 +71,7 @@ public class DataBase {
                 user.getUsername()+"', '" +
                 user.getEmail() + "', '" +
                 user.getPermission() + "', '" +
-                user.getToken() + "');"
+                user.getExperience() + "');"
         );
     }
 
@@ -107,9 +107,9 @@ public class DataBase {
                 user.getUsername()+"', '" +
                 user.getEmail() + "', '" +
                 user.getPermission() + "' , '" +
-                user.getToken() +"');"
+                user.getExperience() +"');"
         );
-        bdd.execSQL("UPDATE MOI SET USER_ID="+user.getId());
+        bdd.execSQL("UPDATE MOI SET USER_ID="+user.getId()+",TOKEN='"+user.getToken()+"'");
     }
 
     public static synchronized User getMoi(){
@@ -123,6 +123,7 @@ public class DataBase {
         String email  = resultats.getString(2);
         int permission = resultats.getInt(3);
         int xp = resultats.getInt(4);
+        String token = resultats.getString(5);
 
         User user = new User();
         user.setId(id);
@@ -130,6 +131,8 @@ public class DataBase {
         user.setEmail(email);
         user.setPermission(Permission.fromInt(permission));
         user.setExperience(xp);
+        user.setToken(token);
+
         resultats.close();
         return user;
     }
