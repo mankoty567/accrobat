@@ -65,6 +65,5 @@ public class HomeFragment extends Fragment {
      ******************************************/
     public void ShowFragment(int fragment) {
         Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
-        Toast.makeText(getContext(), "Changing Fragment..." + fragment, Toast.LENGTH_SHORT).show();
     }
 }

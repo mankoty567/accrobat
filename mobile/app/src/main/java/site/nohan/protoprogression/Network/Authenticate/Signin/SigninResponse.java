@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.MainActivity;
 import site.nohan.protoprogression.Model.Permission;
 import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.APIListenner;
@@ -62,14 +63,15 @@ public class SigninResponse implements APIListenner {
             //user.setLevel() = json.getInt("level");
             user.setExperience(json.getInt("xp"));
             user.setToken(json.getString("jwt"));
-            DataBase.token_last_update = new Date();
+            user.setToken_last_update(new Date());
             DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         //Passage sur le Fragment de Home
+        MainActivity.setBottomNavigationViewVisibility(0);
         signinFragment.ShowFragment(R.id.navigation_home);
-        Toast.makeText(activity,"User successfully connected !", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(activity,"User successfully connected !", Toast.LENGTH_SHORT).show();
     }
 }

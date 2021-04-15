@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.View.ui.home;
 
 import android.os.Bundle;
+import android.transition.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.bottomnavigation.BottomNavigationMenu;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import site.nohan.protoprogression.Controller.MainActivity;
 import site.nohan.protoprogression.Network.Authenticate.Signin.SigninRequest;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.DataBase;
@@ -42,6 +47,7 @@ public class SigninFragment extends Fragment{
 
         signup = R.id.navigation_signup;
         home = R.id.navigation_home;
+        MainActivity.setBottomNavigationViewVisibility(4);
 
         //Initialisation du bouton d'inscritption
         txt_inscription = root.findViewById(R.id.txt_signin_inscription);

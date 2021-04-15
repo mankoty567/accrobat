@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.View.ui.notifications;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class NotificationsFragment extends Fragment {
         //Vérification que l'utilisateur est connecté
         if(!DataBase.isTokenValid()) ShowFragment(signin);
         else {
+            Log.i("TOKEN", DataBase.getMoi().getToken()+"");
             if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
         }
 

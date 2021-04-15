@@ -43,8 +43,13 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
         signin = R.id.navigation_signin;
 
+         //Vérification que l'utilisateur est connecté
+         if(!DataBase.isTokenValid()) ShowFragment(signin);
+         else {
+             if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
+         }
 
-        return root;
+         return root;
      }
 
      @Override

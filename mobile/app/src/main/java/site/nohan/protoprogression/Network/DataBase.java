@@ -23,9 +23,13 @@ public class DataBase {
     public static Date token_last_update;
 
     public static boolean isTokenValid(){
-        boolean res = true;
-        if(getMoi().getToken() == "") res = false;
-        return res;
+        try {
+            getMoi().getToken();
+        } catch (Exception e){
+            Log.e("TOKEN_VALIDITY", e+"");
+            return false;
+        }
+        return (getMoi().getToken() != null && !getMoi().getToken().equals("NULL"));
     }
 
     public static boolean isTokenDateValid(Date date){
@@ -51,7 +55,8 @@ public class DataBase {
         bdd.execSQL("CREATE TABLE IF NOT EXISTS MOI(" +
                 "ID INTEGER," +
                 "USER_ID INTEGER," +
-                "TOKEN VARCHAR(255)" +
+                "TOKEN VARCHAR(255)," +
+                "TOKEN_LAST_UPDATE LONG" +
                 ");"
         );
 
@@ -60,7 +65,7 @@ public class DataBase {
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
         Log.e("sql","L'utilisateur existe (CODE: "+resultats.getCount()+")");
         if(resultats.getCount() == 0){ // Si il existe pas on le créer
-            bdd.execSQL("INSERT INTO MOI VALUES (0, NULL, NULL)");
+            bdd.execSQL("INSERT INTO MOI VALUES (0, NULL, NULL, 0)");
         }
     }
 
@@ -109,11 +114,11 @@ public class DataBase {
                 user.getPermission() + "' , '" +
                 user.getExperience() +"');"
         );
-        bdd.execSQL("UPDATE MOI SET USER_ID="+user.getId()+",TOKEN='"+user.getToken()+"'");
+        bdd.execSQL("UPDATE MOI SET USER_ID="+user.getId()+",TOKEN='"+user.getToken()+"'"+",TOKEN_LAST_UPDATE="+user.getToken_last_update().getTime());
     }
 
     public static synchronized User getMoi(){
-        Cursor resultats = bdd.rawQuery("SELECT U.ID, U.USERNAME, U.EMAIL, U.PERMISSION, U.XP, M.TOKEN FROM USER U INNER JOIN MOI M ON U.ID = M.USER_ID LIMIT 1",null);
+        Cursor resultats = bdd.rawQuery("SELECT U.ID, U.USERNAME, U.EMAIL, U.PERMISSION, U.XP, M.TOKEN, M.TOKEN_LAST_UPDATE FROM USER U INNER JOIN MOI M ON U.ID = M.USER_ID LIMIT 1",null);
         if(resultats.getCount() == 0)
             return null;
         resultats.moveToFirst();
@@ -124,6 +129,7 @@ public class DataBase {
         int permission = resultats.getInt(3);
         int xp = resultats.getInt(4);
         String token = resultats.getString(5);
+        Date token_last_update = new Date(resultats.getLong(6));
 
         User user = new User();
         user.setId(id);
@@ -132,6 +138,7 @@ public class DataBase {
         user.setPermission(Permission.fromInt(permission));
         user.setExperience(xp);
         user.setToken(token);
+        user.setToken_last_update(token_last_update);
 
         resultats.close();
         return user;

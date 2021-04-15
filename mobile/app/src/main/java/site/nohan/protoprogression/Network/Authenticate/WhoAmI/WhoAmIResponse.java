@@ -44,7 +44,7 @@ public class WhoAmIResponse implements APIListenner {
         User moi = DataBase.getMoi();
         moi.setToken("");
         DataBase.setMoi(moi);
-        Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
     }
 
     /******************************************
@@ -65,7 +65,7 @@ public class WhoAmIResponse implements APIListenner {
             //user.setLevel() = json.getInt("level");
             user.setExperience(json.getInt("xp"));
             user.setToken(json.getString("jwt"));
-            DataBase.token_last_update = new Date();
+            user.setToken_last_update(new Date());
             DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();

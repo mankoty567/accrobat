@@ -1,5 +1,7 @@
 package site.nohan.protoprogression.Model;
 
+import java.util.Date;
+
 public class User {
     private static User acutel;
 
@@ -9,14 +11,16 @@ public class User {
     private Permission permission;
     private int experience;
     private String token;
+    private Date token_last_update;
 
-    public User(int id, String username, String email, Permission permission, int experience, String token) {
+    public User(int id, String username, String email, Permission permission, int experience, String token, Date token_last_update) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.permission = permission;
         this.experience = experience;
         this.token = token;
+        this.token_last_update = token_last_update;
     }
 
     public User(){}
@@ -78,5 +82,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Date getToken_last_update() {
+        return token_last_update;
+    }
+
+    public void setToken_last_update(Date token_last_update) {
+        this.token_last_update = token_last_update;
     }
 }
