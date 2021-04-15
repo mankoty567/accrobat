@@ -115,9 +115,18 @@ module.exports.routes = [
   {
     method: 'GET',
     url: '/api/user/:id/avatar',
-    func: [m.obstacle_ctrl.get_avatar],
+    func: [m.user_ctrl.get_avatar],
     name: "Récupération de l'avatar d'un utilisateur",
     description:
       "Récupération de de l'avatar d'un utilisateur sous la forme d'un fichier tout basique",
+  },
+  {
+    method: 'GET',
+    url: '/api/user/check_username/:username',
+    func: [m.user_ctrl.check_username],
+    name: "Vérification de l'username",
+    description:
+      "Verifie si le nom d'utilisateur passé en paramètre est encore disponible",
+    result: [{ code: 200, content: { valid: 'true/false' } }],
   },
 ];

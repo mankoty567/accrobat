@@ -168,4 +168,5 @@ module.exports = {
       res.status(404).send('Not found');
     }
   },
+  check_username: (req, res) => {},
 };
