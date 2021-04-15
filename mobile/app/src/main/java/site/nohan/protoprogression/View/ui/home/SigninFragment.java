@@ -37,6 +37,7 @@ public class SigninFragment extends Fragment{
      ************************************************************************/
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        DataBase.init(this.getActivity());
         View root = inflater.inflate(R.layout.fragment_user_signin, container, false);
 
         signup = R.id.navigation_signup;

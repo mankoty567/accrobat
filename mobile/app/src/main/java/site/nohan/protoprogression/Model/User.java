@@ -71,6 +71,8 @@ public class User {
     }
 
     public String getToken() {
+        if(token == null)
+            return "NULL";
         return token;
     }
 

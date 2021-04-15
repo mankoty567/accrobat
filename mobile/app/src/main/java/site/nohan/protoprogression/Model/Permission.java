@@ -20,4 +20,15 @@ public enum  Permission {
         }
         return null;
     }
+
+    public static Permission fromString(String permission) {
+        if(permission == "ADMIN")
+            return Permission.ADMIN;
+        return Permission.USER;
+    }
+
+    @Override
+    public String toString() {
+        return code == 0 ? "USER" : "ADMIN";
+    }
 }

@@ -68,10 +68,11 @@ public class DataBase {
 
     public static synchronized void addUser(User user){
         bdd.execSQL("INSERT INTO USER VALUES(" +
-                user.getId()+", " +
-                user.getUsername()+", " +
-                user.getEmail() + ", " +
-                user.getPermission() + ");"
+                user.getId()+", '" +
+                user.getUsername()+"', '" +
+                user.getEmail() + "', '" +
+                user.getPermission() + "', '" +
+                user.getToken() + "');"
         );
     }
 
@@ -87,14 +88,14 @@ public class DataBase {
 
         String username = resultats.getString(1);
         String email  = resultats.getString(2);
-        int permission = resultats.getInt(3);
+        String permission = resultats.getString(3);
         int xp = resultats.getInt(4);
 
         User user = new User();
         user.setId(id);
         user.setUsername(username);
         user.setEmail(email);
-        user.setPermission(Permission.fromInt(permission));
+        user.setPermission(Permission.fromString(permission));
         user.setExperience(xp);
         resultats.close();
         return user;
@@ -103,10 +104,11 @@ public class DataBase {
     public static synchronized void setMoi(User user){
         bdd.execSQL("DELETE FROM USER WHERE ID="+user.getId());
         bdd.execSQL("INSERT INTO USER VALUES(" +
-                user.getId()+", " +
-                user.getUsername()+", " +
-                user.getEmail() + ", " +
-                user.getPermission() + ");"
+                user.getId()+", '" +
+                user.getUsername()+"', '" +
+                user.getEmail() + "', '" +
+                user.getPermission() + "' , '" +
+                user.getToken() +"');"
         );
         bdd.execSQL("UPDATE MOI SET USER_ID="+user.getId());
     }
