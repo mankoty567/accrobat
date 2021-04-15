@@ -14,6 +14,7 @@ import ContextMenu from './ContextMenu';
 import ModifyPopUp from './ModifyPopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
+import { createObstacleIcon } from './MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -236,6 +237,16 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       });
   };
 
+  let addObstacle = (event) => {
+    // var newObstacle = {
+    //   title: 'Point ' + markers.length,
+    //   description: '',
+    //   type: markers.length > 0 ? 'point' : 'start',
+    //   x: event.latlng.lng,
+    //   y: event.latlng.lat,
+    // };
+  };
+
   let addCurrentLine = (newPoint) => {
     var coords = newPoint.latlng;
     if (!inBounds(coords)) {
@@ -278,6 +289,9 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     }
     if (event === 'deleteMarker') {
       removeMarker(currentMarker);
+    }
+    if (event === 'addObstacle') {
+      addObstacle(contextMenu.event);
     }
     setContextEvent(undefined);
   };
@@ -456,6 +470,17 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   } catch (err) {
                     console.error(err);
                   }
+                })}
+                {obstacles.map((item) => {
+                  return (
+                    <Marker
+                      draggable={true}
+                      marker_index={item.id}
+                      key={item.id}
+                      position={[item.y, item.x]}
+                      icon={createObstacleIcon()}
+                    ></Marker>
+                  );
                 })}
                 {currentMarker ? (
                   <>
