@@ -1,6 +1,6 @@
 import { checkStatus, host } from './api';
 
-export default participationApi = {
+const participationApi = {
   /**
    * Permet d'obtenir toutes les participations de l'utilisateur
    * @returns Tableau de participation lié à l'utilisateur
@@ -59,3 +59,5 @@ export default participationApi = {
       .then((res) => res.json());
   },
 };
+
+export default participationApi;

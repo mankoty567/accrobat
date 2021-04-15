@@ -1,6 +1,6 @@
 import { checkStatus, host } from './api';
 
-export default checkpointApi = {
+const checkpointApi = {
   /**
    * Permet d'obtenir tout les points de passage d'un challenge
    * @param {Object} data
@@ -80,3 +80,5 @@ export default checkpointApi = {
       .then((res) => res.json());
   },
 };
+
+export default checkpointApi;

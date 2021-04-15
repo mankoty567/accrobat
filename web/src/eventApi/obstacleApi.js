@@ -1,6 +1,6 @@
 import { checkStatus, host } from './api';
 
-export default obstacleApi = {
+const obstacleApi = {
   /**
    * Permet de créer un obstacle
    * @param {Object} data
@@ -73,3 +73,5 @@ export default obstacleApi = {
       .then((res) => res.json());
   },
 };
+
+export default obstacleApi;

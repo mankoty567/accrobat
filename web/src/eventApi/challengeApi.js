@@ -1,6 +1,6 @@
 import { checkStatus, host } from './api';
 
-export default challengeApi = {
+const challengeApi = {
   /**
    * Permet d'obtenir la liste des challenges publiés
    * @returns Tableau de challenges
@@ -194,3 +194,5 @@ export default challengeApi = {
       .then((res) => res.json());
   },
 };
+
+export default challengeApi;

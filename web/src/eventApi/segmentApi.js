@@ -1,6 +1,6 @@
 import { checkStatus, host } from './api';
 
-export default segmentApi = {
+const segmentApi = {
   /**
    * Permet d'obtenir un segment à partir de son id
    * @param {Object} data
@@ -83,3 +83,5 @@ export default segmentApi = {
       .then((res) => res.json());
   },
 };
+
+export default segmentApi;
