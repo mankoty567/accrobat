@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,5 +65,6 @@ public class HomeFragment extends Fragment {
      ******************************************/
     public void ShowFragment(int fragment) {
         Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
+        Toast.makeText(getContext(), "Changing Fragment..." + fragment, Toast.LENGTH_SHORT).show();
     }
 }

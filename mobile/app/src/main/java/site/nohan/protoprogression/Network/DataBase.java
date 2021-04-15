@@ -20,12 +20,11 @@ public class DataBase {
      * Création des variables globales
      ******************************************/
 
-    public static String token_user = "";
     public static Date token_last_update;
 
     public static boolean isTokenValid(){
         boolean res = true;
-        if(token_user == "") res = false;
+        if(getMoi().getToken() == "") res = false;
         return res;
     }
 

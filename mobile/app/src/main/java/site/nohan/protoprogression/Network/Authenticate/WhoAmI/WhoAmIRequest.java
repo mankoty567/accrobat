@@ -34,11 +34,11 @@ public class WhoAmIRequest extends APIRequestGET {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.token_user != null && DataBase.token_user != "") {
+        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
-            headers.put("Authorization", "Bearer " + DataBase.token_user);
+            headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {
-            Log.e("TOKEN_EMPTY", DataBase.token_user + "");
+            Log.e("TOKEN_EMPTY", DataBase.getMoi().getToken() + "");
         }
         return headers;
     }

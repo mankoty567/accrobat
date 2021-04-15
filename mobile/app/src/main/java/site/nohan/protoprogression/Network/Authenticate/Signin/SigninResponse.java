@@ -62,7 +62,7 @@ public class SigninResponse implements APIListenner {
             //user.setLevel() = json.getInt("level");
             user.setExperience(json.getInt("xp"));
             user.setToken(json.getString("jwt"));
-            //DataBase.token_last_update = new Date();
+            DataBase.token_last_update = new Date();
             DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();

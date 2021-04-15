@@ -40,7 +40,10 @@ public class WhoAmIResponse implements APIListenner {
     public void onErrorResponse(VolleyError error) {
         Log.e("ERROR_WHOAMI_REQUEST: ", "\n\n\n" + error.networkResponse + "");
         //Retour sur le Fragment de connexion
-        DataBase.token_user = null;
+        //DataBase.token_user = null;
+        User moi = DataBase.getMoi();
+        moi.setToken("");
+        DataBase.setMoi(moi);
         Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
     }
 
@@ -62,7 +65,7 @@ public class WhoAmIResponse implements APIListenner {
             //user.setLevel() = json.getInt("level");
             user.setExperience(json.getInt("xp"));
             user.setToken(json.getString("jwt"));
-            //DataBase.token_last_update = new Date();
+            DataBase.token_last_update = new Date();
             DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();
