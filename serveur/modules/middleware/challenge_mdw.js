@@ -24,23 +24,25 @@ module.exports = {
     });
   },
   check_is_admin: (req, res, next) => {
-    this.check_is_challenge_admin_fc(req.params.id, req.user.id).then(
-      (isAdmin) => {
+    module.exports
+      .check_is_challenge_admin_fc(req.params.id, req.user.id)
+      .then((isAdmin) => {
         if (isAdmin) {
           next();
         } else {
           res.status(403).send('You are not admin of this challenge');
         }
-      }
-    );
+      });
   },
   check_is_author: (req, res, next) => {
-    this.check_is_author_fc(req.params.id, req.user.id).then((isAdmin) => {
-      if (isAdmin) {
-        next();
-      } else {
-        res.status(403).send('You are not admin of this challenge');
-      }
-    });
+    module.exports
+      .check_is_author_fc(req.params.id, req.user.id)
+      .then((isAdmin) => {
+        if (isAdmin) {
+          next();
+        } else {
+          res.status(403).send('You are not admin of this challenge');
+        }
+      });
   },
 };
