@@ -123,7 +123,7 @@ let DraggableMarkers = ({
                             y: coords.lat,
                           };
                           API.checkpoint
-                            .updateMarker({ marker: newM })
+                            .updateMarker(newM)
                             .catch((err) => {
                               console.log(err);
                             });

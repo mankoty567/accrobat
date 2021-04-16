@@ -14,6 +14,7 @@ import ContextMenu from './ContextMenu';
 import ModifyPopUp from './ModifyPopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
+import { createObstacleIcon } from './MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -64,6 +65,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   const [markers, setMarkers] = useState([]);
   const [lines, setLines] = useState([]);
+  const [obstacles, setObstacles] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [currentLine, setCurrentLine] = useState([]);
@@ -77,11 +79,13 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
   const [challenge, setChallenge] = useState({
+    id: '',
     title: '',
     description: '',
     echelle: 0,
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
+  const [selectedLine, setSelectedLine] = useState(null);
 
   const initializeMap = async (challenge_id) => {
     await API.challenge
@@ -91,6 +95,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       })
       .then((res) => {
         setChallenge({
+          id: challenge_id,
           title: res.title,
           description: res.description,
           echelle: res.echelle,
@@ -146,11 +151,11 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   let updateChallenge = async (challenge) => {
     API.challenge
       .updateChallenge({
-        challenge_id: challenge_id,
         challenge: challenge,
       })
       .then((res) => {
         setChallenge({
+          id: res.id,
           title: res.title,
           description: res.description,
           echelle: res.echelle,
@@ -196,7 +201,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       ),
     );
     setStartPoint(markers.slice(-1)[0]);
-    API.checkpoint.deleteMarker(marker).catch((err) => {
+    API.checkpoint.deleteMarker(marker.id).catch((err) => {
       console.log(err);
     });
     setValid(false);
@@ -204,7 +209,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   //Update un marker
   let updateMarker = (marker) => {
-    API.checkpoint.updateMarker({ marker }).catch((err) => {
+    API.checkpoint.updateMarker(marker).catch((err) => {
       console.log(err);
     });
     setValid(false);
@@ -219,14 +224,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   //Ajoute une ligne
   let addLine = (start, end) => {
     currentLine.shift();
-    var newLines = {
+    var newLine = {
       PointStartId: start.id,
       PointEndId: end.id,
       path: currentLine.map((p) => [p.lat, p.lng]),
       name: 'Segment ' + lines.length,
     };
     return API.segment
-      .createSegment({ segment: newLines })
+      .createSegment(newLine)
       .then((res) => {
         res.path = res.path.map((e) => [e[0], e[1]]);
         setLines((current) => [...current, res]);
@@ -235,6 +240,16 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  let addObstacle = (event) => {
+    // var newObstacle = {
+    //   title: 'Point ' + markers.length,
+    //   description: '',
+    //   type: markers.length > 0 ? 'point' : 'start',
+    //   x: event.latlng.lng,
+    //   y: event.latlng.lat,
+    // };
   };
 
   let addCurrentLine = (newPoint) => {
@@ -280,10 +295,13 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     if (event === 'deleteMarker') {
       removeMarker(currentMarker);
     }
+    if (event === 'addObstacle') {
+      addObstacle(contextMenu.event);
+    }
     setContextEvent(undefined);
   };
 
-  function handleCheck() {
+  let handleCheck = () => {
     updateChallenge(challenge);
     setErrorMarkers([]);
     API.challenge.checkValidity(challenge_id).then((data) => {
@@ -321,13 +339,9 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
         setCheckMessage(obj);
       }
     });
-  }
+  };
 
-  // useEffect(() => {
-  //   console.log(errorMarkers);
-  // }, [errorMarkers]);
-
-  function handlePublish() {
+  let handlePublish = () => {
     API.challenge
       .publishChallenge(challenge_id)
       .then((data) => {
@@ -336,7 +350,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   useEffect(() => initializeMap(challenge_id), []);
   useEffect(() => {
@@ -445,6 +459,15 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                     ];
                     return (
                       <Polyline
+                        eventHandlers={{
+                          contextmenu: (event) => {
+                            setSelectedLine(element);
+                            event.originalEvent.view.L.DomEvent.stopPropagation(
+                              event,
+                            );
+                            handleContext(event, 'line');
+                          },
+                        }}
                         positions={positions}
                         key={element.id}
                         color={'black'}
@@ -453,6 +476,17 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   } catch (err) {
                     console.error(err);
                   }
+                })}
+                {obstacles.map((item) => {
+                  return (
+                    <Marker
+                      draggable={true}
+                      marker_index={item.id}
+                      key={item.id}
+                      position={[item.y, item.x]}
+                      icon={createObstacleIcon()}
+                    ></Marker>
+                  );
                 })}
                 {currentMarker ? (
                   <>

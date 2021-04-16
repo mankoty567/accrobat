@@ -36,8 +36,8 @@ const challengeApi = {
   /**
    * Permet de récupérer un challenge avec un id précis
    * @param {Object} data
-   * @param {String} data.challenge_id L'id du challenge voulu
-   * @param {String} data.include Les inclusions possible (point, pointsegment ou pointsegmentobstacle)
+   * @param {Number} data.challenge_id L'id du challenge voulu
+   * @param {String} data.include Les inclusions possibles (point, pointsegment ou pointsegmentobstacle)
    * @returns Un challenge
    */
   getChallenge: (data) => {
@@ -57,16 +57,16 @@ const challengeApi = {
 
   /**
    * Permet de créer un challenge
-   * @param {Object} data
-   * @param {String} [data.img_avatar] Image d'avatar du challenge encodée en base64
-   * @param {Number} [data.frontId] Id en front du challenge
-   * @param {String} data.title Titre du challenge
-   * @param {String} data.description Description du challenge
-   * @param {Number} data.echelle Echelle de la carte
-   * @param {String} data.img_fond Image de fond de la carte encodée en base64
+   * @param {Object} challenge Challenge à créer
+   * @param {String} [challenge.img_avatar] Image d'avatar du challenge encodée en base64
+   * @param {String} challenge.title Titre du challenge
+   * @param {String} challenge.description Description du challenge
+   * @param {Number} challenge.echelle Echelle de la carte
+   * @param {String} challenge.img_fond Image de fond de la carte encodée en base64
    * @returns Le challenge avec son id
    */
-  createChallenge: (data) => {
+  createChallenge: (challenge) => {
+    console.log('createChallenge');
     return fetch(`${host}/api/challenge`, {
       method: 'POST',
       headers: {
@@ -74,7 +74,7 @@ const challengeApi = {
         //   'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(challenge),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -83,15 +83,17 @@ const challengeApi = {
   /**
    * Permet de mettre à jour les informations sur un challenge
    * @param {Object} data
-   * @param {String} [data.img_avatar] Image d'avatar du challenge encodée en base64
-   * @param {String} data.title Titre du challenge
-   * @param {String} data.description Description du challenge
-   * @param {Number} data.echelle Echelle de la carte
-   * @param {String} data.img_fond Image de fond de la carte encodée en base64
+   * @param {Object} data.challenge Challenge mis à jour
+   * @param {Number} data.challenge.id L'id du challenge voulu
+   * @param {String} [data.challenge.img_avatar] Image d'avatar du challenge encodée en base64
+   * @param {String} data.challenge.title Titre du challenge
+   * @param {String} data.challenge.description Description du challenge
+   * @param {Number} data.challenge.echelle Echelle de la carte
+   * @param {String} data.challenge.img_fond Image de fond de la carte encodée en base64
    * @returns Le challenge avec son id, qui sera modifié !
    */
   updateChallenge: (data) => {
-    return fetch(`${host}/api/challenge/${data.challenge_id}`, {
+    return fetch(`${host}/api/challenge/${data.challenge.id}`, {
       method: 'POST',
       headers: {
         Authorization:
@@ -106,12 +108,11 @@ const challengeApi = {
 
   /**
    * Permet de supprimer un challenge avec un id précis
-   * @param {Object} data
-   * @param {String} data.challenge_id L'id du challenge voulu
+   * @param {Number} challenge_id L'id du challenge voulu
    * @returns Un message au status 200 ou 400
    */
-  deleteChallenge: (data) => {
-    return fetch(`${host}/api/challenge/${data.challenge_id}`, {
+  deleteChallenge: (challenge_id) => {
+    return fetch(`${host}/api/challenge/${challenge_id}`, {
       method: 'DELETE',
       // headers: {
       //   Authorization:
@@ -124,12 +125,11 @@ const challengeApi = {
 
   /**
    * Permet de cloner un challenge avec un id précis
-   * @param {Object} data
-   * @param {String} data.challenge_id L'id du challenge voulu
+   * @param {Number} challenge_id L'id du challenge voulu
    * @returns Un challenge
    */
-  cloneChallenge: (data) => {
-    return fetch(`${host}/api/challenge/${data.challenge_id}/clone`, {
+  cloneChallenge: (challenge_id) => {
+    return fetch(`${host}/api/challenge/${challenge_id}/clone`, {
       method: 'POST',
       headers: {
         Authorization:
@@ -143,12 +143,11 @@ const challengeApi = {
 
   /**
    * Permet d'obtenir l'image de fond d'un challenge
-   * @param {Object} data
-   * @param {String} data.challenge_id L'id du challenge voulu
+   * @param {Number} challenge_id L'id du challenge voulu
    * @returns Un challenge
    */
-  getChallengeImage: (data) => {
-    return fetch(`${host}/api/challenge/${data.challenge_id}/image`, {
+  getChallengeImage: (challenge_id) => {
+    return fetch(`${host}/api/challenge/${challenge_id}/image`, {
       method: 'GET',
       headers: {
         Authorization:
@@ -162,11 +161,11 @@ const challengeApi = {
 
   /**
    * Permet de vérifier la validité d'un challenge
-   * @param {String} id l'id du challenge voulu
+   * @param {Number} challenge_id L'id du challenge voulu
    * @returns Un challenge
    */
-  checkValidity: (id) => {
-    return fetch(`${host}/api/challenge/${id}/validity`, {
+  checkValidity: (challenge_id) => {
+    return fetch(`${host}/api/challenge/${challenge_id}/validity`, {
       method: 'GET',
       headers: {
         Authorization:
@@ -179,11 +178,11 @@ const challengeApi = {
 
   /**
    * Permet de vérifier la validité d'un challenge
-   * @param {String} id l'id du challenge voulu
+   * @param {String} challenge_id L'id du challenge voulu
    * @returns Un challenge
    */
-  publishChallenge: (id) => {
-    return fetch(`${host}/api/challenge/${id}/publish`, {
+  publishChallenge: (challenge_id) => {
+    return fetch(`${host}/api/challenge/${challenge_id}/publish`, {
       method: 'POST',
       headers: {
         Authorization:

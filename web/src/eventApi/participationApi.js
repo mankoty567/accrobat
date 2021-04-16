@@ -18,13 +18,13 @@ const participationApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+
   /**
    * Permet à un utilisateur de participer à un challenge
-   * @param {Object} data
-   * @param {Number} data.ChallengeId Permet d'obtenir l'id d'un challenge
+   * @param {Number} challenge_id L'id du challenge à s'inscrire
    * @returns La participation au challenge avec un status 200, ou alors un status 400
    */
-  createParticipation: (data) => {
+  createParticipation: (challenge_id) => {
     return fetch(`${host}/api/participation`, {
       method: 'POST',
       headers: {
@@ -32,7 +32,7 @@ const participationApi = {
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.participation),
+      body: JSON.stringify(challenge_id),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -40,13 +40,12 @@ const participationApi = {
 
   /**
    * Permet d'obtenir la progression d'un utilisateur sur une participation
-   * @param {Object} data
-   * @param {String} data.participation_id
+   * @param {Number} participation_id id de la progression
    * @returns Un objet contenant toute la progression d'un utilisateur
    */
-  getProgression: (data) => {
+  getProgression: (participation_id) => {
     return fetch(
-      `${host}/api/participation/${data.participation_id}/whereiam`,
+      `${host}/api/participation/${participation_id}/whereiam`,
       {
         method: 'GET',
         headers: {

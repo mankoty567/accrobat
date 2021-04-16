@@ -30,12 +30,9 @@ let ChallengePanel = () => {
       img_avatar = undefined;
     }
 
-    let frontId = challenges.length + 1;
-
     API.challenge
       .createChallenge({
         img_avatar,
-        frontId,
         title,
         description,
         echelle: scale,
@@ -60,9 +57,7 @@ let ChallengePanel = () => {
   const Menu = ({ index }) => {
     const handleDelete = () => {
       API.challenge
-        .deleteChallenge({
-          challenge_id: index,
-        })
+        .deleteChallenge(index)
         .then(() =>
           setChallenges((current) =>
             current.filter((elem) => elem.id !== index),
