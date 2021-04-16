@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import site.nohan.protoprogression.Controller.ButtonController;
 import site.nohan.protoprogression.Controller.SeekBarController;
+import site.nohan.protoprogression.Controller.ToileController;
+import site.nohan.protoprogression.Controller.ZoomBarController;
 import site.nohan.protoprogression.R;
 
 public class MapFragment extends Fragment {
@@ -20,6 +22,7 @@ public class MapFragment extends Fragment {
     Toile toile;
 
     SeekBar seekBar;
+    SeekBar zoomBar;
     Button bPodometre;
     Button bVelo;
     Button bEtape;
@@ -27,6 +30,8 @@ public class MapFragment extends Fragment {
     Button bAddCurrent;
     SeekBarController seekBarController;
     ButtonController buttonController;
+    ZoomBarController zoomBarController;
+
 
     public MapFragment() {
         super();
@@ -36,9 +41,11 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
+        toile.setOnTouchListener(new ToileController(toile));
         seekBarController = new SeekBarController(this.getActivity());
         buttonController = new ButtonController(this.getActivity());
         seekBarController.setButtonController(buttonController);
+        zoomBarController = new ZoomBarController(toile);
         return toile;
     }
 
@@ -53,6 +60,8 @@ public class MapFragment extends Fragment {
         bVelo.setOnClickListener(buttonController);
         bEtape = getActivity().findViewById(R.id.bPodometre);
         bEtape.setOnClickListener(buttonController);
+        zoomBar = getActivity().findViewById(R.id.zoombar);
+        zoomBar.setOnSeekBarChangeListener(zoomBarController);
         /*
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,11 +23,16 @@ import site.nohan.protoprogression.R;
 
 public class Toile extends View {
 
+
     Paint stylo;
     Context context;
 
     Bitmap background;
     Bitmap flag;
+
+    PointF scale;
+    PointF delta;
+    PointF position;
 
     public Toile(Context context) {
         super(context);
@@ -36,15 +42,29 @@ public class Toile extends View {
         this.stylo.setAntiAlias(true);
         this.stylo.setStrokeWidth(20);
 
+        this.scale = new PointF(1,1);
+        this.delta = new PointF(0,0);
+        this.position = new PointF(0,0);
+
         //background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         //Map.mapActuelle.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
     }
 
+    public void setDelta(float x,float y) {
+        this.delta = new PointF(x/scale.x, y/scale.y);
+    }
+
+    public void saveDelta() {
+        this.position.set(this.delta.x+this.position.x, this.delta.y + this.position.y);
+        this.delta.set(0,0);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        canvas.scale(this.scale.x, this.scale.y);
+        canvas.translate(this.position.x + delta.x, this.position.y + delta.y);
         // On ne dessine pas la carte s'il n'y en a pas
         if(Map.mapActuelle == null)
             return;
@@ -210,10 +230,13 @@ public class Toile extends View {
                             this.stylo.setStrokeWidth(15);
                         }
                     }
-                    //}
-
                 }
             }
         }
+    }
+
+    public void setZoom(int zoom) {
+        this.scale.x = (1 + ((float) zoom/100*2));
+        this.scale.y = (1 + ((float) zoom/100*2));
     }
 }
