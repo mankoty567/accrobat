@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/list_item_icon"
         android:layout_width="50dp"
-        android:src="@drawable/logo_app_runslike"
+        android:src="@drawable/loading"
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:padding="5dp" />

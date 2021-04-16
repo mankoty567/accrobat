@@ -1,12 +1,19 @@
 package site.nohan.protoprogression.View.ui.home;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Map;
@@ -32,21 +39,42 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
 
         TextView list_title = (TextView) rowView.findViewById(R.id.txt_list_title);
         TextView list_description = (TextView) rowView.findViewById(R.id.txt_list_description);
-        /*TextView list_kilometres = (TextView) rowView.findViewById(R.id.txt_list_kilometres);
-        TextView list_date = (TextView) rowView.findViewById(R.id.txt_list_date);
-        TextView list_segments = (TextView) rowView.findViewById(R.id.txt_list_segments);
-        */
+        ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
+
         list_title.setText(Map.maps.get(position).libelle);
         list_description.setText(Map.maps.get(position).desc);
-        /*list_kilometres.setText(txt_list_kilometres[position]);
-        list_date.setText(txt_list_date[position]);
-        list_segments.setText(txt_list_segments[position]);
-         */
+        // show The Image in a ImageView
+        new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
         return rowView;
     };
 
     @Override
     public int getCount() {
         return Map.maps != null ? Map.maps.size() : 0;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }
