@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Map;
@@ -73,13 +75,13 @@ public class ChallengeResponse implements APIListenner {
                 Map map = new Map();
                 map.id = jMap.getInt("id");
                 map.libelle = jMap.getString("title");
-                map.desc = jMap.getString("description");
+                map.date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(jMap.getString("createdAt"));
                 Map.maps.add(map);
             }
 
             homeListChallengesAdapter.notifyDataSetChanged();
 
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 

@@ -1,5 +1,7 @@
 package site.nohan.protoprogression.Model;
 
+import android.util.Log;
+
 import java.util.Date;
 
 public class User {

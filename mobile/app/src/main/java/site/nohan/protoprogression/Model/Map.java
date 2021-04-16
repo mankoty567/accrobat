@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Map {
     public static Map mapActuelle;
@@ -14,7 +15,7 @@ public class Map {
     public int id;
 
     public String libelle;
-    public String desc;
+    public Date date;
 
     public int accompli;
 

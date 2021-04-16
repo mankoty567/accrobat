@@ -19,9 +19,6 @@ public class DataBase {
     /******************************************
      * Création des variables globales
      ******************************************/
-
-    public static Date token_last_update;
-
     public static boolean isTokenValid(){
         try {
             getMoi().getToken();
@@ -34,8 +31,8 @@ public class DataBase {
 
     public static boolean isTokenDateValid(Date date){
         boolean res = false;
-        if(token_last_update == null) return false;
-        final long diff = (date.getTime() - token_last_update.getTime()) / 1000L;
+        if(getMoi().getToken_last_update() == null) return false;
+        final long diff = (date.getTime() - getMoi().getToken_last_update().getTime()) / 1000L;
         if(diff <= 7200L) res = true;
         return res;
     }
@@ -141,6 +138,7 @@ public class DataBase {
         user.setToken_last_update(token_last_update);
 
         resultats.close();
+        Log.e("INITIALIZE",token_last_update+"");
         return user;
     }
 

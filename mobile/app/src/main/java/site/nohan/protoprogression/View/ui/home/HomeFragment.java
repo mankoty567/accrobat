@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
+        DataBase.init(this.getContext());
         signin = R.id.navigation_signin;
         challenge = R.id.navigation_challenge;
 

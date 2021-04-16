@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Map;
@@ -38,11 +39,11 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         View rowView=inflater.inflate(R.layout.home_list_challenges, null,true);
 
         TextView list_title = (TextView) rowView.findViewById(R.id.txt_list_title);
-        TextView list_description = (TextView) rowView.findViewById(R.id.txt_list_description);
+        TextView list_description = (TextView) rowView.findViewById(R.id.txt_list_date);
         ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
 
         list_title.setText(Map.maps.get(position).libelle);
-        list_description.setText(Map.maps.get(position).desc);
+        list_description.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
         // show The Image in a ImageView
         new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
         return rowView;

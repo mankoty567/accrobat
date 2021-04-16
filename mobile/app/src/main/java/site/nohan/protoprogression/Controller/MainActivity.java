@@ -10,6 +10,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 public class MainActivity extends AppCompatActivity {
