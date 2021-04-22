@@ -38,8 +38,8 @@ type:
 - [x] Connection de l'utilisateur
 - [x] Route whoami
 - [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
-- [ ] Ajouter propriété name au segment
+- [x] Ajouter propriété name au segment
 - [x] Déplacer toutes les routes dans des fichiers séparés
 - [x] Virer la vérification du body des controleurs
 - [x] Vérification du body grâce à la déclaration
-- [ ] Mettre une transaction dans le clone de challenge
+- [x] Mettre une transaction dans le clone de challenge
