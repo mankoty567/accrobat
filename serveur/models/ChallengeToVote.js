@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'ChallengeToVote',
     {
       description: DataTypes.TEXT,
+      status: DataTypes.STRING,
     },
     {}
   );

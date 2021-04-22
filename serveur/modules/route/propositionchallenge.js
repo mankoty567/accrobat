@@ -47,9 +47,6 @@ module.exports.routes = [
         value: ['waiting', 'accepted', 'refused'],
       },
     },
-    result: [
-      { code: 200, content: 'OK' },
-      { code: 404, content: 'PropositionChallenge not found' },
-    ],
+    result: [{ code: 404, content: 'PropositionChallenge not found' }],
   },
 ];
