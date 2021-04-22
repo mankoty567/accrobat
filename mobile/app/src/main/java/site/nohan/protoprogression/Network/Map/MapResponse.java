@@ -81,6 +81,7 @@ public class MapResponse implements APIListenner {
                 pointPassage.id = jpointPassage.getInt("id");
                 pointPassage.titre = jpointPassage.getString("title");
                 pointPassage.desc = jpointPassage.getString("description");
+
                 switch (jpointPassage.getString("type")){
                     case "start":
                         pointPassage.type = TypePointPassage.DEPART;

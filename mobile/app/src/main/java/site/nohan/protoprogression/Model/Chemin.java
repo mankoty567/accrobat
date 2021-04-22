@@ -71,4 +71,26 @@ public class Chemin {
                 "\n   points : " + points +
                 "\n}";
     }
+
+    public Point getMinPoint(){
+        Point min = new Point(this.points.get(0));
+        for(int i=1; i<this.points.size();i++){
+            min.set(
+                    Math.min(min.x,this.points.get(i).x),
+                    Math.min(min.y,this.points.get(i).y)
+            );
+        }
+       return min;
+    }
+
+    public Point getMaxPoint(){
+        Point max = new Point(this.points.get(0));
+        for(int i=1; i<this.points.size();i++){
+            max.set(
+                    Math.max(max.x,this.points.get(i).x),
+                    Math.max(max.y,this.points.get(i).y)
+            );
+        }
+        return max;
+    }
 }

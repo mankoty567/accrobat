@@ -57,8 +57,37 @@ public class Toile extends View {
     }
 
     public void saveDelta() {
+
+        PointF newPos = new PointF(this.delta.x+this.position.x,this.delta.y+this.position.y);
+        if(newPos.x > 0 || newPos.y > 0)
+            newPos = new PointF(0f,0f);
+
+        if(newPos.x < getWidth()-(getWidth()*(scale.x)) || newPos.y < getHeight()-(getHeight()*(scale.y)))
+            newPos = new PointF(this.position.x,this.position.y);
+        /*
+        PointF checkedMinPos = new PointF(
+                Math.min(0,this.delta.x+this.position.x),
+                Math.min(0,this.delta.y+this.position.y)
+        );
+
+        PointF checkedMinPosMaxPos = new PointF(
+                Math.max(getWidth()-(getWidth()*(scale.x)), checkedMinPos.x),
+                Math.max(getHeight()-(getHeight()*(scale.y)), checkedMinPos.y)
+        );
+        Log.e(" s", ""+(this.delta.y+this.position.y));
+        Log.e("sortie", getWidth()+"" );
+        this.position.set(checkedMinPosMaxPos.x, checkedMinPosMaxPos.y);
+        this.delta.set(0,0);
+         */
+        Log.e(" s", ""+(this.delta.y+this.position.y));
+        Log.e("sortie", getWidth()+"" );
+        this.position.set(newPos.x,newPos.y);
+        this.delta.set(0,0);
+        /*
         this.position.set(this.delta.x+this.position.x, this.delta.y + this.position.y);
         this.delta.set(0,0);
+
+         */
     }
 
     public void setPosition(PointF position){
@@ -95,12 +124,11 @@ public class Toile extends View {
 
         // Titre de la map
         this.stylo.setFakeBoldText(false);
-        this.stylo.setTextSize(70);
+        this.stylo.setTextSize((1/this.scale.x)*100);
         this.stylo.setColor(Color.WHITE);
         canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.getDistanceTotale()/2f)+" Km au total", 0-(delta.x+position.x), 100-(delta.y+position.y) , this.stylo);
         if(Map.mapActuelle.cheminActuel != null)
             canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli)/2f+" Km restants", 0-(delta.x+position.x), 200-(delta.y+position.y) , this.stylo);
-        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : Map.mapActuelle.libelle, 100-(delta.x+position.x), canvas.getHeight()-(delta.y+position.y) , this.stylo);
 
 
         if(Map.mapActuelle.pointPassages != null && Map.mapActuelle.pointPassages.size() > 0){
@@ -114,7 +142,7 @@ public class Toile extends View {
                             this.stylo
                     );
                     this.stylo.setFakeBoldText(true);
-                    this.stylo.setTextSize(60);
+                    this.stylo.setTextSize((1/this.scale.x)*100);
                     this.stylo.setARGB(200,10,10,10);
                     canvas.drawBitmap(
                             this.flag,
@@ -123,7 +151,7 @@ public class Toile extends View {
                             this.stylo
                     );
 
-                    this.stylo.setTextSize(35);
+                    this.stylo.setTextSize((1/this.scale.x)*100);
                     this.stylo.setColor(Color.WHITE);
                     canvas.drawText(
                             pointPassage.titre == null ?
@@ -245,5 +273,10 @@ public class Toile extends View {
     public void setZoom(int zoom) {
         this.scale.x = (1 + ((float) zoom/100*2));
         this.scale.y = (1 + ((float) zoom/100*2));
+    }
+
+    public void setZoom(float zoom){
+        this.scale.x = zoom;
+        this.scale.y = zoom;
     }
 }
