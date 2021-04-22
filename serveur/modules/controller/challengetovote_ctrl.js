@@ -23,4 +23,32 @@ module.exports = {
       }
     );
   },
+  vote: (req, res) => {
+    bdd.UserChallengeToVote.findOne({
+      where: { UserId: req.user.id, ChallengeToVoteId: req.params.id },
+    }).then((tovote) => {
+      if (tovote === null) {
+        bdd.ChallengeToVote.findOne({ where: { id: req.params.id } }).then(
+          (challenge) => {
+            if (challenge === null) {
+              res.status(404).send('ChallengeToVote not found');
+            } else {
+              bdd.UserChallengeToVote.create({
+                vote: req.body.vote,
+                ChallengeToVoteId: req.params.id,
+                UserId: req.user.id,
+              }).then(() => {
+                res.send('OK');
+              });
+            }
+          }
+        );
+      } else {
+        tovote.vote = req.body.vote;
+        tovote.save().then(() => {
+          res.send('OK');
+        });
+      }
+    });
+  },
 };

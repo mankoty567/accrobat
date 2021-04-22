@@ -32,6 +32,21 @@ module.exports.routes = [
         desc: 'Récupère toutes les propositions de challenge',
       },
     ],
+    result: [
+      {
+        code: 200,
+        content: [
+          {
+            id: 1,
+            description: '',
+            status: 'waiting/accepted/refused',
+            createdAt: '',
+            updatedAt: '',
+            UserId: 0,
+          },
+        ],
+      },
+    ],
   },
   {
     method: 'POST',
@@ -47,6 +62,19 @@ module.exports.routes = [
         value: ['waiting', 'accepted', 'refused'],
       },
     },
-    result: [{ code: 404, content: 'PropositionChallenge not found' }],
+    result: [
+      {
+        code: 200,
+        content: {
+          id: 0,
+          description: '',
+          status: 'waiting/accepted/refused',
+          createdAt: '',
+          updatedAt: '',
+          UserId: 0,
+        },
+      },
+      { code: 404, content: 'PropositionChallenge not found' },
+    ],
   },
 ];
