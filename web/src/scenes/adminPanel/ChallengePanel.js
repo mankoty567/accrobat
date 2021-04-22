@@ -15,9 +15,12 @@ let ChallengePanel = () => {
   const [addmode, setAddmode] = useState(false);
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getChallenges = () => {
+    setIsLoading(true);
     API.challenge.getAdminChallenges().then((res) => {
+      setIsLoading(true);
       setChallenges(res);
       // console.log(res);
     });
@@ -36,6 +39,8 @@ let ChallengePanel = () => {
     let img_avatar;
     if (!avatar) {
       img_avatar = undefined;
+    } else {
+      img_avatar = avatar;
     }
 
     let frontId = challenges.length + 1;
