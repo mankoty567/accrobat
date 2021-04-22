@@ -57,14 +57,16 @@ public class Toile extends View {
     }
 
     public void saveDelta() {
-
+        /*
         PointF newPos = new PointF(this.delta.x+this.position.x,this.delta.y+this.position.y);
         if(newPos.x > 0 || newPos.y > 0)
             newPos = new PointF(0f,0f);
 
         if(newPos.x < getWidth()-(getWidth()*(scale.x)) || newPos.y < getHeight()-(getHeight()*(scale.y)))
             newPos = new PointF(this.position.x,this.position.y);
-        /*
+
+         */
+
         PointF checkedMinPos = new PointF(
                 Math.min(0,this.delta.x+this.position.x),
                 Math.min(0,this.delta.y+this.position.y)
@@ -78,7 +80,7 @@ public class Toile extends View {
         Log.e("sortie", getWidth()+"" );
         this.position.set(checkedMinPosMaxPos.x, checkedMinPosMaxPos.y);
         this.delta.set(0,0);
-         */
+         /*
         Log.e(" s", ""+(this.delta.y+this.position.y));
         Log.e("sortie", getWidth()+"" );
         this.position.set(newPos.x,newPos.y);
@@ -97,8 +99,8 @@ public class Toile extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        this.stylo.setColor(Color.BLACK);
-        canvas.drawRect(-2f,-2f,2f+this.getWidth(), 2f+ this.getHeight(),stylo);
+        this.stylo.setARGB(255,153, 204, 255);
+        canvas.drawRect(-1f,-1f,1f+this.getWidth(), 1f+ this.getHeight(),stylo);
         canvas.scale(this.scale.x, this.scale.y);
         canvas.translate(this.position.x + delta.x, this.position.y + delta.y);
         // On ne dessine pas la carte s'il n'y en a pas
@@ -113,8 +115,6 @@ public class Toile extends View {
         //Log.e("vue",""+((float) Chemin.points[1].x)/100*canvas.getWidth());
         invalidate();
     }
-
-
 
     private void dessinerMapInfos(Canvas canvas){
 
@@ -134,6 +134,8 @@ public class Toile extends View {
         if(Map.mapActuelle.pointPassages != null && Map.mapActuelle.pointPassages.size() > 0){
             for(PointPassage pointPassage : Map.mapActuelle.pointPassages) {
                 if(pointPassage.chemins.size() > 0 && pointPassage.chemins.get(0).points.size() > 0) {
+
+
                     this.stylo.setARGB(200, 200, 200, 255);
                     canvas.drawCircle(
                             (((float) pointPassage.chemins.get(0).points.get(0).x) / 100 * canvas.getWidth()),
@@ -160,6 +162,17 @@ public class Toile extends View {
                             ((float) pointPassage.chemins.get(0).points.get(0).y) / 100 * canvas.getHeight(),
                             this.stylo
                     );
+                    this.stylo.setTextSize((1/this.scale.x)*50);
+                    // dessin du nom du chemin
+                    for(Chemin c : pointPassage.chemins){
+                        canvas.drawText(
+                                c.nom == null ?
+                                        "Indéfinis" : c.nom,
+                                ((float) c.getMiddlePoint().x) / 100 * canvas.getWidth(),
+                                ((float) c.getMiddlePoint().y) / 100 * canvas.getHeight(),
+                                this.stylo
+                        );
+                    }
                 }
             }
         }

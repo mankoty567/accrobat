@@ -93,4 +93,8 @@ public class Chemin {
         }
         return max;
     }
+
+    public Point getMiddlePoint(){
+        return this.points.get((int) Math.round(this.points.size()/2));
+    }
 }
