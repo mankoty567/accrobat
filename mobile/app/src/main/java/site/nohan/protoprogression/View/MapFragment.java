@@ -19,11 +19,11 @@ import site.nohan.protoprogression.R;
 
 public class MapFragment extends Fragment {
 
-    Toile toile;
+    public Toile toile;
 
     SeekBar seekBar;
     SeekBar zoomBar;
-    Button bPodometre;
+    Button bRecentrer;
     Button bVelo;
     Button bEtape;
     Button bAddPrev;
@@ -43,7 +43,7 @@ public class MapFragment extends Fragment {
         toile = new Toile(this.getContext());
         toile.setOnTouchListener(new ToileController(toile));
         seekBarController = new SeekBarController(this.getActivity());
-        buttonController = new ButtonController(this.getActivity());
+        buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);
         return toile;
@@ -54,8 +54,8 @@ public class MapFragment extends Fragment {
         super.onResume();
         seekBar = getActivity().findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarController);
-        bPodometre = getActivity().findViewById(R.id.bEffacer);
-        bPodometre.setOnClickListener(buttonController);
+        bRecentrer = getActivity().findViewById(R.id.bRecentrer);
+        bRecentrer.setOnClickListener(buttonController);
         bVelo = getActivity().findViewById(R.id.bModePodometre);
         bVelo.setOnClickListener(buttonController);
         bEtape = getActivity().findViewById(R.id.bPodometre);

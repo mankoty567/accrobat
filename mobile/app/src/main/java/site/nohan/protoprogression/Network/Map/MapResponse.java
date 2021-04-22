@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import site.nohan.protoprogression.Controller.DirectionController;
 import site.nohan.protoprogression.Model.Chemin;
@@ -59,7 +60,7 @@ public class MapResponse implements APIListenner {
             // MAP
            this.map.libelle = json.getString("title");
 
-           this.map.date = new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("createdAt"));
+           //this.map.date = new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("createdAt"));
 
             JSONArray pointsPassage = json.getJSONArray("PointPassages");
 
@@ -167,10 +168,12 @@ public class MapResponse implements APIListenner {
             //Map.mapActuelle.cheminActuel =this.map.dernierPointPassage.chemins.get(0);
 
 
-        }catch (JSONException | ParseException jsonException){
+        }catch (JSONException jsonException){
             jsonException.printStackTrace();
            this.map.pointPassages = new ArrayList<>();
         }
+
+        Log.e("Map", "Chargement terminé");
     }
 
 }

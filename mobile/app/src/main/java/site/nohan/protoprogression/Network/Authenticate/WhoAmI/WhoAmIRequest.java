@@ -23,8 +23,9 @@ public class WhoAmIRequest extends APIRequestGET {
     public WhoAmIRequest(Activity activity) {
         super(activity, "user/whoami", new WhoAmIResponse(activity));
         Log.d("net", this.getUrl());
-        APIRequestPOST.queue.add(this);
-        APIRequestPOST.queue.start();
+        Log.e("err", (APIRequestPOST.queue == null)+"");
+        APIRequestGET.queue.add(this);
+        APIRequestGET.queue.start();
     }
 
     /******************************************

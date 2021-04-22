@@ -7,66 +7,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="55dp">
-    <!--
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="597dp"
-            android:scrollbars="vertical">
-
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-
-                              <ImageView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  app:srcCompat="@drawable/map" >            </ImageView>
-
-
-                              <fragment
-                                  android:id="@+id/fragment"
-                                  android:name="site.nohan.protoprogression.View.MapFragment"
-                                  android:layout_width="1000dp"
-                                  android:layout_height="1000dp"
-                                  android:background="@drawable/map" />
-
-
-          </HorizontalScrollView>
-
-      </ScrollView>
-  -->
- <!--
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="607dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <fragment
-                android:id="@+id/fragment"
-                android:name="site.nohan.protoprogression.View.MapFragment"
-                android:layout_width="503dp"
-                android:layout_height="947dp"
-                android:background="@drawable/map" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
--->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bEffacer"
+            android:id="@+id/bRecentrer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Effacer" />
+            android:text="Recentrer" />
 
         <Button
             android:id="@+id/bPodometre"
@@ -123,26 +75,5 @@
         tools:visibility="visible" >
 
     </androidx.fragment.app.FragmentContainerView>
-
-    <!--
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                        <fragment
-                            android:id="@+id/fragment"
-                            android:name="site.nohan.protoprogression.View.MapFragment"
-                            android:layout_width="700dp"
-                            android:layout_height="700dp"
-                            android:background="@drawable/map" />
-
-            </LinearLayout>
-        </ScrollView>
-    -->
 
 </LinearLayout>

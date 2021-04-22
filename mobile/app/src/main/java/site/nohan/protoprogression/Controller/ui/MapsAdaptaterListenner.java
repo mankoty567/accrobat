@@ -31,6 +31,7 @@ public class MapsAdaptaterListenner implements AdapterView.OnItemClickListener{
         //Vérification que l'utilisateur est connecté
         if(!DataBase.isTokenValid()) homeFragment.ShowFragment(R.id.navigation_signin);
         else {
+            Log.e("charg", "Chargement des maps");
             Map.mapActuelle = new Map();
             new MapRequest(this.homeFragment.getActivity(), Map.maps.get(position).id, Map.mapActuelle);
             new ImageMapRequest(this.homeFragment.getActivity(), Map.maps.get(position).id, Map.mapActuelle);

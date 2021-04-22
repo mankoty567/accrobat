@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.View;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -60,9 +61,15 @@ public class Toile extends View {
         this.delta.set(0,0);
     }
 
+    public void setPosition(PointF position){
+        this.position = position;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        this.stylo.setColor(Color.BLACK);
+        canvas.drawRect(-2f,-2f,2f+this.getWidth(), 2f+ this.getHeight(),stylo);
         canvas.scale(this.scale.x, this.scale.y);
         canvas.translate(this.position.x + delta.x, this.position.y + delta.y);
         // On ne dessine pas la carte s'il n'y en a pas
@@ -90,10 +97,10 @@ public class Toile extends View {
         this.stylo.setFakeBoldText(false);
         this.stylo.setTextSize(70);
         this.stylo.setColor(Color.WHITE);
-        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.getDistanceTotale()/2f)+" Km au total", 0, 100 , this.stylo);
+        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.getDistanceTotale()/2f)+" Km au total", 0-(delta.x+position.x), 100-(delta.y+position.y) , this.stylo);
         if(Map.mapActuelle.cheminActuel != null)
-            canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli)/2f+" Km restants", 0, 200 , this.stylo);
-        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : Map.mapActuelle.libelle, 100, canvas.getHeight()-100 , this.stylo);
+            canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli)/2f+" Km restants", 0-(delta.x+position.x), 200-(delta.y+position.y) , this.stylo);
+        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : Map.mapActuelle.libelle, 100-(delta.x+position.x), canvas.getHeight()-(delta.y+position.y) , this.stylo);
 
 
         if(Map.mapActuelle.pointPassages != null && Map.mapActuelle.pointPassages.size() > 0){
