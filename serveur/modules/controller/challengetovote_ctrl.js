@@ -51,4 +51,47 @@ module.exports = {
       }
     });
   },
+  get_challengetovote: (req, res) => {
+    bdd.ChallengeToVote.findAll({
+      where: { status: 'open' },
+      include: { model: bdd.User, where: { id: req.user.id }, required: false },
+    }).then((challenges) => {
+      let challengeReturn = challenges.map((c) => {
+        c = JSON.parse(JSON.stringify(c));
+
+        if (c.Users.length === 0) {
+          c.vote = null;
+        } else {
+          c.vote = c.Users[0].UserChallengeToVote.vote;
+        }
+
+        delete c.Users;
+
+        return c;
+      });
+
+      res.json(challengeReturn);
+    });
+  },
+  get_challengetovote_admin: (req, res) => {
+    bdd.ChallengeToVote.findAll({
+      include: { model: bdd.User, required: false },
+    }).then((challenges) => {
+      let challengeReturn = challenges.map((c) => {
+        c = JSON.parse(JSON.stringify(c));
+
+        c.voteSum = c.Users.reduce((accumulator, current) => {
+          return accumulator + current.UserChallengeToVote.vote;
+        }, 0);
+
+        c.userVote = c.Users.length;
+
+        delete c.Users;
+
+        return c;
+      });
+
+      res.json(challengeReturn);
+    });
+  },
 };

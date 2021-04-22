@@ -47,7 +47,8 @@ type:
 - [x] Ajout de la table ChallengeToVote
 - [x] Proposition de challenges
 - [x] Gestion des propositions de challenge
-- [ ] Ajout d'un challenge à voter
-- [ ] Ajout de vote pour un challenge
-- [ ] Suppression de vote pour un challenge
-- [ ] Validation d'un challenge à voter
+- [x] Ajout d'un challenge à voter
+- [x] Ajout de vote pour un challenge
+- [ ] Ajout de la gestion des images en webp avec resize
+- [x] Récupération des challenges à voter en mode admin
+- [x] Récupération des challenges à voter en mode user
