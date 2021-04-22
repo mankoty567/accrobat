@@ -45,8 +45,8 @@ type:
 - [x] Mettre une transaction dans le clone de challenge
 - [x] Ajout de la table ProposalChallenge
 - [x] Ajout de la table ChallengeToVote
-- [ ] Proposition de challenges
-- [ ] Gestion des propositions de challenge
+- [x] Proposition de challenges
+- [x] Gestion des propositions de challenge
 - [ ] Ajout d'un challenge à voter
 - [ ] Ajout de vote pour un challenge
 - [ ] Suppression de vote pour un challenge
