@@ -43,8 +43,8 @@ type:
 - [x] Virer la vérification du body des controleurs
 - [x] Vérification du body grâce à la déclaration
 - [x] Mettre une transaction dans le clone de challenge
-- [ ] Ajout de la table ProposalChallenge
-- [ ] Ajout de la table ChallengeToVote
+- [x] Ajout de la table ProposalChallenge
+- [x] Ajout de la table ChallengeToVote
 - [ ] Proposition de challenges
 - [ ] Gestion des propositions de challenge
 - [ ] Ajout d'un challenge à voter
