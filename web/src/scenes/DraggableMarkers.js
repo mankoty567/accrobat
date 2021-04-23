@@ -34,6 +34,7 @@ let DraggableMarkers = ({
   errorMarkers,
   inBounds,
   fitInBounds,
+  removeMarker,
 }) => {
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
@@ -79,6 +80,12 @@ let DraggableMarkers = ({
         } else {
           handleContext(event, 'map');
         }
+      }
+    },
+    keydown: (event) => {
+      if (event.originalEvent.keyCode == '8' || '46') {
+        removeMarker(currentMarker);
+        setCurrentMarker(null);
       }
     },
   });

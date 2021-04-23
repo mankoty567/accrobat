@@ -5,6 +5,7 @@ import {
   ImageOverlay,
   Polyline,
   useMapEvent,
+  Marker,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
@@ -86,6 +87,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
+  const [selectedObstacle, setSelectedObstacle] = useState(null);
 
   const initializeMap = async (challenge_id) => {
     await API.challenge
@@ -168,13 +170,15 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
 
   //Ajoute un marker
   let addMarker = async (event) => {
+    var coords = event.latlng;
+    if (!inBounds(coords)) coords = fitInBounds(coords);
     try {
       var newMarker = {
         title: 'Point ' + markers.length,
         description: '',
         type: markers.length > 0 ? 'point' : 'start',
-        x: event.latlng.lng,
-        y: event.latlng.lat,
+        x: coords.lng,
+        y: coords.lat,
       };
       let data = await API.checkpoint.createMarker({
         marker: newMarker,
@@ -221,13 +225,20 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
     );
   };
 
+  let getMarkerCoordsFromId = (id) => {
+    var marker = markers.filter((current) => {
+      if (current.id == id) return current;
+    });
+    return [marker[0].x, marker[0].y];
+  };
+
   //Ajoute une ligne
   let addLine = (start, end) => {
     currentLine.shift();
     var newLine = {
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine.map((p) => [p.lat, p.lng]),
+      path: currentLine.map((p) => [p.lng, p.lat]),
       name: 'Segment ' + lines.length,
     };
     return API.segment
@@ -243,13 +254,29 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   let addObstacle = (event) => {
-    // var newObstacle = {
-    //   title: 'Point ' + markers.length,
-    //   description: '',
-    //   type: markers.length > 0 ? 'point' : 'start',
-    //   x: event.latlng.lng,
-    //   y: event.latlng.lat,
-    // };
+    var pointClicked = [event.latlng.lng, event.latlng.lat];
+    var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
+    var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
+    var d = Math.sqrt(
+      Math.pow(pointClicked[0] * 100 - pointStart[0] * 100, 2) +
+        Math.pow(pointClicked[1] * 100 - pointStart[1] * 100, 2),
+    );
+    var D = Math.sqrt(
+      Math.pow(pointEnd[0] * 100 - pointStart[0] * 100, 2) +
+        Math.pow(pointEnd[1] * 100 - pointStart[1] * 100, 2),
+    );
+    var distance = Math.round((d / D) * 100);
+    var newObstacle = {
+      id: obstacles.length + 1,
+      title: 'Obstacle ' + obstacles.length,
+      description: '',
+      type: 'question',
+      x: pointClicked[0],
+      y: pointClicked[1],
+      distance: distance / 100,
+      SegmentId: selectedLine.id,
+    };
+    setObstacles((current) => [...current, newObstacle]);
   };
 
   let addCurrentLine = (newPoint) => {
@@ -265,13 +292,11 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   };
 
   let handleContext = (event, type) => {
-    // console.log(type);
     event.originalEvent.preventDefault();
     setContextEvent({ event: event, type: type });
   };
 
   let handleContextEvent = async (event) => {
-    // console.log(event);
     if (event === 'addMarker') {
       addMarker(contextMenu.event);
       if (addingLine) {
@@ -403,12 +428,14 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
               />
               <MapContainer
                 className={classes.mapContainer}
-                // style={{ height: '85vh', width: '84vw' }}
                 crs={CRS.Simple}
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
                 zoom={9}
+                maxZoom={11}
+                minZoom={8}
+                onKeyPress={handleKeyPress}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -441,6 +468,7 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                   errorMarkers={errorMarkers}
                   inBounds={inBounds}
                   fitInBounds={fitInBounds}
+                  removeMarker={removeMarker}
                 />
                 {lines.map((element) => {
                   try {
@@ -480,11 +508,23 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
                 {obstacles.map((item) => {
                   return (
                     <Marker
-                      draggable={true}
-                      marker_index={item.id}
+                      eventHandlers={{
+                        click: () => {
+                          var newCurrent = item;
+                          if (selectedObstacle) {
+                            if (selectedObstacle.id === item.id)
+                              newCurrent = null;
+                          }
+                          setSelectedObstacle(newCurrent);
+                        },
+                      }}
+                      draggable={false}
                       key={item.id}
                       position={[item.y, item.x]}
-                      icon={createObstacleIcon()}
+                      icon={createObstacleIcon(
+                        item.type == 'question',
+                        item === selectedObstacle,
+                      )}
                     ></Marker>
                   );
                 })}
