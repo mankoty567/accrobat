@@ -16,10 +16,10 @@ export default function NeedLogin({ children, admin }) {
     if (doneConnection) {
       if (userState === undefined) {
         history.push('/login');
-      }
-
-      if (admin && userState.permission < 100) {
-        history.push('/home');
+      } else {
+        if (admin && userState.permission < 100) {
+          history.push('/home');
+        }
       }
     }
   }, [userState, doneConnection]);
