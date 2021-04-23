@@ -8,6 +8,7 @@ import ChallengeEditor from './ChallengeEditor';
 import LoginForm from './loginForm/LoginForm';
 import Logout from './loginForm/Logout';
 import NeedLogin from './loginForm/NeedLogin';
+import GoogleReturn from './loginForm/GoogleReturn';
 
 import {
   BrowserRouter as Router,
@@ -27,18 +28,21 @@ let MainPage = () => {
   );
 
   useEffect(() => {
-    API.user
-      .whoami()
-      .then((data) => {
-        localStorage.setItem('jwt', data.jwt);
-        setDoneConnection(true);
-        setUserState(data);
+    launchConnection();
+    function launchConnection() {
+      API.user
+        .whoami()
+        .then((data) => {
+          localStorage.setItem('jwt', data.jwt);
+          setDoneConnection(true);
+          setUserState(data);
 
-        setTimeout(launchConnection, JWT_VALIDITY);
-      })
-      .catch((err) => {
-        setDoneConnection(true);
-      });
+          setTimeout(launchConnection, API.user.JWT_VALIDITY);
+        })
+        .catch((err) => {
+          setDoneConnection(true);
+        });
+    }
   }, []);
 
   const [value, setValue] = React.useState(0);
@@ -85,6 +89,9 @@ let MainPage = () => {
           </Route>
           <Route path="/logout">
             <Logout />
+          </Route>
+          <Route path="/google_return">
+            <GoogleReturn />
           </Route>
         </Switch>
       </Router>

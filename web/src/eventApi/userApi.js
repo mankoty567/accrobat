@@ -8,6 +8,8 @@ import { useHistory } from 'react-router-dom';
 import { atom } from 'recoil';
 import { useEffect } from 'react';
 
+const JWT_VALIDITY = 2 * 60 * 60 * 1000;
+
 const userAtom = atom({
   key: 'userState',
   default: undefined,
@@ -30,6 +32,16 @@ const userApi = {
         .then(checkStatus)
         .then((res) => res.json());
     }
+  },
+  getDataFromJWT: (jwt) => {
+    return fetch(`${host}/api/user/whoami`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
   },
   login: ({ username, password }) => {
     return fetch(`${host}/api/user/login`, {
@@ -97,27 +109,9 @@ localStorage.setItem("jwt", undefined);
 setUserState(undefined)
 */
 
-function CheckLogged({ children }) {
-  const [userState] = useRecoilState(userAtom);
-  const [doneConnectionState] = useRecoilState(doneConnectionAtom);
-  const history = useHistory();
-
-  useEffect(() => {
-    if (doneConnectionState && userState === undefined) {
-      history.push('/login');
-    }
-  }, [userState, duringConnectionState]);
-
-  return !doneConnectionState || userState === undefined ? (
-    <></>
-  ) : (
-    <>{children}</>
-  );
-}
-
 export default {
   ...userApi,
-  CheckLogged,
   doneConnectionAtom,
   userAtom,
+  JWT_VALIDITY,
 };

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
 import { TextField, Typography, Button } from '@material-ui/core';
-import { API } from '../../eventApi/api';
+import { API, host } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 
 import { useHistory } from 'react-router-dom';
-
-const JWT_VALIDITY = 2 * 60 * 60;
 
 export default function LoginForm() {
   const history = useHistory();
@@ -81,7 +79,7 @@ export default function LoginForm() {
 
         setLoginDuring(false);
 
-        setTimeout(refreshJWT, JWT_VALIDITY);
+        setTimeout(refreshJWT, API.user.JWT_VALIDITY);
         history.push('/home');
       })
       .catch((err) => {
@@ -97,7 +95,7 @@ export default function LoginForm() {
         localStorage.setItem('jwt', data.jwt);
         setUserState(data);
 
-        setTimeout(refreshJWT, JWT_VALIDITY);
+        setTimeout(refreshJWT, API.user.JWT_VALIDITY);
       })
       .catch((err) => {
         setDoneConnection(true);
@@ -105,6 +103,10 @@ export default function LoginForm() {
 
         localStorage.setItem('jwt', undefined);
       });
+  }
+
+  function handleGoogle() {
+    window.location = host + '/api/google/connect';
   }
 
   return (
@@ -183,6 +185,15 @@ export default function LoginForm() {
           {registerErrorMessage}
         </p>
       ) : null}
+      <br />
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleGoogle}
+      >
+        Se connecter avec Google
+      </Button>
     </>
   );
 }
