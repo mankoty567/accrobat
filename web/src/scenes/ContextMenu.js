@@ -48,6 +48,11 @@ export default function ContextMenu({ data, onEvent }) {
               Lier à un nouveau point
             </MenuItem>
           ) : null}
+          {data.type == 'line' ? (
+            <MenuItem onClick={() => onEvent('addObstacle')}>
+              Ajouter un obstacle
+            </MenuItem>
+          ) : null}
         </MenuList>
       </Paper>
     );

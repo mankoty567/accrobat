@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
 import FormChallenge from './FormChallenge';
 import { Typography, Divider, Button } from '@material-ui/core';
-import API from '../../eventApi/eventApi';
+import { API } from '../../eventApi/api';
 import AddIcon from '@material-ui/icons/Add';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
@@ -30,16 +30,14 @@ let ChallengePanel = () => {
       img_avatar = undefined;
     }
 
-    let frontId = challenges.length + 1;
-
-    API.createChallenge({
-      img_avatar,
-      frontId,
-      title,
-      description,
-      echelle: scale,
-      img_fond,
-    })
+    API.challenge
+      .createChallenge({
+        img_avatar,
+        title,
+        description,
+        echelle: scale,
+        img_fond,
+      })
       .then((res) => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
@@ -49,7 +47,7 @@ let ChallengePanel = () => {
 
   useEffect(
     () =>
-      API.getAdminChallenges().then((res) => {
+      API.challenge.getAdminChallenges().then((res) => {
         setChallenges(res);
         // console.log(res);
       }),
@@ -58,13 +56,13 @@ let ChallengePanel = () => {
 
   const Menu = ({ index }) => {
     const handleDelete = () => {
-      API.deleteChallenge({
-        challenge_id: index,
-      }).then(() =>
-        setChallenges((current) =>
-          current.filter((elem) => elem.id !== index),
-        ),
-      );
+      API.challenge
+        .deleteChallenge(index)
+        .then(() =>
+          setChallenges((current) =>
+            current.filter((elem) => elem.id !== index),
+          ),
+        );
     };
     const handleClone = () => {};
     const handleEdit = () => {

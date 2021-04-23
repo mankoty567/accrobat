@@ -1,4 +1,4 @@
-import { host } from './eventApi';
+import { host } from './api';
 
 import { useRecoilState } from 'recoil';
 
@@ -16,7 +16,7 @@ export const doneConnectionAtom = atom({
   default: false,
 });
 
-export const userApi = {
+const userApi = {
   whoami: () => {
     if (localStorage.getItem('jwt') !== undefined) {
       fetch(`${host}/api/user/whoami`, {
@@ -112,3 +112,5 @@ export function CheckLogged({ children }) {
     <>{children}</>
   );
 }
+
+export default userApi;

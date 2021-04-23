@@ -4,7 +4,7 @@ import {
   createEndIcon,
   createStartIcon,
 } from './MarkerIcons';
-import API from '../eventApi/eventApi';
+import { API } from '../eventApi/api';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -122,11 +122,11 @@ let DraggableMarkers = ({
                             x: coords.lng,
                             y: coords.lat,
                           };
-                          API.updateMarker({ marker: newM }).catch(
-                            (err) => {
+                          API.checkpoint
+                            .updateMarker(newM)
+                            .catch((err) => {
                               console.log(err);
-                            },
-                          );
+                            });
                           setValid(false);
                           return newM;
                         } else {
