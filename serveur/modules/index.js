@@ -8,6 +8,9 @@ module.exports = {
   imagesubmition_ctrl: require('./controller/imagesubmition_ctrl'),
   user_ctrl: require('./controller/user_ctrl'),
   google_ctrl: require('./controller/google_ctrl'),
+  propositionchallenge_ctrl: require('./controller/propositionchallenge_ctrl'),
+  challengetovote_ctrl: require('./controller/challengetovote_ctrl'),
   user_mdw: require('./middleware/user_mdw'),
+  challenge_mdw: require('./middleware/challenge_mdw'),
   utils: require('./utils'),
 };

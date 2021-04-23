@@ -10,14 +10,14 @@ module.exports = {
       fs.existsSync(
         path.join(
           __dirname,
-          '../../data/imageSumbition/' + req.params.id + '.jpg'
+          '../../data/imageSumbition/' + req.params.id + '.webp'
         )
       )
     ) {
       res.sendFile(
         path.join(
           __dirname,
-          '../../data/imageSumbition/' + req.params.id + '.jpg'
+          '../../data/imageSumbition/' + req.params.id + '.webp'
         )
       );
     } else {
@@ -56,11 +56,11 @@ module.exports = {
                   ObstacleId: obstacle.id,
                   ok: false,
                 }).then((imagesubmition) => {
-                  utils.pngParser(req.body.img_data).then((buffer) => {
+                  utils.parseImg(req.body.img_data).then((buffer) => {
                     fs.writeFileSync(
                       path.join(
                         __dirname,
-                        '../../data/imageSubmition/' + event.id + '.jpg'
+                        '../../data/imageSubmition/' + event.id + '.webp'
                       ),
                       buffer
                     );
