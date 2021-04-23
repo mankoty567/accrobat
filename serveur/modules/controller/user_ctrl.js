@@ -23,9 +23,9 @@ module.exports = {
             xp: 0,
           }).then((user) => {
             if (req.body.avatar !== undefined) {
-              utils.pngParser(req.body.avatar).then((buffer) => {
+              utils.parseAvatar(req.body.avatar).then((buffer) => {
                 fs.writeFileSync(
-                  path.join(__dirname, '../../data/user/' + user.id + '.jpg'),
+                  path.join(__dirname, '../../data/user/' + user.id + '.webp'),
                   buffer
                 );
               });
@@ -140,9 +140,9 @@ module.exports = {
     }
 
     if (req.body.avatar !== undefined) {
-      utils.pngParser(req.body.avatar).then((buffer) => {
+      utils.parseAvatar(req.body.avatar).then((buffer) => {
         fs.writeFileSync(
-          path.join(__dirname, '../../data/user/' + req.user.id + '.jpg'),
+          path.join(__dirname, '../../data/user/' + req.user.id + '.webp'),
           buffer
         );
       });
@@ -158,11 +158,11 @@ module.exports = {
   get_avatar: (req, res) => {
     if (
       fs.existsSync(
-        path.join(__dirname, '../../data/avatar/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
       )
     ) {
       res.sendFile(
-        path.join(__dirname, '../../data/avatar/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
       );
     } else {
       res.status(404).send('Not found');

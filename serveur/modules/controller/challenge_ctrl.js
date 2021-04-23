@@ -90,11 +90,11 @@ module.exports = {
   get_image: (req, res) => {
     if (
       fs.existsSync(
-        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.webp')
       )
     ) {
       res.sendFile(
-        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.webp')
       );
     } else {
       res.status(404).send('Map not found');
@@ -105,14 +105,14 @@ module.exports = {
       fs.existsSync(
         path.join(
           __dirname,
-          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+          '../../data/challengeAvatar/' + req.params.id + '.webp'
         )
       )
     ) {
       res.sendFile(
         path.join(
           __dirname,
-          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+          '../../data/challengeAvatar/' + req.params.id + '.webp'
         )
       );
     } else {
@@ -125,9 +125,12 @@ module.exports = {
       description: req.body.description,
       echelle: req.body.echelle,
     }).then((challenge) => {
-      utils.pngParser(req.body.img_fond).then((buffer) => {
+      utils.parseMap(req.body.img_fond).then((buffer) => {
         fs.writeFileSync(
-          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg'),
+          path.join(
+            __dirname,
+            '../../data/challenge/' + challenge.id + '.webp'
+          ),
           buffer
         );
 
@@ -137,11 +140,11 @@ module.exports = {
           ChallengeId: challenge.id,
         }).then(() => {
           if (req.body.img_avatar !== undefined) {
-            utils.pngParser(req.body.img_avatar).then((buffer) => {
+            utils.parseAvatar(req.body.img_avatar).then((buffer) => {
               fs.writeFileSync(
                 path.join(
                   __dirname,
-                  '../../data/challengeAvatar/' + challenge.id + '.jpg'
+                  '../../data/challengeAvatar/' + challenge.id + '.webp'
                 ),
                 buffer
               );
@@ -173,9 +176,25 @@ module.exports = {
               fs.unlinkSync(
                 path.join(
                   __dirname,
-                  '../../data/challenge/' + challenge.id + '.jpg'
+                  '../../data/challenge/' + challenge.id + '.wepb'
                 )
               );
+
+              if (
+                fs.existsSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  )
+                )
+              ) {
+                fs.unlinkSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  )
+                );
+              }
               res.send('OK');
             })
             .catch((err) => {
@@ -210,11 +229,11 @@ module.exports = {
         }
 
         if (req.body.img_fond) {
-          utils.pngParser(req.body.img_fond).then((buffer) => {
+          utils.parseMap(req.body.img_fond).then((buffer) => {
             fs.writeFileSync(
               path.join(
                 __dirname,
-                '../../data/challenge/' + challenge.id + '.jpg'
+                '../../data/challenge/' + challenge.id + '.webp'
               ),
               buffer
             );
@@ -222,11 +241,11 @@ module.exports = {
         }
 
         if (req.body.img_avatar) {
-          utils.pngParser(req.body.img_avatar).then((buffer) => {
+          utils.parseAvatar(req.body.img_avatar).then((buffer) => {
             fs.writeFileSync(
               path.join(
                 __dirname,
-                '../../data/challengeAvatar/' + challenge.id + '.jpg'
+                '../../data/challengeAvatar/' + challenge.id + '.webp'
               ),
               buffer
             );
@@ -288,18 +307,18 @@ module.exports = {
           fs.existsSync(
             path.join(
               __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
+              '../../data/challenge/' + challenge.id + '.webp'
             )
           )
         ) {
           fs.copyFileSync(
             path.join(
               __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
+              '../../data/challenge/' + challenge.id + '.webp'
             ),
             path.join(
               __dirname,
-              '../../data/challenge/' + newChallenge.id + '.jpg'
+              '../../data/challenge/' + newChallenge.id + '.webp'
             )
           );
         }
@@ -366,18 +385,18 @@ module.exports = {
             fs.existsSync(
               path.join(
                 __dirname,
-                '../../data/obstacle/' + obstacle.id + '.jpg'
+                '../../data/obstacle/' + obstacle.id + '.webp'
               )
             )
           ) {
             fs.copyFileSync(
               path.join(
                 __dirname,
-                '../../data/obstacle/' + obstacle.id + '.jpg'
+                '../../data/obstacle/' + obstacle.id + '.webp'
               ),
               path.join(
                 __dirname,
-                '../../data/obstacle/' + newObstacle.id + '.jpg'
+                '../../data/obstacle/' + newObstacle.id + '.webp'
               )
             );
           }

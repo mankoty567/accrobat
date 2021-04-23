@@ -49,6 +49,6 @@ type:
 - [x] Gestion des propositions de challenge
 - [x] Ajout d'un challenge à voter
 - [x] Ajout de vote pour un challenge
-- [ ] Ajout de la gestion des images en webp avec resize
+- [x] Ajout de la gestion des images en webp avec resize
 - [x] Récupération des challenges à voter en mode admin
 - [x] Récupération des challenges à voter en mode user

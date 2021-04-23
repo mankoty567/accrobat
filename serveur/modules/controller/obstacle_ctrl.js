@@ -49,11 +49,11 @@ module.exports = {
                       : null,
                   SegmentId: req.body.SegmentId,
                 }).then((obstacle) => {
-                  utils.pngParser(req.body.enigme_img).then((buffer) => {
+                  utils.parseImg(req.body.enigme_img).then((buffer) => {
                     fs.writeFileSync(
                       path.join(
                         __dirname,
-                        '../../data/obstacle/' + obstacle.id + '.jpg'
+                        '../../data/obstacle/' + obstacle.id + '.webp'
                       ),
                       buffer
                     );
@@ -121,11 +121,11 @@ module.exports = {
               }
 
               if (req.body.enigme_img) {
-                utils.pngParser(req.body.enigme_img).then((buffer) => {
+                utils.parseImg(req.body.enigme_img).then((buffer) => {
                   fs.writeFileSync(
                     path.join(
                       __dirname,
-                      '../../data/obstacle/' + obstacle.id + '.jpg'
+                      '../../data/obstacle/' + obstacle.id + '.webp'
                     ),
                     buffer
                   );
@@ -180,14 +180,14 @@ module.exports = {
               fs.existsSync(
                 path.join(
                   __dirname,
-                  '../../data/obstacle/' + obstacle.id + '.jpg'
+                  '../../data/obstacle/' + obstacle.id + '.webp'
                 )
               )
             ) {
               fs.unlinkSync(
                 path.join(
                   __dirname,
-                  '../../data/obstacle/' + obstacle.id + '.jpg'
+                  '../../data/obstacle/' + obstacle.id + '.webp'
                 )
               );
             }
@@ -208,11 +208,11 @@ module.exports = {
   get_image: (req, res) => {
     if (
       fs.existsSync(
-        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.webp')
       )
     ) {
       res.sendFile(
-        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/obstacle/' + req.params.id + '.webp')
       );
     } else {
       res.status(404).send('Not found');
