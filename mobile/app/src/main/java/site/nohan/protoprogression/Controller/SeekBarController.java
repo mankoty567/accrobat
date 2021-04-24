@@ -1,24 +1,28 @@
 package site.nohan.protoprogression.Controller;
 
 import android.app.Activity;
-import android.graphics.Point;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
-import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.R;
+import site.nohan.protoprogression.View.MapFragment;
+import site.nohan.protoprogression.View.Toile;
 
 public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
     private final Activity activity;
+    private final MapFragment mapFragment;
+    private final Toile toile;
     ButtonController buttonController;
 
-    public SeekBarController(Activity activity){
-        this.activity = activity;
+    public SeekBarController(MapFragment mapFragment){
+        this.mapFragment = mapFragment;
+        this.activity = mapFragment.getActivity();
+        this.toile = mapFragment.toile;
     }
 
     public void setButtonController(ButtonController buttonController) {
@@ -42,7 +46,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                         break;
                     Log.e("suiv",c.objectif.titre);
                     Button button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c));
+                    button.setOnClickListener(new DirectionController(c,toile));
                     button.setText(c.objectif.titre + " - " + c.nom);
 
                     linearLayout.addView(button);

@@ -12,6 +12,7 @@ public class Chemin {
 
     public boolean complete;
     public ArrayList<Point> points;
+    public ArrayList<Obstacle> obstacles;
 
     public PointPassage objectif;
     public PointPassage origine;
@@ -19,6 +20,7 @@ public class Chemin {
     public String nom;
 
     public Chemin(ArrayList<Point> points){
+        this.obstacles = new ArrayList<>();
         this.points = points;
         this.complete = false;
 

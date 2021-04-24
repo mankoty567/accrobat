@@ -42,7 +42,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
         toile.setOnTouchListener(new ToileController(toile));
-        seekBarController = new SeekBarController(this.getActivity());
+        seekBarController = new SeekBarController(this);
         buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);

@@ -1,4 +1,4 @@
-package site.nohan.protoprogression.Model;
+package site.nohan.protoprogression.Model.Types;
 
 public enum TypePointPassage {
     DEPART,

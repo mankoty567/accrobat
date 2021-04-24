@@ -2,6 +2,8 @@ package site.nohan.protoprogression.Model;
 
 import java.util.ArrayList;
 
+import site.nohan.protoprogression.Model.Types.TypePointPassage;
+
 public class PointPassage {
 
     public int id;

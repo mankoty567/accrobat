@@ -1,7 +1,6 @@
 package site.nohan.protoprogression.View;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,15 +9,12 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-
-import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.R;
 
@@ -109,7 +105,8 @@ public class Toile extends View {
 
 
         if(Map.mapActuelle.background != null) canvas.drawBitmap(Map.mapActuelle.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo) ;
-        this.dessinerChemins(canvas);
+        this.dessinerMap(canvas);
+        this.dessinerObstacles(canvas);
         this.dessinerMapInfos(canvas);
 
         //Log.e("vue",""+((float) Chemin.points[1].x)/100*canvas.getWidth());
@@ -180,7 +177,8 @@ public class Toile extends View {
 
     }
 
-    private void dessinerChemins(Canvas canvas) throws ArrayIndexOutOfBoundsException{
+
+    private void dessinerMap(Canvas canvas) throws ArrayIndexOutOfBoundsException{
         if(Map.mapActuelle.pointPassages == null || Map.mapActuelle.pointPassages.size() == 0)
             return;
 
@@ -197,6 +195,8 @@ public class Toile extends View {
 
                 // Pour tout les points qui composent le chemin
                 for (int i = 0; i < c.points.size()-1; i++) {
+                    Point A = c.points.get(i);
+                    Point B = c.points.get(i+1);
 
                     if (c.complete || (c.getLongueurAt(c.points.get(i+1)) < Map.mapActuelle.accompli && c == Map.mapActuelle.cheminActuel)) {
                         this.stylo.setStrokeWidth(40);
@@ -205,29 +205,30 @@ public class Toile extends View {
                     }
 
                     canvas.drawCircle(
-                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
+                            ((float) A.x) / 100 * canvas.getWidth(),
+                            ((float) A.y) / 100 * canvas.getHeight(),
                             15,
                             this.stylo
                     );
                     canvas.drawLine(
-                            ((float) c.points.get(i).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i).y) / 100 * canvas.getHeight(),
-                            ((float) c.points.get(i + 1).x) / 100 * canvas.getWidth(),
-                            ((float) c.points.get(i + 1).y) / 100 * canvas.getHeight(),
+                            ((float) A.x) / 100 * canvas.getWidth(),
+                            ((float) A.y) / 100 * canvas.getHeight(),
+                            ((float) B.x) / 100 * canvas.getWidth(),
+                            ((float) B.y) / 100 * canvas.getHeight(),
                             this.stylo
                     );
+
+                    // Dessiner les obstacles
+
+
 
                     // On dessine la progression uniquement du chemin sur lequel on est
                     if (c == Map.mapActuelle.cheminActuel) {
 
                         this.stylo.setStrokeWidth(15);
                         // Si on est entre deux points
-                        if (/*Map.accompli > c.getLongueurAt(c.points.get(i)) &&*/ Map.mapActuelle.accompli <= c.getLongueurAt(c.points.get(i + 1))) {
+                        if (Map.mapActuelle.accompli <= c.getLongueurAt(B)) {
 
-
-                            Point A = c.points.get(i);
-                            Point B = c.points.get(i + 1);
 
                             float rapport = (float) (Map.mapActuelle.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
 
@@ -244,7 +245,7 @@ public class Toile extends View {
                             int taille;
                             for (int j = 1; j <= points; j++) {
                                 if(j==points) {
-                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * -1 / 20f);
+                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * (1 / 20f));
                                     this.stylo.setARGB(
                                             255,
                                             200-taille*3,0,255-(taille*2)
@@ -252,8 +253,9 @@ public class Toile extends View {
                                     canvas.drawCircle(
                                             (A.x + intervalX * j) * canvas.getWidth() / 100,
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                            taille*2,
+                                            70-taille*2,
                                             this.stylo);
+
                                     this.stylo.setARGB(
                                             255,
                                             200-taille*3,100 , 100+(taille*2)
@@ -261,7 +263,7 @@ public class Toile extends View {
                                     canvas.drawCircle(
                                             (A.x + intervalX * j) * canvas.getWidth() / 100,
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                            Math.max(taille, 30),
+                                            Math.max(40-taille, 20),
                                             this.stylo);
                                 } else {
 
@@ -283,6 +285,50 @@ public class Toile extends View {
         }
     }
 
+    public void dessinerObstacles(Canvas canvas){
+        if(Map.mapActuelle.pointPassages == null || Map.mapActuelle.pointPassages.size() == 0)
+            return;
+        for(PointPassage pointPassage : Map.mapActuelle.pointPassages) {
+            for (Chemin c : pointPassage.chemins) {
+                for (int i = 0; i < c.points.size()-1; i++) {
+                    Point A = c.points.get(i);
+                    Point B = c.points.get(i + 1);
+
+                    for(Obstacle obstacle : c.obstacles){
+
+                        if(obstacle.distance*c.getLongueur() > c.getLongueurAt(A) && obstacle.distance*c.getLongueur() <= c.getLongueurAt(B)){
+                            float rapport = (float) (Map.mapActuelle.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
+
+                            float diffX = B.x - A.x;
+                            float diffY = B.y - A.y;
+                            int pointsMax = (int) Math.round(10 * Chemin.getDistance(A, B));
+                            int points = Math.round(pointsMax * rapport);
+
+                            float intervalX = diffX / (pointsMax + 1);
+                            float intervalY = diffY / (pointsMax + 1);
+
+                            //obstacle.distance*c.getLongueur()-c.getLongueurAt(A)/c.getLongueurAt(B)-c.getLongueurAt(A);
+                            double distance = obstacle.distance*c.getLongueur() - c.getLongueurAt(A);
+                            double deltaAB = c.getLongueurAt(B) - c.getLongueurAt(A);
+                            int point = (int) Math.round((pointsMax*distance)/deltaAB);
+                            Log.e("point", ""+point );
+                            this.stylo.setARGB(
+                                    255,
+                                    255,255,0
+                            );
+                            canvas.drawCircle(
+                                    (A.x + intervalX * point) * canvas.getWidth() / 100,
+                                    (A.y + intervalY * point) * canvas.getHeight() / 100,
+                                    20,
+                                    this.stylo);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     public void setZoom(int zoom) {
         this.scale.x = (1 + ((float) zoom/100*2));
         this.scale.y = (1 + ((float) zoom/100*2));
@@ -291,5 +337,28 @@ public class Toile extends View {
     public void setZoom(float zoom){
         this.scale.x = zoom;
         this.scale.y = zoom;
+    }
+
+    public void recentrer(){
+        PointF delta = new PointF();
+
+        Point A = Map.mapActuelle.cheminActuel.getMinPoint();
+        Point B = Map.mapActuelle.cheminActuel.getMaxPoint();
+
+        if(A == null || B == null)
+            return;
+        //float zoom = 100f/(float) Chemin.getDistance(A,B);
+        // TODO: attention sortie ecran avec distance 100%
+        float zoom = 100f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
+
+        A.set(A.x - Math.round((float) A.x*0.1f),A.y - Math.round((float) A.y*0.1f));
+
+        delta.x = -((float) A.x/100f*(this.getWidth()));
+        delta.y = -((float) A.y/100f*(this.getHeight()));
+
+
+        this.setZoom(zoom*0.9f);
+
+        this.setPosition(delta);
     }
 }

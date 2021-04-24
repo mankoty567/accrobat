@@ -45,7 +45,7 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         list_title.setText(Map.maps.get(position).libelle);
         list_description.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
         // show The Image in a ImageView
-        new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
+        //new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
         return rowView;
     };
 

@@ -1,11 +1,11 @@
 package site.nohan.protoprogression.Model;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import site.nohan.protoprogression.Model.Types.TypePointPassage;
 
 public class Map {
     public static Map mapActuelle;

@@ -1,7 +1,6 @@
 package site.nohan.protoprogression.Network.Map;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
 import android.widget.Button;
@@ -13,17 +12,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import site.nohan.protoprogression.Controller.DirectionController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Model.PointPassage;
-import site.nohan.protoprogression.Model.TypePointPassage;
+import site.nohan.protoprogression.Model.Types.TypeObstacle;
+import site.nohan.protoprogression.Model.Types.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.R;
 
@@ -129,6 +126,19 @@ public class MapResponse implements APIListenner {
                                 )
                         );
                     }
+
+                    // Pour tout les obtacles
+                    JSONArray jOstacles = jchemin.getJSONArray("Obstacles");
+                    Obstacle obstacle;
+                    for(int obstaclei = 0; obstaclei < jOstacles.length(); obstaclei++){
+                        obstacle = new Obstacle();
+                        obstacle.titre =((JSONObject) jOstacles.get(obstaclei)).getString("title");
+                        obstacle.description =((JSONObject) jOstacles.get(obstaclei)).getString("description");
+                        obstacle.distance = ((JSONObject) jOstacles.get(obstaclei)).getDouble("distance");
+                        obstacle.type = ((JSONObject) jOstacles.get(obstaclei)).getString("description").equals("question") ? TypeObstacle.QUESTION : TypeObstacle.QUESTION;
+                        chemin.obstacles.add(obstacle);
+                    }
+
                     pointPassage.chemins.add(chemin);
                 }
                this.map.pointPassages.add(pointPassage);
