@@ -14,6 +14,22 @@ module.exports.routes = [
     name: 'Récupération de tous les challenges publiés',
     description:
       'Récupération de tous les challenges accessibles à un utilisateur',
+    query: [
+      {
+        param: 'include=point',
+        desc: 'Renvoit le challenge et ses points de passages',
+      },
+      {
+        param: 'include=pointsegment',
+        desc:
+          'Renvoit le challenge, ses points de passages et les segments associés',
+      },
+      {
+        param: 'include=pointsegmentobstacle',
+        desc:
+          'Renvoit le challenge, ses points de passages, les segments et les obstacles associés',
+      },
+    ],
     result: [
       {
         code: 200,
@@ -41,6 +57,8 @@ module.exports.routes = [
           title: 'string',
           description: 'string',
           echelle: 0,
+          isAdmin: 'true/false',
+          isAuthor: 'true/false',
         },
       },
     ],
@@ -124,7 +142,11 @@ module.exports.routes = [
   {
     method: 'GET',
     url: '/api/challenge/:id/validity',
-    func: [m.user_mdw.put_admin, m.challenge_ctrl.verif_validity],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_admin,
+      m.challenge_ctrl.verif_validity,
+    ],
     name: 'Vérification de la validité',
     description:
       "Vérifie la validitée d'un challenge. Le tableau error contient une liste d'erreurs",
@@ -182,7 +204,11 @@ module.exports.routes = [
   {
     method: 'DELETE',
     url: '/api/challenge/:id',
-    func: [m.user_mdw.put_admin, m.challenge_ctrl.delete_challenge],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_author,
+      m.challenge_ctrl.delete_challenge,
+    ],
     name: "Suppression d'un challenge",
     description: 'Supprime le challenge :id',
     result: [
@@ -197,7 +223,11 @@ module.exports.routes = [
   {
     method: 'POST',
     url: '/api/challenge/:id',
-    func: [m.user_mdw.put_admin, m.challenge_ctrl.update_challenge],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_admin,
+      m.challenge_ctrl.update_challenge,
+    ],
     body: {
       title: { type: 'string', required: false },
       description: { type: 'string', required: false },
@@ -237,7 +267,11 @@ module.exports.routes = [
   {
     method: 'POST',
     url: '/api/challenge/:id/clone',
-    func: [m.user_mdw.put_admin, m.challenge_ctrl.clone_challenge],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_admin,
+      m.challenge_ctrl.clone_challenge,
+    ],
     name: "Dupplication d'un challenge",
     description: 'Clone un challenge, avec tout ses attributs et descendants',
     result: [
@@ -260,7 +294,11 @@ module.exports.routes = [
   {
     method: 'POST',
     url: '/api/challenge/:id/publish',
-    func: [m.user_mdw.put_admin, m.challenge_ctrl.publish_challenge],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_admin,
+      m.challenge_ctrl.publish_challenge,
+    ],
     name: "Publication d'un challenge",
     description:
       "Publie un challenge. Attention le challenge n'est plus modifiable par la suite",
@@ -286,6 +324,26 @@ module.exports.routes = [
         code: 404,
         content: 'Challenge not found',
       },
+    ],
+  },
+  {
+    method: 'POST',
+    url: '/api/challenge/:id/add_admin',
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_author,
+
+      m.challenge_ctrl.add_challenge_admin,
+    ],
+    name: 'Ajouter un admin à un challenge',
+    description:
+      "Si on est l'auteur d'un challenge, on peu ajouter d'autres utilisateurs comme administrateurs de celui ci",
+    body: {
+      user_id: 'number',
+    },
+    retult: [
+      { code: 200, content: 'OK' },
+      { code: 400, content: 'Bad Request: User not exist' },
     ],
   },
 ];

@@ -3,18 +3,17 @@ import { checkStatus, host } from './api';
 const obstacleApi = {
   /**
    * Permet de créer un obstacle
-   * @param {Object} data
-   * @param {String} [data.enigme_awnser] Réponse attendue de l'énigme. Optionnelle il peut s'agir d'un challenge par image
-   * @param {Number} [data.frontId] Id en front
-   * @param {String} data.title Titre de l'obstacle
-   * @param {String} data.description Description de l'obstacle
-   * @param {String} data.type Type de l'obstacle (image ou enigme)
-   * @param {Number} data.distance Distance du segment sur laquelle l'obstacle se trouve
-   * @param {Number} data.SegmentId Id du segment attaché
-   * @param {String} data.enigme_img Image de l'enigme, encodée en base64
+   * @param {Object} obstacle
+   * @param {String} [obstacle.enigme_awnser] Réponse attendue de l'énigme. Optionnelle il peut s'agir d'un challenge par image
+   * @param {String} obstacle.title Titre de l'obstacle
+   * @param {String} obstacle.description Description de l'obstacle
+   * @param {String} obstacle.type Type de l'obstacle (image ou enigme)
+   * @param {Number} obstacle.distance Distance du segment sur laquelle l'obstacle se trouve (de 0 à 1)
+   * @param {Number} obstacle.SegmentId Id du segment attaché
+   * @param {String} obstacle.enigme_img Image de l'enigme, encodée en base64
    * @returns L'objet obstacle créé
    */
-  createObstacle: (data) => {
+  createObstacle: (obstacle) => {
     return fetch(`${host}/api/obstacle`, {
       method: 'POST',
       headers: {
@@ -22,7 +21,7 @@ const obstacleApi = {
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.obstacle),
+      body: JSON.stringify(obstacle),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -30,25 +29,25 @@ const obstacleApi = {
 
   /**
    * Permet de modifier les informations d'un obstacle
-   * @param {Object} data
-   * @param {String} [data.title] Titre de l'obstacle
-   * @param {String} [data.description] Description de l'obstacle
-   * @param {String} [data.type] Type de l'obstacle (image ou enigme)
-   * @param {Number} [data.distance] Distance du segment sur laquelle l'obstacle se trouve
-   * @param {Number} data.obstacle_id id de l'obstacle en question
-   * @param {String} [data.enigme_img] Image de l'enigme, encodée en base64
-   * @param {String} [data.enigme_awnser] Réponse attendue de l'énigme. Optionnelle il peut s'agir d'un challenge par image
+   * @param {Object} obstacle
+   * @param {Number} obstacle.id id de l'obstacle en question
+   * @param {String} [obstacle.title] Titre de l'obstacle
+   * @param {String} [obstacle.description] Description de l'obstacle
+   * @param {String} [obstacle.type] Type de l'obstacle (image ou enigme)
+   * @param {Number} [obstacle.distance] Distance du segment sur laquelle l'obstacle se trouve
+   * @param {String} [obstacle.enigme_img] Image de l'enigme, encodée en base64
+   * @param {String} [obstacle.enigme_awnser] Réponse attendue de l'énigme. Optionnelle il peut s'agir d'un challenge par image
    * @returns
    */
-  updateObstacle: (data) => {
-    return fetch(`${host}/api/obstacle/${data.obstacle_id}`, {
+  updateObstacle: (obstacle) => {
+    return fetch(`${host}/api/obstacle/${obstacle.id}`, {
       method: 'POST',
       headers: {
         Authorization:
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.obstacle),
+      body: JSON.stringify(obstacle),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -56,12 +55,11 @@ const obstacleApi = {
 
   /**
    * Permet de supprimer un obstacle depuis son id
-   * @param {Object} data
-   * @param {String} data.obstacle_id id de l'obstacle
+   * @param {Number} obstacle_id id de l'obstacle
    * @returns
    */
-  deleteObstacle: (data) => {
-    return fetch(`${host}/api/obstacle/${data.obstacle_id}`, {
+  deleteObstacle: (obstacle_id) => {
+    return fetch(`${host}/api/obstacle/${obstacle_id}`, {
       method: 'DELETE',
       headers: {
         Authorization:

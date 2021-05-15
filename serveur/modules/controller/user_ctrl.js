@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const utils = require('../utils');
+const fs = require('fs');
+const path = require('path');
 
 const bdd = require('../../models');
 
@@ -18,7 +21,16 @@ module.exports = {
             permission: 0,
             level: 0,
             xp: 0,
-          }).then(() => {
+          }).then((user) => {
+            if (req.body.avatar !== undefined) {
+              utils.parseAvatar(req.body.avatar).then((buffer) => {
+                fs.writeFileSync(
+                  path.join(__dirname, '../../data/user/' + user.id + '.webp'),
+                  buffer
+                );
+              });
+            }
+
             res.send('OK');
           });
         }
@@ -104,5 +116,71 @@ module.exports = {
         });
       }
     }
+  },
+  edit_user: async (req, res) => {
+    let edited = false;
+
+    if (req.body.username !== undefined) {
+      let otherUserWithUsername = await bdd.User.findOne({
+        where: { username: req.body.username },
+      });
+
+      if (otherUserWithUsername === null) {
+        req.user.username = req.body.username;
+        edited = true;
+      } else {
+        res.status(400).send('Bad Request: Username already exist');
+        return;
+      }
+    }
+
+    if (req.body.email !== undefined) {
+      req.user.email = req.body.email;
+      edited = true;
+    }
+
+    if (req.body.avatar !== undefined) {
+      utils.parseAvatar(req.body.avatar).then((buffer) => {
+        fs.writeFileSync(
+          path.join(__dirname, '../../data/user/' + req.user.id + '.webp'),
+          buffer
+        );
+      });
+    }
+
+    if (edited) {
+      await req.user.save();
+      res.json(req.user);
+    } else {
+      res.json(req.user);
+    }
+  },
+  get_avatar: (req, res) => {
+    if (
+      fs.existsSync(
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
+      )
+    ) {
+      res.sendFile(
+        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
+      );
+    } else {
+      res.status(404).send('Not found');
+    }
+  },
+  check_username: async (req, res) => {
+    let otherUserWithUsername = await bdd.User.findOne({
+      where: { username: req.body.username },
+    });
+
+    res.json({ valid: otherUserWithUsername === null });
+  },
+  get_all_admin: (req, res) => {
+    bdd.User.findAll({
+      where: { permission: 100 },
+      attributes: ['id', 'username'],
+    }).then((users) => {
+      res.json(users);
+    });
   },
 };

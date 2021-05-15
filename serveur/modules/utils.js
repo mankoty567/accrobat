@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const pngToJpeg = require('png-to-jpeg');
+const sharp = require('sharp');
+const sizeOf = require('image-size');
+
+const MAX_MAP_SIZE = 1500;
+const MAX_AVATAR_SIZE = 500;
+const MAX_IMG_SUBMIT_SIZE = 1000;
 
 module.exports = {
   pathToDistance: (path, echelle) => {
@@ -37,18 +42,52 @@ module.exports = {
     if (!fs.existsSync(path.join(__dirname, '../data/obstacle'))) {
       fs.mkdirSync(path.join(__dirname, '../data/obstacle'));
     }
-  },
-  pngParser: (img) => {
-    return new Promise((resolve) => {
-      let img_buffer = new Buffer.from(img.split(/,\s*/)[1], 'base64');
 
-      if (img.startsWith('data:image/png;')) {
-        pngToJpeg({ quality: 90 })(img_buffer).then((output) => {
-          resolve(output);
-        });
-      } else {
-        resolve(img_buffer);
-      }
-    });
+    if (!fs.existsSync(path.join(__dirname, '../data/user'))) {
+      fs.mkdirSync(path.join(__dirname, '../data/user'));
+    }
+  },
+  parseMap: (b64) => {
+    return resizeImage(b64, MAX_MAP_SIZE);
+  },
+  parseAvatar: (b64) => {
+    return resizeImage(b64, MAX_AVATAR_SIZE);
+  },
+  parseImg: (b64) => {
+    return resizeImage(b64, MAX_IMG_SUBMIT_SIZE);
   },
 };
+
+function resizeImage(b64, size) {
+  return new Promise((resolve) => {
+    let img_buffer = new Buffer.from(b64.split(/,\s*/)[1], 'base64');
+
+    let imgSize = sizeOf(img_buffer);
+
+    let newSize;
+    if (imgSize.width > imgSize.height) {
+      newSize = {
+        width: size,
+        height: Math.round((size * imgSize.height) / imgSize.width),
+      };
+    } else if (imgSize.height > imgSize.width) {
+      newSize = {
+        height: size,
+        width: Math.round((size * imgSize.width) / imgSize.height),
+      };
+    } else {
+      newSize = {
+        height: size,
+        width: size,
+      };
+    }
+
+    sharp(img_buffer)
+      .resize(newSize.width, newSize.height)
+      .webp()
+      .toBuffer()
+      .then((newBuffer) => {
+        resolve(newBuffer);
+      });
+  });
+}

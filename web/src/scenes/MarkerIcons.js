@@ -11,6 +11,7 @@ const end = process.env.PUBLIC_URL + '/icons/End.png';
 const endS = process.env.PUBLIC_URL + '/icons/EndS.png';
 const endE = process.env.PUBLIC_URL + '/icons/EndE.png';
 const endES = process.env.PUBLIC_URL + '/icons/EndES.png';
+const obstacle = process.env.PUBLIC_URL + '/icons/obstacleA.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
@@ -62,4 +63,20 @@ let createStartIcon = (selected, error) => {
   });
 };
 
-export { createCheckpointIcon, createEndIcon, createStartIcon };
+let createObstacleIcon = () => {
+  return new L.Icon({
+    iconUrl: obstacle,
+    shadowUrl: shadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+};
+
+export {
+  createCheckpointIcon,
+  createEndIcon,
+  createStartIcon,
+  createObstacleIcon,
+};
