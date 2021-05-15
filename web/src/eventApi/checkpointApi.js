@@ -51,15 +51,6 @@ const checkpointApi = {
 
   /**
    * Permet d'update les informations d'un point de passage à partir de son id
-<<<<<<< HEAD
-   * @param {Object} data
-   * @param {String} data.marker_id L'id du point de passage
-   * @param {String} [data.title] Titre du point de passage
-   * @param {String} [data.description] Description du point de passage
-   * @param {String} [data.type] Le type du point de passage (start/point/end)
-   * @param {String} [data.x] La coordonnée x du point de passage
-   * @param {String} [data.y] La coordonnée y du point de passage
-=======
    * @param {Object} marker Le point de passage
    * @param {Number} marker.id L'id du point de passage
    * @param {String} [marker.title] Titre du point
@@ -67,7 +58,6 @@ const checkpointApi = {
    * @param {String} [marker.type] Type du point (start, end, checkpoint)
    * @param {Number} [marker.x] Longitude
    * @param {Number} [marker.y] Latitude
->>>>>>> 07e3b596a4cc1a660f5548169e6753caac8afb60
    * @returns Un objet point de passage
    */
   updateMarker: (marker) => {
