@@ -19,6 +19,21 @@ const challengeToVoteApi = {
       .then(checkStatus)
       .then((res) => res.text());
   },
+  /**
+   * Récupération de tous les challenges à voter
+   * @return Tableau des challengeToVote
+   */
+  getToVoteAdmin: () => {
+    return fetch(`${host}/api/challengetovote/admin`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
 };
 
 export default challengeToVoteApi;
