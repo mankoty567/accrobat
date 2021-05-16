@@ -8,11 +8,13 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import ChallengeEditor from '../ChallengeEditor';
+import ChallengeToVote from './ChallengeToVote';
 
 let ChallengePanel = () => {
   const [challenges, setChallenges] = useState([]);
-  const [addmode, setAddmode] = useState(false);
+  const [addmode, setAddmode] = useState('add');
   const [selected, setSelected] = useState(null);
 
   const addChallenge = (
@@ -22,7 +24,7 @@ let ChallengePanel = () => {
     scale,
     avatar,
   ) => {
-    setAddmode(false);
+    setAddmode('add');
     //Tester si la img_avatar est null, si c'est le cas, on met undefined
 
     let img_avatar;
@@ -87,26 +89,36 @@ let ChallengePanel = () => {
   return (
     <>
       <Typography variant="h4" align="center">
-        {addmode ? 'Ajouter un challenge' : 'Liste des challenges'}
+        {addmode == 'add'
+          ? 'Ajouter un challenge'
+          : addmode === 'list'
+          ? 'Liste des challenges'
+          : 'Challenges à voter'}
       </Typography>
       <Divider orientation="horizontal" />
       <Button
         startIcon={<AddIcon />}
         onClick={() => {
-          setAddmode(true), setSelected(null);
+          setAddmode('add'), setSelected(null);
         }}
       >
         Ajouter un challenge
       </Button>
       <Button
         startIcon={<MenuBookIcon />}
-        onClick={() => setAddmode(false)}
+        onClick={() => setAddmode('list')}
       >
         Consulter les challenge existants
       </Button>
-      {addmode ? (
+      <Button
+        startIcon={<EmojiObjectsIcon />}
+        onClick={() => setAddmode('vote')}
+      >
+        Challenges à voter
+      </Button>
+      {addmode === 'add' ? (
         <FormChallenge callback={addChallenge} />
-      ) : (
+      ) : addmode === 'list' ? (
         <>
           {challenges
             ? challenges.map((key, idx) => {
@@ -121,6 +133,8 @@ let ChallengePanel = () => {
               })
             : null}
         </>
+      ) : (
+        <ChallengeToVote />
       )}
       {selected ? (
         <ChallengeEditor
