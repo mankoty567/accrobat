@@ -6,9 +6,10 @@ import obstacleApi from './obstacleApi';
 import participationApi from './participationApi';
 import segmentApi from './segmentApi';
 import userApi from './userApi';
+import propositionApi from './propositionApi';
 
 export const host =
-  process.env.REACT_APP_HOST || 'https://api.acrobat.bigaston.dev';
+  process.env.REACT_APP_HOST || 'http://localhost:1418';
 
 export const checkStatus = (res) => {
   if (res.ok) {
@@ -29,4 +30,5 @@ export const API = {
   participation: participationApi,
   segment: segmentApi,
   user: userApi,
+  proposition: propositionApi,
 };

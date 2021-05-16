@@ -4,19 +4,45 @@ import {
   Paper,
   Typography,
   Divider,
+  CircularProgress,
+  IconButton,
 } from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import ChallengePanel from './ChallengePanel';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { API } from '../../eventApi/api';
+
+import style from './AdminPanel.module.css';
 
 let AdminPanel = () => {
-  let propositions = [
-    'Créer un challenge pour se balader sur Namek',
-    'Faire une thématique à propos de Kaamelot !',
-    'Naviguer autour du système solaire',
-    'Parcourir le monde de Oui-Oui',
-    'THEMATIQUE A PROPOS DE HARRY POTTER',
+  const [propositions, setPropositions] = useState([]);
+  const [isLoadingProposition, setIsLoadingPropositions] =
+    useState(true);
+
+  useEffect(() => {
+    API.proposition.getPropositions().then((data) => {
+      console.log(data);
+      setPropositions(data);
+      setIsLoadingPropositions(false);
+    });
+  }, []);
+
+  function handleChangeProposition(id, status) {
+    API.proposition.updateProposition(id, status).then(() => {
+      setPropositions((before) => {
+        return before.filter((b) => b.id !== id);
+      });
+    });
+  }
+
+  let user = [
+    'Jules Poulain',
+    'Xavier Schuszter',
+    'Céleste Lavigne',
+    'Nohan Jaugey',
+    'Vincent Seyller',
   ];
-  let user = ['Jules Poulain', 'Xavier Schuszter', 'Céleste Lavigne', 'Nohan Jaugey', 'Vincent Seyller'];
 
   return (
     <>
@@ -46,9 +72,33 @@ let AdminPanel = () => {
               </Typography>
               <Divider orientation="horizontal" />
 
-              {propositions.map((key, idx) => {
-                return <Typography key={idx}>{key}</Typography>;
-              })}
+              {isLoadingProposition ? (
+                <CircularProgress />
+              ) : (
+                propositions.map((key) => {
+                  return (
+                    <div className={style.flexRow}>
+                      <Typography key={key.id}>
+                        {key.description}
+                      </Typography>
+                      <IconButton
+                        onClick={(e) =>
+                          handleChangeProposition(key.id, 'accepted')
+                        }
+                      >
+                        <CheckCircleIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) =>
+                          handleChangeProposition(key.id, 'refused')
+                        }
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </Paper>
         </Grid>
