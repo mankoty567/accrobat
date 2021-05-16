@@ -7,6 +7,7 @@ import participationApi from './participationApi';
 import segmentApi from './segmentApi';
 import userApi from './userApi';
 import propositionApi from './propositionApi';
+import challengeToVoteApi from './challengeToVoteApi';
 
 export const host =
   process.env.REACT_APP_HOST || 'http://localhost:1418';
@@ -31,4 +32,5 @@ export const API = {
   segment: segmentApi,
   user: userApi,
   proposition: propositionApi,
+  challengeToVote: challengeToVoteApi,
 };
