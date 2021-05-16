@@ -79,7 +79,7 @@ module.exports.routes = [
   {
     method: 'POST',
     url: '/api/user/edit',
-    func: [m.user_ctrl.edit_user],
+    func: [m.user_mdw.put_user, m.user_ctrl.edit_user],
     name: "Edition d'utilisateurs",
     description:
       "Modifie les paramètres d'un utilisateur (son image de profil, ses paramètres...)",
@@ -110,6 +110,24 @@ module.exports.routes = [
         },
       },
       { code: 400, content: 'Bad Request: Username already exist' },
+    ],
+  },
+  {
+    method: 'POST',
+    url: '/api/user/edit_password',
+    func: [m.user_mdw.put_user, m.user_ctrl.edit_user_password],
+    name: 'Changement de mot de passe',
+    description:
+      "Permet de modifier le mot de passe d'un utilisateur. Tous les champs sont obligatoires",
+    body: {
+      old_password: 'string',
+      new_password: 'string',
+      repeat_password: 'string',
+    },
+    result: [
+      { code: 200, content: 'OK' },
+      { code: 400, content: 'Two password not match' },
+      { code: 403, content: 'Old Password Not Correct' },
     ],
   },
   {
