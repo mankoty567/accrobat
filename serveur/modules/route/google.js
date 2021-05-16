@@ -3,7 +3,7 @@
 const m = require('../index');
 
 module.exports.meta = {
-  title: 'Event',
+  title: 'Google',
 };
 
 module.exports.routes = [
