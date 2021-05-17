@@ -11,8 +11,8 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Select,
-  MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core';
 
 import style from './ChallengeToVote.module.css';
@@ -26,6 +26,8 @@ const status = {
 };
 
 export default function ChallengeToVote() {
+  const [showClosed, setShowClosed] = useState(false);
+
   // Partie ajout de ChallengeToVote
   const [addDescription, setAddDescription] = useState('');
   const [isLoadingAdd, setIsLoadingAdd] = useState(false);
@@ -53,6 +55,7 @@ export default function ChallengeToVote() {
 
   // Partie liste des challengeToVote
   const [challenges, setChallenges] = useState([]);
+  const [shownChallenge, setShownChallenge] = useState([]);
   const [isLoadingChallenges, setIsLoadingChallenges] =
     useState(true);
 
@@ -63,6 +66,12 @@ export default function ChallengeToVote() {
       setChallenges(data);
     });
   }, []);
+
+  useEffect(() => {
+    setShownChallenge(
+      challenges.filter((c) => showClosed || c.status === 'open'),
+    );
+  }, [challenges, showClosed]);
 
   function handleCloseChallenge(id) {
     API.challengeToVote.changeToVoteStatus(id, 'close').then(() => {
@@ -128,6 +137,20 @@ export default function ChallengeToVote() {
           Liste des propositions
         </Typography>
         {isLoadingChallenges ? <CircularProgress /> : null}
+        <div className={style.flexCenter}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showClosed}
+                onChange={(e) => setShowClosed(e.target.checked)}
+                name="checkedB"
+                color="primary"
+              />
+            }
+            label="Montrer les challenges fermés"
+          />
+        </div>
+
         <Table>
           <TableHead>
             <TableRow>
@@ -138,7 +161,7 @@ export default function ChallengeToVote() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {challenges.map((c) => (
+            {shownChallenge.map((c) => (
               <TableRow key={c.id} className={style.flex}>
                 <TableCell
                   className={classnames(

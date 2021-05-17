@@ -22,3 +22,8 @@
 .close {
   background-color: #E74C3C;
 }
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+}
