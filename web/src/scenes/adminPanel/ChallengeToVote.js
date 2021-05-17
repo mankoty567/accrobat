@@ -11,6 +11,8 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 
 import style from './ChallengeToVote.module.css';
@@ -62,6 +64,34 @@ export default function ChallengeToVote() {
     });
   }, []);
 
+  function handleCloseChallenge(id) {
+    API.challengeToVote.changeToVoteStatus(id, 'close').then(() => {
+      setChallenges((before) => {
+        return before.map((b) => {
+          if (b.id === id) {
+            return { ...b, status: 'close' };
+          } else {
+            return b;
+          }
+        });
+      });
+    });
+  }
+
+  function handleOpenChallenge(id) {
+    API.challengeToVote.changeToVoteStatus(id, 'open').then(() => {
+      setChallenges((before) => {
+        return before.map((b) => {
+          if (b.id === id) {
+            return { ...b, status: 'open' };
+          } else {
+            return b;
+          }
+        });
+      });
+    });
+  }
+
   return (
     <>
       <div>
@@ -104,6 +134,7 @@ export default function ChallengeToVote() {
               <TableCell>Status</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Somme des votes</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -119,6 +150,25 @@ export default function ChallengeToVote() {
                 </TableCell>
                 <TableCell>{c.description}</TableCell>
                 <TableCell>{c.voteSum}</TableCell>
+                <TableCell>
+                  {c.status === 'open' ? (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleCloseChallenge(c.id)}
+                    >
+                      Fermer
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleOpenChallenge(c.id)}
+                    >
+                      Ouvrir
+                    </Button>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

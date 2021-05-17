@@ -34,6 +34,25 @@ const challengeToVoteApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  /**
+   * Change challengeToVote status
+   * @param {Number} id Id du challengeToVote à modifier
+   * @param {status} status Nouveau status du challenge
+   * @return Challenge mis à jour
+   */
+  changeToVoteStatus: (id, status) => {
+    return fetch(`${host}/api/challengetovote/${id}`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ status: status }),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
 };
 
 export default challengeToVoteApi;

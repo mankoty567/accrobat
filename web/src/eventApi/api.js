@@ -10,7 +10,7 @@ import propositionApi from './propositionApi';
 import challengeToVoteApi from './challengeToVoteApi';
 
 export const host =
-  process.env.REACT_APP_HOST || 'http://localhost:1418';
+  process.env.REACT_APP_HOST || 'https://api.acrobat.bigaston.dev';
 
 export const checkStatus = (res) => {
   if (res.ok) {
