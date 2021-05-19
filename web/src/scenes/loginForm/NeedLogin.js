@@ -4,7 +4,7 @@ import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-export default function NeedLogin({ children, admin }) {
+export default function NeedLogin({ children, admin, redirect }) {
   const history = useHistory();
 
   const [userState] = useRecoilState(API.user.userAtom);
@@ -13,6 +13,8 @@ export default function NeedLogin({ children, admin }) {
   );
 
   useEffect(() => {
+    if (redirect === false) return;
+
     if (doneConnection) {
       if (userState === undefined) {
         history.push('/login');
