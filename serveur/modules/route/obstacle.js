@@ -25,7 +25,10 @@ module.exports.routes = [
         type: 'string',
         required: false,
       },
-      enigme_img: 'data_url',
+      enigme_img: {
+        type: 'data_url',
+        required: false,
+      },
       frontId: {
         type: 'number',
         required: false,

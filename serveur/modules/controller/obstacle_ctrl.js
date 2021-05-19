@@ -49,20 +49,28 @@ module.exports = {
                       : null,
                   SegmentId: req.body.SegmentId,
                 }).then((obstacle) => {
-                  utils.parseImg(req.body.enigme_img).then((buffer) => {
-                    fs.writeFileSync(
-                      path.join(
-                        __dirname,
-                        '../../data/obstacle/' + obstacle.id + '.webp'
-                      ),
-                      buffer
-                    );
+                  if (req.body.enigme_img !== undefined) {
+                    utils.parseImg(req.body.enigme_img).then((buffer) => {
+                      fs.writeFileSync(
+                        path.join(
+                          __dirname,
+                          '../../data/obstacle/' + obstacle.id + '.webp'
+                        ),
+                        buffer
+                      );
+                      debug('Création obstacle ' + obstacle.id);
+                      res.json({
+                        ...obstacle.dataValues,
+                        frontId: req.body.frontId,
+                      });
+                    });
+                  } else {
                     debug('Création obstacle ' + obstacle.id);
                     res.json({
                       ...obstacle.dataValues,
                       frontId: req.body.frontId,
                     });
-                  });
+                  }
                 });
               });
           }
