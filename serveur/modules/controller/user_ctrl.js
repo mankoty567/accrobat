@@ -186,7 +186,7 @@ module.exports = {
   },
   check_username: async (req, res) => {
     let otherUserWithUsername = await bdd.User.findOne({
-      where: { username: req.body.username },
+      where: { username: req.params.username },
     });
 
     res.json({ valid: otherUserWithUsername === null });
