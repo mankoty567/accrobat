@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './App.css';
 import ChallengeEditor from './scenes/ChallengeEditor';
 import AdminMenu from './scenes/adminPanel/AdminPanel';
-import MainPage from './scenes/MainPage';
+import MainPage from './scenes/mainPage/MainPage';
 
 function App() {
   return (
