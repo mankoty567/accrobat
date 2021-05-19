@@ -20,6 +20,7 @@ import {
 
 import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
+import ChallengePage from '../challengePage/ChallengePage';
 
 let MainPage = () => {
   // Tentative de connection automatique de l'utilisateur
@@ -82,6 +83,11 @@ let MainPage = () => {
           <Route path="/profile">
             <NeedLogin>
               <ProfilePage />
+            </NeedLogin>
+          </Route>
+          <Route path="/challenges">
+            <NeedLogin>
+              <ChallengePage />
             </NeedLogin>
           </Route>
           <Route path="/admin">

@@ -81,7 +81,7 @@ const userApi = {
   edit: (username, email) => {
     return fetch(`${host}/api/user/edit`, {
       method: 'POST',
-      eaders: {
+      headers: {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
