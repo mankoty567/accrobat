@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -29,10 +30,12 @@ import java.math.RoundingMode;
 import java.util.Date;
 
 import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 import static site.nohan.protoprogression.Controller.Pedometer.PedometerController.distance;
 import static site.nohan.protoprogression.Controller.Pedometer.PedometerController.tKilometres;
+import static site.nohan.protoprogression.View.ui.home.SigninFragment.hasFrauded;
 
 public class LocationService extends Service {
     /************************************************************************
@@ -79,6 +82,14 @@ public class LocationService extends Service {
                     if(metres > minSpeed)kilometres = kilometres + metres;
                     round(kilometres,3);
 
+                    //Détection de Fraude en km/h
+                    double speed = (double) ((distance / ((newDate.getTime() - oldDate.getTime()) * 1000)) * 3.6);
+                    if (speed > 60) {
+                        Toast.makeText(getApplicationContext(), "Fraude détectée, veulliez vous reconnnecter !",Toast.LENGTH_LONG).show();
+                        hasFrauded = true;
+                        DataBase.getMoi().setToken("NULL");
+                    }
+
                     //Mise à jour de la variable globale
                     distance = kilometres + oldDistance;
                     tKilometres.setText(distance + " ms");
@@ -124,10 +135,10 @@ public class LocationService extends Service {
         Intent resultIntent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.mipmap.logo_app_runslike);
         builder.setContentTitle("Location Service");
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-        builder.setContentText("Running");
+        builder.setContentText("Cycling...");
         builder.setAutoCancel(false);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 

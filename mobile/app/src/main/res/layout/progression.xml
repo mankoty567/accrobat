@@ -11,60 +11,90 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/bRecentrer"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_challenge_interaction"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Recentrer" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bPodometre"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/bRecentrer"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/recenter"/>
+
+            <LinearLayout
+                android:id="@+id/ll_challenge_seekbar"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right">
+            <SeekBar
+                android:id="@+id/zoombar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_challenge_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right">
+
+                <Button
+                    android:id="@+id/bPodometreMarche"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/walking" />
+
+                <Button
+                    android:id="@+id/bPodometreCourse"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/running" />
+
+                <Button
+                    android:id="@+id/bGPSVelo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/cycling"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/routeSelect"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Start Podomètre" />
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/bModePodometre"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Vélo" />
-    </LinearLayout>
+            android:orientation="horizontal">
 
-    <SeekBar
-        android:id="@+id/zoombar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="750px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
-    <LinearLayout
-        android:id="@+id/routeSelect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+            <TextView
+                android:id="@+id/tKilometres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--- ms"/>
+        </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="750px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tKilometres"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="--- ms"/>
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

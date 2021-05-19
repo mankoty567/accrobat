@@ -42,7 +42,7 @@ public class WhoAmIResponse implements APIListenner {
         //Retour sur le Fragment de connexion
         //DataBase.token_user = null;
         User moi = DataBase.getMoi();
-        moi.setToken("");
+        moi.setToken("NULL");
         DataBase.setMoi(moi);
         //Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
     }

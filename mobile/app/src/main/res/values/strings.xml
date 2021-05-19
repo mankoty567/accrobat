@@ -25,7 +25,13 @@
     <string name="txt_firstname">Prénom</string>
     <string name="txt_lastname">Nom</string>
     <string name="button_send_inscription">S\'inscrire</string>
-    <string name="button_back">Back</string>
+    <string name="button_back">Retour</string>
     <string name="back_to_connection">Vous possédez déjà un compte ? Connectez-vous ici</string>
     <string name="txt_go_to_inscription">Vous n\'avez pas de compte ? Inscrivez-vous ici</string>
+    <string name="txt_fraude">Fraude détectée, veuillez vous reconnecter !</string>
+
+    <!-- Signin Challenge -->
+    <string name="challenge_title">Title Challenge</string>
+    <string name="challenge_date">Date Challenge</string>
+    <string name="challenge_description">Description Challenge</string>
 </resources>

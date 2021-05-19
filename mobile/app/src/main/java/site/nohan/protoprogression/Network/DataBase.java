@@ -138,7 +138,7 @@ public class DataBase {
         user.setToken_last_update(token_last_update);
 
         resultats.close();
-        Log.e("INITIALIZE",token_last_update+"");
+        //Log.e("INITIALIZE",token_last_update+"");
         return user;
     }
 

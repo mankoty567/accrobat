@@ -23,6 +23,8 @@ import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
+import static site.nohan.protoprogression.View.ui.home.SigninFragment.hasFrauded;
+
 public class HomeFragment extends Fragment {
 
     /************************************************************************
@@ -40,6 +42,7 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         DataBase.init(this.getContext());
+
         signin = R.id.navigation_signin;
         challenge = R.id.navigation_challenge;
 
@@ -48,6 +51,8 @@ public class HomeFragment extends Fragment {
         else {
             if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
         }
+
+        hasFrauded = false;
 
         //Affichage de tous les challenges
         HomeListChallengesAdapter challengesAdapter = new HomeListChallengesAdapter(this.getActivity());

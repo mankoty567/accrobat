@@ -16,6 +16,7 @@ public class Map {
 
     public String libelle;
     public Date date;
+    public String description;
 
     public int accompli;
 

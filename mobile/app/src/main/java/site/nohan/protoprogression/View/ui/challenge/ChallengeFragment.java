@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +36,9 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
       ************************************************************************/
      private int signin;
 
+     public static boolean isNotAPreview;
+     private LinearLayout ll_interaction;
+
      /************************************************************************
       * Création de la class et de la vue
       ************************************************************************/
@@ -42,6 +47,9 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
         View root = inflater.inflate(R.layout.progression, container, false);
 
         signin = R.id.navigation_signin;
+        ll_interaction = root.findViewById(R.id.ll_challenge_interaction);
+        if(!isNotAPreview) ll_interaction.setVisibility(View.GONE);
+        else ll_interaction.setVisibility(View.VISIBLE);
 
          //Vérification que l'utilisateur est connecté
          if(!DataBase.isTokenValid()) ShowFragment(signin);

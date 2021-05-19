@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_home_to_notifications"
             app:destination="@id/navigation_notifications" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_subscribe"
+            app:destination="@id/navigation_subscribe" />
     </fragment>
 
     <fragment
@@ -58,4 +61,14 @@
         android:name="site.nohan.protoprogression.View.ui.home.SignupFragment"
         android:label="@string/title_signup"
         tools:layout="@layout/fragment_user_signup" />
+
+    <fragment
+        android:id="@+id/navigation_subscribe"
+        android:name="site.nohan.protoprogression.View.ui.home.SubscribeFragment"
+        android:label="fragment_challenge"
+        tools:layout="@layout/fragment_subscribe" >
+        <action
+            android:id="@+id/action_subscribeFragment_to_navigation_challenge"
+            app:destination="@id/navigation_challenge" />
+    </fragment>
 </navigation>

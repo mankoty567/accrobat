@@ -25,7 +25,8 @@ public class MapFragment extends Fragment {
     SeekBar zoomBar;
     Button bRecentrer;
     Button bVelo;
-    Button bEtape;
+    Button bMarche;
+    Button bCourse;
     Button bAddPrev;
     Button bAddCurrent;
     SeekBarController seekBarController;
@@ -56,10 +57,12 @@ public class MapFragment extends Fragment {
         seekBar.setOnSeekBarChangeListener(seekBarController);
         bRecentrer = getActivity().findViewById(R.id.bRecentrer);
         bRecentrer.setOnClickListener(buttonController);
-        bVelo = getActivity().findViewById(R.id.bModePodometre);
+        bVelo = getActivity().findViewById(R.id.bGPSVelo);
         bVelo.setOnClickListener(buttonController);
-        bEtape = getActivity().findViewById(R.id.bPodometre);
-        bEtape.setOnClickListener(buttonController);
+        bMarche = getActivity().findViewById(R.id.bPodometreMarche);
+        bMarche.setOnClickListener(buttonController);
+        bCourse = getActivity().findViewById(R.id.bPodometreCourse);
+        bCourse.setOnClickListener(buttonController);
         zoomBar = getActivity().findViewById(R.id.zoombar);
         zoomBar.setOnSeekBarChangeListener(zoomBarController);
         /*

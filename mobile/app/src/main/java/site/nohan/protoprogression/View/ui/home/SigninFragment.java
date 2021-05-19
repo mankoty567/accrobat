@@ -32,6 +32,8 @@ public class SigninFragment extends Fragment{
     private int signup;
     private int home;
 
+    public static boolean hasFrauded = false;
+
     private TextView txt_inscription;
     private Button btn_connection;
     private EditText et_login;
@@ -47,6 +49,9 @@ public class SigninFragment extends Fragment{
         signup = R.id.navigation_signup;
         home = R.id.navigation_home;
         MainActivity.setBottomNavigationViewVisibility(4);
+
+        if(hasFrauded) root.findViewById(R.id.txt_signin_message).setVisibility(View.VISIBLE);
+        else root.findViewById(R.id.txt_signin_message).setVisibility(View.GONE);
 
         //Initialisation du bouton d'inscritption
         txt_inscription = root.findViewById(R.id.txt_signin_inscription);

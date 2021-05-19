@@ -67,6 +67,16 @@
                             android:textSize="12dp"
                             android:text="@string/txt_go_to_inscription" />
 
+                        <TextView
+                            android:id="@+id/txt_signin_message"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/red"
+                            android:textSize="15dp"
+                            android:text="@string/txt_fraude" />
+
                         <LinearLayout
                             android:id="@+id/ll_signin_button"
                             android:layout_width="match_parent"

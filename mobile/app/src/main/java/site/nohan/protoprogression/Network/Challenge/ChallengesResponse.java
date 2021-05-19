@@ -22,7 +22,7 @@ import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
 
-public class ChallengeResponse implements APIListenner {
+public class ChallengesResponse implements APIListenner {
 
     /******************************************
      * Création des variables globales
@@ -33,7 +33,7 @@ public class ChallengeResponse implements APIListenner {
     /******************************************
      * Constructeur de la réponse
      ******************************************/
-    public ChallengeResponse(Activity activity, HomeListChallengesAdapter homeListChallengesAdapter) {
+    public ChallengesResponse(Activity activity, HomeListChallengesAdapter homeListChallengesAdapter) {
         this.activity = activity;
         this.homeListChallengesAdapter = homeListChallengesAdapter;
     }
@@ -76,6 +76,7 @@ public class ChallengeResponse implements APIListenner {
                 map.id = jMap.getInt("id");
                 map.libelle = jMap.getString("title");
                 map.date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(jMap.getString("createdAt"));
+                map.description = jMap.getString("description");
                 Map.maps.add(map);
             }
 
