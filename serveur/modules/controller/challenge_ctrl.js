@@ -176,7 +176,7 @@ module.exports = {
               fs.unlinkSync(
                 path.join(
                   __dirname,
-                  '../../data/challenge/' + challenge.id + '.wepb'
+                  '../../data/challenge/' + challenge.id + '.webp'
                 )
               );
 

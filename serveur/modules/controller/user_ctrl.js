@@ -155,6 +155,22 @@ module.exports = {
       res.json(req.user);
     }
   },
+  edit_user_password: (req, res) => {
+    if (req.body.new_password !== req.body.repeat_password) {
+      res.status(400).send('Two password not match');
+    } else {
+      if (bcrypt.compareSync(req.body.old_password, req.user.password)) {
+        let hash = bcrypt.hashSync(req.body.new_password, 12);
+
+        req.user.password = hash;
+        req.user.save().then(() => {
+          res.send('OK');
+        });
+      } else {
+        res.status(403).send('Old Password Not Correct');
+      }
+    }
+  },
   get_avatar: (req, res) => {
     if (
       fs.existsSync(
