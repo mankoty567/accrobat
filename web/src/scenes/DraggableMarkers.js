@@ -35,6 +35,7 @@ let DraggableMarkers = ({
   inBounds,
   fitInBounds,
   removeMarker,
+  setSelectedObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
@@ -109,6 +110,7 @@ let DraggableMarkers = ({
                         newCurrent = null;
                     }
                     setCurrentMarker(newCurrent);
+                    setSelectedObstacle(null);
                     if (addingLine) {
                       if (currentMarker.id !== item.id)
                         addLine(currentMarker, item);

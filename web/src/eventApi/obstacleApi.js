@@ -64,11 +64,12 @@ const obstacleApi = {
       headers: {
         Authorization:
           'Bearer ' + window.localStorage.getItem('token'),
-        'Content-Type': 'application/json',
       },
     })
       .then(checkStatus)
-      .then((res) => res.json());
+      .then((res) => {
+        res.text;
+      });
   },
 };
 
