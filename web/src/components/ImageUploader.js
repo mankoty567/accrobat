@@ -16,7 +16,9 @@ let ImageUploader = ({ callback, childs }) => {
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => {
+        resolve(reader.result);
+      };
       reader.onerror = (error) => reject(error);
     });
 
@@ -24,6 +26,8 @@ let ImageUploader = ({ callback, childs }) => {
     //Vérifie si on a un fichier
     if (inputFile.current.files.length === 1) {
       let file_img = inputFile.current.files[0];
+      let img = new Image();
+      img.src = window.URL.createObjectURL(file_img);
 
       toBase64(file_img)
         .then((base64img) => {

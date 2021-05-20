@@ -1,14 +1,15 @@
 import { AppBar, Tabs, Tab } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import PublicPage from './PublicPage';
-import ProfilePage from './ProfilePage';
-import AdminPanel from './adminPanel/AdminPanel';
-import ChallengeEditor from './ChallengeEditor';
+import PublicPage from '../PublicPage';
+import ProfilePage from '../profilePage/ProfilePage';
 
-import LoginForm from './loginForm/LoginForm';
-import Logout from './loginForm/Logout';
-import NeedLogin from './loginForm/NeedLogin';
-import GoogleReturn from './loginForm/GoogleReturn';
+import AdminPanel from '../adminPanel/AdminPanel';
+import ChallengeEditor from '../ChallengeEditor';
+
+import LoginForm from '../loginForm/LoginForm';
+import Logout from '../loginForm/Logout';
+import NeedLogin from '../loginForm/NeedLogin';
+import GoogleReturn from '../loginForm/GoogleReturn';
 
 import {
   BrowserRouter as Router,
@@ -17,8 +18,9 @@ import {
   Link,
 } from 'react-router-dom';
 
-import { API } from '../eventApi/api';
+import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
+import ChallengePage from '../challengePage/ChallengePage';
 
 let MainPage = () => {
   // Tentative de connection automatique de l'utilisateur
@@ -62,6 +64,11 @@ let MainPage = () => {
               to="/profile"
             />
             <Tab
+              label="Vos challenges"
+              component={Link}
+              to="/challenges"
+            />
+            <Tab
               label="Administration"
               component={Link}
               to="/admin"
@@ -76,6 +83,11 @@ let MainPage = () => {
           <Route path="/profile">
             <NeedLogin>
               <ProfilePage />
+            </NeedLogin>
+          </Route>
+          <Route path="/challenges">
+            <NeedLogin>
+              <ChallengePage />
             </NeedLogin>
           </Route>
           <Route path="/admin">

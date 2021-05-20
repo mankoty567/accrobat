@@ -7,13 +7,12 @@ const participationApi = {
    */
   getParticipations: () => {
     return fetch(`${host}/api/participation`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization:
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.participation),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -25,6 +24,7 @@ const participationApi = {
    * @returns La participation au challenge avec un status 200, ou alors un status 400
    */
   createParticipation: (challenge_id) => {
+    console.log(challenge_id);
     return fetch(`${host}/api/participation`, {
       method: 'POST',
       headers: {
@@ -32,7 +32,7 @@ const participationApi = {
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(challenge_id),
+      body: JSON.stringify({ ChallengeId: challenge_id }),
     })
       .then(checkStatus)
       .then((res) => res.json());
