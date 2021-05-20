@@ -49,6 +49,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         if(Map.mapActuelle.cheminActuel == null)
             return;
 
+        Log.e("onProgressChanged", Map.mapActuelle.toString() );
         DataBase.saveProgression();
 
         Log.e("lele", DataBase.getSubscribed().toString());

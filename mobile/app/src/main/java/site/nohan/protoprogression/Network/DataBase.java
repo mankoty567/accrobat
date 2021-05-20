@@ -76,6 +76,7 @@ public class DataBase {
                 "CHEMIN_ID INTEGER," + // SEGMENT_ID
                 "PROGRESSION INTEGER," +
                 "LIBELLE TEXT,"+
+                "DESCRIPTION TEXT," +
                 "DATE_INSCRIPTION TEXT," +
                 "DATE_DERNIEREPARTIE TEXT" +
                 ");"
@@ -108,6 +109,7 @@ public class DataBase {
             newMap.id = resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"));
             newMap.libelle =  resultats.getString(resultats.getColumnIndex("LIBELLE"));
             newMap.dateInscription = resultats.getString(resultats.getColumnIndex("DATE_INSCRIPTION"));
+            newMap.description = resultats.getString(resultats.getColumnIndex("DESCRIPTION"));
             newMap.dateDernierePartie =  resultats.getString(resultats.getColumnIndex("DATE_DERNIEREPARTIE"));
 
             maps.add(newMap);
@@ -138,8 +140,9 @@ public class DataBase {
         bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
                 Map.mapActuelle.id + ", " +
                 Map.mapActuelle.cheminActuel.id +", " +
-                Map.mapActuelle.accompli + ", '" +
-                Map.mapActuelle.libelle + "','" +
+                Map.mapActuelle.accompli + ", \"" +
+                Map.mapActuelle.libelle + "\",\"" +
+                Map.mapActuelle.description + " \",'" +
                 dateInscription + "','" +
                 dateAujourdhui +
                 "');"

@@ -58,6 +58,7 @@ public class MapResponse implements APIListenner {
             // MAP
            this.map.libelle = json.getString("title");
            this.map.id = json.getInt("id");
+           this.map.description = json.getString("description");
 
 
            //this.map.date = new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("createdAt"));
