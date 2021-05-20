@@ -50,11 +50,11 @@ export default function ContextMenu({ data, onEvent }) {
           ) : null}
           {data.type == 'line' ? (
             <div>
-              <MenuItem onClick={() => onEvent('updateSegment')}>
-                Modifier
-              </MenuItem>
               <MenuItem onClick={() => onEvent('addObstacle')}>
                 Ajouter un obstacle
+              </MenuItem>
+              <MenuItem onClick={() => onEvent('updateSegment')}>
+                Modifier
               </MenuItem>
             </div>
           ) : null}
