@@ -49,6 +49,14 @@ h3:hover {
   cursor: pointer;
 }
 
+.copyIcon {
+  width: 15px;
+}
+
+.copyIcon:hover {
+  cursor: pointer;
+}
+
 h4 {
   margin: 0;
 }
