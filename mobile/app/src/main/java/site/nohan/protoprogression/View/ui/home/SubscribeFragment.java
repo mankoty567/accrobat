@@ -62,6 +62,7 @@ public class SubscribeFragment extends Fragment {
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                DataBase.deleteProgression(Map.maps.get(position).id);
                 subscribeToChallenge();
             }
         });

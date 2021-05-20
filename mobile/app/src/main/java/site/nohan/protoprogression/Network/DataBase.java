@@ -162,6 +162,11 @@ public class DataBase {
         //Map.mapActuelle.cheminActuel.id;
     }
 
+    public static synchronized void deleteProgression(int mapId){
+        bdd.execSQL("DELETE FROM PROGRESSION WHERE CHALLENGE_ID="+mapId+ ";");
+        bdd.execSQL("DELETE FROM ACCOMPLI WHERE CHALLENGE_ID="+mapId+";");
+    }
+
     public static synchronized void restoreProgression(){
         Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
         if(resultats.getCount() == 0){
