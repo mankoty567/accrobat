@@ -6,7 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.inputmethod.InlineSuggestionsRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import site.nohan.protoprogression.Model.Chemin;
@@ -71,7 +74,9 @@ public class DataBase {
         bdd.execSQL("CREATE TABLE IF NOT EXISTS PROGRESSION(" +
                 "CHALLENGE_ID INTEGER," +
                 "CHEMIN_ID INTEGER," + // SEGMENT_ID
-                "PROGRESSION INTEGER" +
+                "PROGRESSION INTEGER," +
+                "DATE_INSCRIPTION TEXT," +
+                "DATE_DERNIEREPARTIE TEXT" +
                 ");"
         );
 
@@ -93,9 +98,50 @@ public class DataBase {
         resultats.close();
     }
 
+    public static synchronized ArrayList<Map> getSubscribed(){
+        ArrayList<Map> maps = new ArrayList<>();
+        Map newMap;
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION;", null);
+        for (resultats.moveToFirst(); !resultats.isAfterLast(); resultats.moveToNext()) {
+            newMap = new Map();
+            newMap.id = resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"));
+            newMap.dateInscription = resultats.getString(resultats.getColumnIndex("DATE_INSCRIPTION"));
+            newMap.dateDernierePartie =  resultats.getString(resultats.getColumnIndex("DATE_DERNIEREPARTIE"));
+
+            maps.add(newMap);
+        }
+
+
+        return maps;
+    }
+
     public static synchronized void saveProgression(){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dateAujourdhui = sdf.format(new Date());
+        String dateInscription = null;
+
+
+
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        resultats.moveToFirst();
+        if(resultats.getCount() == 0){
+            dateInscription = "" + dateAujourdhui;
+        }else{
+            dateInscription = resultats.getString(resultats.getColumnIndex("DATE_INSCRIPTION"));
+        }
+        resultats.close();
+
         bdd.execSQL("DELETE FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+ ";");
-        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" + Map.mapActuelle.id + ", " + Map.mapActuelle.cheminActuel.id +", " + Map.mapActuelle.accompli + ");");
+        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
+                Map.mapActuelle.id + ", " +
+                Map.mapActuelle.cheminActuel.id +", " +
+                Map.mapActuelle.accompli + ", '" +
+                dateInscription + "','" +
+                dateAujourdhui +
+                "');"
+        );
+        Log.e("save", "date: "+dateAujourdhui );
 
         bdd.execSQL("DELETE FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";");
         ArrayList<Integer> completes = new ArrayList<>();

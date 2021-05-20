@@ -8,6 +8,8 @@ import java.util.Date;
 import site.nohan.protoprogression.Model.Types.TypePointPassage;
 
 public class Map {
+
+
     public static int participationId;
     public static Map mapActuelle;
 
@@ -27,6 +29,9 @@ public class Map {
     public ArrayList<PointPassage> pointPassages;
 
     public Bitmap background;
+
+    public String dateInscription;
+    public String dateDernierePartie;
 
 
 

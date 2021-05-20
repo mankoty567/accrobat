@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+import java.text.DateFormat;
+
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
@@ -48,6 +50,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             return;
 
         DataBase.saveProgression();
+
+        Log.e("lele", DataBase.getSubscribed().toString());
         this.detecterObstacle();
         //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
         if(progress == 100){
