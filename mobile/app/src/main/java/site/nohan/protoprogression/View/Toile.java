@@ -340,30 +340,20 @@ public class Toile extends View {
     }
 /*
     public void recentrer(){
-        PointF delta = new PointF();
 
         Point A = Map.mapActuelle.cheminActuel.getMinPoint();
         Point B = Map.mapActuelle.cheminActuel.getMaxPoint();
 
-        PointF epsilon = new PointF(0.2f, 0.2f);
+        Point T = new Point(
+                Math.abs(A.x - B.x),
+                Math.abs(A.y - B.y)
+        );
+        Log.e("recentrer", A.x + " " + A.y);
 
-
-        if(A == null || B == null)
-            return;
-        //float zoom = 100f/(float) Chemin.getDistance(A,B);
-        // TODO: attention sortie ecran avec distance 100%
-        float zoom = 100f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
-
-        A.set(A.x - Math.round((float) A.x*0.1f),A.y - Math.round((float) A.y*0.1f));
-
-
-        //delta.x = Math.abs(Math.min(A.x-B.x, A.y,B.y));
-        delta.y = Math.abs(A.y-B.y);
-
-
-        this.setZoom(zoom*0.9f);
-
-        this.setPosition(delta);
+        this.setPosition(new PointF(
+                -((float) T.x/100f*(this.getWidth())),
+                -((float) T.x/100f*(this.getWidth()))
+        ));
     }
 */
 
@@ -377,7 +367,7 @@ public class Toile extends View {
             return;
         //float zoom = 100f/(float) Chemin.getDistance(A,B);
         // TODO: attention sortie ecran avec distance 100%
-        float zoom = 100f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
+        float zoom = 80f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
 
         A.set(A.x - Math.round((float) A.x*0.1f),A.y - Math.round((float) A.y*0.1f));
 
@@ -389,5 +379,5 @@ public class Toile extends View {
 
         this.setPosition(delta);
     }
-     
+
 }

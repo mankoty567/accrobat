@@ -1,13 +1,20 @@
 package site.nohan.protoprogression.Controller;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Point;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Obstacle;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
@@ -41,6 +48,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             return;
 
         DataBase.saveProgression();
+        this.detecterObstacle();
         //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
         if(progress == 100){
 
@@ -72,6 +80,51 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
         Map.mapActuelle.accompli = (int) Math.floor(((float) progress*Map.mapActuelle.cheminActuel.getLongueur())/100);
 
+
+    }
+
+    public void detecterObstacle(){
+        for (Obstacle obstacle : Map.mapActuelle.cheminActuel.obstacles) {
+            Log.e("obs", "ods"+ (obstacle.distance*100) + " maci"+ ((Map.mapActuelle.accompli/Map.mapActuelle.cheminActuel.getLongueur())*100) );
+            if ((((float) Map.mapActuelle.accompli/Map.mapActuelle.cheminActuel.getLongueur())*100f) > obstacle.distance * 100
+                && !obstacle.estResolu()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+                builder.setTitle(obstacle.titre);
+                builder.setMessage(obstacle.description);
+
+                final EditText input = new EditText(this.activity);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("Soumettre", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Log.e("reponse", input.getText().toString());
+                        if(input.getText().toString().equals(obstacle.reponse)){
+                            obstacle.resolu = true;
+                        }else{
+                            detecterObstacle();
+                        }
+                    }
+                });
+
+                builder.show();
+                /*
+                new AlertDialog.Builder(this.activity)
+                        .setTitle("Attention")
+                        .setMessage(obstacle.description)
+                        .setCancelable(true)
+                        .setPositiveButton("J'ai la réponse !", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                obstacle.reponse = "";
+                            }
+                        }).show();
+
+                 */
+            }
+        }
 
     }
 
