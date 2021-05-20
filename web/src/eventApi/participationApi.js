@@ -24,7 +24,6 @@ const participationApi = {
    * @returns La participation au challenge avec un status 200, ou alors un status 400
    */
   createParticipation: (challenge_id) => {
-    console.log(challenge_id);
     return fetch(`${host}/api/participation`, {
       method: 'POST',
       headers: {
