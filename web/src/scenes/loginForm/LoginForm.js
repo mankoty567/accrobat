@@ -16,20 +16,15 @@ export default function LoginForm() {
 
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
-  const [
-    registerPasswordRepeat,
-    setRegisterPasswordRepeat,
-  ] = useState('');
+  const [registerPasswordRepeat, setRegisterPasswordRepeat] =
+    useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerDuring, setRegisterDuring] = useState(false);
-  const [registerErrorMessage, setRegisterErrorMessage] = useState(
-    '',
-  );
+  const [registerErrorMessage, setRegisterErrorMessage] =
+    useState('');
 
-  const [
-    registerCallbackMessage,
-    setRegisterCallbackMessage,
-  ] = useState('');
+  const [registerCallbackMessage, setRegisterCallbackMessage] =
+    useState('');
 
   const [, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
@@ -73,7 +68,7 @@ export default function LoginForm() {
     API.user
       .login({ username: loginUsername, password: loginPassword })
       .then((data) => {
-        localStorage.setItem('jwt', data.jwt);
+        localStorage.setItem('token', data.jwt);
         setUserState(data);
         setDoneConnection(true);
 
@@ -92,7 +87,7 @@ export default function LoginForm() {
     API.user
       .whoami()
       .then((data) => {
-        localStorage.setItem('jwt', data.jwt);
+        localStorage.setItem('token', data.jwt);
         setUserState(data);
 
         setTimeout(refreshJWT, API.user.JWT_VALIDITY);
@@ -101,7 +96,7 @@ export default function LoginForm() {
         setDoneConnection(true);
         setUserState(undefined);
 
-        localStorage.setItem('jwt', undefined);
+        localStorage.setItem('token', undefined);
       });
   }
 
