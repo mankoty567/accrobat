@@ -81,7 +81,7 @@ let ModifyObstaclePopUp = ({
           </ListItem>
           <ListItem>
             <Typography id="discrete-slider-small-steps" gutterBottom>
-              Distance
+              Distance en %
             </Typography>
           </ListItem>
           <ListItem>
@@ -90,9 +90,9 @@ let ModifyObstaclePopUp = ({
               defaultValue={currentObstacle.distance}
               aria-labelledby="discrete-slider-small-steps"
               step={0.01}
-              valueLabelDisplay="on"
-              min={0}
-              max={1}
+              valueLabelDisplay="auto"
+              min={0.5}
+              max={0.95}
               onChangeCommitted={(e, value) => {
                 currentObstacle.distance = value;
                 updateObstacle(currentObstacle);
