@@ -22,11 +22,11 @@ const doneConnectionAtom = atom({
 
 const userApi = {
   whoami: () => {
-    if (localStorage.getItem('jwt') !== undefined) {
+    if (localStorage.getItem('token') !== undefined) {
       return fetch(`${host}/api/user/whoami`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
         .then(checkStatus)
