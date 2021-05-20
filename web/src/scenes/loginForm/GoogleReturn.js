@@ -20,7 +20,7 @@ export default function GoogleReturn() {
     API.user
       .getDataFromJWT(jwt)
       .then((data) => {
-        localStorage.setItem('jwt', data.jwt);
+        localStorage.setItem('token', data.jwt);
         setDoneConnection(true);
         setUserState(data);
 
@@ -37,7 +37,7 @@ export default function GoogleReturn() {
     API.user
       .whoami()
       .then((data) => {
-        localStorage.setItem('jwt', data.jwt);
+        localStorage.setItem('token', data.jwt);
         setDoneConnection(true);
         setUserState(data);
 

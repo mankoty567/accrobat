@@ -37,7 +37,7 @@ let MainPage = () => {
       API.user
         .whoami()
         .then((data) => {
-          localStorage.setItem('jwt', data.jwt);
+          localStorage.setItem('token', data.jwt);
           setDoneConnection(true);
           setUserState(data);
 
