@@ -7,13 +7,12 @@ const participationApi = {
    */
   getParticipations: () => {
     return fetch(`${host}/api/participation`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization:
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data.participation),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -32,7 +31,7 @@ const participationApi = {
           'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(challenge_id),
+      body: JSON.stringify({ ChallengeId: challenge_id }),
     })
       .then(checkStatus)
       .then((res) => res.json());

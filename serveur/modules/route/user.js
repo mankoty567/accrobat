@@ -17,6 +17,10 @@ module.exports.routes = [
       username: 'string',
       password: 'string',
       email: 'string',
+      avatar: {
+        type: 'data_url',
+        required: false,
+      },
     },
     result: [
       { code: 200, content: 'OK' },
@@ -71,5 +75,84 @@ module.exports.routes = [
       },
       { code: 400, content: 'Bad request: Token invalide' },
     ],
+  },
+  {
+    method: 'POST',
+    url: '/api/user/edit',
+    func: [m.user_mdw.put_user, m.user_ctrl.edit_user],
+    name: "Edition d'utilisateurs",
+    description:
+      "Modifie les paramètres d'un utilisateur (son image de profil, ses paramètres...)",
+    body: {
+      username: {
+        type: 'string',
+        required: false,
+      },
+      email: {
+        type: 'string',
+        required: false,
+      },
+      avatar: {
+        type: 'data_url',
+        required: false,
+      },
+    },
+    result: [
+      {
+        code: 200,
+        content: {
+          id: 0,
+          username: '',
+          email: '',
+          permission: 0,
+          level: 0,
+          xp: 0,
+        },
+      },
+      { code: 400, content: 'Bad Request: Username already exist' },
+    ],
+  },
+  {
+    method: 'POST',
+    url: '/api/user/edit_password',
+    func: [m.user_mdw.put_user, m.user_ctrl.edit_user_password],
+    name: 'Changement de mot de passe',
+    description:
+      "Permet de modifier le mot de passe d'un utilisateur. Tous les champs sont obligatoires",
+    body: {
+      old_password: 'string',
+      new_password: 'string',
+      repeat_password: 'string',
+    },
+    result: [
+      { code: 200, content: 'OK' },
+      { code: 400, content: 'Two password not match' },
+      { code: 403, content: 'Old Password Not Correct' },
+    ],
+  },
+  {
+    method: 'GET',
+    url: '/api/user/:id/avatar',
+    func: [m.user_ctrl.get_avatar],
+    name: "Récupération de l'avatar d'un utilisateur",
+    description:
+      "Récupération de de l'avatar d'un utilisateur sous la forme d'un fichier tout basique",
+  },
+  {
+    method: 'GET',
+    url: '/api/user/check_username/:username',
+    func: [m.user_ctrl.check_username],
+    name: "Vérification de l'username",
+    description:
+      "Verifie si le nom d'utilisateur passé en paramètre est encore disponible",
+    result: [{ code: 200, content: { valid: 'true/false' } }],
+  },
+  {
+    method: 'GET',
+    url: '/api/user/get_all_admin',
+    func: [m.user_mdw.put_admin, m.user_ctrl.get_all_admin],
+    name: 'Récupération des admins',
+    description: 'Récupère tous les administrateurs',
+    result: [{ code: 200, content: [{ id: 0, username: '' }] }],
   },
 ];

@@ -39,7 +39,11 @@ module.exports.routes = [
   {
     method: 'POST',
     url: '/api/challenge/:id/point',
-    func: [m.user_mdw.put_admin, m.pointpassage_ctrl.post_pointpassage],
+    func: [
+      m.user_mdw.put_admin,
+      m.challenge_mdw.check_is_admin,
+      m.pointpassage_ctrl.post_pointpassage,
+    ],
     name: 'Ajout de PointPassage',
     description: 'Ajoute un PointPassage à un segment',
     body: {
@@ -105,9 +109,9 @@ module.exports.routes = [
         required: false,
       },
       type: {
-        type: "string",
+        type: 'string',
         required: false,
-        value: ["start", "point", "end"]
+        value: ['start', 'point', 'end'],
       },
       x: {
         type: 'number',

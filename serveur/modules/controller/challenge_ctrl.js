@@ -90,11 +90,11 @@ module.exports = {
   get_image: (req, res) => {
     if (
       fs.existsSync(
-        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.webp')
       )
     ) {
       res.sendFile(
-        path.join(__dirname, '../../data/challenge/' + req.params.id + '.jpg')
+        path.join(__dirname, '../../data/challenge/' + req.params.id + '.webp')
       );
     } else {
       res.status(404).send('Map not found');
@@ -105,14 +105,14 @@ module.exports = {
       fs.existsSync(
         path.join(
           __dirname,
-          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+          '../../data/challengeAvatar/' + req.params.id + '.webp'
         )
       )
     ) {
       res.sendFile(
         path.join(
           __dirname,
-          '../../data/challengeAvatar/' + req.params.id + '.jpg'
+          '../../data/challengeAvatar/' + req.params.id + '.webp'
         )
       );
     } else {
@@ -125,28 +125,37 @@ module.exports = {
       description: req.body.description,
       echelle: req.body.echelle,
     }).then((challenge) => {
-      utils.pngParser(req.body.img_fond).then((buffer) => {
+      utils.parseMap(req.body.img_fond).then((buffer) => {
         fs.writeFileSync(
-          path.join(__dirname, '../../data/challenge/' + challenge.id + '.jpg'),
+          path.join(
+            __dirname,
+            '../../data/challenge/' + challenge.id + '.webp'
+          ),
           buffer
         );
 
-        if (req.body.img_avatar !== undefined) {
-          utils.pngParser(req.body.img_avatar).then((buffer) => {
-            fs.writeFileSync(
-              path.join(
-                __dirname,
-                '../../data/challengeAvatar/' + challenge.id + '.jpg'
-              ),
-              buffer
-            );
+        bdd.UserChallengeAdmin.create({
+          isAuthor: true,
+          UserId: req.user.id,
+          ChallengeId: challenge.id,
+        }).then(() => {
+          if (req.body.img_avatar !== undefined) {
+            utils.parseAvatar(req.body.img_avatar).then((buffer) => {
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  '../../data/challengeAvatar/' + challenge.id + '.webp'
+                ),
+                buffer
+              );
+              debug('Création du challenge ' + challenge.id);
+              res.json({ ...challenge.dataValues, frontId: req.body.frontId });
+            });
+          } else {
             debug('Création du challenge ' + challenge.id);
             res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-          });
-        } else {
-          debug('Création du challenge ' + challenge.id);
-          res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-        }
+          }
+        });
       });
     });
   },
@@ -167,9 +176,25 @@ module.exports = {
               fs.unlinkSync(
                 path.join(
                   __dirname,
-                  '../../data/challenge/' + challenge.id + '.jpg'
+                  '../../data/challenge/' + challenge.id + '.webp'
                 )
               );
+
+              if (
+                fs.existsSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  )
+                )
+              ) {
+                fs.unlinkSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  )
+                );
+              }
               res.send('OK');
             })
             .catch((err) => {
@@ -204,11 +229,11 @@ module.exports = {
         }
 
         if (req.body.img_fond) {
-          utils.pngParser(req.body.img_fond).then((buffer) => {
+          utils.parseMap(req.body.img_fond).then((buffer) => {
             fs.writeFileSync(
               path.join(
                 __dirname,
-                '../../data/challenge/' + challenge.id + '.jpg'
+                '../../data/challenge/' + challenge.id + '.webp'
               ),
               buffer
             );
@@ -216,11 +241,11 @@ module.exports = {
         }
 
         if (req.body.img_avatar) {
-          utils.pngParser(req.body.img_avatar).then((buffer) => {
+          utils.parseAvatar(req.body.img_avatar).then((buffer) => {
             fs.writeFileSync(
               path.join(
                 __dirname,
-                '../../data/challengeAvatar/' + challenge.id + '.jpg'
+                '../../data/challengeAvatar/' + challenge.id + '.webp'
               ),
               buffer
             );
@@ -268,22 +293,32 @@ module.exports = {
           },
           { transaction: t }
         );
+
+        await bdd.UserChallengeAdmin.create(
+          {
+            isAuthor: true,
+            ChallengeId: newChallenge.id,
+            UserId: req.user.id,
+          },
+          { transaction: t }
+        );
+
         if (
           fs.existsSync(
             path.join(
               __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
+              '../../data/challenge/' + challenge.id + '.webp'
             )
           )
         ) {
           fs.copyFileSync(
             path.join(
               __dirname,
-              '../../data/challenge/' + challenge.id + '.jpg'
+              '../../data/challenge/' + challenge.id + '.webp'
             ),
             path.join(
               __dirname,
-              '../../data/challenge/' + newChallenge.id + '.jpg'
+              '../../data/challenge/' + newChallenge.id + '.webp'
             )
           );
         }
@@ -350,18 +385,18 @@ module.exports = {
             fs.existsSync(
               path.join(
                 __dirname,
-                '../../data/obstacle/' + obstacle.id + '.jpg'
+                '../../data/obstacle/' + obstacle.id + '.webp'
               )
             )
           ) {
             fs.copyFileSync(
               path.join(
                 __dirname,
-                '../../data/obstacle/' + obstacle.id + '.jpg'
+                '../../data/obstacle/' + obstacle.id + '.webp'
               ),
               path.join(
                 __dirname,
-                '../../data/obstacle/' + newObstacle.id + '.jpg'
+                '../../data/obstacle/' + newObstacle.id + '.webp'
               )
             );
           }
@@ -377,18 +412,104 @@ module.exports = {
     });
   },
   get_all_challenge: (req, res) => {
-    bdd.Challenge.findAll({
+    let query = {
       where: { published: true },
-      attributes: ['id', 'title', 'description', 'echelle'],
-    }).then((challenges) => {
+      attributes: ['id', 'title', 'description', 'echelle', 'createdAt'],
+    };
+
+    if (req.query.include === 'point') {
+      query.include = [{ model: bdd.PointPassage }];
+    } else if (req.query.include === 'pointsegment') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+            },
+          ],
+        },
+      ];
+    } else if (req.query.include === 'pointsegmentobstacle') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    }
+    bdd.Challenge.findAll(query).then((challenges) => {
       res.json(challenges);
     });
   },
   get_all_challenge_admin: (req, res) => {
     bdd.Challenge.findAll({
       attributes: ['id', 'title', 'description', 'echelle'],
+      include: [
+        { model: bdd.User, where: { id: req.user.id }, required: false },
+      ],
     }).then((challenges) => {
-      res.json(challenges);
+      let challengeReturn = challenges.map((k) => {
+        let obj = JSON.parse(JSON.stringify(k));
+        if (obj.Users.length !== 0) {
+          obj.isAdmin = true;
+
+          if (obj.Users[0].UserChallengeAdmin.isAuthor) {
+            obj.isAuthor = true;
+          } else {
+            obj.isAuthor = false;
+          }
+        } else {
+          obj.isAdmin = false;
+          obj.isAuthor = false;
+        }
+
+        delete obj.Users;
+
+        return obj;
+      });
+
+      res.json(challengeReturn);
     });
   },
   verif_validity: async (req, res) => {
@@ -411,5 +532,20 @@ module.exports = {
         res.status(400).send('Challenge is not valid');
       }
     }
+  },
+  add_challenge_admin: (req, res) => {
+    bdd.User.findOne({ where: { id: req.body.user_id } }).then((toAddUser) => {
+      if (toAddUser === null) {
+        res.status(400).send('Bad Request: User not exist');
+      } else {
+        bdd.UserChallengeAdmin.create({
+          isAuthor: false,
+          UserId: req.body.user_id,
+          ChallengeId: req.params.id,
+        }).then(() => {
+          res.send('OK');
+        });
+      }
+    });
   },
 };
