@@ -83,6 +83,8 @@ const userApi = {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
       },
       body: JSON.stringify({
         username,
@@ -96,6 +98,10 @@ const userApi = {
   checkUser: (username) => {
     return fetch(`${host}/api/user/check_username/${username}`, {
       method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -106,6 +112,8 @@ const userApi = {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
       },
       body: JSON.stringify({
         old_password,
@@ -114,7 +122,7 @@ const userApi = {
       }),
     })
       .then(checkStatus)
-      .then((res) => res.json());
+      .then((res) => res.text());
   },
 };
 

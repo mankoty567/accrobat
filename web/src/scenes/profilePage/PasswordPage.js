@@ -18,7 +18,7 @@ import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import CheckIcon from '@material-ui/icons/Check';
 
-let PasswordPage = ({ mode, setMode }) => {
+let PasswordPage = ({ setMode, callback }) => {
   const [password, setPassword] = useState('');
   const [confirmationPass, setConfirmationPass] = useState('');
   const [confirmationPass2, setConfirmationPass2] = useState('');
@@ -31,11 +31,12 @@ let PasswordPage = ({ mode, setMode }) => {
   const handleSubmit = () => {
     API.user
       .editPassword(password, confirmationPass, confirmationPass2)
-      .then((result) => console.log(result))
+      .then(() => {
+        setMode('profile');
+        callback();
+      })
       .catch((err) => {
-        console.log(error);
         setErr(err.toString());
-        console.log(err.toString());
       });
   };
   return (
@@ -172,7 +173,7 @@ let PasswordPage = ({ mode, setMode }) => {
               onClick={() => setMode('profile')}
               startIcon={<ReplyIcon />}
             >
-              Revenir à mon profile
+              Revenir à mon profil
             </Button>
           </Grid>
         </Grid>
