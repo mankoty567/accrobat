@@ -100,6 +100,22 @@ const userApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+
+  editPassword: (old_password, new_password, repeat_password) => {
+    return fetch(`${host}/api/user/edit_password`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        old_password,
+        new_password,
+        repeat_password,
+      }),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
 };
 
 /* Code de la connection
