@@ -5,6 +5,8 @@ import {
   ImageOverlay,
   Polyline,
   useMapEvent,
+  Marker,
+  Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
 import DraggableMarkers from './DraggableMarkers';
@@ -90,6 +92,7 @@ let ChallengeEditor = ({
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
+  const [selectedObstacle, setSelectedObstacle] = useState(null);
 
   const initializeMap = async (challenge_id) => {
     await API.challenge
@@ -118,6 +121,7 @@ let ChallengeEditor = ({
           ]);
         });
         let newLines = [];
+        let obstacles = [];
         res.PointPassages.forEach((pp) => {
           pp.pointStart.forEach((segment) => {
             newLines.push({
@@ -126,8 +130,23 @@ let ChallengeEditor = ({
               PointEndId: segment.PointEndId,
               path: segment.path,
             });
+            segment.Obstacles.forEach((obstacle) => {
+              obstacles.push({
+                id: obstacle.id,
+                title: obstacle.title,
+                description: obstacle.description,
+                type: obstacle.type,
+                distance: obstacle.distance,
+                enigme_awnser: obstacle.enigme_awnser,
+                SegmentId: obstacle.SegmentId,
+                // Valeur random en attendant de récupérer la bonne distance
+                x: 0.5,
+                y: 0.5,
+              });
+            });
           });
         });
+        setObstacles(obstacles);
         setLines(newLines);
       })
       .then(() => {
@@ -172,13 +191,15 @@ let ChallengeEditor = ({
 
   //Ajoute un marker
   let addMarker = async (event) => {
+    var coords = event.latlng;
+    if (!inBounds(coords)) coords = fitInBounds(coords);
     try {
       var newMarker = {
         title: 'Point ' + markers.length,
         description: '',
         type: markers.length > 0 ? 'point' : 'start',
-        x: event.latlng.lng,
-        y: event.latlng.lat,
+        x: coords.lng,
+        y: coords.lat,
       };
       let data = await API.checkpoint.createMarker({
         marker: newMarker,
@@ -225,13 +246,20 @@ let ChallengeEditor = ({
     );
   };
 
+  let getMarkerCoordsFromId = (id) => {
+    var marker = markers.filter((current) => {
+      if (current.id == id) return current;
+    });
+    return [marker[0].x, marker[0].y];
+  };
+
   //Ajoute une ligne
   let addLine = (start, end) => {
     currentLine.shift();
     var newLine = {
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine.map((p) => [p.lat, p.lng]),
+      path: currentLine.map((p) => [p.lng, p.lat]),
       name: 'Segment ' + lines.length,
     };
     return API.segment
@@ -246,14 +274,63 @@ let ChallengeEditor = ({
       });
   };
 
-  let addObstacle = (event) => {
-    // var newObstacle = {
-    //   title: 'Point ' + markers.length,
-    //   description: '',
-    //   type: markers.length > 0 ? 'point' : 'start',
-    //   x: event.latlng.lng,
-    //   y: event.latlng.lat,
-    // };
+  let addObstacle = async (event) => {
+    var pointClicked = [event.latlng.lng, event.latlng.lat];
+    var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
+    var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
+    var d = Math.sqrt(
+      Math.pow(pointClicked[0] * 100 - pointStart[0] * 100, 2) +
+        Math.pow(pointClicked[1] * 100 - pointStart[1] * 100, 2),
+    );
+    var D = Math.sqrt(
+      Math.pow(pointEnd[0] * 100 - pointStart[0] * 100, 2) +
+        Math.pow(pointEnd[1] * 100 - pointStart[1] * 100, 2),
+    );
+    var distance = Math.round((d / D) * 100);
+    try {
+      var newObstacle = {
+        title: 'Obstacle ' + obstacles.length,
+        description: ' ',
+        type: 'question',
+        enigme_awnser: ' ',
+        x: pointClicked[0],
+        y: pointClicked[1],
+        distance: distance / 100,
+        SegmentId: selectedLine.id,
+      };
+      let data = await API.obstacle.createObstacle(newObstacle);
+      // Valeurs randoms, à calculer
+      data.x = 0.5;
+      data.y = 0.5;
+      setObstacles((current) => [...current, data]);
+      setValid(false);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  let updateObstacle = (obstacle) => {
+    API.obstacle.updateObstacle(obstacle).catch((err) => {
+      console.log(err);
+    });
+    setValid(false);
+    setObstacles((current) =>
+      current.filter((val) => {
+        if (val.id == obstacle.id) val = obstacle;
+        return val;
+      }),
+    );
+  };
+
+  let removeObstacle = (obstacle) => {
+    setObstacles((current) =>
+      current.filter((val) => val != obstacle),
+    );
+    API.obstacle.deleteObstacle(obstacle.id).catch((err) => {
+      console.log(err);
+    });
+    setValid(false);
   };
 
   let addCurrentLine = (newPoint) => {
@@ -269,13 +346,11 @@ let ChallengeEditor = ({
   };
 
   let handleContext = (event, type) => {
-    // console.log(type);
     event.originalEvent.preventDefault();
     setContextEvent({ event: event, type: type });
   };
 
   let handleContextEvent = async (event) => {
-    // console.log(event);
     if (event === 'addMarker') {
       addMarker(contextMenu.event);
       if (addingLine) {
@@ -301,6 +376,12 @@ let ChallengeEditor = ({
     }
     if (event === 'addObstacle') {
       addObstacle(contextMenu.event);
+    }
+    if (event === 'updateObstacle') {
+      updateObstacle(selectedObstacle);
+    }
+    if (event === 'deleteObstacle') {
+      removeObstacle(selectedObstacle);
     }
     setContextEvent(undefined);
   };
@@ -407,12 +488,13 @@ let ChallengeEditor = ({
               />
               <MapContainer
                 className={classes.mapContainer}
-                // style={{ height: '85vh', width: '84vw' }}
                 crs={CRS.Simple}
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
                 zoom={9}
+                maxZoom={11}
+                minZoom={8}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -445,6 +527,8 @@ let ChallengeEditor = ({
                   errorMarkers={errorMarkers}
                   inBounds={inBounds}
                   fitInBounds={fitInBounds}
+                  removeMarker={removeMarker}
+                  setSelectedObstacle={setSelectedObstacle}
                 />
                 {lines.map((element) => {
                   try {
@@ -484,12 +568,40 @@ let ChallengeEditor = ({
                 {obstacles.map((item) => {
                   return (
                     <Marker
-                      draggable={true}
-                      marker_index={item.id}
+                      eventHandlers={{
+                        click: () => {
+                          var newCurrent = item;
+                          if (selectedObstacle) {
+                            if (selectedObstacle.id === item.id)
+                              newCurrent = null;
+                          }
+                          setCurrentMarker(null);
+                          setSelectedObstacle(newCurrent);
+                        },
+                        contextmenu: (event) => {
+                          setSelectedObstacle(item);
+                          event.originalEvent.view.L.DomEvent.stopPropagation(
+                            event,
+                          );
+                          handleContext(event, 'obstacle');
+                        },
+                      }}
+                      draggable={false}
                       key={item.id}
                       position={[item.y, item.x]}
-                      icon={createObstacleIcon()}
-                    ></Marker>
+                      icon={createObstacleIcon(
+                        item.type == 'question',
+                        item === selectedObstacle,
+                      )}
+                    >
+                      <Tooltip
+                        direction="top"
+                        offset={[0, -15]}
+                        permanent
+                      >
+                        {item.title}
+                      </Tooltip>
+                    </Marker>
                   );
                 })}
                 {currentMarker ? (

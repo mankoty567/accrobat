@@ -49,9 +49,28 @@ export default function ContextMenu({ data, onEvent }) {
             </MenuItem>
           ) : null}
           {data.type == 'line' ? (
-            <MenuItem onClick={() => onEvent('addObstacle')}>
-              Ajouter un obstacle
-            </MenuItem>
+            <div>
+              <MenuItem onClick={() => onEvent('addObstacle')}>
+                Ajouter un obstacle
+              </MenuItem>
+              <MenuItem onClick={() => onEvent('updateSegment')}>
+                Modifier
+              </MenuItem>
+            </div>
+          ) : null}
+          {data.type == 'obstacle' ? (
+            <div>
+              <MenuItem onClick={() => onEvent('updateObstacle')}>
+                Modifier
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                style={{ color: 'red', fontWeight: 'bold' }}
+                onClick={() => onEvent('deleteObstacle')}
+              >
+                Supprimer
+              </MenuItem>
+            </div>
           ) : null}
         </MenuList>
       </Paper>

@@ -34,6 +34,8 @@ let DraggableMarkers = ({
   errorMarkers,
   inBounds,
   fitInBounds,
+  removeMarker,
+  setSelectedObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
@@ -81,6 +83,12 @@ let DraggableMarkers = ({
         }
       }
     },
+    keydown: (event) => {
+      if (event.originalEvent.keyCode == '8' || '46') {
+        removeMarker(currentMarker);
+        setCurrentMarker(null);
+      }
+    },
   });
 
   return (
@@ -102,6 +110,7 @@ let DraggableMarkers = ({
                         newCurrent = null;
                     }
                     setCurrentMarker(newCurrent);
+                    setSelectedObstacle(null);
                     if (addingLine) {
                       if (currentMarker.id !== item.id)
                         addLine(currentMarker, item);
