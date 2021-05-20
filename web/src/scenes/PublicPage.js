@@ -56,7 +56,6 @@ let PublicPage = () => {
 
   useEffect(() => {
     API.challengeToVote.getToVote().then((data) => {
-      console.log(data);
       setChallengesToVote(data);
     });
   }, []);

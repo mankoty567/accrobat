@@ -22,6 +22,7 @@ let ProfilePage = () => {
   const [username, setUsername] = useState(userState.username);
   const [email, setEmail] = useState(userState.email);
   const [err, setErr] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
 
   //Variable pour afficher l'interface
   const [mode, setMode] = useState('profile'); //'profile' | 'password'
@@ -38,27 +39,46 @@ let ProfilePage = () => {
    */
   const handleSubmit = () => {
     //Si les champs sont complétés
-    console.log(1);
     if (username && email) {
-      console.log(2);
-
-      //On vérifie que le nom d'utilisateur n'existe pas déjà
-      API.user.checkUser(username).then((res) => {
-        console.log(3); // ==> Cette étape n'est pas atteinte
-
-        if (res.valid) {
-          //On édite enfin
-          API.user.edit(username, email).then((res) => {
-            console.log(res);
+      if (
+        username === userState.username &&
+        email === userState.email
+      ) {
+        setEdit(false);
+        setStatusMessage('');
+      } else {
+        if (username !== userState.username) {
+          //On vérifie que le nom d'utilisateur n'existe pas déjà
+          API.user
+            .checkUser(username)
+            .then((res) => {
+              if (res.valid) {
+                //On édite enfin
+                API.user.edit(username, email).then((res) => {
+                  setErr('');
+                  setEdit(false);
+                  setStatusMessage(
+                    'Les modifications ont bien été prises en compte',
+                  );
+                });
+              }
+              //Il est déjà pris
+              else {
+                setErr("Le nom d'utilisateur n'est pas disponible !");
+              }
+            })
+            .catch((err) => console.err(err));
+        } else {
+          console.log(2);
+          API.user.edit(email).then(() => {
             setErr('');
             setEdit(false);
+            setStatusMessage(
+              'Les modifications ont bien été prises en compte',
+            );
           });
         }
-        //Il est déjà pris
-        else {
-          setErr("Le nom d'utilisateur n'est pas disponible !");
-        }
-      });
+      }
     }
     //Un champ est vide
     else {
@@ -150,10 +170,11 @@ let ProfilePage = () => {
                 </ListItem>
               )}
             </List>
-
+            <Typography variant="h6" style={{ color: '#18bc9c' }}>
+              {statusMessage}
+            </Typography>
             {edit ? (
               <>
-                <Divider />
                 <Typography color="error">{err}</Typography>
 
                 <Grid container space={1}>
@@ -193,7 +214,14 @@ let ProfilePage = () => {
           </Paper>
         </div>
       ) : (
-        <PasswordPage mode={mode} setMode={setMode} />
+        <PasswordPage
+          setMode={setMode}
+          callback={() => {
+            setStatusMessage(
+              'Les modifications ont bien été prises en compte',
+            );
+          }}
+        />
       )}
     </div>
   );

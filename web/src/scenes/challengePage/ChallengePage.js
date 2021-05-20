@@ -85,8 +85,12 @@ let ChallengePage = () => {
           }
 
           //Mise à jour des states
-          setChallenges(challenge_list);
-          setParticipations(participation_list);
+          setChallenges(
+            challenge_list.filter((elem) => elem !== undefined),
+          );
+          setParticipations(
+            participation_list.filter((elem) => elem !== undefined),
+          );
         });
       })
       .catch((err) => console.error(err));
