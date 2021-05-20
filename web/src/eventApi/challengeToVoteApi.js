@@ -53,6 +53,40 @@ const challengeToVoteApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  /**
+   * Récupère les challengesToVote ouverts au vote, ainsi que les votes de la personne
+   * @return Liste des challengesToVote
+   */
+  getToVote: () => {
+    return fetch(`${host}/api/challengetovote`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+  /**
+   * Vote pour un challengeToVote
+   * @param {Number} id L'id du challenge à voter
+   * @param {Number} vote Le vote
+   * @return OK
+   */
+  vote: (id, vote) => {
+    return fetch(`${host}/api/challengetovote/${id}/vote`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ vote: vote }),
+    })
+      .then(checkStatus)
+      .then((res) => res.text());
+  },
 };
 
 export default challengeToVoteApi;

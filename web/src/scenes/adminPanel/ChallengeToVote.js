@@ -157,6 +157,7 @@ export default function ChallengeToVote() {
               <TableCell>Status</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Somme des votes</TableCell>
+              <TableCell>Nombre de votes</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -173,6 +174,7 @@ export default function ChallengeToVote() {
                 </TableCell>
                 <TableCell>{c.description}</TableCell>
                 <TableCell>{c.voteSum}</TableCell>
+                <TableCell>{c.userVote}</TableCell>
                 <TableCell>
                   {c.status === 'open' ? (
                     <Button

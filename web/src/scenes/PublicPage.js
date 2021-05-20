@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import NeedLogin from './loginForm/NeedLogin';
 
@@ -13,7 +13,11 @@ import {
 import SmallMessage from '../components/SmallMessage';
 import { API } from '../eventApi/api';
 
+import style from './PublicPage.module.css';
+import classnames from 'classnames';
+
 let PublicPage = () => {
+  // Propositions de challenges
   const [challengeProposal, setChallengeProposal] = useState('');
   const [messageProposal, setMessageProposal] = useState({
     type: undefined,
@@ -44,6 +48,35 @@ let PublicPage = () => {
         });
         setDuringProposition(false);
         setChallengeProposal('');
+      });
+  }
+
+  // Vote pour des ChallengeToVote
+  const [challengesToVote, setChallengesToVote] = useState([]);
+
+  useEffect(() => {
+    API.challengeToVote.getToVote().then((data) => {
+      console.log(data);
+      setChallengesToVote(data);
+    });
+  }, []);
+
+  function handleVote(id, vote) {
+    API.challengeToVote
+      .vote(id, vote)
+      .then(() => {
+        setChallengesToVote((before) => {
+          return before.map((b) => {
+            if (b.id === id) {
+              return { ...b, vote: vote };
+            } else {
+              return b;
+            }
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -82,7 +115,51 @@ let PublicPage = () => {
               </div>
             </Paper>
           </Grid>
-          <Grid item xs={8} align="left"></Grid>
+          <Grid item xs={8} align="left">
+            <Paper>
+              <div style={{ padding: '5px' }}>
+                <Typography variant="h5" align="center">
+                  Challenges à voter
+                </Typography>
+                <div className={style.challengeToVoteContainer}>
+                  {challengesToVote.map((challenge) => (
+                    <div
+                      key={challenge.id}
+                      className={style.challengeToVote}
+                    >
+                      <p>{challenge.description}</p>
+                      <div className={style.voteContainer}>
+                        <p
+                          className={classnames([style.vote], {
+                            [style.selected]: challenge.vote === -1,
+                          })}
+                          onClick={() => handleVote(challenge.id, -1)}
+                        >
+                          -1
+                        </p>
+                        <p
+                          className={classnames([style.vote], {
+                            [style.selected]: challenge.vote === 0,
+                          })}
+                          onClick={() => handleVote(challenge.id, 0)}
+                        >
+                          0
+                        </p>
+                        <p
+                          className={classnames([style.vote], {
+                            [style.selected]: challenge.vote === 1,
+                          })}
+                          onClick={() => handleVote(challenge.id, 1)}
+                        >
+                          1
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Paper>
+          </Grid>
         </Grid>
       </NeedLogin>
     </>

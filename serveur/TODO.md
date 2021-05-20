@@ -52,3 +52,4 @@ type:
 - [x] Ajout de la gestion des images en webp avec resize
 - [x] Récupération des challenges à voter en mode admin
 - [x] Récupération des challenges à voter en mode user
+- [ ] Bouton copier la route sur la doc
