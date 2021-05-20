@@ -6,6 +6,8 @@ import obstacleApi from './obstacleApi';
 import participationApi from './participationApi';
 import segmentApi from './segmentApi';
 import userApi from './userApi';
+import propositionApi from './propositionApi';
+import challengeToVoteApi from './challengeToVoteApi';
 
 export const host =
   process.env.REACT_APP_HOST || 'https://api.acrobat.bigaston.dev';
@@ -29,4 +31,6 @@ export const API = {
   participation: participationApi,
   segment: segmentApi,
   user: userApi,
+  proposition: propositionApi,
+  challengeToVote: challengeToVoteApi,
 };
