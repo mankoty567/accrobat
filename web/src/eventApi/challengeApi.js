@@ -70,8 +70,8 @@ const challengeApi = {
     return fetch(`${host}/api/challenge`, {
       method: 'POST',
       headers: {
-        // Authorization:
-        //   'Bearer ' + window.localStorage.getItem('token'),
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(challenge),
@@ -114,10 +114,10 @@ const challengeApi = {
   deleteChallenge: (challenge_id) => {
     return fetch(`${host}/api/challenge/${challenge_id}`, {
       method: 'DELETE',
-      // headers: {
-      //   Authorization:
-      //     'Bearer ' + window.localStorage.getItem('token'),
-      // },
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
     })
       .then(checkStatus)
       .then((res) => res.text());

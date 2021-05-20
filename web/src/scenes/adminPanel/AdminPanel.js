@@ -22,7 +22,6 @@ let AdminPanel = () => {
 
   useEffect(() => {
     API.proposition.getPropositions().then((data) => {
-      console.log(data);
       setPropositions(data);
       setIsLoadingPropositions(false);
     });

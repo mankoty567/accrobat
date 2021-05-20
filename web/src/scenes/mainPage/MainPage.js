@@ -16,11 +16,13 @@ import {
   Route,
   Switch,
   Link,
+  Redirect,
 } from 'react-router-dom';
 
 import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import ChallengePage from '../challengePage/ChallengePage';
+import Navbar from '../../components/Navbar';
 
 let MainPage = () => {
   // Tentative de connection automatique de l'utilisateur
@@ -47,34 +49,10 @@ let MainPage = () => {
     }
   }, []);
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
   return (
     <>
       <Router>
-        <AppBar position="static">
-          <Tabs value={value} onChange={handleChange}>
-            <Tab label="Accueil" component={Link} to="/home" />
-            <Tab
-              label="Espace personnel"
-              component={Link}
-              to="/profile"
-            />
-            <Tab
-              label="Vos challenges"
-              component={Link}
-              to="/challenges"
-            />
-            <Tab
-              label="Administration"
-              component={Link}
-              to="/admin"
-            />
-          </Tabs>
-        </AppBar>
+        <Navbar />
         <Switch>
           <Route path="/home">
             <PublicPage />
@@ -105,6 +83,7 @@ let MainPage = () => {
           <Route path="/google_return">
             <GoogleReturn />
           </Route>
+          <Redirect to="/home" />
         </Switch>
       </Router>
     </>
