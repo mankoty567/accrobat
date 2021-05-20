@@ -11,7 +11,12 @@ const end = process.env.PUBLIC_URL + '/icons/End.png';
 const endS = process.env.PUBLIC_URL + '/icons/EndS.png';
 const endE = process.env.PUBLIC_URL + '/icons/EndE.png';
 const endES = process.env.PUBLIC_URL + '/icons/EndES.png';
-const obstacle = process.env.PUBLIC_URL + '/icons/obstacleA.png';
+const obstacleA = process.env.PUBLIC_URL + '/icons/obstacleA.png';
+const obstacleE = process.env.PUBLIC_URL + '/icons/obstacleE.png';
+const obstacleQ = process.env.PUBLIC_URL + '/icons/obstacleQ.png';
+const obstacleAS = process.env.PUBLIC_URL + '/icons/obstacleAS.png';
+const obstacleES = process.env.PUBLIC_URL + '/icons/obstacleES.png';
+const obstacleQS = process.env.PUBLIC_URL + '/icons/obstacleQS.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
@@ -63,14 +68,18 @@ let createStartIcon = (selected, error) => {
   });
 };
 
-let createObstacleIcon = () => {
+let createObstacleIcon = (question, selected, error) => {
+  var ES = selected && error;
   return new L.Icon({
-    iconUrl: obstacle,
-    shadowUrl: shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
+    iconUrl: selected
+      ? question
+        ? obstacleQS
+        : obstacleAS
+      : question
+      ? obstacleQ
+      : obstacleA,
+    iconSize: [40, 40],
+    shadowSize: [20, 20],
   });
 };
 
