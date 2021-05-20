@@ -65,4 +65,20 @@ public class Map {
         throw new RuntimeException("Aucune arrivée dans la map");
     }
 
+    @Override
+    public String toString() {
+        return "Map{" +
+                "id=" + id +
+                ", libelle='" + libelle + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", accompli=" + accompli +
+                ", dernierPointPassage=" + dernierPointPassage +
+                ", cheminActuel=" + cheminActuel +
+                ", pointPassages=" + pointPassages +
+                ", background=" + background +
+                ", dateInscription='" + dateInscription + '\'' +
+                ", dateDernierePartie='" + dateDernierePartie + '\'' +
+                '}';
+    }
 }

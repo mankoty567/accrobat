@@ -75,6 +75,7 @@ public class DataBase {
                 "CHALLENGE_ID INTEGER," +
                 "CHEMIN_ID INTEGER," + // SEGMENT_ID
                 "PROGRESSION INTEGER," +
+                "LIBELLE TEXT,"+
                 "DATE_INSCRIPTION TEXT," +
                 "DATE_DERNIEREPARTIE TEXT" +
                 ");"
@@ -105,6 +106,7 @@ public class DataBase {
         for (resultats.moveToFirst(); !resultats.isAfterLast(); resultats.moveToNext()) {
             newMap = new Map();
             newMap.id = resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"));
+            newMap.libelle =  resultats.getString(resultats.getColumnIndex("LIBELLE"));
             newMap.dateInscription = resultats.getString(resultats.getColumnIndex("DATE_INSCRIPTION"));
             newMap.dateDernierePartie =  resultats.getString(resultats.getColumnIndex("DATE_DERNIEREPARTIE"));
 
@@ -137,6 +139,7 @@ public class DataBase {
                 Map.mapActuelle.id + ", " +
                 Map.mapActuelle.cheminActuel.id +", " +
                 Map.mapActuelle.accompli + ", '" +
+                Map.mapActuelle.libelle + "','" +
                 dateInscription + "','" +
                 dateAujourdhui +
                 "');"
