@@ -1,7 +1,9 @@
 package site.nohan.protoprogression.Model;
 
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class User {
@@ -14,6 +16,8 @@ public class User {
     private int experience;
     private String token;
     private Date token_last_update;
+
+    public static ArrayList<Integer>challengesSubscribedIDs = new ArrayList<>();
 
     public User(int id, String username, String email, Permission permission, int experience, String token, Date token_last_update) {
         this.id = id;

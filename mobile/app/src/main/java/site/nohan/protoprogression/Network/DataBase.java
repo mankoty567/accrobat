@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.inputmethod.InlineSuggestionsRequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import site.nohan.protoprogression.Model.Permission;

@@ -18,6 +18,7 @@ import java.util.Date;
 
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
+import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
 import site.nohan.protoprogression.Network.Map.MapRequest;
@@ -61,7 +62,7 @@ public class SubscribeFragment extends Fragment {
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                subscribeToMap(true);
+                subscribeToChallenge();
             }
         });
         btn_preview = root.findViewById(R.id.btn_challenge_preview);
@@ -79,6 +80,13 @@ public class SubscribeFragment extends Fragment {
         }
 
         return root;
+    }
+
+    /******************************************
+     * Méthode utilisé pour lancer une requête d'inscription à un challenge
+     ******************************************/
+    public void subscribeToChallenge(){
+        new SubscribeRequest(this.getActivity(), Map.maps.get(position).id, this);
     }
 
     /******************************************
