@@ -9,7 +9,10 @@ import android.view.inputmethod.InlineSuggestionsRequest;
 import java.util.ArrayList;
 import java.util.Date;
 
+import site.nohan.protoprogression.Model.Chemin;
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Permission;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Model.User;
 
 public class DataBase {
@@ -40,6 +43,9 @@ public class DataBase {
 
     public static synchronized void init(Context ctx) {
         DataBase.context = context;
+        /*
+         * TABLE USER
+         */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
@@ -49,12 +55,23 @@ public class DataBase {
                 "XP INTEGER"+
                 ");"
         );
-
+        /*
+         * TABLE MOI
+         */
         bdd.execSQL("CREATE TABLE IF NOT EXISTS MOI(" +
                 "ID INTEGER," +
                 "USER_ID INTEGER," +
                 "TOKEN VARCHAR(255)," +
                 "TOKEN_LAST_UPDATE LONG" +
+                ");"
+        );
+        /*
+         * TABLE USER
+         */
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS PROGRESSION(" +
+                "CHALLENGE_ID INTEGER," +
+                "CHEMIN_ID INTEGER," + // SEGMENT_ID
+                "PROGRESSION INTEGER" +
                 ");"
         );
 
@@ -65,6 +82,29 @@ public class DataBase {
         if(resultats.getCount() == 0){ // Si il existe pas on le créer
             bdd.execSQL("INSERT INTO MOI VALUES (0, NULL, NULL, 0)");
         }
+        resultats.close();
+    }
+
+    public static synchronized void saveProgression(){
+        bdd.execSQL("DELETE FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+ ";");
+        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" + Map.mapActuelle.id + ", " + Map.mapActuelle.cheminActuel.id +", " + Map.mapActuelle.accompli + ");");
+        //Map.mapActuelle.cheminActuel.id;
+    }
+
+    public static synchronized void restoreProgression(){
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        if(resultats.getCount() == 0){
+            Log.e("restoreProgression", "rien à restorer");
+            return;
+        }
+        resultats.moveToFirst();
+        int cheminId  = resultats.getInt(1);
+        int progression  = resultats.getInt(2);
+
+        Map.mapActuelle.cheminActuel = Chemin.findById(Map.mapActuelle, cheminId);
+        Map.mapActuelle.accompli = progression;
+
+        resultats.close();
     }
 
 
@@ -142,7 +182,6 @@ public class DataBase {
         //Log.e("INITIALIZE",token_last_update+"");
         return user;
     }
-
 
 
 }

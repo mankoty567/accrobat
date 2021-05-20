@@ -63,7 +63,7 @@ public class SubscribeResponse implements APIListenner {
 
             JSONObject json = new JSONObject((String) response);
             User.challengesSubscribedIDs.add(json.getInt("ChallengeId"));
-
+            Map.participationId = json.getInt("id");
             subscribeFragment.subscribeToMap(true);
 
         } catch (JSONException e) {

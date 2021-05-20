@@ -50,6 +50,7 @@ public class SigninResponse implements APIListenner {
      ******************************************/
     @Override
     public void onResponse(Object response) {
+        Log.d("login", "response");
         //Log.d("theTag",response.toString());
 
         // Conversion de la réponse en JSON

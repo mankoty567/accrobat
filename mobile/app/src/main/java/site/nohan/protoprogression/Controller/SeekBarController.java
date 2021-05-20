@@ -8,11 +8,15 @@ import android.widget.SeekBar;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.MapFragment;
 import site.nohan.protoprogression.View.Toile;
 
 public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
+    public static double dernierePositionConnueAPI = 0;
 
     private final Activity activity;
     private final MapFragment mapFragment;
@@ -33,6 +37,11 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Selection du chemin
         LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
+        if(Map.mapActuelle.cheminActuel == null)
+            return;
+
+        DataBase.saveProgression();
+        //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
         if(progress == 100){
 
             //buttonController.stopPedometerAndGPS();

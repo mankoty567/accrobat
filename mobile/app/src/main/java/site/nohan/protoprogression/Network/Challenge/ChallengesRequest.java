@@ -16,5 +16,6 @@ public class ChallengesRequest extends APIRequestGET {
         Log.e("net", this.getUrl());
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();
+        Log.e("net", "demande challenge envoyé");
     }
 }

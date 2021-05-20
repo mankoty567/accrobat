@@ -245,7 +245,7 @@ public class Toile extends View {
                             int taille;
                             for (int j = 1; j <= points; j++) {
                                 if(j==points) {
-                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * (1 / 20f));
+                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * (1 / 50f));
                                     this.stylo.setARGB(
                                             255,
                                             200-taille*3,0,255-(taille*2)
@@ -263,7 +263,7 @@ public class Toile extends View {
                                     canvas.drawCircle(
                                             (A.x + intervalX * j) * canvas.getWidth() / 100,
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                            Math.max(40-taille, 20),
+                                            Math.max(30-taille, 10),
                                             this.stylo);
                                 } else {
 
@@ -311,7 +311,7 @@ public class Toile extends View {
                             double distance = obstacle.distance*c.getLongueur() - c.getLongueurAt(A);
                             double deltaAB = c.getLongueurAt(B) - c.getLongueurAt(A);
                             int point = (int) Math.round((pointsMax*distance)/deltaAB);
-                            Log.e("point", ""+point );
+                            //Log.e("point", ""+point );
                             this.stylo.setARGB(
                                     255,
                                     255,255,0
@@ -338,6 +338,34 @@ public class Toile extends View {
         this.scale.x = zoom;
         this.scale.y = zoom;
     }
+/*
+    public void recentrer(){
+        PointF delta = new PointF();
+
+        Point A = Map.mapActuelle.cheminActuel.getMinPoint();
+        Point B = Map.mapActuelle.cheminActuel.getMaxPoint();
+
+        PointF epsilon = new PointF(0.2f, 0.2f);
+
+
+        if(A == null || B == null)
+            return;
+        //float zoom = 100f/(float) Chemin.getDistance(A,B);
+        // TODO: attention sortie ecran avec distance 100%
+        float zoom = 100f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
+
+        A.set(A.x - Math.round((float) A.x*0.1f),A.y - Math.round((float) A.y*0.1f));
+
+
+        //delta.x = Math.abs(Math.min(A.x-B.x, A.y,B.y));
+        delta.y = Math.abs(A.y-B.y);
+
+
+        this.setZoom(zoom*0.9f);
+
+        this.setPosition(delta);
+    }
+*/
 
     public void recentrer(){
         PointF delta = new PointF();
@@ -361,4 +389,5 @@ public class Toile extends View {
 
         this.setPosition(delta);
     }
+     
 }

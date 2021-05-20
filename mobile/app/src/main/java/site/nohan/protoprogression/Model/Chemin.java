@@ -17,6 +17,7 @@ public class Chemin {
     public PointPassage objectif;
     public PointPassage origine;
 
+    public int id;
     public String nom;
 
     public Chemin(ArrayList<Point> points){
@@ -38,6 +39,15 @@ public class Chemin {
         return points.get(points.size()-1);
     }
 
+    public static Chemin findById(Map map, int id){
+        for(PointPassage pointPassage : map.pointPassages){
+            for(Chemin c : pointPassage.chemins){
+                if(c.id == id)
+                    return c;
+            }
+        }
+        throw new RuntimeException("Chemin " + id + " introuvable");
+    }
 
     // Renvoi la longueur jusqu'au dernier segment
     public int getLongueur(){
@@ -99,4 +109,5 @@ public class Chemin {
     public Point getMiddlePoint(){
         return this.points.get((int) Math.round(this.points.size()/2));
     }
+
 }

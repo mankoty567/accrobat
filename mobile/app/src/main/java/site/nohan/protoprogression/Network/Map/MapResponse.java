@@ -22,6 +22,7 @@ import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Model.Types.TypeObstacle;
 import site.nohan.protoprogression.Model.Types.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 public class MapResponse implements APIListenner {
@@ -56,6 +57,8 @@ public class MapResponse implements APIListenner {
 
             // MAP
            this.map.libelle = json.getString("title");
+           this.map.id = json.getInt("id");
+
 
            //this.map.date = new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("createdAt"));
 
@@ -113,6 +116,7 @@ public class MapResponse implements APIListenner {
                     chemin.objectifId = jchemin.getInt("PointEndId");
                     chemin.origine = pointPassage;
                     chemin.nom = jchemin.getString("name");
+                    chemin.id = jchemin.getInt("id");
 
                     JSONArray jpath = jchemin.getJSONArray("path");
                     // Pour tout les points qui le composent
@@ -185,6 +189,7 @@ public class MapResponse implements APIListenner {
         }
 
         Log.e("Map", "Chargement terminé");
+        DataBase.restoreProgression();
     }
 
 }
