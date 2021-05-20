@@ -53,7 +53,12 @@ let NewPolyline = ({ from }) => {
   );
 };
 
-let ChallengeEditor = ({ challenge_id, setSelected }) => {
+let ChallengeEditor = ({
+  challenge_id,
+  setSelected,
+  open,
+  setOpen,
+}) => {
   //Utilisation des classes CSS
   const classes = useStyles();
 
@@ -75,7 +80,6 @@ let ChallengeEditor = ({ challenge_id, setSelected }) => {
   const [addingLine, setAddingLine] = useState(false);
   const [modifyMarker, setModifyMarker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
   const [challenge, setChallenge] = useState({

@@ -72,6 +72,34 @@ const userApi = {
       .then(checkStatus)
       .then((res) => res.text());
   },
+
+  /**
+   * Fonction permettant d'éditer le profil
+   * @param {String} username Nom d'utilisateur
+   * @param {String} email Email de l'utilisateur
+   */
+  edit: (username, email) => {
+    return fetch(`${host}/api/user/edit`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        email,
+      }),
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+
+  checkUser: (username) => {
+    return fetch(`${host}/api/user/check_username/${username}`, {
+      method: 'GET',
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
 };
 
 /* Code de la connection

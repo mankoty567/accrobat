@@ -16,6 +16,17 @@ let ChallengePanel = () => {
   const [challenges, setChallenges] = useState([]);
   const [addmode, setAddmode] = useState('add');
   const [selected, setSelected] = useState(null);
+  const [open, setOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getChallenges = () => {
+    setIsLoading(true);
+    API.challenge.getAdminChallenges().then((res) => {
+      setIsLoading(true);
+      setChallenges(res);
+      // console.log(res);
+    });
+  };
 
   const addChallenge = (
     title,
@@ -30,6 +41,8 @@ let ChallengePanel = () => {
     let img_avatar;
     if (!avatar) {
       img_avatar = undefined;
+    } else {
+      img_avatar = avatar;
     }
 
     API.challenge
@@ -47,14 +60,11 @@ let ChallengePanel = () => {
       .catch((err) => console.error(err));
   };
 
-  useEffect(
-    () =>
-      API.challenge.getAdminChallenges().then((res) => {
-        setChallenges(res);
-        // console.log(res);
-      }),
-    [],
-  );
+  useEffect(() => getChallenges(), []);
+
+  useEffect(() => {
+    getChallenges();
+  }, [open]);
 
   const Menu = ({ index }) => {
     const handleDelete = () => {
@@ -69,6 +79,7 @@ let ChallengePanel = () => {
     const handleClone = () => {};
     const handleEdit = () => {
       setSelected(index);
+      setOpen(true);
     };
     return (
       <>
@@ -140,6 +151,8 @@ let ChallengePanel = () => {
         <ChallengeEditor
           challenge_id={selected}
           setSelected={setSelected}
+          open={open}
+          setOpen={setOpen}
         />
       ) : null}
     </>
