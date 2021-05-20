@@ -38,6 +38,24 @@ const propositionApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+  /**
+   * Ajoute une proposition liée à l'utilisateur courrant
+   * @param {String} description Le texte de la proposition
+   * @return OK
+   */
+  postProposition: (description) => {
+    return fetch(`${host}/api/propositionchallenge`, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ description }),
+    })
+      .then(checkStatus)
+      .then((res) => res.text());
+  },
 };
 
 export default propositionApi;

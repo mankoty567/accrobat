@@ -10,8 +10,42 @@ import {
   Button,
 } from '@material-ui/core';
 
+import SmallMessage from '../components/SmallMessage';
+import { API } from '../eventApi/api';
+
 let PublicPage = () => {
   const [challengeProposal, setChallengeProposal] = useState('');
+  const [messageProposal, setMessageProposal] = useState({
+    type: undefined,
+    message: undefined,
+  });
+  const [duringProposition, setDuringProposition] = useState(false);
+
+  function handleAddProposal() {
+    if (duringProposition) return;
+
+    if (challengeProposal === '') {
+      setMessageProposal({
+        type: 'error',
+        message: 'Merci de rentrer une description',
+      });
+      return;
+    }
+
+    setMessageProposal({ type: undefined, message: undefined });
+    setDuringProposition(true);
+
+    API.proposition
+      .postProposition(challengeProposal)
+      .then((data) => {
+        setMessageProposal({
+          type: 'valide',
+          message: 'Votre proposition a bien été ajoutée!',
+        });
+        setDuringProposition(false);
+        setChallengeProposal('');
+      });
+  }
 
   return (
     <>
@@ -34,9 +68,17 @@ let PublicPage = () => {
                   label="Proposition"
                   style={{ width: '100%' }}
                 />
-                <Button variant="contained" style={{ width: '100%' }}>
+                <Button
+                  variant="contained"
+                  style={{ width: '100%' }}
+                  onClick={handleAddProposal}
+                >
                   Envoyer
                 </Button>
+                <SmallMessage
+                  message={messageProposal.message}
+                  type={messageProposal.type}
+                />
               </div>
             </Paper>
           </Grid>

@@ -1,0 +1,12 @@
+.message {
+  text-align: center;
+  font-weight: bold;
+}
+
+.error {
+  color: #E74C3C;
+}
+
+.valide {
+  color: #2ECC71;
+}
