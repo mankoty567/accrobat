@@ -66,7 +66,7 @@ public class DataBase {
                 ");"
         );
         /*
-         * TABLE USER
+         * TABLE PROGRESSION (afin de pouvoir restaurer la progression sur le segments)
          */
         bdd.execSQL("CREATE TABLE IF NOT EXISTS PROGRESSION(" +
                 "CHALLENGE_ID INTEGER," +
@@ -74,6 +74,14 @@ public class DataBase {
                 "PROGRESSION INTEGER" +
                 ");"
         );
+
+        /*
+         * TABLE ACCOMPLI (afin de restaurer les segments (Chemins accomplis)
+         */
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS ACCOMPLI(" +
+                "CHALLENGE_ID," +
+                "CHEMIN_ID" +
+                ");");
 
 
         //Créer la rangée unique
@@ -88,13 +96,27 @@ public class DataBase {
     public static synchronized void saveProgression(){
         bdd.execSQL("DELETE FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+ ";");
         bdd.execSQL("INSERT INTO PROGRESSION VALUES(" + Map.mapActuelle.id + ", " + Map.mapActuelle.cheminActuel.id +", " + Map.mapActuelle.accompli + ");");
+
+        bdd.execSQL("DELETE FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";");
+        ArrayList<Integer> completes = new ArrayList<>();
+        for (PointPassage pointPassage : Map.mapActuelle.pointPassages){
+            for (Chemin chemin : pointPassage.chemins){
+                if(chemin.complete){
+                    completes.add(chemin.id);
+                }
+            }
+        }
+        for( int cheminId : completes ){
+            bdd.execSQL("INSERT INTO ACCOMPLI VALUES (" + Map.mapActuelle.id + " ," +  cheminId + ");");
+        }
+
         //Map.mapActuelle.cheminActuel.id;
     }
 
     public static synchronized void restoreProgression(){
         Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
         if(resultats.getCount() == 0){
-            Log.e("restoreProgression", "rien à restorer");
+            Log.e("restoreProgression", "rien à restorer pour la progression");
             return;
         }
         resultats.moveToFirst();
@@ -103,8 +125,26 @@ public class DataBase {
 
         Map.mapActuelle.cheminActuel = Chemin.findById(Map.mapActuelle, cheminId);
         Map.mapActuelle.accompli = progression;
-
         resultats.close();
+
+
+        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        if(accomplis.getCount() == 0){
+            Log.e("restoreProgression", "rien à restorer pour les chemins");
+            return;
+        }
+        for (accomplis.moveToFirst(); !accomplis.isAfterLast(); accomplis.moveToNext()) {
+            Chemin c = Chemin.findById(
+                    Map.mapActuelle,
+                    accomplis.getInt(accomplis.getColumnIndex("CHEMIN_ID"))
+            );
+            c.complete = true;
+            Log.e("restoreProgression", ""+ accomplis.getInt(accomplis.getColumnIndex("CHEMIN_ID")) + " " +c.complete);
+        }
+
+
+        accomplis.close();
+
     }
 
 
