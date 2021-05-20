@@ -245,25 +245,25 @@ public class Toile extends View {
                             int taille;
                             for (int j = 1; j <= points; j++) {
                                 if(j==points) {
-                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * (1 / 50f));
+                                    taille = (int) Math.round((int) System.currentTimeMillis()%1000 * (1 / 30f));
                                     this.stylo.setARGB(
                                             255,
-                                            200-taille*3,0,255-(taille*2)
+                                            200,0,255-(taille*2)
                                     );
                                     canvas.drawCircle(
                                             (A.x + intervalX * j) * canvas.getWidth() / 100,
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                            70-taille*2,
+                                            (30-taille)/2f,
                                             this.stylo);
 
                                     this.stylo.setARGB(
                                             255,
-                                            200-taille*3,100 , 100+(taille*2)
+                                            150-(taille*3),100 , 200+(taille*2)
                                     );
                                     canvas.drawCircle(
                                             (A.x + intervalX * j) * canvas.getWidth() / 100,
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
-                                            Math.max(30-taille, 10),
+                                            Math.max(10-(taille/1.5f), 30)/2f,
                                             this.stylo);
                                 } else {
 
