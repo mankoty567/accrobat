@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 
-let ModifyPopUp = ({
+let ModifyMarkerPopUp = ({
   currentMarker,
   setStartPoint,
   markers,
@@ -93,7 +93,6 @@ let ModifyPopUp = ({
           ) : null}
           <br />
           <Grid container justify="center">
-            {' '}
             <Button
               color="secondary"
               onClick={() => {
@@ -109,4 +108,4 @@ let ModifyPopUp = ({
   );
 };
 
-export default ModifyPopUp;
+export default ModifyMarkerPopUp;

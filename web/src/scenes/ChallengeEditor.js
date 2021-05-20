@@ -13,7 +13,8 @@ import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import { API } from '../eventApi/api';
 import ContextMenu from './ContextMenu';
-import ModifyPopUp from './ModifyPopUp';
+import ModifyMarkerPopUp from './ModifyMarkerPopUp';
+import ModifyObstaclePopUp from './ModifyObstaclePopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
 import { createObstacleIcon } from './MarkerIcons';
@@ -81,6 +82,7 @@ let ChallengeEditor = ({
   const contextRef = useRef(undefined);
   const [addingLine, setAddingLine] = useState(false);
   const [modifyMarker, setModifyMarker] = useState(false);
+  const [modifyObstacle, setModifyObstacle] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
@@ -92,7 +94,7 @@ let ChallengeEditor = ({
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
-  const [selectedObstacle, setSelectedObstacle] = useState(null);
+  const [currentObstacle, setCurrentObstacle] = useState(null);
 
   const initializeMap = async (challenge_id) => {
     await API.challenge
@@ -378,10 +380,10 @@ let ChallengeEditor = ({
       addObstacle(contextMenu.event);
     }
     if (event === 'updateObstacle') {
-      updateObstacle(selectedObstacle);
+      setModifyObstacle(true);
     }
     if (event === 'deleteObstacle') {
-      removeObstacle(selectedObstacle);
+      removeObstacle(currentObstacle);
     }
     setContextEvent(undefined);
   };
@@ -528,7 +530,7 @@ let ChallengeEditor = ({
                   inBounds={inBounds}
                   fitInBounds={fitInBounds}
                   removeMarker={removeMarker}
-                  setSelectedObstacle={setSelectedObstacle}
+                  setCurrentObstacle={setCurrentObstacle}
                 />
                 {lines.map((element) => {
                   try {
@@ -571,15 +573,15 @@ let ChallengeEditor = ({
                       eventHandlers={{
                         click: () => {
                           var newCurrent = item;
-                          if (selectedObstacle) {
-                            if (selectedObstacle.id === item.id)
+                          if (currentObstacle) {
+                            if (currentObstacle.id === item.id)
                               newCurrent = null;
                           }
                           setCurrentMarker(null);
-                          setSelectedObstacle(newCurrent);
+                          setCurrentObstacle(newCurrent);
                         },
                         contextmenu: (event) => {
-                          setSelectedObstacle(item);
+                          setCurrentObstacle(item);
                           event.originalEvent.view.L.DomEvent.stopPropagation(
                             event,
                           );
@@ -591,7 +593,7 @@ let ChallengeEditor = ({
                       position={[item.y, item.x]}
                       icon={createObstacleIcon(
                         item.type == 'question',
-                        item === selectedObstacle,
+                        item === currentObstacle,
                       )}
                     >
                       <Tooltip
@@ -646,7 +648,7 @@ let ChallengeEditor = ({
               </Grid>
 
               {currentMarker ? (
-                <ModifyPopUp
+                <ModifyMarkerPopUp
                   modifyMarker={modifyMarker}
                   setModifyMarker={setModifyMarker}
                   setMarkers={setMarkers}
@@ -654,6 +656,15 @@ let ChallengeEditor = ({
                   markers={markers}
                   setStartPoint={setStartPoint}
                   updateMarker={updateMarker}
+                />
+              ) : null}
+              {currentObstacle ? (
+                <ModifyObstaclePopUp
+                  modifyObstacle={modifyObstacle}
+                  setModifyObstacle={setModifyObstacle}
+                  setObstacles={setObstacles}
+                  currentObstacle={currentObstacle}
+                  updateObstacle={updateObstacle}
                 />
               ) : null}
             </main>
