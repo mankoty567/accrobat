@@ -48,6 +48,9 @@ let PublicPage = () => {
         });
         setDuringProposition(false);
         setChallengeProposal('');
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -55,9 +58,14 @@ let PublicPage = () => {
   const [challengesToVote, setChallengesToVote] = useState([]);
 
   useEffect(() => {
-    API.challengeToVote.getToVote().then((data) => {
-      setChallengesToVote(data);
-    });
+    API.challengeToVote
+      .getToVote()
+      .then((data) => {
+        setChallengesToVote(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   function handleVote(id, vote) {

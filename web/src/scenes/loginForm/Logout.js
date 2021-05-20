@@ -10,7 +10,7 @@ export default function Logout() {
   const [, setUserState] = useRecoilState(API.user.userAtom);
 
   useEffect(() => {
-    localStorage.setItem('jwt', undefined);
+    localStorage.setItem('token', undefined);
     setUserState(undefined);
 
     history.push('/login');
