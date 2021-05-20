@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.MainActivity;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
@@ -39,8 +40,9 @@ public class SubscribeFragment extends Fragment {
     private TextView tv_description;
 
     public static int position;
+    private int idChallenge;
 
-    private ListView lv_home_challenges;
+    private ListView lv_records;
 
     /************************************************************************
      * Création de la class et de la vue
@@ -49,20 +51,36 @@ public class SubscribeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_subscribe, container, false);
 
+        //Vérification que l'utilisateur est connecté
+        if(!DataBase.isTokenValid()) ShowFragment(signin);
+        else {
+            if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
+        }
+
+        if(HomeFragment.isOnPrivateChallenges) idChallenge = DataBase.getSubscribed().get(position).id;
+        else idChallenge = Map.maps.get(position).id;
+
         //Ajout des données du challenge dans la vue
         tv_title = root.findViewById(R.id.txt_challenge_title);
-        tv_title.setText(Map.maps.get(position).libelle);
         tv_date = root.findViewById(R.id.txt_challenge_date);
-        tv_date.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
         tv_description = root.findViewById(R.id.txt_challenge_description);
         tv_description.setMovementMethod(new ScrollingMovementMethod());
-        tv_description.setText(Map.maps.get(position).description);
+
+        if(HomeFragment.isOnPrivateChallenges) {
+            tv_title.setText(DataBase.getSubscribed().get(position).libelle);
+            tv_date.setText("Inscrit le : "+DataBase.getSubscribed().get(position).dateInscription);
+            tv_description.setText(DataBase.getSubscribed().get(position).description);
+        } else {
+            tv_title.setText(Map.maps.get(position).libelle);
+            tv_date.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
+            tv_description.setText(Map.maps.get(position).description);
+        }
 
         btn_subscribe = root.findViewById(R.id.btn_challenge_subscribe);
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                DataBase.deleteProgression(Map.maps.get(position).id);
+                if(!HomeFragment.isOnPrivateChallenges) DataBase.deleteProgression(idChallenge);
                 subscribeToChallenge();
             }
         });
@@ -74,11 +92,17 @@ public class SubscribeFragment extends Fragment {
             }
         });
 
-        //Vérification que l'utilisateur est connecté
-        if(!DataBase.isTokenValid()) ShowFragment(signin);
-        else {
-            if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
+        if(HomeFragment.isOnPrivateChallenges) {
+            btn_preview.setVisibility(View.GONE);
+            btn_subscribe.setText("Reprendre");
+        } else {
+            btn_preview.setVisibility(View.VISIBLE);
+            btn_subscribe.setText("S'inscrire");
         }
+
+        lv_records = root.findViewById(R.id.lv_subscribe_records);
+        SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
+        lv_records.setAdapter(subscribeAdapter);
 
         return root;
     }
@@ -87,7 +111,7 @@ public class SubscribeFragment extends Fragment {
      * Méthode utilisé pour lancer une requête d'inscription à un challenge
      ******************************************/
     public void subscribeToChallenge(){
-        new SubscribeRequest(this.getActivity(), Map.maps.get(position).id, this);
+        new SubscribeRequest(this.getActivity(), idChallenge, this);
     }
 
     /******************************************
@@ -95,8 +119,8 @@ public class SubscribeFragment extends Fragment {
      ******************************************/
     public void subscribeToMap(boolean subscribe){
         Map.mapActuelle = new Map();
-        new MapRequest(this.getActivity(), Map.maps.get(position).id, Map.mapActuelle);
-        new ImageMapRequest(this.getActivity(), Map.maps.get(position).id, Map.mapActuelle);
+        new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
+        new ImageMapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
         ChallengeFragment.isNotAPreview = subscribe;
         ShowFragment(challenge);
     }

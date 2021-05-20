@@ -52,12 +52,12 @@
                             android:layout_height="wrap_content"
                             app:passwordToggleEnabled="true"
                             android:layout_marginBottom="10dp">
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/et_signin_password"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:hint="@string/txt_password"
-                                android:inputType="textPassword"/>
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_signin_password"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:hint="@string/txt_password"
+                                    android:inputType="textPassword"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView

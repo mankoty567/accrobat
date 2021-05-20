@@ -65,7 +65,7 @@
     <fragment
         android:id="@+id/navigation_subscribe"
         android:name="site.nohan.protoprogression.View.ui.home.SubscribeFragment"
-        android:label="fragment_challenge"
+        android:label="Profil du Challenge"
         tools:layout="@layout/fragment_subscribe" >
         <action
             android:id="@+id/action_subscribeFragment_to_navigation_challenge"

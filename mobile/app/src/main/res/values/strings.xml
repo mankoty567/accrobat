@@ -11,6 +11,7 @@
 
     <!-- Home Fragment -->
     <string name="title_challenges">Tous les challenges</string>
+    <string name="title_subscribedChallenges">Challenges privés</string>
 
     <!-- Signin Fragment -->
     <string name="title_signin">Espace de Connexion</string>
@@ -30,8 +31,9 @@
     <string name="txt_go_to_inscription">Vous n\'avez pas de compte ? Inscrivez-vous ici</string>
     <string name="txt_fraude">Fraude détectée, veuillez vous reconnecter !</string>
 
-    <!-- Signin Challenge -->
+    <!-- Subscribe Fragment -->
     <string name="challenge_title">Title Challenge</string>
     <string name="challenge_date">Date Challenge</string>
     <string name="challenge_description">Description Challenge</string>
+    <string name="records">Records</string>
 </resources>
