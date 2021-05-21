@@ -6,6 +6,7 @@ module.exports = {
   test: {
     url: process.env.BDD_URL,
     dialect: 'mysql',
+    logging: false,
   },
   production: {
     url: process.env.BDD_URL,

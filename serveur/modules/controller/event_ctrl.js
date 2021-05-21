@@ -18,7 +18,7 @@ const REQUIRED_DATA = [
   true,
   false,
   true,
-  false,
+  true,
   //true,
   //false,
   //false,
