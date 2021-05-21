@@ -91,7 +91,7 @@ let ModifyObstaclePopUp = ({
               aria-labelledby="discrete-slider-small-steps"
               step={0.01}
               valueLabelDisplay="auto"
-              min={0.5}
+              min={0.05}
               max={0.95}
               onChangeCommitted={(e, value) => {
                 currentObstacle.distance = value;

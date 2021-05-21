@@ -302,6 +302,15 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
+    var linesToUpdate = lines.filter(
+      (val) =>
+        val.PointStartId == marker.id || val.PointEndId == marker.id,
+    );
+    linesToUpdate.forEach((line) => {
+      setObstacles((current) =>
+        current.filter((val) => val.SegmentId != line.id),
+      );
+    });
     setLines((current) =>
       current.filter(
         (val) =>
@@ -625,6 +634,11 @@ let ChallengeEditor = ({
                   fitInBounds={fitInBounds}
                   removeMarker={removeMarker}
                   setCurrentObstacle={setCurrentObstacle}
+                  setObstacles={setObstacles}
+                  obstacles={obstacles}
+                  updateObstacle={updateObstacle}
+                  getMarkerCoordsFromId={getMarkerCoordsFromId}
+                  placeObstacle={placeObstacle}
                 />
                 {lines.map((element) => {
                   try {
