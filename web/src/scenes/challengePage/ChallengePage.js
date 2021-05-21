@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
+import ParticipationDetails from './ParticipationDetails';
 import SearchIcon from '@material-ui/icons/Search';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { API } from '../../eventApi/api';
@@ -17,16 +18,17 @@ let ChallengePage = () => {
   const [selected, setSelected] = useState(null);
   const [challenges, setChallenges] = useState([]);
   const [participations, setParticipations] = useState([]);
+  const [open, setOpen] = useState(true);
 
   const ParticipationMenu = ({ index }) => {
     const handleClick = () => {
-      //Todo : intégrer le suivi de la progression
+      setSelected(participations[index].id);
     };
     return (
       <>
         <Button
           startIcon={<SearchIcon />}
-          onClick={() => handleClick()}
+          onClick={() => handleClick(index)}
         >
           Consulter
         </Button>
@@ -100,11 +102,12 @@ let ChallengePage = () => {
   return (
     <>
       {selected ? (
-        <>
-          <Typography variant="h3">
-            Suivi du challenge {selected.name}
-          </Typography>
-        </>
+        <ParticipationDetails
+          challenge_id={selected}
+          setSelected={setSelected}
+          open={open}
+          setOpen={setOpen}
+        />
       ) : null}
       <Typography variant="h3">Challenges en cours :</Typography>
       <List>
@@ -114,7 +117,7 @@ let ChallengePage = () => {
               <ChallengeItem
                 challenge={elem}
                 index={idx}
-                key={idx}
+                key={elem.id}
                 actionComponents={<ParticipationMenu index={idx} />}
               ></ChallengeItem>
             </ListItem>
@@ -129,7 +132,7 @@ let ChallengePage = () => {
               <ChallengeItem
                 challenge={elem}
                 index={idx}
-                key={idx}
+                key={'c' + elem.id}
                 actionComponents={<ChallengeMenu index={idx} />}
               />
             </ListItem>
