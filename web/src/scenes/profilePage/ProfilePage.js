@@ -56,9 +56,11 @@ let ProfilePage = () => {
                 //On édite enfin
                 API.user.edit(username, email).then((res) => {
                   setErr('');
-                  setUserState((current) =>
-                    Object.assign(current, { username, email }),
-                  );
+                  setUserState((current) => ({
+                    ...current,
+                    username: username,
+                    email: email,
+                  }));
                   setEdit(false);
                   setStatusMessage(
                     'Les modifications ont bien été prises en compte',

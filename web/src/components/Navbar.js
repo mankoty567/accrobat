@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AppBar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { API } from '../eventApi/api';
+import { useRecoilState } from 'recoil';
 
 /**
  * La barre de navigation du site, utilisable partout
@@ -10,6 +12,8 @@ let Navbar = () => {
   const [page, setPage] = useState(
     window.location.href.split('/')[3],
   );
+
+  const [userState] = useRecoilState(API.user.userAtom);
 
   const handleChanges = (event, value) => {
     setPage(value);
@@ -23,6 +27,7 @@ let Navbar = () => {
           to="/home"
           value="home"
         />
+
         <Tab
           label="Espace personnel"
           component={Link}
@@ -41,6 +46,14 @@ let Navbar = () => {
           value="admin"
           to="/admin"
         />
+        {userState ? (
+          <Tab
+            label="Se déconnecter"
+            component={Link}
+            value="logout"
+            to="/logout"
+          />
+        ) : null}
       </Tabs>
     </AppBar>
   );
