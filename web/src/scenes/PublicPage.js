@@ -89,8 +89,6 @@ let PublicPage = () => {
 
   return (
     <>
-      <p>Work in progress...</p>
-
       <NeedLogin redirect={false}>
         <Grid container spacing={4} style={{ padding: '3vh' }}>
           <Grid item xs={4} align="left">

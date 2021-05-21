@@ -13,7 +13,8 @@ import DraggableMarkers from './DraggableMarkers';
 import useStyles from './MaterialUI';
 import { API } from '../eventApi/api';
 import ContextMenu from './ContextMenu';
-import ModifyPopUp from './ModifyPopUp';
+import ModifyMarkerPopUp from './ModifyMarkerPopUp';
+import ModifyObstaclePopUp from './ModifyObstaclePopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
 import { createObstacleIcon } from './MarkerIcons';
@@ -81,6 +82,7 @@ let ChallengeEditor = ({
   const contextRef = useRef(undefined);
   const [addingLine, setAddingLine] = useState(false);
   const [modifyMarker, setModifyMarker] = useState(false);
+  const [modifyObstacle, setModifyObstacle] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
@@ -92,7 +94,72 @@ let ChallengeEditor = ({
   });
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
-  const [selectedObstacle, setSelectedObstacle] = useState(null);
+  const [currentObstacle, setCurrentObstacle] = useState(null);
+
+  // Récupérer les valeurs x,y des obstacles
+  function placeObstacle(pointTab, pourcentage) {
+    pourcentage *= 100;
+    let distanceArray = [];
+    let sum = 0;
+
+    for (let i = 0; i < pointTab.length - 1; i++) {
+      let p1 = { x: pointTab[i][0], y: pointTab[i][1] };
+      let p2 = { x: pointTab[i + 1][0], y: pointTab[i + 1][1] };
+
+      let distance = Math.sqrt(
+        Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2),
+      );
+
+      distanceArray[i] = distance;
+      sum = sum + distance;
+    }
+
+    let pourcentageArray = distanceArray.map((d) => (d * 100) / sum);
+
+    let table = distanceArray.map((d, i) => ({
+      distance: d,
+      pourcentage: pourcentageArray[i],
+    }));
+
+    let segment = 0;
+
+    let oldSum = 0;
+    let totalSum = 0;
+    let tableSum = table.map((t) => {
+      oldSum = totalSum;
+      totalSum = totalSum + t.pourcentage;
+      return oldSum;
+    });
+    // debugger;
+    while (
+      tableSum[segment + 1] < pourcentage &&
+      segment < tableSum.length
+    ) {
+      segment = segment + 1;
+    }
+
+    let pourcentSomme = 0;
+
+    for (let l = 0; l < segment; l++) {
+      pourcentSomme = pourcentSomme + table[l].pourcentage;
+    }
+
+    let pourcentageInSegment = pourcentage - pourcentSomme;
+
+    let obstaclePercent =
+      (100 * pourcentageInSegment) / table[segment].pourcentage;
+
+    let x =
+      pointTab[segment][0] +
+      (pointTab[segment + 1][0] - pointTab[segment][0]) *
+        (obstaclePercent / 100);
+    let y =
+      pointTab[segment][1] +
+      (pointTab[segment + 1][1] - pointTab[segment][1]) *
+        (obstaclePercent / 100);
+
+    return [x, y];
+  }
 
   const initializeMap = async (challenge_id) => {
     await API.challenge
@@ -131,6 +198,23 @@ let ChallengeEditor = ({
               path: segment.path,
             });
             segment.Obstacles.forEach((obstacle) => {
+              var startMarker = res.PointPassages.find(
+                (m) => m.id === segment.PointStartId,
+              );
+              var endMarker = res.PointPassages.find(
+                (m) => m.id === segment.PointEndId,
+              );
+              var positions = [
+                [startMarker.y, startMarker.x],
+                ...segment.path.map((elem) => {
+                  return [elem[1], elem[0]];
+                }),
+                [endMarker.y, endMarker.x],
+              ];
+              var coords = placeObstacle(
+                positions,
+                obstacle.distance,
+              );
               obstacles.push({
                 id: obstacle.id,
                 title: obstacle.title,
@@ -140,8 +224,8 @@ let ChallengeEditor = ({
                 enigme_awnser: obstacle.enigme_awnser,
                 SegmentId: obstacle.SegmentId,
                 // Valeur random en attendant de récupérer la bonne distance
-                x: 0.5,
-                y: 0.5,
+                x: coords[1],
+                y: coords[0],
               });
             });
           });
@@ -218,6 +302,15 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
+    var linesToUpdate = lines.filter(
+      (val) =>
+        val.PointStartId == marker.id || val.PointEndId == marker.id,
+    );
+    linesToUpdate.forEach((line) => {
+      setObstacles((current) =>
+        current.filter((val) => val.SegmentId != line.id),
+      );
+    });
     setLines((current) =>
       current.filter(
         (val) =>
@@ -275,35 +368,32 @@ let ChallengeEditor = ({
   };
 
   let addObstacle = async (event) => {
-    var pointClicked = [event.latlng.lng, event.latlng.lat];
     var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
     var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
-    var d = Math.sqrt(
-      Math.pow(pointClicked[0] * 100 - pointStart[0] * 100, 2) +
-        Math.pow(pointClicked[1] * 100 - pointStart[1] * 100, 2),
-    );
-    var D = Math.sqrt(
-      Math.pow(pointEnd[0] * 100 - pointStart[0] * 100, 2) +
-        Math.pow(pointEnd[1] * 100 - pointStart[1] * 100, 2),
-    );
-    var distance = Math.round((d / D) * 100);
+    var positions = [
+      [pointStart[1], pointStart[0]],
+      ...selectedLine.path.map((elem) => {
+        return [elem[1], elem[0]];
+      }),
+      [pointEnd[1], pointEnd[0]],
+    ];
     try {
       var newObstacle = {
         title: 'Obstacle ' + obstacles.length,
         description: ' ',
         type: 'question',
         enigme_awnser: ' ',
-        x: pointClicked[0],
-        y: pointClicked[1],
-        distance: distance / 100,
+        distance: 0.1,
         SegmentId: selectedLine.id,
       };
       let data = await API.obstacle.createObstacle(newObstacle);
-      // Valeurs randoms, à calculer
-      data.x = 0.5;
-      data.y = 0.5;
+      var coords = placeObstacle(positions, data.distance);
+      data.x = coords[1];
+      data.y = coords[0];
       setObstacles((current) => [...current, data]);
       setValid(false);
+      setCurrentObstacle(data);
+      setModifyObstacle(true);
       return data;
     } catch (err) {
       console.log(err);
@@ -315,6 +405,21 @@ let ChallengeEditor = ({
       console.log(err);
     });
     setValid(false);
+    var segment = lines.filter((current) => {
+      if (current.id == obstacle.SegmentId) return current;
+    });
+    var pointStart = getMarkerCoordsFromId(segment[0].PointStartId);
+    var pointEnd = getMarkerCoordsFromId(segment[0].PointEndId);
+    var positions = [
+      [pointStart[1], pointStart[0]],
+      ...segment[0].path.map((elem) => {
+        return [elem[1], elem[0]];
+      }),
+      [pointEnd[1], pointEnd[0]],
+    ];
+    var coords = placeObstacle(positions, obstacle.distance);
+    obstacle.x = coords[1];
+    obstacle.y = coords[0];
     setObstacles((current) =>
       current.filter((val) => {
         if (val.id == obstacle.id) val = obstacle;
@@ -378,10 +483,10 @@ let ChallengeEditor = ({
       addObstacle(contextMenu.event);
     }
     if (event === 'updateObstacle') {
-      updateObstacle(selectedObstacle);
+      setModifyObstacle(true);
     }
     if (event === 'deleteObstacle') {
-      removeObstacle(selectedObstacle);
+      removeObstacle(currentObstacle);
     }
     setContextEvent(undefined);
   };
@@ -528,7 +633,12 @@ let ChallengeEditor = ({
                   inBounds={inBounds}
                   fitInBounds={fitInBounds}
                   removeMarker={removeMarker}
-                  setSelectedObstacle={setSelectedObstacle}
+                  setCurrentObstacle={setCurrentObstacle}
+                  setObstacles={setObstacles}
+                  obstacles={obstacles}
+                  updateObstacle={updateObstacle}
+                  getMarkerCoordsFromId={getMarkerCoordsFromId}
+                  placeObstacle={placeObstacle}
                 />
                 {lines.map((element) => {
                   try {
@@ -571,15 +681,15 @@ let ChallengeEditor = ({
                       eventHandlers={{
                         click: () => {
                           var newCurrent = item;
-                          if (selectedObstacle) {
-                            if (selectedObstacle.id === item.id)
+                          if (currentObstacle) {
+                            if (currentObstacle.id === item.id)
                               newCurrent = null;
                           }
                           setCurrentMarker(null);
-                          setSelectedObstacle(newCurrent);
+                          setCurrentObstacle(newCurrent);
                         },
                         contextmenu: (event) => {
-                          setSelectedObstacle(item);
+                          setCurrentObstacle(item);
                           event.originalEvent.view.L.DomEvent.stopPropagation(
                             event,
                           );
@@ -591,7 +701,7 @@ let ChallengeEditor = ({
                       position={[item.y, item.x]}
                       icon={createObstacleIcon(
                         item.type == 'question',
-                        item === selectedObstacle,
+                        item === currentObstacle,
                       )}
                     >
                       <Tooltip
@@ -646,7 +756,7 @@ let ChallengeEditor = ({
               </Grid>
 
               {currentMarker ? (
-                <ModifyPopUp
+                <ModifyMarkerPopUp
                   modifyMarker={modifyMarker}
                   setModifyMarker={setModifyMarker}
                   setMarkers={setMarkers}
@@ -654,6 +764,15 @@ let ChallengeEditor = ({
                   markers={markers}
                   setStartPoint={setStartPoint}
                   updateMarker={updateMarker}
+                />
+              ) : null}
+              {currentObstacle ? (
+                <ModifyObstaclePopUp
+                  modifyObstacle={modifyObstacle}
+                  setModifyObstacle={setModifyObstacle}
+                  setObstacles={setObstacles}
+                  currentObstacle={currentObstacle}
+                  updateObstacle={updateObstacle}
                 />
               ) : null}
             </main>

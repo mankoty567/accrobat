@@ -35,7 +35,10 @@ let DraggableMarkers = ({
   inBounds,
   fitInBounds,
   removeMarker,
-  setSelectedObstacle,
+  setCurrentObstacle,
+  lines,
+  obstacles,
+  updateObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
@@ -110,7 +113,7 @@ let DraggableMarkers = ({
                         newCurrent = null;
                     }
                     setCurrentMarker(newCurrent);
-                    setSelectedObstacle(null);
+                    setCurrentObstacle(null);
                     if (addingLine) {
                       if (currentMarker.id !== item.id)
                         addLine(currentMarker, item);
@@ -137,6 +140,19 @@ let DraggableMarkers = ({
                               console.log(err);
                             });
                           setValid(false);
+                          var linesToUpdate = lines.filter(
+                            (val) =>
+                              val.PointStartId == item.id ||
+                              val.PointEndId == item.id,
+                          );
+                          linesToUpdate.forEach((line) => {
+                            var obstaclesToUpdate = obstacles.filter(
+                              (val) => val.SegmentId == line.id,
+                            );
+                            obstaclesToUpdate.forEach((obstacle) => {
+                              updateObstacle(obstacle);
+                            });
+                          });
                           return newM;
                         } else {
                           return m;

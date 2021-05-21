@@ -43,6 +43,9 @@ const participationApi = {
    * @returns Un objet contenant toute la progression d'un utilisateur
    */
   getProgression: (participation_id) => {
+    console.log(
+      `${host}/api/participation/${participation_id}/whereiam`,
+    );
     return fetch(
       `${host}/api/participation/${participation_id}/whereiam`,
       {
