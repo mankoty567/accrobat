@@ -199,4 +199,11 @@ module.exports = {
       res.json(users);
     });
   },
+  get_all_user: (req, res) => {
+    bdd.User.findAll({
+      attributes: ['id', 'username'],
+    }).then((users) => {
+      res.json(users);
+    });
+  },
 };

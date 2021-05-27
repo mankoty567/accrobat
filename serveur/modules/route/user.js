@@ -155,4 +155,22 @@ module.exports.routes = [
     description: 'Récupère tous les administrateurs',
     result: [{ code: 200, content: [{ id: 0, username: '' }] }],
   },
+  {
+    method: 'GET',
+    url: '/api/user/get_all',
+    func: [m.user_mdw.put_admin, m.user_ctrl.get_all_user],
+    name: 'Récupération de tous les utilisateurs',
+    description: 'Récupère tous les utilisateurs',
+    result: [
+      {
+        code: 200,
+        content: [
+          {
+            id: 0,
+            username: '',
+          },
+        ],
+      },
+    ],
+  },
 ];
