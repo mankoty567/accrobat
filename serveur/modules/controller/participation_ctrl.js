@@ -38,74 +38,103 @@ module.exports = {
             where: { ParticipationId: req.params.id },
             order: [['id', 'DESC']],
           }).then((events) => {
-            // Calcul de l'historique
-            let segmentsParcourus = [];
-
-            for (let i = events.length - 1; i >= 0; i--) {
-              if (events[i].type === 'pointpassage:depart') {
-                segmentsParcourus.push(Math.trunc(events[i].data));
-              }
-            }
-
-            let obj = { segmentsParcourus };
-
-            if (events[0].type === 'pointpassage:arrivee') {
-              obj.type = 'PointPassage';
+            if (events.length === 0) {
               bdd.PointPassage.findOne({
-                where: { id: Math.trunc(events[0].data) },
-              }).then((pointpassage) => {
-                obj.entity = pointpassage;
-                res.json(obj);
-              });
-            } else if (events[0].type === 'obstacle:arrivee') {
-              obj.type = 'Obstacle';
-              bdd.Obstacle.findOne({
-                where: { id: Math.trunc(events[0].data) },
-                attributes: ['id', 'title', 'description', 'type', 'distance'],
-              }).then((obstacle) => {
-                obj.entity = obstacle;
-                obj.submitedImg = undefined;
-                res.json(obj);
-              });
-            } else if (events[0].type === 'obstacle:image') {
-              obj.type = 'Obstacle';
-              bdd.Obstacle.findOne({
-                where: { id: Math.trunc(events[1].data) },
-                attributes: ['id', 'title', 'description', 'type', 'distance'],
-              }).then((obstacle) => {
-                bdd.ImageSubmition.findOne({
-                  where: { EventId: events[0].id },
-                  attributes: ['createdAt', 'updatedAt', 'ok'],
-                }).then((img) => {
-                  obj.entity = obstacle;
-                  obj.submitedImg = img;
-                  res.json(obj);
+                where: {
+                  ChallengeId: participation.ChallengeId,
+                  type: 'start',
+                },
+              }).then((pointPassage) => {
+                res.json({
+                  segmentsParcourus: [],
+                  type: 'PointPassage',
+                  entity: {
+                    pointPassage,
+                  },
                 });
               });
             } else {
-              let distance = 0;
-              let isOnPoint = false;
-              let i = 0;
-              let segmentId = undefined;
+              // Calcul de l'historique
+              let segmentsParcourus = [];
 
-              while (!isOnPoint) {
+              for (let i = events.length - 1; i >= 0; i--) {
                 if (events[i].type === 'pointpassage:depart') {
-                  isOnPoint = true;
-                  segmentId = Math.trunc(events[i].data);
-                } else {
-                  distance = distance + events[i].data;
-                  i++;
+                  segmentsParcourus.push(Math.trunc(events[i].data));
                 }
               }
 
-              bdd.Segment.findOne({ where: { id: segmentId } }).then(
-                (segment) => {
-                  obj.type = 'Segment';
-                  obj.distance = distance;
-                  obj.entity = segment;
+              let obj = { segmentsParcourus };
+
+              if (events[0].type === 'pointpassage:arrivee') {
+                obj.type = 'PointPassage';
+                bdd.PointPassage.findOne({
+                  where: { id: Math.trunc(events[0].data) },
+                }).then((pointpassage) => {
+                  obj.entity = pointpassage;
                   res.json(obj);
+                });
+              } else if (events[0].type === 'obstacle:arrivee') {
+                obj.type = 'Obstacle';
+                bdd.Obstacle.findOne({
+                  where: { id: Math.trunc(events[0].data) },
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                  ],
+                }).then((obstacle) => {
+                  obj.entity = obstacle;
+                  obj.submitedImg = undefined;
+                  res.json(obj);
+                });
+              } else if (events[0].type === 'obstacle:image') {
+                obj.type = 'Obstacle';
+                bdd.Obstacle.findOne({
+                  where: { id: Math.trunc(events[1].data) },
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                  ],
+                }).then((obstacle) => {
+                  bdd.ImageSubmition.findOne({
+                    where: { EventId: events[0].id },
+                    attributes: ['createdAt', 'updatedAt', 'ok'],
+                  }).then((img) => {
+                    obj.entity = obstacle;
+                    obj.submitedImg = img;
+                    res.json(obj);
+                  });
+                });
+              } else {
+                let distance = 0;
+                let isOnPoint = false;
+                let i = 0;
+                let segmentId = undefined;
+
+                while (!isOnPoint) {
+                  if (events[i].type === 'pointpassage:depart') {
+                    isOnPoint = true;
+                    segmentId = Math.trunc(events[i].data);
+                  } else {
+                    distance = distance + events[i].data;
+                    i++;
+                  }
                 }
-              );
+
+                bdd.Segment.findOne({ where: { id: segmentId } }).then(
+                  (segment) => {
+                    obj.type = 'Segment';
+                    obj.distance = distance;
+                    obj.entity = segment;
+                    res.json(obj);
+                  }
+                );
+              }
             }
           });
         } else {

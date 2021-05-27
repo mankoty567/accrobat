@@ -116,4 +116,9 @@ module.exports.routes = [
       { code: 403, content: 'Participation is not to logged user' },
     ],
   },
+  {
+    method: 'GET',
+    url: '/api/participation/:id/session',
+    func: [m.user_mdw.put_user],
+  },
 ];
