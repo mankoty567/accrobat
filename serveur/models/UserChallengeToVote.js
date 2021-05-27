@@ -8,6 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  UserChallengeToVote.associate = function () {};
+  //UserChallengeToVote.associate = function () {};
   return UserChallengeToVote;
 };

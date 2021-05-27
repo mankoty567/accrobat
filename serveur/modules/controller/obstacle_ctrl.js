@@ -248,7 +248,7 @@ module.exports = {
             bdd.Obstacle.findOne({
               where: { id: Math.trunc(lastEvent.data) },
             }).then((obstacle) => {
-              if (!obstacle.type === 'question') {
+              if (obstacle.type !== 'question') {
                 res.status(400).send('Bad request: Obstacle is not a question');
               } else {
                 if (req.body.awnser === obstacle.enigme_awnser) {

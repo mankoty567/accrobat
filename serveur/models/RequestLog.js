@@ -11,6 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  RequestLog.associate = function () {};
+  //RequestLog.associate = function () {};
   return RequestLog;
 };

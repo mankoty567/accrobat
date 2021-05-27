@@ -8,6 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  UserChallengeAdmin.associate = function () {};
+  //UserChallengeAdmin.associate = function () {};
   return UserChallengeAdmin;
 };

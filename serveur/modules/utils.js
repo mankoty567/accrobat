@@ -9,15 +9,15 @@ const MAX_AVATAR_SIZE = 500;
 const MAX_IMG_SUBMIT_SIZE = 1000;
 
 module.exports = {
-  pathToDistance: (path, echelle) => {
+  pathToDistance: (pathIn, echelle) => {
     let distance = 0;
 
-    for (let i = 0; i < path.length - 1; i++) {
+    for (let i = 0; i < pathIn.length - 1; i++) {
       distance =
         distance +
         Math.sqrt(
-          Math.pow(path[i][0] - path[i + 1][0]) +
-            Math.pow(path[i][1] - path[i + 1][1])
+          Math.pow(pathIn[i][0] - pathIn[i + 1][0]) +
+            Math.pow(pathIn[i][1] - pathIn[i + 1][1])
         );
     }
 

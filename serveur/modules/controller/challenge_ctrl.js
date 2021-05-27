@@ -140,13 +140,13 @@ module.exports = {
           ChallengeId: challenge.id,
         }).then(() => {
           if (req.body.img_avatar !== undefined) {
-            utils.parseAvatar(req.body.img_avatar).then((buffer) => {
+            utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
               fs.writeFileSync(
                 path.join(
                   __dirname,
                   '../../data/challengeAvatar/' + challenge.id + '.webp'
                 ),
-                buffer
+                bufferAvater
               );
               debug('Création du challenge ' + challenge.id);
               res.json({ ...challenge.dataValues, frontId: req.body.frontId });

@@ -92,7 +92,7 @@ module.exports = {
               if (user === null) {
                 res.status(400).send('Bad request: User not found');
               } else {
-                let token = jwt.sign(
+                let newToken = jwt.sign(
                   {
                     id: user.id,
                     permission: user.permission,
@@ -108,7 +108,7 @@ module.exports = {
                   permission: user.permission,
                   level: user.level,
                   xp: user.xp,
-                  jwt: token,
+                  jwt: newToken,
                 });
               }
             });
