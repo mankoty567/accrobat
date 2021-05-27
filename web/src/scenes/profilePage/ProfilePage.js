@@ -18,7 +18,7 @@ import { useRecoilState } from 'recoil';
 let ProfilePage = () => {
   //Variable d'interface
   const [edit, setEdit] = useState(false);
-  const [userState] = useRecoilState(API.user.userAtom);
+  const [userState, setUserState] = useRecoilState(API.user.userAtom);
   const [username, setUsername] = useState(userState.username);
   const [email, setEmail] = useState(userState.email);
   const [err, setErr] = useState('');
@@ -56,6 +56,11 @@ let ProfilePage = () => {
                 //On édite enfin
                 API.user.edit(username, email).then((res) => {
                   setErr('');
+                  setUserState((current) => ({
+                    ...current,
+                    username: username,
+                    email: email,
+                  }));
                   setEdit(false);
                   setStatusMessage(
                     'Les modifications ont bien été prises en compte',
@@ -69,7 +74,6 @@ let ProfilePage = () => {
             })
             .catch((err) => console.err(err));
         } else {
-          console.log(2);
           API.user.edit(email).then(() => {
             setErr('');
             setEdit(false);
