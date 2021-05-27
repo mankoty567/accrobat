@@ -74,7 +74,6 @@ let ProfilePage = () => {
             })
             .catch((err) => console.err(err));
         } else {
-          console.log(2);
           API.user.edit(email).then(() => {
             setErr('');
             setEdit(false);
