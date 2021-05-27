@@ -143,4 +143,20 @@ module.exports = {
       }
     );
   },
+  get_session: (req, res) => {
+    bdd.Participation.findOne({ where: { id: req.params.id } }).then(
+      (participation) => {
+        if (participation.UserId === req.user.id) {
+          bdd.Event.findAll({
+            where: { ParticipationId: req.params.id },
+            order: [['id', 'DESC']],
+          }).then((events) => {
+            res.json(events);
+          });
+        } else {
+          res.status(403).send('Participation is not to logged user');
+        }
+      }
+    );
+  },
 };

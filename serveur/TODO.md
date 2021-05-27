@@ -54,7 +54,7 @@ type:
 - [x] Récupération des challenges à voter en mode user
 - [x] Bouton copier la route sur la doc
 - [x] Route pour récupérer tous les utilisateurs
-- [ ] Route pour récupérer toutes les sessions
+- [x] Route pour récupérer toutes les sessions
 - [ ] Récupération des records
 - [ ] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
 - [ ] Route pour éditer les challengeToVote
