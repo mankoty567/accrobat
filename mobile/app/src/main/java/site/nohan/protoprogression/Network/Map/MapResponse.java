@@ -137,6 +137,7 @@ public class MapResponse implements APIListenner {
                     Obstacle obstacle;
                     for(int obstaclei = 0; obstaclei < jOstacles.length(); obstaclei++){
                         obstacle = new Obstacle();
+                        obstacle.id =((JSONObject) jOstacles.get(obstaclei)).getInt("id");
                         obstacle.titre =((JSONObject) jOstacles.get(obstaclei)).getString("title");
                         obstacle.description =((JSONObject) jOstacles.get(obstaclei)).getString("description");
                         obstacle.distance = ((JSONObject) jOstacles.get(obstaclei)).getDouble("distance");
@@ -175,8 +176,8 @@ public class MapResponse implements APIListenner {
                     break;
                 Log.e("suiv",c.objectif.titre);
                 Button button = new Button(this.activity);
-                button.setOnClickListener(new DirectionController(c));
-                button.setText(c.objectif.titre + " - " + c.nom);
+                button.setOnClickListener(new DirectionController(this.activity, c));
+                button.setText(c.objectif.titre + " par " + c.nom);
 
                 linearLayout.addView(button);
             }

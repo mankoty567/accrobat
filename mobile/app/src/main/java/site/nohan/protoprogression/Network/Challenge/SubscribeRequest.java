@@ -29,7 +29,7 @@ public class SubscribeRequest extends APIRequestPOST {
 
         this.challengeID = challengeID;
 
-        Log.d("net", this.getUrl());
+        Log.d("net", "Inscription au challenge "+challengeID);
         APIRequestPOST.queue.add(this);
         APIRequestPOST.queue.start();
     }

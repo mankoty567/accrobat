@@ -17,6 +17,7 @@ import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
@@ -44,15 +45,18 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Button button;
+
         // Selection du chemin
         LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
         if(Map.mapActuelle.cheminActuel == null)
             return;
 
-        Log.e("onProgressChanged", Map.mapActuelle.toString() );
+        //Log.e("onProgressChanged", Map.mapActuelle.toString() );
         DataBase.saveProgression();
 
-        Log.e("lele", DataBase.getSubscribed().toString());
+        new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
+        //Log.e("lele", DataBase.getSubscribed().toString());
         this.detecterObstacle();
         //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
         if(progress == 100){
@@ -67,11 +71,19 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     if(c.objectif == null)
                         break;
                     Log.e("suiv",c.objectif.titre);
-                    Button button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c,toile));
+                    button = new Button(this.activity);
+                    button.setOnClickListener(new DirectionController(c,toile,this.activity));
                     button.setText(c.objectif.titre + " - " + c.nom);
 
                     linearLayout.addView(button);
+                }
+
+                if(Map.mapActuelle.cheminActuel.objectif.chemins.get(0).objectif == null){
+                    button = new Button(this.activity);
+                    button.setOnClickListener(new ArriveeController(this.activity));
+                    button.setText("Terminer la course");
+                    linearLayout.addView(button);
+                    Log.e("seekbar", "course terminée");
                 }
 
 
@@ -101,11 +113,15 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
-
+                new SaveParticipationRequest(
+                        this.activity,
+                        TypeEvent.OSTACLE,
+                        obstacle.id,
+                        new SaveParticipationResponse()
+                );
                 builder.setPositiveButton("Soumettre", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Log.e("reponse", input.getText().toString());
                         if(input.getText().toString().equals(obstacle.reponse)){
                             obstacle.resolu = true;
                         }else{

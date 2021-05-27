@@ -56,7 +56,7 @@ public class SubscribeResponse implements APIListenner {
      ******************************************/
     @Override
     public void onResponse(Object response) {
-        //Log.d("theTag",response.toString());
+        Log.d("net","Inscrit !");
 
         // Conversion de la réponse en JSON
         try {

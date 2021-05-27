@@ -147,7 +147,6 @@ public class DataBase {
                 dateAujourdhui +
                 "');"
         );
-        Log.e("save", "date: "+dateAujourdhui );
 
         bdd.execSQL("DELETE FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";");
         ArrayList<Integer> completes = new ArrayList<>();

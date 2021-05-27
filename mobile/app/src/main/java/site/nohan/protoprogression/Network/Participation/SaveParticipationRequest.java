@@ -3,34 +3,75 @@ package site.nohan.protoprogression.Network.Participation;
 import android.app.Activity;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.volley.AuthFailureError;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import site.nohan.protoprogression.Model.Chemin;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.Network.APIRequestGET;
 import site.nohan.protoprogression.Network.APIRequestPOST;
 import site.nohan.protoprogression.Network.DataBase;
 
 public class SaveParticipationRequest extends APIRequestPOST {
+    public static long intervalleEnvoiMinimum = 2L*1000L;
 
-    String type;
+    public static double derniereDistance = 0;
+    public static long deniereMsEnvoiProgression = 0;
+
+    TypeEvent type;
     int id;
-    int progression;
+    int data;
 
     /******************************************
      * Constructeur de la requête POST
-     *****************************************
-     * @param activity
+     *****************************************  @param activity
+     * @param data
      * @param apiListenner*/
-    public SaveParticipationRequest(Activity activity, int progression, int id, String type , APIListenner apiListenner) {
+    public SaveParticipationRequest(Activity activity, TypeEvent type, int data,  int id  , APIListenner apiListenner) {
         super(activity, "event/", apiListenner);
-        Log.e("update", type );
-        this.progression = progression;
+        Log.e("update", type.toString() + " data: " + data + " id: "+ id  );
+        this.data = data;
         this.id = id;
         this.type = type;
+
+        // Si cela fais longtemps que le deniere Envoi Progression a eu lieu on envoi sinon on ignore
+        if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
+            long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
+            if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
+                return;
+            }
+        }
+
+        APIRequestPOST.queue.add(this);
+        APIRequestPOST.queue.start();
+    }
+
+    public SaveParticipationRequest(Activity activity, TypeEvent type, int id, SaveParticipationResponse apiListenner) {
+        super(activity, "event/", apiListenner);
+        Log.e("update", type.toString() + " id: "+ id   );
+        this.id = id;
+        this.type = type;
+
+        APIRequestPOST.queue.add(this);
+        APIRequestPOST.queue.start();
+
+    }
+
+    /******************************************
+     * Méthode utilisé pour définir le type du BODY de la requête
+     ******************************************/
+    @Override
+    public String getBodyContentType() {
+        return "application/json; charset=utf-8";
     }
 
     /******************************************
@@ -51,16 +92,34 @@ public class SaveParticipationRequest extends APIRequestPOST {
 
     @Override
     public byte[] getBody() throws AuthFailureError {
+        JSONObject jsonBody = new JSONObject();
         try {
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("data", ""+this.progression);
-            jsonBody.put("*ParticipationId", this.id);
-            jsonBody.put("*type", this.type);
+            jsonBody.put("type", this.type.toString());
+
+            if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
+
+
+                double deltaDistance = (site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()/2f - derniereDistance);
+                jsonBody.put("data", "" + deltaDistance);
+                derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale() / 2f;
+
+            }else if(type == TypeEvent.ARIVEE){
+                //jsonBody.put("data", data);
+            }else if(type == TypeEvent.DEPART){
+                jsonBody.put("data", data);
+            }else if(type == TypeEvent.OSTACLE){
+                jsonBody.put("data", data);
+            }
+            jsonBody.put("ParticipationId", site.nohan.protoprogression.Model.Map.participationId);
+
+
             final String requestBody = jsonBody.toString();
+            Log.e("net json", requestBody );
             //Log.i("BODY:", requestBody +"");
-            return requestBody == null ? null : requestBody.getBytes("utf-8");
+            SaveParticipationRequest.deniereMsEnvoiProgression = System.currentTimeMillis();
+            return requestBody.getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
-            Log.e("BODY_SIGNUPREQUEST", "Unsupported Encoding while trying to get the bytes of requestBody using utf-8");
+            Log.e("net save.body", "Unsupported Encoding while trying to get the bytes of requestBody using utf-8");
             return null;
         }
     }
