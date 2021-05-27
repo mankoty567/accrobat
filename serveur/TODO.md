@@ -56,6 +56,5 @@ type:
 - [x] Route pour récupérer tous les utilisateurs
 - [x] Route pour récupérer toutes les sessions
 - [x] Récupération des records
-- [ ] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
-- [ ] Route pour éditer les challengeToVote
-- [ ] Quand on ferme le sondage, affiche un popup pour demander si on doit créer automatiquement un challenge
+- [x] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
+- [x] Route pour éditer les challengeToVote

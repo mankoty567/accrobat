@@ -29,7 +29,17 @@ module.exports = {
         } else {
           proposition.status = req.body.status;
           proposition.save().then(() => {
-            res.json(proposition);
+            // Si on accepte la proposition, ça ouvre automatiquement un challengeToVote
+            if (req.body.status === 'accepted') {
+              bdd.ChallengeToVote.create({
+                description: proposition.description,
+                status: 'open',
+              }).then(() => {
+                res.json(proposition);
+              });
+            } else {
+              res.json(proposition);
+            }
           });
         }
       }

@@ -26,6 +26,11 @@ module.exports.routes = [
       status: {
         type: 'string',
         value: ['open', 'close'],
+        required: false,
+      },
+      description: {
+        type: 'string',
+        required: false,
       },
     },
     result: [
