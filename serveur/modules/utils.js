@@ -67,6 +67,38 @@ module.exports = {
 
     next();
   },
+  /**
+   * Transforme la durée en millisecondes en chaine de caractères grâce au format
+   * @param {Number} duration
+   * @return {Object} {jour, heure, minute, seconde}
+   */
+  parseDuration: (duration) => {
+    let nbSec = duration / 1000;
+
+    let params = {};
+
+    params.jour = Math.trunc(nbSec / 86400);
+
+    nbSec = nbSec % 86400;
+    params.heure = Math.trunc(nbSec / 3600);
+    if (params.heure < 10) {
+      params.heure = '0' + params.heure;
+    }
+
+    nbSec = nbSec % 3600;
+    params.minute = Math.trunc(nbSec / 60);
+    if (params.minute < 10) {
+      params.minute = '0' + params.minute;
+    }
+
+    nbSec = nbSec % 60;
+    params.seconde = Math.trunc(nbSec);
+    if (params.seconde < 10) {
+      params.seconde = '0' + params.seconde;
+    }
+
+    return params;
+  },
 };
 
 function resizeImage(b64, size) {

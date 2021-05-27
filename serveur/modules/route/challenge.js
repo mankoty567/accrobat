@@ -346,4 +346,36 @@ module.exports.routes = [
       { code: 400, content: 'Bad Request: User not exist' },
     ],
   },
+  {
+    method: 'GET',
+    url: '/api/challenge/:id/records',
+    func: [m.challenge_ctrl.get_records],
+    name: 'Récupération des records du challenge',
+    description: 'Récupère les meilleurs temps de completion des challenges',
+    query: [
+      {
+        param: 'nb=[nombre]',
+        desc: 'Renvoit les [nombre] premier records, defaut 5, max 20',
+      },
+    ],
+    result: [
+      {
+        code: 200,
+        content: [
+          {
+            id: 0,
+            duration: 0,
+            durationStr: "0j 00:00'00",
+            startDate: 'date',
+            endDate: 'date',
+            user: {
+              username: '',
+              id: 0,
+            },
+          },
+        ],
+      },
+      { code: 400, content: 'Challenge not found' },
+    ],
+  },
 ];
