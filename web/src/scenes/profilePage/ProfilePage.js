@@ -7,6 +7,7 @@ import {
   Grid,
   Paper,
   Divider,
+  Avatar,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { API } from '../../eventApi/api';
@@ -14,6 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
 import PasswordPage from './PasswordPage';
 import { useRecoilState } from 'recoil';
+import ImageUploader from '../../components/ImageUploader';
 
 let ProfilePage = () => {
   //Variable d'interface
@@ -23,9 +25,19 @@ let ProfilePage = () => {
   const [email, setEmail] = useState(userState.email);
   const [err, setErr] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
+  const [img_avatar, setImg_avatar] = useState(null);
 
   //Variable pour afficher l'interface
   const [mode, setMode] = useState('profile'); //'profile' | 'password'
+
+  useState(
+    () =>
+      API.user
+        .getAvatar(userState.id)
+        .then((image) => setImg_avatar(image))
+        .catch(() => setImg_avatar(null)),
+    [],
+  );
 
   /**
    * Pour mettre en place l'édition de profile
@@ -104,76 +116,86 @@ let ProfilePage = () => {
           <Paper>
             <Typography variant="h3">Page de profil</Typography>
             <Divider />
+            <Grid container space={1}>
+              <Grid item xs={5}>
+                <Paper>
+                  <List>
+                    <ListItem>
+                      <List>
+                        <ListItem>
+                          <Typography variant="h6">
+                            Nom d'utilisateur :
+                          </Typography>
+                        </ListItem>
+                        <ListItem>
+                          {edit ? (
+                            <TextField
+                              fullWidth
+                              label="Nom d'utilisateur"
+                              helperText="Modifiez votre nom d'utilisateur"
+                              defaultValue={username}
+                              value={username}
+                              onChange={(e) =>
+                                setUsername(e.target.value)
+                              }
+                            />
+                          ) : (
+                            <Typography>{username}</Typography>
+                          )}
+                        </ListItem>
+                      </List>
+                    </ListItem>
+                    <Divider />
 
-            <List>
-              <ListItem>
-                <List>
-                  <ListItem>
-                    <Typography variant="h6">
-                      Nom d'utilisateur :
-                    </Typography>
-                  </ListItem>
-                  <ListItem>
-                    {edit ? (
-                      <TextField
-                        fullWidth
-                        label="Nom d'utilisateur"
-                        helperText="Modifiez votre nom d'utilisateur"
-                        defaultValue={username}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                      />
-                    ) : (
-                      <Typography>{username}</Typography>
-                    )}
-                  </ListItem>
-                </List>
-              </ListItem>
-              <Divider />
+                    <ListItem>
+                      <List>
+                        <ListItem>
+                          <Typography variant="h6">
+                            Email :
+                          </Typography>
+                        </ListItem>
+                        <ListItem>
+                          {edit ? (
+                            <TextField
+                              fullWidth
+                              label="Nom d'utilisateur"
+                              helperText="Modifiez votre nom d'utilisateur"
+                              defaultValue={email}
+                              value={email}
+                              onChange={(e) =>
+                                setEmail(e.target.value)
+                              }
+                            />
+                          ) : (
+                            <Typography>{email}</Typography>
+                          )}
+                        </ListItem>
+                      </List>
+                    </ListItem>
+                  </List>
+                </Paper>
+              </Grid>
 
-              <ListItem>
-                <List>
-                  <ListItem>
-                    <Typography variant="h6">Email :</Typography>
-                  </ListItem>
-                  <ListItem>
-                    {edit ? (
-                      <TextField
-                        fullWidth
-                        label="Nom d'utilisateur"
-                        helperText="Modifiez votre nom d'utilisateur"
-                        defaultValue={email}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    ) : (
-                      <Typography>{email}</Typography>
-                    )}
-                  </ListItem>
-                </List>
-              </ListItem>
-              <Divider />
+              <Grid item xs={7}>
+                {edit ? (
+                  <ImageUploader maxSize={[2, 2]} />
+                ) : (
+                  <Avatar
+                    src={`https://api.acrobat.bigaston.dev/api/user/${userState.id}/avatar`}
+                  />
+                )}
+              </Grid>
 
               {edit ? null : (
                 <ListItem>
-                  <List>
-                    <ListItem>
-                      <Typography variant="h6">
-                        Mot de passe :
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      <Button
-                        fullWidth
-                        onClick={() => setMode('password')}
-                      >
-                        Modifier mon mot de passe
-                      </Button>
-                    </ListItem>
-                  </List>
+                  <Typography variant="h6">Mot de passe :</Typography>
+                  <Button onClick={() => setMode('password')}>
+                    Modifier mon mot de passe
+                  </Button>
                 </ListItem>
               )}
-            </List>
+            </Grid>
+
             <Typography variant="h6" style={{ color: '#18bc9c' }}>
               {statusMessage}
             </Typography>

@@ -124,6 +124,18 @@ const userApi = {
       .then(checkStatus)
       .then((res) => res.text());
   },
+
+  getAvatar: (userId) => {
+    return fetch(`${host}/api/user/${userId}/avatar`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
 };
 
 /* Code de la connection
