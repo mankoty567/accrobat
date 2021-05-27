@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const sizeOf = require('image-size');
+const bdd = require('../models');
 
 const MAX_MAP_SIZE = 1500;
 const MAX_AVATAR_SIZE = 500;
@@ -55,6 +56,16 @@ module.exports = {
   },
   parseImg: (b64) => {
     return resizeImage(b64, MAX_IMG_SUBMIT_SIZE);
+  },
+  debugger: (req, res, next) => {
+    bdd.RequestLog.create({
+      method: req.method,
+      path: req.originalUrl,
+      body: req.body,
+      headers: req.headers,
+    });
+
+    next();
   },
 };
 

@@ -10,6 +10,9 @@ app.use(cors());
 
 app.use(express.json({ limit: '50mb' }));
 app.use('/doc', express.static('./doc'));
+
+app.use(m.utils.debugger);
+
 require('./modules/route')(app);
 
 app.get('/', (req, res) => res.send(require('./package.json').version));
