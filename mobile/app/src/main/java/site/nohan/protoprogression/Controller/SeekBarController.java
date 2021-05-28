@@ -6,10 +6,13 @@ import android.content.DialogInterface;
 import android.graphics.Point;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+
+import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
 
@@ -57,7 +60,41 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
         new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
         //Log.e("lele", DataBase.getSubscribed().toString());
-        this.detecterObstacle();
+        Obstacle obstacle = this.detecterObstacle();
+        if(obstacle != null){
+            Log.e("seekbar", "obstacle "+obstacle.id );
+            new SaveParticipationRequest(
+                    this.activity,
+                    TypeEvent.OSTACLE,
+                    obstacle.id,
+                    Map.participationId,
+                    new SaveParticipationResponse()
+            );
+
+            final EditText input = new EditText(this.activity);
+
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            final AlertDialog dialog = new AlertDialog.Builder(this.activity)
+                    .setView(input)
+                    .setTitle(obstacle.titre)
+                    .setMessage(obstacle.description)
+                    .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                    .create();
+
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+
+                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(new ObstacleController(mapFragment.getActivity(), obstacle, input, dialog));
+                }
+            });
+            if(!ObstacleController.isShown)
+                dialog.show();
+            ObstacleController.isShown = true;
+
+        }
         //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
         if(progress == 100){
 
@@ -73,7 +110,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     Log.e("suiv",c.objectif.titre);
                     button = new Button(this.activity);
                     button.setOnClickListener(new DirectionController(c,toile,this.activity));
-                    button.setText(c.objectif.titre + " - " + c.nom);
+                    button.setText(c.objectif.titre + " par " + c.nom);
 
                     linearLayout.addView(button);
                 }
@@ -100,37 +137,13 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
     }
 
-    public void detecterObstacle(){
+    @Nullable
+    public Obstacle detecterObstacle(){
         for (Obstacle obstacle : Map.mapActuelle.cheminActuel.obstacles) {
             Log.e("obs", "ods"+ (obstacle.distance*100) + " maci"+ ((Map.mapActuelle.accompli/Map.mapActuelle.cheminActuel.getLongueur())*100) );
             if ((((float) Map.mapActuelle.accompli/Map.mapActuelle.cheminActuel.getLongueur())*100f) > obstacle.distance * 100
                 && !obstacle.estResolu()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
-                builder.setTitle(obstacle.titre);
-                builder.setMessage(obstacle.description);
-
-                final EditText input = new EditText(this.activity);
-
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
-                new SaveParticipationRequest(
-                        this.activity,
-                        TypeEvent.OSTACLE,
-                        obstacle.id,
-                        new SaveParticipationResponse()
-                );
-                builder.setPositiveButton("Soumettre", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(input.getText().toString().equals(obstacle.reponse)){
-                            obstacle.resolu = true;
-                        }else{
-                            detecterObstacle();
-                        }
-                    }
-                });
-
-                builder.show();
+                return obstacle;
                 /*
                 new AlertDialog.Builder(this.activity)
                         .setTitle("Attention")
@@ -146,7 +159,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                  */
             }
         }
-
+        return null;
     }
 
     @Override
