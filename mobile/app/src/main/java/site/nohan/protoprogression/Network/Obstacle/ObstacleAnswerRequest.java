@@ -67,6 +67,7 @@ public class ObstacleAnswerRequest extends APIRequestPOST{
             jsonBody.put("awnser", this.reponse);
             final String requestBody = jsonBody.toString();
             //Log.i("BODY:", requestBody +"");
+            Log.e("net obs ans", ""+jsonBody.toString() );
             return requestBody == null ? null : requestBody.getBytes("utf-8");
         } catch (Exception e) {
             Log.e("BODY_SUBSCRIBEREQUEST", "Unsupported Encoding while trying to get the bytes of requestBody using utf-8");

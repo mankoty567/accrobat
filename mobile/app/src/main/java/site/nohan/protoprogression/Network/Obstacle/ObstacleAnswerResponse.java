@@ -1,7 +1,9 @@
 package site.nohan.protoprogression.Network.Obstacle;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -18,10 +20,12 @@ public class ObstacleAnswerResponse implements APIListenner {
 
     Obstacle obstacle;
     DialogInterface dialogInterface;
+    Activity activity;
 
-    public ObstacleAnswerResponse(Obstacle obstacle, DialogInterface dialogInterface){
+    public ObstacleAnswerResponse(Activity activity, Obstacle obstacle, DialogInterface dialogInterface){
         this.obstacle = obstacle;
         this.dialogInterface = dialogInterface;
+        this.activity = activity;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class ObstacleAnswerResponse implements APIListenner {
 
     @Override
     public void onResponse(Object response) {
+
         boolean isCorrect = false;
         try {
             JSONObject json = new JSONObject((String) response);
@@ -47,9 +52,21 @@ public class ObstacleAnswerResponse implements APIListenner {
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
         }
+        Log.e("net answer", isCorrect ? "OK" : "KO" );
+        // TODO: trouver pk c'est null
+        Log.e("net answer", this.activity == null ? "OK" : "KO" );
         if(isCorrect){
+
+            Toast toast = Toast.makeText(this.activity, "Bonne réponse !", Toast.LENGTH_LONG);
+            //toast.setGravity(10,0,0);
+            toast.show();
             this.dialogInterface.dismiss();
+            obstacle.resolu = true;
             ObstacleController.isShown = false;
+        }else{
+            Toast toast = Toast.makeText(this.activity, "Mauvaise réponse", Toast.LENGTH_LONG);
+            //toast.setGravity(10,0,0);
+            toast.show();
         }
 
     }

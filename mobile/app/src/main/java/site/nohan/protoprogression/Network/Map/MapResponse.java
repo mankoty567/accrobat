@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.Network.Map;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.util.Log;
 import android.widget.Button;
@@ -177,6 +178,7 @@ public class MapResponse implements APIListenner {
                 Log.e("suiv",c.objectif.titre);
                 Button button = new Button(this.activity);
                 button.setOnClickListener(new DirectionController(this.activity, c));
+                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
                 button.setText(c.objectif.titre + " par " + c.nom);
 
                 linearLayout.addView(button);

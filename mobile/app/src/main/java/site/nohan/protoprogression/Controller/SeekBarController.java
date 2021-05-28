@@ -3,6 +3,7 @@ package site.nohan.protoprogression.Controller;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.text.InputType;
 import android.util.Log;
@@ -76,6 +77,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             final AlertDialog dialog = new AlertDialog.Builder(this.activity)
                     .setView(input)
+                    .setCancelable(false)
                     .setTitle(obstacle.titre)
                     .setMessage(obstacle.description)
                     .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
@@ -87,7 +89,9 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                 public void onShow(DialogInterface dialogInterface) {
 
                     Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setOnClickListener(new ObstacleController(mapFragment.getActivity(), obstacle, input, dialog));
+                    button.setBackgroundTintList(ColorStateList.valueOf(mapFragment.getResources().getColor(R.color.purple_200, null)));
+                    button.setOnClickListener(new ObstacleController(activity, obstacle, input, dialog));
+
                 }
             });
             if(!ObstacleController.isShown)
@@ -110,6 +114,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     Log.e("suiv",c.objectif.titre);
                     button = new Button(this.activity);
                     button.setOnClickListener(new DirectionController(c,toile,this.activity));
+                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
                     button.setText(c.objectif.titre + " par " + c.nom);
 
                     linearLayout.addView(button);
@@ -118,6 +123,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                 if(Map.mapActuelle.cheminActuel.objectif.chemins.get(0).objectif == null){
                     button = new Button(this.activity);
                     button.setOnClickListener(new ArriveeController(this.activity));
+                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.green, null)));
                     button.setText("Terminer la course");
                     linearLayout.addView(button);
                     Log.e("seekbar", "course terminée");

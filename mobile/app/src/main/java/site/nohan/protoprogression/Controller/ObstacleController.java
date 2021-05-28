@@ -31,7 +31,7 @@ public class ObstacleController implements View.OnClickListener {
                 this.activity,
                 obstacle.id,
                 this.input.getText().toString(),
-                new ObstacleAnswerResponse(obstacle, dialogInterface)
+                new ObstacleAnswerResponse(this.activity, obstacle, dialogInterface)
         );
         /*
         obstacle.resolu = true;

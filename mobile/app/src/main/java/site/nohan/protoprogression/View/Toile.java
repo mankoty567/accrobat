@@ -162,13 +162,14 @@ public class Toile extends View {
                     this.stylo.setTextSize((1/this.scale.x)*50);
                     // dessin du nom du chemin
                     for(Chemin c : pointPassage.chemins){
-                        canvas.drawText(
-                                c.nom == null ?
-                                        "Indéfinis" : c.nom,
-                                ((float) c.getMiddlePoint().x) / 100 * canvas.getWidth(),
-                                ((float) c.getMiddlePoint().y) / 100 * canvas.getHeight(),
-                                this.stylo
-                        );
+                        if(c != null && c.nom !=null) {
+                            canvas.drawText(
+                                     c.nom,
+                                    (((float) c.getMiddlePoint().x) / 100 * canvas.getWidth()) - ((c.nom.length()/ 2f) * this.stylo.getTextSize() ),
+                                    ((float) c.getMiddlePoint().y) / 100 * canvas.getHeight(),
+                                    this.stylo
+                            );
+                        }
                     }
                 }
             }
