@@ -26,6 +26,7 @@ let ProfilePage = () => {
   const [err, setErr] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [img_avatar, setImg_avatar] = useState(null);
+  const [imageError, setImageError] = useState("")
 
   //Variable pour afficher l'interface
   const [mode, setMode] = useState('profile'); //'profile' | 'password'
@@ -178,7 +179,10 @@ let ProfilePage = () => {
 
               <Grid item xs={7}>
                 {edit ? (
-                  <ImageUploader maxSize={[2, 2]} />
+                  <>
+                    <ImageUploader maxSize={[20, 20]} setErrMessage={(err) => setImageError(err)}/>
+                    <Typography color="error">{imageError}</Typography>
+                  </>
                 ) : (
                   <Avatar
                     src={`https://api.acrobat.bigaston.dev/api/user/${userState.id}/avatar`}

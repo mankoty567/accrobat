@@ -9,8 +9,9 @@ import { Input } from '@material-ui/core';
  * @param {Function} callback Fonction permettant de récupérer l'image pour exécuter une fonction ensuite avec derrière
  * @param {JSX.Element} childs Permet d'ajouter des composants sous le composant afin de le personnaliser
  * @param {number} [maxSize] Taille maximale d'une image en input. Sous la forme [hauteur, largeur]
+ * @param {Function} [setErrMessage] Fonction permettant de gérer l'affichage d'une erreur derrière
  */
-let ImageUploader = ({ callback, childs, maxSize }) => {
+let ImageUploader = ({ callback, childs, maxSize, setErrMessage }) => {
   let inputFile = useRef(null);
 
   const toBase64 = (file) =>
@@ -37,9 +38,15 @@ let ImageUploader = ({ callback, childs, maxSize }) => {
               maxSize[1] > img.naturalWidth
             : true
         ) {
+          if(maxSize[0] > img.naturalHeight ||
+            maxSize[1] > img.naturalWidth){
+              setErrMessage ? setErrMessage(`L'image actuelle dépasse le format attendu (${maxSize[0]}px * ${maxSize[1]}px)`) : null
+            }
+            else{
+              setErrMessage('')
+            }
           toBase64(file_img)
             .then((base64img) => {
-              //Intégrer ici l'image
               callback(base64img);
             })
             .catch((err) => {
