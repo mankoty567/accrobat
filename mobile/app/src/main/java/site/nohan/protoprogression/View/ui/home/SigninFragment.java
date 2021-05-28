@@ -2,6 +2,7 @@ package site.nohan.protoprogression.View.ui.home;
 
 import android.os.Bundle;
 import android.transition.Visibility;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class SigninFragment extends Fragment{
         home = R.id.navigation_home;
         MainActivity.setBottomNavigationViewVisibility(4);
 
+        Log.i("FRAUDED",hasFrauded+"");
         if(hasFrauded) root.findViewById(R.id.txt_signin_message).setVisibility(View.VISIBLE);
         else root.findViewById(R.id.txt_signin_message).setVisibility(View.GONE);
 
