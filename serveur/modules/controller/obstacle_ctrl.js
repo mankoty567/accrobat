@@ -248,24 +248,30 @@ module.exports = {
             bdd.Obstacle.findOne({
               where: { id: Math.trunc(lastEvent.data) },
             }).then((obstacle) => {
-              if (obstacle.type !== 'question') {
-                res.status(400).send('Bad request: Obstacle is not a question');
+              if (obstacle === null) {
+                res.status(400).send('Obstacle is not correct');
               } else {
-                if (req.body.awnser === obstacle.enigme_awnser) {
-                  bdd.Event.create({
-                    type: 'obstacle:completed',
-                    ParticipationId: participation.id,
-                  }).then(() => {
-                    res.json({ good: true });
-                  });
+                if (obstacle.type !== 'question') {
+                  res
+                    .status(400)
+                    .send('Bad request: Obstacle is not a question');
                 } else {
-                  bdd.Event.create({
-                    type: 'obstacle:bad_answer',
-                    ParticipationId: participation.id,
-                    data: obstacle.id,
-                  }).then(() => {
-                    res.json({ good: false });
-                  });
+                  if (req.body.awnser === obstacle.enigme_awnser) {
+                    bdd.Event.create({
+                      type: 'obstacle:completed',
+                      ParticipationId: participation.id,
+                    }).then(() => {
+                      res.json({ good: true });
+                    });
+                  } else {
+                    bdd.Event.create({
+                      type: 'obstacle:bad_answer',
+                      ParticipationId: participation.id,
+                      data: obstacle.id,
+                    }).then(() => {
+                      res.json({ good: false });
+                    });
+                  }
                 }
               }
             });

@@ -9,6 +9,8 @@ const mocha = require('mocha');
 
 const ADMIN_PASSWORD = '123456';
 
+module.exports.global = {};
+
 module.exports.mochaHooks = {
   beforeAll: async () => {
     await bdd.sequelize.drop();
