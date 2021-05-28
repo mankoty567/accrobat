@@ -5,3 +5,4 @@ doc/*
 .env.test
 sonar-project.properties
 .scannerwork
+mochawesome-report

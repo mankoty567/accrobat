@@ -9,7 +9,7 @@
     "start": "node serveur.js",
     "sync": "node ./cli/bdd_sync.js",
     "fixture": "node ./cli/loadDataToBdd.js",
-    "test": "mocha --require ./test/hooks.js",
+    "test": "mocha --require ./test/hooks.js --timeout 5000 --reporter mochawesome",
     "doc": "node ./cli/doc/index.js"
   },
   "author": "",
@@ -39,6 +39,7 @@
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-mocha": "^8.1.0",
     "mocha": "^8.4.0",
+    "mochawesome": "^6.2.2",
     "nodemon": "^2.0.7",
     "prettier": "2.2.1"
   }
