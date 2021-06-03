@@ -75,10 +75,12 @@ const userApi = {
 
   /**
    * Fonction permettant d'éditer le profil
-   * @param {String} username Nom d'utilisateur
-   * @param {String} email Email de l'utilisateur
+   * @param {Object} body Le body de la requête
+   * @param {String} [body.username] Nom d'utilisateur
+   * @param {String} [body.email] Email de l'utilisateur
+   * @param {any} [body.avatar] Avatar de l'utilisateur
    */
-  edit: (username, email) => {
+  edit: (body) => {
     return fetch(`${host}/api/user/edit`, {
       method: 'POST',
       headers: {
@@ -86,10 +88,7 @@ const userApi = {
         Authorization:
           'Bearer ' + window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({
-        username,
-        email,
-      }),
+      body: JSON.stringify(body),
     })
       .then(checkStatus)
       .then((res) => res.json());
@@ -123,6 +122,18 @@ const userApi = {
     })
       .then(checkStatus)
       .then((res) => res.text());
+  },
+
+  getAvatar: (userId) => {
+    return fetch(`${host}/api/user/${userId}/avatar`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
   },
 };
 

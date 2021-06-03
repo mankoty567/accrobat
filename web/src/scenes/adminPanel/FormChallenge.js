@@ -143,7 +143,6 @@ let FormChallenge = ({ callback }) => {
           <ImageUploader
             callback={(image) => {
               setImg_avatar(image);
-              console.log(image);
             }}
           ></ImageUploader>
           <FormHelperText></FormHelperText>
