@@ -1,6 +1,3 @@
-//Challenges inscrits
-//Suivit d'un challenge
-//Inscription à un challenge
 import {
   Button,
   List,
