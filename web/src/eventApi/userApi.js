@@ -1,12 +1,5 @@
-import { host } from './api';
-
-import { checkStatus } from './api';
-
-import { useRecoilState } from 'recoil';
-
-import { useHistory } from 'react-router-dom';
+import { host, checkStatus } from './api';
 import { atom } from 'recoil';
-import { useEffect } from 'react';
 
 const JWT_VALIDITY = 2 * 60 * 60 * 1000;
 

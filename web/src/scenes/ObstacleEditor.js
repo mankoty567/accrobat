@@ -1,6 +1,5 @@
 import {
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Dialog,
   FormControl,
@@ -14,7 +13,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import ImageUploader from '../components/ImageUploader';
 
 /**
  * Todo :

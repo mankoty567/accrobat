@@ -3,11 +3,8 @@ import useStyles from './MaterialUI';
 import {
   List,
   ListItem,
-  Select,
-  MenuItem,
   Button,
   TextField,
-  InputLabel,
   Modal,
   Grid,
   Slider,

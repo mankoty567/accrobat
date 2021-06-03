@@ -15,7 +15,6 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ReplyIcon from '@material-ui/icons/Reply';
 import { API } from '../../eventApi/api';
-import { useRecoilState } from 'recoil';
 import CheckIcon from '@material-ui/icons/Check';
 
 let PasswordPage = ({ setMode, callback }) => {

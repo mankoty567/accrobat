@@ -28,7 +28,7 @@ let ChallengePage = () => {
       <>
         <Button
           startIcon={<SearchIcon />}
-          onClick={() => handleClick(index)}
+          onClick={() => handleClick()}
         >
           Consulter
         </Button>
