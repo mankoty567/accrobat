@@ -12,7 +12,7 @@ const ADMIN_PASSWORD = '123456';
 module.exports.global = {};
 
 module.exports.mochaHooks = {
-  beforeAll: async () => {
+  beforeAll: async function () {
     await bdd.sequelize.drop();
     await bdd.sequelize.sync();
 

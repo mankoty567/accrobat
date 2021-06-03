@@ -105,8 +105,14 @@ describe('User', function () {
         .then((res) => {
           expect(res.status).to.equal(200);
 
-          console.log(res.status);
-          console.log(res.body);
+          expect(res.body).to.have.property('username').with.equal('user');
+          expect(res.body)
+            .to.have.property('email')
+            .with.equal('user@user.com');
+          expect(res.body).to.have.property('permission').with.equal(0);
+          expect(res.body).to.have.property('jwt');
+
+          done();
         });
     });
   });
