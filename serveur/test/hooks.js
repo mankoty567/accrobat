@@ -14,7 +14,7 @@ module.exports.global = {};
 module.exports.mochaHooks = {
   beforeAll: async () => {
     await bdd.sequelize.drop();
-    await bdd.sequelize.sync({ drop: true });
+    await bdd.sequelize.sync();
 
     // Créations des entitées devant déjà être présantent dans l'api
     await bdd.User.create({

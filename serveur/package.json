@@ -9,7 +9,7 @@
     "start": "node serveur.js",
     "sync": "node ./cli/bdd_sync.js",
     "fixture": "node ./cli/loadDataToBdd.js",
-    "test": "mocha --require ./test/hooks.js --timeout 5000 --reporter mochawesome",
+    "test": "mocha --require ./test/hooks.js --timeout 60000 --reporter mochawesome",
     "doc": "node ./cli/doc/index.js"
   },
   "author": "",
