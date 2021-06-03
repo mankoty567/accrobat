@@ -14,7 +14,10 @@ module.exports.global = {};
 module.exports.mochaHooks = {
   beforeAll: async function () {
     await bdd.sequelize.drop();
+    console.log('Table supprimée');
+
     await bdd.sequelize.sync();
+    console.log('Table syncronisée');
 
     // Créations des entitées devant déjà être présantent dans l'api
     await bdd.User.create({
@@ -25,6 +28,7 @@ module.exports.mochaHooks = {
       level: 0,
       xp: 0,
     });
+    console.log('Compte admin créé');
   },
   afterAll: () => {
     server.close();
