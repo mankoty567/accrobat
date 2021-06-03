@@ -11,7 +11,12 @@ import { Input } from '@material-ui/core';
  * @param {number} [maxSize] Taille maximale d'une image en input. Sous la forme [hauteur, largeur]
  * @param {Function} [setErrMessage] Fonction permettant de gérer l'affichage d'une erreur derrière
  */
-let ImageUploader = ({ callback, childs, maxSize, setErrMessage }) => {
+let ImageUploader = ({
+  callback,
+  childs,
+  maxSize,
+  setErrMessage,
+}) => {
   let inputFile = useRef(null);
 
   const toBase64 = (file) =>
@@ -38,13 +43,8 @@ let ImageUploader = ({ callback, childs, maxSize, setErrMessage }) => {
               maxSize[1] > img.naturalWidth
             : true
         ) {
-          if(maxSize[0] > img.naturalHeight ||
-            maxSize[1] > img.naturalWidth){
-              setErrMessage ? setErrMessage(`L'image actuelle dépasse le format attendu (${maxSize[0]}px * ${maxSize[1]}px)`) : null
-            }
-            else{
-              setErrMessage('')
-            }
+          setErrMessage ? setErrMessage('') : null;
+
           toBase64(file_img)
             .then((base64img) => {
               callback(base64img);
@@ -53,7 +53,11 @@ let ImageUploader = ({ callback, childs, maxSize, setErrMessage }) => {
               console.log(err);
             });
         } else {
-          console.log('Image trop grande');
+          setErrMessage
+            ? setErrMessage(
+                `L'image actuelle dépasse le format attendu (${maxSize[0]}px * ${maxSize[1]}px)`,
+              )
+            : null;
         }
       };
     } else {
