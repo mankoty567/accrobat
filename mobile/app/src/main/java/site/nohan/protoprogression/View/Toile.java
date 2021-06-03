@@ -26,6 +26,7 @@ public class Toile extends View {
 
     Bitmap background;
     Bitmap flag;
+    Bitmap obstacle;
 
     PointF scale;
     PointF delta;
@@ -46,6 +47,8 @@ public class Toile extends View {
         //background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         //Map.mapActuelle.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
         flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
+        obstacle = ((BitmapDrawable) getResources().getDrawable(R.drawable.obstacle)).getBitmap();
+
     }
 
     public void setDelta(float x,float y) {
@@ -314,14 +317,20 @@ public class Toile extends View {
                             int point = (int) Math.round((pointsMax*distance)/deltaAB);
                             //Log.e("point", ""+point );
                             this.stylo.setARGB(
-                                    255,
-                                    255,255,0
+                                    255, 10,10,10
                             );
+
                             canvas.drawCircle(
                                     (A.x + intervalX * point) * canvas.getWidth() / 100,
                                     (A.y + intervalY * point) * canvas.getHeight() / 100,
-                                    20,
+                                    25,
                                     this.stylo);
+                            canvas.drawBitmap(
+                                    this.obstacle,
+                                    (A.x + intervalX * point) * (canvas.getWidth()-(this.obstacle.getWidth()+10) ) / 100f,
+                                    (A.y + intervalY * point) * (canvas.getHeight()-(this.obstacle.getHeight()-10) )/ 100f,
+                                    this.stylo
+                            );
                         }
                     }
                 }
@@ -339,25 +348,42 @@ public class Toile extends View {
         this.scale.x = zoom;
         this.scale.y = zoom;
     }
-/*
+
+
     public void recentrer(){
 
         Point A = Map.mapActuelle.cheminActuel.getMinPoint();
         Point B = Map.mapActuelle.cheminActuel.getMaxPoint();
 
-        Point T = new Point(
-                Math.abs(A.x - B.x),
-                Math.abs(A.y - B.y)
-        );
-        Log.e("recentrer", A.x + " " + A.y);
+
+
+        int recul = 8;
+
+        int deltaABx = Math.abs(B.x-A.x);
+        int deltaABy = Math.abs(B.y-A.y);
+
+
+        A.x = A.x - (deltaABx/recul);
+        A.y = A.y - (deltaABy/recul);
+
+        B.x = B.x + (deltaABx/recul);
+        B.y = B.y + (deltaABy/recul);
+
+        deltaABx = Math.abs(B.x-A.x);
+        deltaABy = Math.abs(B.y-A.y);
+
+        float zoom = 100f/Math.max(deltaABx, deltaABy);
+        this.setZoom( zoom );
 
         this.setPosition(new PointF(
-                -((float) T.x/100f*(this.getWidth())),
-                -((float) T.x/100f*(this.getWidth()))
+                -(float) A.x / 100f * this.getWidth(),
+                -(float) A.y / 100f * this.getHeight()
         ));
-    }
-*/
 
+    }
+
+
+/*
     public void recentrer(){
         PointF delta = new PointF();
 
@@ -380,5 +406,5 @@ public class Toile extends View {
 
         this.setPosition(delta);
     }
-
+*/
 }

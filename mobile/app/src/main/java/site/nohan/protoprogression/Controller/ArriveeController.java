@@ -6,6 +6,7 @@ import android.view.View;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
+import site.nohan.protoprogression.R;
 
 public class ArriveeController implements View.OnClickListener{
 
@@ -23,5 +24,6 @@ public class ArriveeController implements View.OnClickListener{
                 0,
                 new SaveParticipationResponse()
         );
+        this.activity.setContentView(R.layout.fragment_arrivee);
     }
 }

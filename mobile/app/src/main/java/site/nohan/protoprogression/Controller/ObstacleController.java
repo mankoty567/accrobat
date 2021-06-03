@@ -10,7 +10,6 @@ import site.nohan.protoprogression.Network.Obstacle.ObstacleAnswerRequest;
 import site.nohan.protoprogression.Network.Obstacle.ObstacleAnswerResponse;
 
 public class ObstacleController implements View.OnClickListener {
-    public static boolean isShown = false;
 
     private Activity activity;
     private Obstacle obstacle;

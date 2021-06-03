@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import site.nohan.protoprogression.Controller.ObstacleController;
 import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.View.ui.obstacle.ObstacleAlertDialog;
 
 public class ObstacleAnswerResponse implements APIListenner {
 
@@ -53,20 +54,18 @@ public class ObstacleAnswerResponse implements APIListenner {
             jsonException.printStackTrace();
         }
         Log.e("net answer", isCorrect ? "OK" : "KO" );
-        // TODO: trouver pk c'est null
-        Log.e("net answer", this.activity == null ? "OK" : "KO" );
+
         if(isCorrect){
 
-            Toast toast = Toast.makeText(this.activity, "Bonne réponse !", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(this.activity.getBaseContext(), "Bonne réponse !", Toast.LENGTH_LONG);
             //toast.setGravity(10,0,0);
             toast.show();
             this.dialogInterface.dismiss();
             obstacle.resolu = true;
-            ObstacleController.isShown = false;
+            ObstacleAlertDialog.isActive = false;
         }else{
-            Toast toast = Toast.makeText(this.activity, "Mauvaise réponse", Toast.LENGTH_LONG);
+            Toast.makeText(this.activity.getBaseContext(), "Mauvaise réponse", Toast.LENGTH_LONG).show();
             //toast.setGravity(10,0,0);
-            toast.show();
         }
 
     }

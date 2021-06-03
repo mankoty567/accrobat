@@ -28,6 +28,7 @@ import site.nohan.protoprogression.Network.Participation.SaveParticipationRespon
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.MapFragment;
 import site.nohan.protoprogression.View.Toile;
+import site.nohan.protoprogression.View.ui.obstacle.ObstacleAlertDialog;
 
 public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     public static double dernierePositionConnueAPI = 0;
@@ -55,6 +56,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
         if(Map.mapActuelle.cheminActuel == null)
             return;
+        if(ObstacleAlertDialog.isActive)
+            return;
 
         //Log.e("onProgressChanged", Map.mapActuelle.toString() );
         DataBase.saveProgression();
@@ -71,32 +74,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     Map.participationId,
                     new SaveParticipationResponse()
             );
+            new ObstacleAlertDialog(this.activity, obstacle);
 
-            final EditText input = new EditText(this.activity);
-
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            final AlertDialog dialog = new AlertDialog.Builder(this.activity)
-                    .setView(input)
-                    .setCancelable(false)
-                    .setTitle(obstacle.titre)
-                    .setMessage(obstacle.description)
-                    .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
-                    .create();
-
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-                @Override
-                public void onShow(DialogInterface dialogInterface) {
-
-                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setBackgroundTintList(ColorStateList.valueOf(mapFragment.getResources().getColor(R.color.purple_200, null)));
-                    button.setOnClickListener(new ObstacleController(activity, obstacle, input, dialog));
-
-                }
-            });
-            if(!ObstacleController.isShown)
-                dialog.show();
-            ObstacleController.isShown = true;
 
         }
         //new SaveParticipationRequest(this.activity, progress, Map.participationId, "marche", new SaveParticipationResponse());
