@@ -22,9 +22,8 @@ let ChallengePanel = () => {
   const getChallenges = () => {
     setIsLoading(true);
     API.challenge.getAdminChallenges().then((res) => {
-      setIsLoading(true);
+      setIsLoading(false);
       setChallenges(res);
-      // console.log(res);
     });
   };
 
@@ -110,7 +109,8 @@ let ChallengePanel = () => {
       <Button
         startIcon={<AddIcon />}
         onClick={() => {
-          setAddmode('add'), setSelected(null);
+          setAddmode('add');
+          setSelected(null);
         }}
       >
         Ajouter un challenge

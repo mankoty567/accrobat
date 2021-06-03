@@ -1,24 +1,17 @@
-import { AppBar, Tabs, Tab } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import PublicPage from '../PublicPage';
 import ProfilePage from '../profilePage/ProfilePage';
-
 import AdminPanel from '../adminPanel/AdminPanel';
-import ChallengeEditor from '../ChallengeEditor';
-
 import LoginForm from '../loginForm/LoginForm';
 import Logout from '../loginForm/Logout';
 import NeedLogin from '../loginForm/NeedLogin';
 import GoogleReturn from '../loginForm/GoogleReturn';
-
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Link,
   Redirect,
 } from 'react-router-dom';
-
 import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import ChallengePage from '../challengePage/ChallengePage';

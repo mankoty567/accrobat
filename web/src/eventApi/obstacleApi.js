@@ -68,7 +68,7 @@ const obstacleApi = {
     })
       .then(checkStatus)
       .then((res) => {
-        res.text;
+        res.text();
       });
   },
 };

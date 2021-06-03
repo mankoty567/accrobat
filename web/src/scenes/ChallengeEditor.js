@@ -130,7 +130,6 @@ let ChallengeEditor = ({
       totalSum = totalSum + t.pourcentage;
       return oldSum;
     });
-    // debugger;
     while (
       tableSum[segment + 1] < pourcentage &&
       segment < tableSum.length

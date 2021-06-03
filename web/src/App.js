@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import ChallengeEditor from './scenes/ChallengeEditor';
-import AdminMenu from './scenes/adminPanel/AdminPanel';
 import MainPage from './scenes/mainPage/MainPage';
 import {
   createMuiTheme,

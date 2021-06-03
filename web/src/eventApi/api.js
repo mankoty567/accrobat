@@ -1,7 +1,5 @@
 import challengeApi from './challengeApi';
 import checkpointApi from './checkpointApi';
-// import eventApi from './eventApi';
-// import imageSubmitionApi from './imageSubmitionApi';
 import obstacleApi from './obstacleApi';
 import participationApi from './participationApi';
 import segmentApi from './segmentApi';
