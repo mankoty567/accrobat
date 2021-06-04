@@ -33,6 +33,8 @@ public class Map {
     public String dateInscription;
     public String dateDernierePartie;
 
+    public double echelle;
+
 
 
     public int getDistanceTotale(){
@@ -40,11 +42,19 @@ public class Map {
         for(PointPassage pointPassage : this.pointPassages){
             for(Chemin chemin : pointPassage.chemins){
                 if(chemin.complete)
-                    distance += chemin.getLongueur(); //TODO: lors de l'implementation de la distance d'un chemin l'ajouter chemin.getKm()
+                    distance += chemin.getLongueur();
             }
         }
         distance += (double) this.accompli;
         return (int) Math.round(distance);
+    }
+
+    public double distanceToM(double distance){
+        return distance*this.echelle;
+    }
+
+    public double MToDistance(double M){
+        return M/this.echelle;
     }
 
     public PointPassage getDepart() {

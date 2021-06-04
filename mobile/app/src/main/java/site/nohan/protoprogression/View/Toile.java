@@ -44,8 +44,7 @@ public class Toile extends View {
         this.delta = new PointF(0,0);
         this.position = new PointF(0,0);
 
-        //background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
-        //Map.mapActuelle.background = ((BitmapDrawable) getResources().getDrawable(R.drawable.map)).getBitmap();
+
         flag = ((BitmapDrawable) getResources().getDrawable(R.drawable.drapeau)).getBitmap();
         obstacle = ((BitmapDrawable) getResources().getDrawable(R.drawable.obstacle)).getBitmap();
 
@@ -56,16 +55,6 @@ public class Toile extends View {
     }
 
     public void saveDelta() {
-        /*
-        PointF newPos = new PointF(this.delta.x+this.position.x,this.delta.y+this.position.y);
-        if(newPos.x > 0 || newPos.y > 0)
-            newPos = new PointF(0f,0f);
-
-        if(newPos.x < getWidth()-(getWidth()*(scale.x)) || newPos.y < getHeight()-(getHeight()*(scale.y)))
-            newPos = new PointF(this.position.x,this.position.y);
-
-         */
-
         PointF checkedMinPos = new PointF(
                 Math.min(0,this.delta.x+this.position.x),
                 Math.min(0,this.delta.y+this.position.y)
@@ -75,20 +64,9 @@ public class Toile extends View {
                 Math.max(getWidth()-(getWidth()*(scale.x)), checkedMinPos.x),
                 Math.max(getHeight()-(getHeight()*(scale.y)), checkedMinPos.y)
         );
-        Log.e(" s", ""+(this.delta.y+this.position.y));
-        Log.e("sortie", getWidth()+"" );
+
         this.position.set(checkedMinPosMaxPos.x, checkedMinPosMaxPos.y);
         this.delta.set(0,0);
-         /*
-        Log.e(" s", ""+(this.delta.y+this.position.y));
-        Log.e("sortie", getWidth()+"" );
-        this.position.set(newPos.x,newPos.y);
-        this.delta.set(0,0);
-        /*
-        this.position.set(this.delta.x+this.position.x, this.delta.y + this.position.y);
-        this.delta.set(0,0);
-
-         */
     }
 
     public void setPosition(PointF position){
@@ -107,7 +85,8 @@ public class Toile extends View {
             return;
 
 
-        if(Map.mapActuelle.background != null) canvas.drawBitmap(Map.mapActuelle.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo) ;
+        if(Map.mapActuelle.background != null)
+            canvas.drawBitmap(Map.mapActuelle.background,null, new Rect(0,0,this.getWidth(), this.getHeight()),this.stylo) ;
         this.dessinerMap(canvas);
         this.dessinerObstacles(canvas);
         this.dessinerMapInfos(canvas);
@@ -117,8 +96,6 @@ public class Toile extends View {
     }
 
     private void dessinerMapInfos(Canvas canvas){
-
-
         this.stylo.setColor(Color.BLACK);
         this.stylo.setTextSize(70);
 
@@ -126,10 +103,6 @@ public class Toile extends View {
         this.stylo.setFakeBoldText(false);
         this.stylo.setTextSize((1/this.scale.x)*100);
         this.stylo.setColor(Color.WHITE);
-        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.getDistanceTotale()/2f)+" Km au total", 0-(delta.x+position.x), 100-(delta.y+position.y) , this.stylo);
-        if(Map.mapActuelle.cheminActuel != null)
-            canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" : (Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli)/2f+" Km restants", 0-(delta.x+position.x), 200-(delta.y+position.y) , this.stylo);
-
 
         if(Map.mapActuelle.pointPassages != null && Map.mapActuelle.pointPassages.size() > 0){
             for(PointPassage pointPassage : Map.mapActuelle.pointPassages) {
@@ -222,10 +195,6 @@ public class Toile extends View {
                             this.stylo
                     );
 
-                    // Dessiner les obstacles
-
-
-
                     // On dessine la progression uniquement du chemin sur lequel on est
                     if (c == Map.mapActuelle.cheminActuel) {
 
@@ -269,6 +238,17 @@ public class Toile extends View {
                                             (A.y + intervalY * j) * canvas.getHeight() / 100,
                                             Math.max(10-(taille/1.5f), 30)/2f,
                                             this.stylo);
+
+                                    this.stylo.setColor(Color.rgb(200,100,200));
+                                    this.stylo.setTextSize((1/this.scale.x)*50);
+                                    if(Map.mapActuelle.cheminActuel != null)
+                                        canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" :
+                                                        Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli) +" m",
+                                                ((A.x + intervalX * j ) + 3 ) * canvas.getWidth() / 100,
+                                                (A.y + intervalY * j) * canvas.getHeight() / 100 ,
+                                                this.stylo
+                                        );
+
                                 } else {
 
                                     this.stylo.setColor(Color.rgb(40 * sOrdinal, 100, 15 * sOrdinal));
@@ -311,11 +291,10 @@ public class Toile extends View {
                             float intervalX = diffX / (pointsMax + 1);
                             float intervalY = diffY / (pointsMax + 1);
 
-                            //obstacle.distance*c.getLongueur()-c.getLongueurAt(A)/c.getLongueurAt(B)-c.getLongueurAt(A);
                             double distance = obstacle.distance*c.getLongueur() - c.getLongueurAt(A);
                             double deltaAB = c.getLongueurAt(B) - c.getLongueurAt(A);
                             int point = (int) Math.round((pointsMax*distance)/deltaAB);
-                            //Log.e("point", ""+point );
+
                             this.stylo.setARGB(
                                     255, 10,10,10
                             );
@@ -382,29 +361,4 @@ public class Toile extends View {
 
     }
 
-
-/*
-    public void recentrer(){
-        PointF delta = new PointF();
-
-        Point A = Map.mapActuelle.cheminActuel.getMinPoint();
-        Point B = Map.mapActuelle.cheminActuel.getMaxPoint();
-
-        if(A == null || B == null)
-            return;
-        //float zoom = 100f/(float) Chemin.getDistance(A,B);
-        // TODO: attention sortie ecran avec distance 100%
-        float zoom = 80f/Math.max(Math.abs(B.x-A.x), Math.abs(B.y - A.y));
-
-        A.set(A.x - Math.round((float) A.x*0.1f),A.y - Math.round((float) A.y*0.1f));
-
-        delta.x = -((float) A.x/100f*(this.getWidth()));
-        delta.y = -((float) A.y/100f*(this.getHeight()));
-
-
-        this.setZoom(zoom*0.9f);
-
-        this.setPosition(delta);
-    }
-*/
 }

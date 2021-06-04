@@ -110,4 +110,5 @@ public class Chemin {
         return this.points.get((int) Math.round(this.points.size()/2));
     }
 
+
 }
