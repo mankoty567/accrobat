@@ -90,6 +90,7 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
           bodyJSON: stringifyBody(r.body, false),
           query: r.query,
           description: r.description,
+          test: r.test ?? false,
           result: r.result?.map((resu) => {
             return {
               code: resu.code,

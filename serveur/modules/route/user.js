@@ -13,6 +13,7 @@ module.exports.routes = [
     func: [m.user_ctrl.create_user],
     name: "Inscription d'un utilisateur",
     description: 'Crée un nouvel utilisateur à partir des paramètres envoyés',
+    test: true,
     body: {
       username: 'string',
       password: 'string',
@@ -33,6 +34,7 @@ module.exports.routes = [
     func: [m.user_ctrl.login],
     name: 'Connection',
     description: "Demande la connection d'un utilisateur",
+    test: true,
     body: {
       username: 'string',
       password: 'string',
@@ -60,6 +62,7 @@ module.exports.routes = [
     name: 'Qui suis-je?',
     description:
       "Vérifie si le JWT est encore valide, si oui le rafraichie et renvoit les données de l'utilisateur, sinon 403",
+    test: true,
     result: [
       {
         code: 200,
@@ -83,6 +86,7 @@ module.exports.routes = [
     name: "Edition d'utilisateurs",
     description:
       "Modifie les paramètres d'un utilisateur (son image de profil, ses paramètres...)",
+    test: true,
     body: {
       username: {
         type: 'string',
@@ -119,6 +123,7 @@ module.exports.routes = [
     name: 'Changement de mot de passe',
     description:
       "Permet de modifier le mot de passe d'un utilisateur. Tous les champs sont obligatoires",
+    test: true,
     body: {
       old_password: 'string',
       new_password: 'string',
@@ -145,6 +150,7 @@ module.exports.routes = [
     name: "Vérification de l'username",
     description:
       "Verifie si le nom d'utilisateur passé en paramètre est encore disponible",
+    test: true,
     result: [{ code: 200, content: { valid: 'true/false' } }],
   },
   {

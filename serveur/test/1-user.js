@@ -63,7 +63,7 @@ describe('User', function () {
   });
 
   describe('POST /api/user/login', () => {
-    it("Connecter l'utilisateur", (done) => {
+    it("Connecter l'utilisateur normal", (done) => {
       chai
         .request(app)
         .post('/api/user/login')
@@ -82,6 +82,33 @@ describe('User', function () {
           expect(res.body).to.have.property('jwt');
 
           global.jwt = res.body.jwt;
+
+          done();
+        })
+        .catch(function (err) {
+          throw err;
+        });
+    });
+
+    it("Connecter l'utilisateur normal", (done) => {
+      chai
+        .request(app)
+        .post('/api/user/login')
+        .send({
+          username: 'admin',
+          password: '123456',
+        })
+        .then(function (res) {
+          expect(res.status).to.equal(200);
+
+          expect(res.body).to.have.property('username').with.equal('admin');
+          expect(res.body)
+            .to.have.property('email')
+            .with.equal('admin@example.com');
+          expect(res.body).to.have.property('permission').with.equal(0);
+          expect(res.body).to.have.property('jwt');
+
+          global.jwt_admin = res.body.jwt;
 
           done();
         })
