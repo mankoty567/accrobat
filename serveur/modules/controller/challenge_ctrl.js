@@ -125,38 +125,47 @@ module.exports = {
       description: req.body.description,
       echelle: req.body.echelle,
     }).then((challenge) => {
-      utils.parseMap(req.body.img_fond).then((buffer) => {
-        fs.writeFileSync(
-          path.join(
-            __dirname,
-            '../../data/challenge/' + challenge.id + '.webp'
-          ),
-          buffer
-        );
+      utils
+        .parseMap(req.body.img_fond)
+        .then((buffer) => {
+          fs.writeFileSync(
+            path.join(
+              __dirname,
+              '../../data/challenge/' + challenge.id + '.webp'
+            ),
+            buffer
+          );
 
-        bdd.UserChallengeAdmin.create({
-          isAuthor: true,
-          UserId: req.user.id,
-          ChallengeId: challenge.id,
-        }).then(() => {
-          if (req.body.img_avatar !== undefined) {
-            utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
-              fs.writeFileSync(
-                path.join(
-                  __dirname,
-                  '../../data/challengeAvatar/' + challenge.id + '.webp'
-                ),
-                bufferAvater
-              );
+          bdd.UserChallengeAdmin.create({
+            isAuthor: true,
+            UserId: req.user.id,
+            ChallengeId: challenge.id,
+          }).then(() => {
+            if (req.body.img_avatar !== undefined) {
+              utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
+                fs.writeFileSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  ),
+                  bufferAvater
+                );
+                debug('Création du challenge ' + challenge.id);
+                res.json({
+                  ...challenge.dataValues,
+                  frontId: req.body.frontId,
+                });
+              });
+            } else {
               debug('Création du challenge ' + challenge.id);
               res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-            });
-          } else {
-            debug('Création du challenge ' + challenge.id);
-            res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-          }
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send(err);
         });
-      });
     });
   },
   delete_challenge: (req, res) => {

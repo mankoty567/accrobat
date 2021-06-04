@@ -90,7 +90,7 @@ describe('User', function () {
         });
     });
 
-    it("Connecter l'utilisateur normal", (done) => {
+    it("Connecter l'utilisateur admin", (done) => {
       chai
         .request(app)
         .post('/api/user/login')
@@ -105,7 +105,7 @@ describe('User', function () {
           expect(res.body)
             .to.have.property('email')
             .with.equal('admin@example.com');
-          expect(res.body).to.have.property('permission').with.equal(0);
+          expect(res.body).to.have.property('permission').with.equal(100);
           expect(res.body).to.have.property('jwt');
 
           global.jwt_admin = res.body.jwt;
@@ -140,6 +140,9 @@ describe('User', function () {
           expect(res.body).to.have.property('jwt');
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
 
@@ -152,6 +155,9 @@ describe('User', function () {
           expect(res.status).to.equal(400);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
   });
@@ -183,6 +189,9 @@ describe('User', function () {
           expect(res.body).to.have.property('permission').with.equal(0);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
   });
@@ -207,6 +216,9 @@ describe('User', function () {
           expect(res.status).to.equal(403);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
 
@@ -229,6 +241,9 @@ describe('User', function () {
           expect(res.status).to.equal(200);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
   });
@@ -249,6 +264,9 @@ describe('User', function () {
           expect(res.body).to.have.property('valid').with.equal(true);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
 
@@ -267,6 +285,9 @@ describe('User', function () {
           expect(res.body).to.have.property('valid').with.equal(false);
 
           done();
+        })
+        .catch(function (err) {
+          throw err;
         });
     });
   });
