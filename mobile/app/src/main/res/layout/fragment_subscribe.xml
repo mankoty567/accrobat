@@ -44,21 +44,17 @@
                 android:text="@string/challenge_date" />
 
             <TextView
-                android:id="@+id/txt_challenge_description"
-                android:layout_width="350dp"
-                android:layout_height="125dp"
-                android:textSize="15dp"
-                android:scrollbars = "vertical"
-                android:layout_marginBottom="10dp"
-                android:text="@string/challenge_title" />
-
-            <TextView
                 android:id="@+id/txt_title_records"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:textSize="20dp"
                 android:text="@string/records" />
+
+            <WebView
+                android:id="@+id/wvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="223dp" />
 
             <LinearLayout
                 android:id="@+id/ll_subscribe_records"

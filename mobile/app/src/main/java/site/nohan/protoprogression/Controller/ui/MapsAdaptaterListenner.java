@@ -1,6 +1,8 @@
 package site.nohan.protoprogression.Controller.ui;
 
+import android.util.Base64;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 
 import java.util.Date;
@@ -16,6 +18,7 @@ import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 
 public class MapsAdaptaterListenner implements AdapterView.OnItemClickListener{
     HomeFragment homeFragment;
+    WebView webView;
 
     public MapsAdaptaterListenner(HomeFragment homeFragment){
         this.homeFragment = homeFragment;

@@ -2,9 +2,12 @@ package site.nohan.protoprogression.View.ui.home;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,7 +40,7 @@ public class SubscribeFragment extends Fragment {
     private Button btn_preview;
     private TextView tv_title;
     private TextView tv_date;
-    private TextView tv_description;
+    private WebView wvDescription;
 
     public static int position;
     private int idChallenge;
@@ -63,18 +66,28 @@ public class SubscribeFragment extends Fragment {
         //Ajout des données du challenge dans la vue
         tv_title = root.findViewById(R.id.txt_challenge_title);
         tv_date = root.findViewById(R.id.txt_challenge_date);
-        tv_description = root.findViewById(R.id.txt_challenge_description);
-        tv_description.setMovementMethod(new ScrollingMovementMethod());
+
+        // Chargement du text riche en wv
+        wvDescription = root.findViewById(R.id.wvDescription);
+
+        String unencodedHtml;
 
         if(HomeFragment.isOnPrivateChallenges) {
             tv_title.setText(DataBase.getSubscribed().get(position).libelle);
+            unencodedHtml = DataBase.getSubscribed().get(position).description ;
             tv_date.setText("Inscrit le : "+DataBase.getSubscribed().get(position).dateInscription);
-            tv_description.setText(DataBase.getSubscribed().get(position).description);
+
         } else {
             tv_title.setText(Map.maps.get(position).libelle);
             tv_date.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
-            tv_description.setText(Map.maps.get(position).description);
+            unencodedHtml = Map.maps.get(position).description;
         }
+
+        String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(),
+                Base64.NO_PADDING);
+        wvDescription.loadData(encodedHtml, "text/html", "base64");
+        wvDescription.setHorizontalScrollBarEnabled(false);
+        wvDescription.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         btn_subscribe = root.findViewById(R.id.btn_challenge_subscribe);
         btn_subscribe.setOnClickListener(new View.OnClickListener() {

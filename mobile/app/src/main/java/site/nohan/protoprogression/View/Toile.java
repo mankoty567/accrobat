@@ -354,11 +354,13 @@ public class Toile extends View {
         float zoom = 100f/Math.max(deltaABx, deltaABy);
         this.setZoom( zoom );
 
-        this.setPosition(new PointF(
-                -(float) A.x / 100f * this.getWidth(),
-                -(float) A.y / 100f * this.getHeight()
-        ));
+        float deltaCentrageX = Math.abs(Map.mapActuelle.cheminActuel.getMaxPoint().x - Map.mapActuelle.cheminActuel.getMinPoint().x);
+        float deltaCentrageY = Math.abs(Map.mapActuelle.cheminActuel.getMaxPoint().y - Map.mapActuelle.cheminActuel.getMinPoint().y);
 
+        this.setPosition(new PointF(
+                (float) -A.x / 100f * this.getWidth(),
+                (float) -A.y / 100f * this.getHeight()
+        ));
     }
 
 }
