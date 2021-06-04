@@ -89,7 +89,7 @@ const checkpointApi = {
     })
       .then(checkStatus)
       .then((res) => {
-        res.text;
+        res.text();
       });
   },
 };

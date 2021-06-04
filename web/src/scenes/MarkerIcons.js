@@ -68,7 +68,6 @@ let createStartIcon = (selected, error) => {
 };
 
 let createObstacleIcon = (question, selected, error) => {
-  var ES = selected && error;
   return new L.Icon({
     iconUrl: selected
       ? question

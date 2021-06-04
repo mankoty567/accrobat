@@ -40,7 +40,7 @@ const challengeToVoteApi = {
    * @param {status} status Nouveau status du challenge
    * @return Challenge mis à jour
    */
-  changeToVoteStatus: (id, status) => {
+  changeToVote: (id, body) => {
     return fetch(`${host}/api/challengetovote/${id}`, {
       method: 'POST',
       headers: {
@@ -48,7 +48,7 @@ const challengeToVoteApi = {
           'Bearer ' + window.localStorage.getItem('token'),
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ status: status }),
+      body: JSON.stringify(body),
     })
       .then(checkStatus)
       .then((res) => res.json());
