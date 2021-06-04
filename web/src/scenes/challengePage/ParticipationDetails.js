@@ -16,6 +16,8 @@ import {
   createStartIcon,
   createObstacleIcon,
 } from '../MarkerIcons';
+import ProgressMarker from './ProgressMarker';
+
 let ParticipationDetails = ({
   challenge_id,
   setSelected,
@@ -33,7 +35,9 @@ let ParticipationDetails = ({
 
   var participation_id = null;
   const [markers, setMarkers] = useState([]);
-  const [lines, setLines] = useState([]);
+  const [segments, setSegments] = useState([]);
+  const [segmentsFinished, setSegmentsFinished] = useState([]);
+  const [position, setPosition] = useState(null);
   const [obstacles, setObstacles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [challenge, setChallenge] = useState({
@@ -42,6 +46,9 @@ let ParticipationDetails = ({
     description: '',
     echelle: 0,
   });
+
+  // useEffect(() => console.log(position), [position]);
+
   let getIcon = (marker) => {
     switch (marker.type) {
       case 'start':
@@ -148,11 +155,11 @@ let ParticipationDetails = ({
             },
           ]);
         });
-        let newLines = [];
+        let newSegments = [];
         let obstacles = [];
         res.PointPassages.forEach((pp) => {
           pp.pointStart.forEach((segment) => {
-            newLines.push({
+            newSegments.push({
               id: segment.id,
               PointStartId: segment.PointStartId,
               PointEndId: segment.PointEndId,
@@ -190,7 +197,7 @@ let ParticipationDetails = ({
           });
         });
         setObstacles(obstacles);
-        setLines(newLines);
+        setSegments(newSegments);
       })
       .then(() => {
         setIsLoading(true);
@@ -198,7 +205,11 @@ let ParticipationDetails = ({
     await API.participation
       .getProgression(participation_id)
       .then((res) => {
-        console.log('test');
+        setSegmentsFinished(res.segmentsParcourus);
+        setPosition({
+          type: res.type,
+          entity: res.entity,
+        });
       });
   };
 
@@ -238,10 +249,6 @@ let ParticipationDetails = ({
                   X
                 </Button>
               </Grid>
-              {/* <ModifyChallenge
-                challenge={challenge}
-                setChallenge={setChallenge}
-              /> */}
               <MapContainer
                 className={classes.mapContainer}
                 crs={CRS.Simple}
@@ -274,7 +281,7 @@ let ParticipationDetails = ({
                     </Marker>
                   );
                 })}
-                {lines.map((element) => {
+                {segments.map((element) => {
                   try {
                     const startMarker = markers.find(
                       (m) => m.id === element.PointStartId,
@@ -321,6 +328,12 @@ let ParticipationDetails = ({
                     </Marker>
                   );
                 })}
+                {position ? (
+                  <ProgressMarker
+                    position={position}
+                    placeObstacle={placeObstacle}
+                  />
+                ) : null}
               </MapContainer>
             </main>
           </>

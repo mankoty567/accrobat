@@ -421,8 +421,8 @@ let ChallengeEditor = ({
     obstacle.x = coords[1];
     obstacle.y = coords[0];
     setObstacles((current) =>
-      current.filter((val) => {
-        if (val.id == obstacle.id) val = obstacle;
+      current.map((val) => {
+        if (val.id == obstacle.id) return obstacle;
         return val;
       }),
     );

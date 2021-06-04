@@ -12,11 +12,10 @@ const endS = process.env.PUBLIC_URL + '/icons/EndS.png';
 const endE = process.env.PUBLIC_URL + '/icons/EndE.png';
 const endES = process.env.PUBLIC_URL + '/icons/EndES.png';
 const obstacleA = process.env.PUBLIC_URL + '/icons/obstacleA.png';
-const obstacleE = process.env.PUBLIC_URL + '/icons/obstacleE.png';
 const obstacleQ = process.env.PUBLIC_URL + '/icons/obstacleQ.png';
 const obstacleAS = process.env.PUBLIC_URL + '/icons/obstacleAS.png';
-const obstacleES = process.env.PUBLIC_URL + '/icons/obstacleES.png';
 const obstacleQS = process.env.PUBLIC_URL + '/icons/obstacleQS.png';
+const progress = process.env.PUBLIC_URL + '/icons/progress.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
@@ -83,9 +82,16 @@ let createObstacleIcon = (question, selected, error) => {
   });
 };
 
+let createProgressIcon = () => {
+  return new L.Icon({
+    iconUrl: progress,
+  });
+};
+
 export {
   createCheckpointIcon,
   createEndIcon,
   createStartIcon,
   createObstacleIcon,
+  createProgressIcon,
 };
