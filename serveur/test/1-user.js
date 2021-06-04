@@ -119,10 +119,9 @@ describe('User', function () {
   });
 
   describe('POST /api/user/whoami', () => {
-    it('Passe un JWT Valide', (done) => {
+    it('Passe un JWT Valide', function (done) {
       if (global.jwt === undefined) {
         this.skip();
-        return;
       }
 
       chai
@@ -163,10 +162,9 @@ describe('User', function () {
   });
 
   describe('POST /api/user/edit', () => {
-    it("Changement de l'utilisateur", (done) => {
+    it("Changement de l'utilisateur", function (done) {
       if (global.jwt === undefined) {
         this.skip();
-        return;
       }
 
       chai
@@ -197,10 +195,9 @@ describe('User', function () {
   });
 
   describe('POST /api/user/edit_password', () => {
-    it('Mauvais mot de passe initial', (done) => {
+    it('Mauvais mot de passe initial', function (done) {
       if (global.jwt === undefined) {
         this.skip();
-        return;
       }
 
       chai
@@ -222,10 +219,9 @@ describe('User', function () {
         });
     });
 
-    it('Bon mot de passe', (done) => {
+    it('Bon mot de passe', function (done) {
       if (global.jwt === undefined) {
         this.skip();
-        return;
       }
 
       chai
@@ -250,11 +246,6 @@ describe('User', function () {
 
   describe('GET /api/user/check_username/:username', () => {
     it('Utilisateur disponible', (done) => {
-      if (global.jwt === undefined) {
-        this.skip();
-        return;
-      }
-
       chai
         .request(app)
         .get('/api/user/check_username/free')
@@ -271,11 +262,6 @@ describe('User', function () {
     });
 
     it('Utilisateur non disponible', (done) => {
-      if (global.jwt === undefined) {
-        this.skip();
-        return;
-      }
-
       chai
         .request(app)
         .get('/api/user/check_username/admin')

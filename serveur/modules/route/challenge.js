@@ -164,6 +164,7 @@ module.exports.routes = [
     method: 'POST',
     url: '/api/challenge',
     func: [m.user_mdw.put_admin, m.challenge_ctrl.post_challenge],
+    test: true,
     body: {
       title: 'string',
       description: 'string',
