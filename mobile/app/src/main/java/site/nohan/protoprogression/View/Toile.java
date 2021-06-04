@@ -32,6 +32,8 @@ public class Toile extends View {
     PointF delta;
     PointF position;
 
+    private final float COMPLET_GRAY = 2f;
+
     public Toile(Context context) {
         super(context);
         this.context = context;
@@ -177,6 +179,9 @@ public class Toile extends View {
 
                     if (c.complete || (c.getLongueurAt(c.points.get(i+1)) < Map.mapActuelle.accompli && c == Map.mapActuelle.cheminActuel)) {
                         this.stylo.setStrokeWidth(40);
+                        if(c.complete){
+                            this.stylo.setColor(Color.rgb(40 * sOrdinal / this.COMPLET_GRAY, 100 / this.COMPLET_GRAY, 15 * sOrdinal / this.COMPLET_GRAY));
+                        }
                     } else {
                         this.stylo.setStrokeWidth(15);
                     }
@@ -336,7 +341,7 @@ public class Toile extends View {
 
 
 
-        int recul = 8;
+        int recul = 5;
 
         int deltaABx = Math.abs(B.x-A.x);
         int deltaABy = Math.abs(B.y-A.y);
