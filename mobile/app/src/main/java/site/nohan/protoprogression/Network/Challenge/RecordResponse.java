@@ -21,6 +21,8 @@ import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
 import site.nohan.protoprogression.View.ui.home.SubscribeListRecordsAdapter;
 
+import static site.nohan.protoprogression.Network.DataBase.resetRecords;
+
 public class RecordResponse implements APIListenner {
 
     /******************************************
@@ -60,17 +62,17 @@ public class RecordResponse implements APIListenner {
             Log.e("RECORD_RESPONSE","Reception de "+jsonArray.length()+" record(s)");
 
             for(int i=0; i<jsonArray.length();i++){
-                JSONObject jRecord = (JSONObject) jsonArray.get(i);
+                JSONObject jRecord = jsonArray.getJSONObject(i);
                 int participationID = jRecord.getInt("id");
                 long duration = jRecord.getLong("duration");
-                JSONArray jsonArrayUser = jRecord.getJSONArray("user");
-                JSONObject jUser = (JSONObject) jsonArrayUser.get(0);
+                JSONObject jUser = jRecord.getJSONObject("user");
                 String username = jUser.getString("username");
                 DataBase.addRecord(participationID, duration, username);
             }
 
-            subscribeListRecordsAdapter.notifyDataSetChanged();
+            if(jsonArray.length() == 0) resetRecords();
 
+            subscribeListRecordsAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }

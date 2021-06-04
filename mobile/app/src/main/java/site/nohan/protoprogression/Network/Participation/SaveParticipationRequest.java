@@ -104,7 +104,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
                 derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale() / 2f;
 
             }else if(type == TypeEvent.ARIVEE){
-                //jsonBody.put("data", data);
+                jsonBody.put("data", data);
             }else if(type == TypeEvent.DEPART){
                 jsonBody.put("data", data);
             }else if(type == TypeEvent.OSTACLE){

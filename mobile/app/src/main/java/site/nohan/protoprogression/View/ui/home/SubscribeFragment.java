@@ -116,8 +116,8 @@ public class SubscribeFragment extends Fragment {
 
         lv_records = root.findViewById(R.id.lv_subscribe_records);
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
-        lv_records.setAdapter(subscribeAdapter);
         new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter);
+        lv_records.setAdapter(subscribeAdapter);
 
         return root;
     }

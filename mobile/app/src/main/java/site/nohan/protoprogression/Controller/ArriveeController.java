@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
@@ -12,9 +13,11 @@ import site.nohan.protoprogression.R;
 public class ArriveeController implements View.OnClickListener{
 
     private Activity activity;
+    private PointPassage direction;
 
-    public ArriveeController(Activity activity) {
+    public ArriveeController(Activity activity, PointPassage direction) {
         this.activity = activity;
+        this.direction = direction;
     }
 
     @Override
@@ -22,6 +25,7 @@ public class ArriveeController implements View.OnClickListener{
         new SaveParticipationRequest(
                 this.activity,
                 TypeEvent.ARIVEE,
+                this.direction.id,
                 Map.mapActuelle.id,
                 new SaveParticipationResponse()
         );

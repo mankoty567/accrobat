@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
@@ -288,6 +289,7 @@ public class DataBase {
     }
 
 
+    private static ArrayList<Integer> recordsParticipationID = new ArrayList<Integer>();
 
     public static void addRecord(int idParticipation, long duration, String username){
         bdd.execSQL("DELETE FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+ ";");
@@ -295,11 +297,20 @@ public class DataBase {
                 idParticipation + ", " +
                 duration +", \"" +
                 username + "\"" +
-                "');"
+                ");"
         );
+        recordsParticipationID.add(idParticipation);
     }
 
-    public static long getRecordDuration(int idParticipation){
+    public static void resetRecords(){
+        bdd.execSQL("DELETE FROM RECORDS;");
+        recordsParticipationID.clear();
+    }
+
+    public static long getRecordDuration(int position){
+        int idParticipation = -1;
+        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+
         Cursor resultats = bdd.rawQuery("SELECT DURATION FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
             return -1;
@@ -308,7 +319,10 @@ public class DataBase {
         return resultats.getLong(0);
     }
 
-    public static String getRecordUsername(int idParticipation){
+    public static String getRecordUsername(int position){
+        int idParticipation = -1;
+        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+
         Cursor resultats = bdd.rawQuery("SELECT USERNAME FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
             return null;
