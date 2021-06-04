@@ -22,6 +22,7 @@ import java.util.Date;
 import site.nohan.protoprogression.Controller.MainActivity;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
+import site.nohan.protoprogression.Network.Challenge.RecordRequest;
 import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
@@ -116,6 +117,7 @@ public class SubscribeFragment extends Fragment {
         lv_records = root.findViewById(R.id.lv_subscribe_records);
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
         lv_records.setAdapter(subscribeAdapter);
+        new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter);
 
         return root;
     }

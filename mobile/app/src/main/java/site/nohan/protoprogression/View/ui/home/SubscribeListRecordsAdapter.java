@@ -16,9 +16,13 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 import static site.nohan.protoprogression.Network.DataBase.getMoi;
+import static site.nohan.protoprogression.Network.DataBase.getRecordDuration;
+import static site.nohan.protoprogression.Network.DataBase.getRecordSize;
+import static site.nohan.protoprogression.Network.DataBase.getRecordUsername;
 
 public class SubscribeListRecordsAdapter extends ArrayAdapter<String> {
 
@@ -40,14 +44,14 @@ public class SubscribeListRecordsAdapter extends ArrayAdapter<String> {
         TextView list_title = (TextView) rowView.findViewById(R.id.txt_list_pseudo);
         TextView list_record = (TextView) rowView.findViewById(R.id.txt_list_recordDate);
 
-        list_title.setText(getMoi().getUsername()+"");
-        list_record.setText("Hier");
+        list_title.setText(getRecordUsername(position)+"");
+        list_record.setText(getRecordDuration(position)+" en ms");
 
         return rowView;
     };
 
     @Override
     public int getCount() {
-        return Map.maps != null ? Map.maps.size() : 0;
+        return getRecordSize() != -1 ? DataBase.getRecordSize() : 0;
     }
 }

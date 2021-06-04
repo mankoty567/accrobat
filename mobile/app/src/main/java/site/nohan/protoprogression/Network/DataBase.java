@@ -90,6 +90,14 @@ public class DataBase {
                 "CHEMIN_ID" +
                 ");");
 
+        /*
+         * TABLE RECORDS (afin d'obtenir les meilleurs temps effectués pour un challenge)
+         */
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS RECORDS(" +
+                "PARTICIPATION_ID," +
+                "DURATION," +
+                "USERNAME" +
+                ");");
 
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
@@ -280,4 +288,41 @@ public class DataBase {
     }
 
 
+
+    public static void addRecord(int idParticipation, long duration, String username){
+        bdd.execSQL("DELETE FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+ ";");
+        bdd.execSQL("INSERT INTO RECORDS VALUES(" +
+                idParticipation + ", " +
+                duration +", \"" +
+                username + "\"" +
+                "');"
+        );
+    }
+
+    public static long getRecordDuration(int idParticipation){
+        Cursor resultats = bdd.rawQuery("SELECT DURATION FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
+        if(resultats.getCount() == 0)
+            return -1;
+        resultats.moveToFirst();
+
+        return resultats.getLong(0);
+    }
+
+    public static String getRecordUsername(int idParticipation){
+        Cursor resultats = bdd.rawQuery("SELECT USERNAME FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
+        if(resultats.getCount() == 0)
+            return null;
+        resultats.moveToFirst();
+
+        return resultats.getString(0);
+    }
+
+    public static int getRecordSize(){
+        Cursor resultats = bdd.rawQuery("SELECT COUNT (*) FROM RECORDS ;",null);
+        if(resultats.getCount() == 0)
+            return -1;
+        resultats.moveToFirst();
+
+        return resultats.getInt(0);
+    }
 }
