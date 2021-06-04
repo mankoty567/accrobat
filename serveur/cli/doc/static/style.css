@@ -61,6 +61,10 @@ h3:hover {
   width: 15px;
 }
 
+.testIcon:hover {
+  cursor: auto;
+}
+
 h4 {
   margin: 0;
 }

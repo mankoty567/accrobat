@@ -46,6 +46,6 @@ module.exports.routes = [
     ],
     name: 'Ajoute un évènement à une participation',
     description:
-      "Certains types doivent avoir des données, d'autres non.\nData obligatoire pour le type marche [distance], course [distance], velo [distance], pointpassage:depart [segment choisi]",
+      "Certains types doivent avoir des données, d'autres non.\nData obligatoire pour le type marche [distance], course [distance], velo [distance], pointpassage:depart [segment choisi], pointpassage:arrivee [point atteind]",
   },
 ];

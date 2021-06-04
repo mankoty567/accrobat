@@ -229,6 +229,7 @@ module.exports.routes = [
       m.challenge_mdw.check_is_admin,
       m.challenge_ctrl.update_challenge,
     ],
+    test: true,
     body: {
       title: { type: 'string', required: false },
       description: { type: 'string', required: false },

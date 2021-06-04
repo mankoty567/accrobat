@@ -16,7 +16,7 @@ const REQUIRED_DATA = [
   true,
   true,
   true,
-  false,
+  true,
   true,
   true,
   //true,
@@ -45,16 +45,20 @@ module.exports = {
               // Si c'est une arrivée à un point de passage, on vérifie si c'est pas le dernier
               if (req.body.type === 'pointpassage:arrivee') {
                 bdd.PointPassage.findOne({
-                  where: { id: Math.trunc(req.body.id) },
+                  where: { id: Math.trunc(req.body.data) },
                 }).then((pp) => {
-                  if (pp.type === 'end') {
-                    participation.endDate = new Date();
-
-                    participation.save().then(() => {
-                      createEvent(req, res);
-                    });
+                  if (pp === null) {
+                    res.status(400).send('Point not found');
                   } else {
-                    createEvent(req, res);
+                    if (pp.type === 'end') {
+                      participation.endDate = new Date();
+
+                      participation.save().then(() => {
+                        createEvent(req, res);
+                      });
+                    } else {
+                      createEvent(req, res);
+                    }
                   }
                 });
               } else {
