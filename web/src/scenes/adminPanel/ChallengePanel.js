@@ -22,9 +22,8 @@ let ChallengePanel = () => {
   const getChallenges = () => {
     setIsLoading(true);
     API.challenge.getAdminChallenges().then((res) => {
-      setIsLoading(true);
+      setIsLoading(false);
       setChallenges(res);
-      // console.log(res);
     });
   };
 
@@ -45,6 +44,7 @@ let ChallengePanel = () => {
       img_avatar = avatar;
     }
 
+    console.log({ title, description, scale });
     API.challenge
       .createChallenge({
         img_avatar,
@@ -110,7 +110,8 @@ let ChallengePanel = () => {
       <Button
         startIcon={<AddIcon />}
         onClick={() => {
-          setAddmode('add'), setSelected(null);
+          setAddmode('add');
+          setSelected(null);
         }}
       >
         Ajouter un challenge

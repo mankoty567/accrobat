@@ -1,6 +1,3 @@
-//Challenges inscrits
-//Suivit d'un challenge
-//Inscription à un challenge
 import {
   Button,
   List,
@@ -28,7 +25,7 @@ let ChallengePage = () => {
       <>
         <Button
           startIcon={<SearchIcon />}
-          onClick={() => handleClick(index)}
+          onClick={() => handleClick()}
         >
           Consulter
         </Button>

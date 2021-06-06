@@ -13,12 +13,17 @@ import {
   TableRow,
   FormControlLabel,
   Checkbox,
+  IconButton,
 } from '@material-ui/core';
+
+import EditIcon from '@material-ui/icons/Edit';
 
 import style from './ChallengeToVote.module.css';
 import { API } from '../../eventApi/api';
 
 import classnames from 'classnames';
+
+import Modal from '../../components/Modal';
 
 const status = {
   open: 'Ouvert',
@@ -61,7 +66,6 @@ export default function ChallengeToVote() {
 
   useEffect(() => {
     API.challengeToVote.getToVoteAdmin().then((data) => {
-      console.log(data);
       setIsLoadingChallenges(false);
       setChallenges(data);
     });
@@ -74,31 +78,63 @@ export default function ChallengeToVote() {
   }, [challenges, showClosed]);
 
   function handleCloseChallenge(id) {
-    API.challengeToVote.changeToVoteStatus(id, 'close').then(() => {
-      setChallenges((before) => {
-        return before.map((b) => {
-          if (b.id === id) {
-            return { ...b, status: 'close' };
-          } else {
-            return b;
-          }
+    API.challengeToVote
+      .changeToVote(id, { status: 'close' })
+      .then(() => {
+        setChallenges((before) => {
+          return before.map((b) => {
+            if (b.id === id) {
+              return { ...b, status: 'close' };
+            } else {
+              return b;
+            }
+          });
         });
       });
-    });
   }
 
   function handleOpenChallenge(id) {
-    API.challengeToVote.changeToVoteStatus(id, 'open').then(() => {
-      setChallenges((before) => {
-        return before.map((b) => {
-          if (b.id === id) {
-            return { ...b, status: 'open' };
-          } else {
-            return b;
-          }
+    API.challengeToVote
+      .changeToVote(id, { status: 'open' })
+      .then(() => {
+        setChallenges((before) => {
+          return before.map((b) => {
+            if (b.id === id) {
+              return { ...b, status: 'open' };
+            } else {
+              return b;
+            }
+          });
         });
       });
-    });
+  }
+
+  const [editId, setEditId] = useState(undefined);
+  const [modalEditDescOpen, setModalEditDescOpen] = useState(false);
+  const [editDesc, setEditDesc] = useState('');
+
+  function handleClickEdit(id, desc) {
+    setEditId(id);
+    setEditDesc(desc);
+    setModalEditDescOpen(true);
+  }
+
+  function handleEditSave() {
+    API.challengeToVote
+      .changeToVote(editId, { description: editDesc })
+      .then(() => {
+        setChallenges((before) => {
+          setModalEditDescOpen(false);
+
+          return before.map((b) => {
+            if (b.id === editId) {
+              return { ...b, description: editDesc };
+            } else {
+              return b;
+            }
+          });
+        });
+      });
   }
 
   return (
@@ -172,7 +208,16 @@ export default function ChallengeToVote() {
                 >
                   {status[c.status]}
                 </TableCell>
-                <TableCell>{c.description}</TableCell>
+                <TableCell>
+                  {c.description}{' '}
+                  <IconButton
+                    onClick={() =>
+                      handleClickEdit(c.id, c.description)
+                    }
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
                 <TableCell>{c.voteSum}</TableCell>
                 <TableCell>{c.userVote}</TableCell>
                 <TableCell>
@@ -199,6 +244,28 @@ export default function ChallengeToVote() {
           </TableBody>
         </Table>
       </div>
+
+      <Modal
+        open={modalEditDescOpen}
+        onCancel={() => setModalEditDescOpen(false)}
+      >
+        <h2>Modifier la description</h2>
+        <TextField
+          style={{ width: '100%' }}
+          value={editDesc}
+          onChange={(e) => setEditDesc(e.target.value)}
+          label="Description"
+        />
+
+        <Button
+          style={{ width: '100%' }}
+          variant="contained"
+          color="primary"
+          onClick={handleEditSave}
+        >
+          Sauvegarder
+        </Button>
+      </Modal>
     </>
   );
 }
