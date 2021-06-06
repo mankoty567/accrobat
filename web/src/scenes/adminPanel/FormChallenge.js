@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import ImageUploader from '../../components/ImageUploader';
+import MarkdownEditor from '../../components/MarkdownEditor';
 
 let FormChallenge = ({ callback }) => {
   //Ajouter la prise en charge de l'échelle et de l'id
@@ -82,19 +83,12 @@ let FormChallenge = ({ callback }) => {
         </FormControl>
       </ListItem>
       <ListItem>
-        <FormControl style={{ width: '100%' }} error={errDesc}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <InputLabel htmlFor="desc">Description* :</InputLabel>
-          <Input
-            required
-            multiline
-            onChange={(e) => setDescription(e.target.value)}
-            onBlur={(e) => setError(e.target.value, setErrDesc)}
-            id="desc"
-          ></Input>
-          <FormHelperText id="desc">
-            Ce qui décrirait votre challenge
-          </FormHelperText>
-        </FormControl>
+          <MarkdownEditor
+            callback={(text) => setDescription(text.toString())}
+          />
+        </div>
       </ListItem>
 
       <ListItem>
