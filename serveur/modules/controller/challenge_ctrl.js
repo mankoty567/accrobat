@@ -125,38 +125,47 @@ module.exports = {
       description: req.body.description,
       echelle: req.body.echelle,
     }).then((challenge) => {
-      utils.parseMap(req.body.img_fond).then((buffer) => {
-        fs.writeFileSync(
-          path.join(
-            __dirname,
-            '../../data/challenge/' + challenge.id + '.webp'
-          ),
-          buffer
-        );
+      utils
+        .parseMap(req.body.img_fond)
+        .then((buffer) => {
+          fs.writeFileSync(
+            path.join(
+              __dirname,
+              '../../data/challenge/' + challenge.id + '.webp'
+            ),
+            buffer
+          );
 
-        bdd.UserChallengeAdmin.create({
-          isAuthor: true,
-          UserId: req.user.id,
-          ChallengeId: challenge.id,
-        }).then(() => {
-          if (req.body.img_avatar !== undefined) {
-            utils.parseAvatar(req.body.img_avatar).then((buffer) => {
-              fs.writeFileSync(
-                path.join(
-                  __dirname,
-                  '../../data/challengeAvatar/' + challenge.id + '.webp'
-                ),
-                buffer
-              );
+          bdd.UserChallengeAdmin.create({
+            isAuthor: true,
+            UserId: req.user.id,
+            ChallengeId: challenge.id,
+          }).then(() => {
+            if (req.body.img_avatar !== undefined) {
+              utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
+                fs.writeFileSync(
+                  path.join(
+                    __dirname,
+                    '../../data/challengeAvatar/' + challenge.id + '.webp'
+                  ),
+                  bufferAvater
+                );
+                debug('Création du challenge ' + challenge.id);
+                res.json({
+                  ...challenge.dataValues,
+                  frontId: req.body.frontId,
+                });
+              });
+            } else {
               debug('Création du challenge ' + challenge.id);
               res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-            });
-          } else {
-            debug('Création du challenge ' + challenge.id);
-            res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-          }
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send(err);
         });
-      });
     });
   },
   delete_challenge: (req, res) => {
@@ -547,5 +556,53 @@ module.exports = {
         });
       }
     });
+  },
+  get_records: (req, res) => {
+    bdd.Challenge.findOne({ where: { id: req.params.id } }).then(
+      (challenge) => {
+        if (challenge === null) {
+          res.status(400).send('Challenge not found');
+        } else {
+          bdd.Participation.findAll({
+            where: {
+              ChallengeId: req.params.id,
+              endDate: { [bdd.Sequelize.Op.ne]: null },
+            },
+            include: [{ model: bdd.User, attributes: ['username', 'id'] }],
+          }).then((participations) => {
+            participations = participations.map((p) => {
+              p = JSON.parse(JSON.stringify(p));
+
+              p.duration =
+                new Date(p.endDate).getTime() - new Date(p.startDate).getTime();
+
+              return p;
+            });
+            participations.sort((a, b) => {
+              return a.duration - b.duration;
+            });
+
+            let max = Math.min(20, req.query.nb || 5);
+
+            participations = participations.slice(0, max);
+
+            res.json(
+              participations.map((p) => {
+                let durationObj = utils.parseDuration(p.duration);
+
+                return {
+                  id: p.id,
+                  duration: p.duration,
+                  durationStr: `${durationObj.jour}j ${durationObj.heure}:${durationObj.minute}'${durationObj.seconde}`,
+                  startDate: p.startDate,
+                  endDate: p.endDate,
+                  user: p.User,
+                };
+              })
+            );
+          });
+        }
+      }
+    );
   },
 };

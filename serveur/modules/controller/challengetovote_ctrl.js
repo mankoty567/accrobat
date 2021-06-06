@@ -15,10 +15,25 @@ module.exports = {
         if (tovote === null) {
           res.status(404).send('Not found');
         } else {
-          tovote.status = req.body.status;
-          tovote.save().then(() => {
+          let edited = false;
+
+          if (req.body.status !== undefined) {
+            tovote.status = req.body.status;
+            edited = true;
+          }
+
+          if (req.body.description !== undefined) {
+            tovote.description = req.body.description;
+            edited = true;
+          }
+
+          if (edited) {
+            tovote.save().then(() => {
+              res.json(tovote);
+            });
+          } else {
             res.json(tovote);
-          });
+          }
         }
       }
     );

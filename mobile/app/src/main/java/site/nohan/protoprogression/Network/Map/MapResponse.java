@@ -1,7 +1,7 @@
 package site.nohan.protoprogression.Network.Map;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.util.Log;
 import android.widget.Button;
@@ -13,22 +13,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import site.nohan.protoprogression.Controller.DirectionController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Model.PointPassage;
-import site.nohan.protoprogression.Model.TypePointPassage;
+import site.nohan.protoprogression.Model.Types.TypeObstacle;
+import site.nohan.protoprogression.Model.Types.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 public class MapResponse implements APIListenner {
 
     private final Activity activity;
+    private final Map map;
 
-    public MapResponse(Activity activity){
+    public MapResponse(Activity activity, Map map){
+        this.map = map;
         this.activity = activity;
     }
 
@@ -46,17 +50,20 @@ public class MapResponse implements APIListenner {
         try{
             // Log de la map
             //Log.e("map", response.toString());
-
             // Init des chemins
-            Map.pointPassages = new ArrayList<>();
+           this.map.pointPassages = new ArrayList<>();
 
             // Conversion de la réponse en JSON
             JSONObject json = new JSONObject((String) response);
 
             // MAP
-            Map.libelle = json.getString("title");
+           this.map.libelle = json.getString("title");
+           this.map.id = json.getInt("id");
+           this.map.description = json.getString("description");
+           this.map.echelle = json.getDouble("echelle");
 
-            Map.desc = json.getString("description");
+
+           //this.map.date = new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("createdAt"));
 
             JSONArray pointsPassage = json.getJSONArray("PointPassages");
 
@@ -77,6 +84,7 @@ public class MapResponse implements APIListenner {
                 pointPassage.id = jpointPassage.getInt("id");
                 pointPassage.titre = jpointPassage.getString("title");
                 pointPassage.desc = jpointPassage.getString("description");
+
                 switch (jpointPassage.getString("type")){
                     case "start":
                         pointPassage.type = TypePointPassage.DEPART;
@@ -111,6 +119,7 @@ public class MapResponse implements APIListenner {
                     chemin.objectifId = jchemin.getInt("PointEndId");
                     chemin.origine = pointPassage;
                     chemin.nom = jchemin.getString("name");
+                    chemin.id = jchemin.getInt("id");
 
                     JSONArray jpath = jchemin.getJSONArray("path");
                     // Pour tout les points qui le composent
@@ -124,16 +133,30 @@ public class MapResponse implements APIListenner {
                                 )
                         );
                     }
+
+                    // Pour tout les obtacles
+                    JSONArray jOstacles = jchemin.getJSONArray("Obstacles");
+                    Obstacle obstacle;
+                    for(int obstaclei = 0; obstaclei < jOstacles.length(); obstaclei++){
+                        obstacle = new Obstacle();
+                        obstacle.id =((JSONObject) jOstacles.get(obstaclei)).getInt("id");
+                        obstacle.titre =((JSONObject) jOstacles.get(obstaclei)).getString("title");
+                        obstacle.description =((JSONObject) jOstacles.get(obstaclei)).getString("description");
+                        obstacle.distance = ((JSONObject) jOstacles.get(obstaclei)).getDouble("distance");
+                        obstacle.type = ((JSONObject) jOstacles.get(obstaclei)).getString("description").equals("question") ? TypeObstacle.QUESTION : TypeObstacle.QUESTION;
+                        chemin.obstacles.add(obstacle);
+                    }
+
                     pointPassage.chemins.add(chemin);
                 }
-                Map.pointPassages.add(pointPassage);
+               this.map.pointPassages.add(pointPassage);
             }
 
             // On assigne les pointeurs Chemin.objectif en f(x) Chemin.objectifId
             // on le fais mtn il faut tout les pp dans le modele pour avoir tout les id
 
 
-            for(PointPassage pointPassage1 : Map.pointPassages){
+            for(PointPassage pointPassage1 :this.map.pointPassages){
                 for(Chemin chemin1 : pointPassage1.chemins){
                     if(chemin1.objectifId != Chemin.NO_OJECTIF) {
                         chemin1.objectif = PointPassage.getById(chemin1.objectifId);
@@ -147,27 +170,31 @@ public class MapResponse implements APIListenner {
                     }
                 }
             }
-            Log.e("Model", Map.pointPassages.toString());
+            Log.e("Model",this.map.pointPassages.toString());
 
             LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
-            for(Chemin c : Map.getDepart().chemins){
+            for(Chemin c :this.map.getDepart().chemins){
                 if(c.objectif == null)
                     break;
                 Log.e("suiv",c.objectif.titre);
                 Button button = new Button(this.activity);
-                button.setOnClickListener(new DirectionController(c));
-                button.setText(c.objectif.titre + " - " + c.nom);
+                button.setOnClickListener(new DirectionController(this.activity, c));
+                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
+                button.setText(c.objectif.titre + " par " + c.nom);
 
                 linearLayout.addView(button);
             }
-            //Map.dernierPointPassage = Map.pointPassages.get(0);
-            //Map.cheminActuel = Map.dernierPointPassage.chemins.get(0);
+            //Map.mapActuelle.dernierPointPassage =this.map.pointPassages.get(0);
+            //Map.mapActuelle.cheminActuel =this.map.dernierPointPassage.chemins.get(0);
 
 
         }catch (JSONException jsonException){
             jsonException.printStackTrace();
-            Map.pointPassages = new ArrayList<>();
+           this.map.pointPassages = new ArrayList<>();
         }
+
+        Log.e("Map", "Chargement terminé");
+        DataBase.restoreProgression();
     }
 
 }

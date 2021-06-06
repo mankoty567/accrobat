@@ -92,7 +92,7 @@ module.exports = {
               if (user === null) {
                 res.status(400).send('Bad request: User not found');
               } else {
-                let token = jwt.sign(
+                let newToken = jwt.sign(
                   {
                     id: user.id,
                     permission: user.permission,
@@ -108,7 +108,7 @@ module.exports = {
                   permission: user.permission,
                   level: user.level,
                   xp: user.xp,
-                  jwt: token,
+                  jwt: newToken,
                 });
               }
             });
@@ -150,9 +150,18 @@ module.exports = {
 
     if (edited) {
       await req.user.save();
-      res.json(req.user);
+
+      let user = JSON.parse(JSON.stringify(req.user));
+
+      delete user.password;
+
+      res.json(user);
     } else {
-      res.json(req.user);
+      let user = JSON.parse(JSON.stringify(req.user));
+
+      delete user.password;
+
+      res.json(user);
     }
   },
   edit_user_password: (req, res) => {
@@ -174,11 +183,11 @@ module.exports = {
   get_avatar: (req, res) => {
     if (
       fs.existsSync(
-        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
+        path.join(__dirname, '../../data/user/' + req.params.id + '.webp')
       )
     ) {
       res.sendFile(
-        path.join(__dirname, '../../data/avatar/' + req.params.id + '.webp')
+        path.join(__dirname, '../../data/user/' + req.params.id + '.webp')
       );
     } else {
       res.status(404).send('Not found');
@@ -194,6 +203,13 @@ module.exports = {
   get_all_admin: (req, res) => {
     bdd.User.findAll({
       where: { permission: 100 },
+      attributes: ['id', 'username'],
+    }).then((users) => {
+      res.json(users);
+    });
+  },
+  get_all_user: (req, res) => {
+    bdd.User.findAll({
       attributes: ['id', 'username'],
     }).then((users) => {
       res.json(users);

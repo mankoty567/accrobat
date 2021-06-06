@@ -43,7 +43,7 @@ module.exports = {
           bdd.Obstacle.findOne({
             where: { id: Math.trunc(lastEvent.data) },
           }).then((obstacle) => {
-            if (!obstacle.type === 'action') {
+            if (obstacle.type !== 'action') {
               res.status(400).send('Bad request: Obstacle is not an action');
             } else {
               bdd.Event.create({
@@ -76,7 +76,6 @@ module.exports = {
     });
   },
   get_all_soumission: (req, res) => {
-    // TODO : Vérification que la personne est un admin/renvoyer uniquement les soumission qu'il a le droit
     bdd.ImageSubmition.findAll({ where: { ok: false, rejected: false } }).then(
       (imagesubmition) => {
         res.json(imagesubmition);

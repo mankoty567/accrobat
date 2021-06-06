@@ -116,4 +116,27 @@ module.exports.routes = [
       { code: 403, content: 'Participation is not to logged user' },
     ],
   },
+  {
+    method: 'GET',
+    url: '/api/participation/:id/session',
+    func: [m.user_mdw.put_user, m.participation_ctrl.get_session],
+    name: 'Récupération des sessions',
+    description:
+      "Récupère tous les évènements liés à la participation de l'utilisateur",
+    result: [
+      {
+        code: 200,
+        content: [
+          {
+            id: 0,
+            type: '',
+            data: '',
+            createdAt: 'date',
+            updatedAt: 'date',
+            ParticipationId: 0,
+          },
+        ],
+      },
+    ],
+  },
 ];

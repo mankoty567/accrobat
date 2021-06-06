@@ -2,21 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const sizeOf = require('image-size');
+const bdd = require('../models');
 
 const MAX_MAP_SIZE = 1500;
 const MAX_AVATAR_SIZE = 500;
 const MAX_IMG_SUBMIT_SIZE = 1000;
 
 module.exports = {
-  pathToDistance: (path, echelle) => {
+  pathToDistance: (pathIn, echelle) => {
     let distance = 0;
 
-    for (let i = 0; i < path.length - 1; i++) {
+    for (let i = 0; i < pathIn.length - 1; i++) {
       distance =
         distance +
         Math.sqrt(
-          Math.pow(path[i][0] - path[i + 1][0]) +
-            Math.pow(path[i][1] - path[i + 1][1])
+          Math.pow(pathIn[i][0] - pathIn[i + 1][0]) +
+            Math.pow(pathIn[i][1] - pathIn[i + 1][1])
         );
     }
 
@@ -55,6 +56,48 @@ module.exports = {
   },
   parseImg: (b64) => {
     return resizeImage(b64, MAX_IMG_SUBMIT_SIZE);
+  },
+  debugger: (req, res, next) => {
+    bdd.RequestLog.create({
+      method: req.method,
+      path: req.originalUrl,
+      body: req.body,
+      headers: req.headers,
+    });
+
+    next();
+  },
+  /**
+   * Transforme la durée en millisecondes en chaine de caractères grâce au format
+   * @param {Number} duration
+   * @return {Object} {jour, heure, minute, seconde}
+   */
+  parseDuration: (duration) => {
+    let nbSec = duration / 1000;
+
+    let params = {};
+
+    params.jour = Math.trunc(nbSec / 86400);
+
+    nbSec = nbSec % 86400;
+    params.heure = Math.trunc(nbSec / 3600);
+    if (params.heure < 10) {
+      params.heure = '0' + params.heure;
+    }
+
+    nbSec = nbSec % 3600;
+    params.minute = Math.trunc(nbSec / 60);
+    if (params.minute < 10) {
+      params.minute = '0' + params.minute;
+    }
+
+    nbSec = nbSec % 60;
+    params.seconde = Math.trunc(nbSec);
+    if (params.seconde < 10) {
+      params.seconde = '0' + params.seconde;
+    }
+
+    return params;
   },
 };
 

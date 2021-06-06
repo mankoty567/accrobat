@@ -9,10 +9,15 @@ const mocha = require('mocha');
 
 const ADMIN_PASSWORD = '123456';
 
+module.exports.global = {};
+
 module.exports.mochaHooks = {
-  beforeAll: async () => {
+  beforeAll: async function () {
     await bdd.sequelize.drop();
-    await bdd.sequelize.sync({ drop: true });
+    console.log('Table supprimée');
+
+    await bdd.sequelize.sync();
+    console.log('Table syncronisée');
 
     // Créations des entitées devant déjà être présantent dans l'api
     await bdd.User.create({
@@ -23,6 +28,7 @@ module.exports.mochaHooks = {
       level: 0,
       xp: 0,
     });
+    console.log('Compte admin créé');
   },
   afterAll: () => {
     server.close();

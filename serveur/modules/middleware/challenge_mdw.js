@@ -37,8 +37,8 @@ module.exports = {
   check_is_author: (req, res, next) => {
     module.exports
       .check_is_author_fc(req.params.id, req.user.id)
-      .then((isAdmin) => {
-        if (isAdmin) {
+      .then((isAuthor) => {
+        if (isAuthor) {
           next();
         } else {
           res.status(403).send('You are not admin of this challenge');

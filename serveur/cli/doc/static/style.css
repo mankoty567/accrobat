@@ -11,7 +11,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   border-radius: 5px;
-  filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.5));
+  filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
   background-color: white;
   padding: 10px;
 }
@@ -57,6 +57,14 @@ h3:hover {
   cursor: pointer;
 }
 
+.testIcon {
+  width: 15px;
+}
+
+.testIcon:hover {
+  cursor: auto;
+}
+
 h4 {
   margin: 0;
 }
@@ -72,17 +80,17 @@ h4 {
 }
 
 .GET {
-  background-color: #5DADE2;
+  background-color: #5dade2;
   color: white;
 }
 
 .POST {
-  background-color: #F5B041;
+  background-color: #f5b041;
   color: white;
 }
 
 .DELETE {
-  background-color: #E74C3C;
+  background-color: #e74c3c;
   color: white;
 }
 
@@ -130,11 +138,11 @@ li {
 }
 
 .bddTitle::before {
-  content: "▶";
+  content: '▶';
 }
 
 .bddTitle.opened::before {
-  content: "▼";
+  content: '▼';
 }
 
 .bdd {

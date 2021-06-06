@@ -47,10 +47,10 @@ module.exports = {
         auth: googleUser,
       });
 
-      service.userinfo.get(function (err, result) {
-        if (err) {
-          console.log(err);
-          res.status(500).send(err);
+      service.userinfo.get(function (errInfo, result) {
+        if (errInfo) {
+          console.log(errInfo);
+          res.status(500).send(errInfo);
         } else {
           let data = result.data;
 
@@ -63,7 +63,7 @@ module.exports = {
                 level: 0,
                 xp: 0,
                 googleToken: token.tokens.refresh_token,
-              }).then((user) => {
+              }).then(() => {
                 sendUser(res, user);
               });
             } else {

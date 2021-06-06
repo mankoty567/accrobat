@@ -6,7 +6,7 @@ public class StepDetector {
     private static final int VEL_RING_SIZE = 10;
 
     // change this threshold according to your sensitivity preferences
-    private static final float STEP_THRESHOLD = 38f;
+    private static float STEP_THRESHOLD;
 
     private static final int STEP_DELAY_NS = 250000000;
 
@@ -54,6 +54,9 @@ public class StepDetector {
         velRing[velRingCounter % VEL_RING_SIZE] = currentZ;
 
         float velocityEstimate = SensorFilter.sum(velRing);
+
+        if(PedometerController.isRunning) STEP_THRESHOLD = 40f;
+        else STEP_THRESHOLD = 36f;
 
         if (velocityEstimate > STEP_THRESHOLD && oldVelocityEstimate <= STEP_THRESHOLD
                 && (timeNs - lastStepTimeNs > STEP_DELAY_NS)) {

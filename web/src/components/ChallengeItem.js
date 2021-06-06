@@ -31,7 +31,13 @@ let ChallengeItem = ({ challenge, actionComponents }) => {
               </Typography>
             </ListItem>
             <ListItem>
-              <Typography>{challenge.description}</Typography>
+              <Typography>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: challenge.description,
+                  }}
+                ></div>
+              </Typography>
             </ListItem>
           </List>
         </Grid>

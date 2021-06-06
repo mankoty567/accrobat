@@ -2,8 +2,8 @@
 - Client Nazi: Quand tu arrive à un obstacle, ça n'avance plus, tu dois faire l'enigme sinon ça avance plus
 - Point de passage : Aussi un choix à faire, l'app s'arrête, popup pour le choix, si le choix n'est pas fait ça arrête tout
 
-
 type:
+
 - marche [Distance]
 - course [Distance]
 - velo [Distance]
@@ -17,6 +17,7 @@ type:
 - obstacle:completed
 
 ## TODO TODAY
+
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
@@ -53,9 +54,9 @@ type:
 - [x] Récupération des challenges à voter en mode admin
 - [x] Récupération des challenges à voter en mode user
 - [x] Bouton copier la route sur la doc
-- [ ] Route pour récupérer tous les utilisateurs
-- [ ] Route pour récupérer toutes les sessions
-- [ ] Récupération des records
-- [ ] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
-- [ ] Route pour éditer les challengeToVote
-- [ ] Quand on ferme le sondage, affiche un popup pour demander si on doit créer automatiquement un challenge
+- [x] Route pour récupérer tous les utilisateurs
+- [x] Route pour récupérer toutes les sessions
+- [x] Récupération des records
+- [x] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
+- [x] Route pour éditer les challengeToVote
+- [ ] Changer middleware pour passer a Utilisateur, Créateur, Administrateur (Utilisateur, comme avant, Créateur, Admin mais de tous les challenges, Administrateur, peut tout faire)
