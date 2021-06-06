@@ -16,9 +16,9 @@ const REQUIRED_DATA = [
   true,
   true,
   true,
-  false,
   true,
-  false,
+  true,
+  true,
   //true,
   //false,
   //false,
@@ -42,15 +42,28 @@ module.exports = {
             res.status(400).send('Bad request: Participation not found');
           } else {
             if (participation.UserId === req.user.id) {
-              bdd.Event.create({
-                ParticipationId: req.body.ParticipationId,
-                type: req.body.type,
-                data: req.body.data !== undefined ? req.body.data : null,
-              }).then((event) => {
-                // eslint-disable-next-line quotes
-                debug("Création de l'event " + event.id);
-                res.json(event);
-              });
+              // Si c'est une arrivée à un point de passage, on vérifie si c'est pas le dernier
+              if (req.body.type === 'pointpassage:arrivee') {
+                bdd.PointPassage.findOne({
+                  where: { id: Math.trunc(req.body.data) },
+                }).then((pp) => {
+                  if (pp === null) {
+                    res.status(400).send('Point not found');
+                  } else {
+                    if (pp.type === 'end') {
+                      participation.endDate = new Date();
+
+                      participation.save().then(() => {
+                        createEvent(req, res);
+                      });
+                    } else {
+                      createEvent(req, res);
+                    }
+                  }
+                });
+              } else {
+                createEvent(req, res);
+              }
             } else {
               res.status(403).send('Participation is not to logged user');
             }
@@ -60,3 +73,15 @@ module.exports = {
     }
   },
 };
+
+function createEvent(req, res) {
+  bdd.Event.create({
+    ParticipationId: req.body.ParticipationId,
+    type: req.body.type,
+    data: req.body.data !== undefined ? req.body.data : null,
+  }).then((event) => {
+    // eslint-disable-next-line quotes
+    debug("Création de l'event " + event.id);
+    res.json(event);
+  });
+}

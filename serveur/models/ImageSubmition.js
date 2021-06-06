@@ -15,6 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  ImageSubmition.associate = function () {};
+  //ImageSubmition.associate = function () {};
   return ImageSubmition;
 };

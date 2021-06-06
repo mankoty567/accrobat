@@ -62,7 +62,7 @@ module.exports.routes = [
   },
   {
     method: 'POST',
-    url: '/api/obstacle/awnser',
+    url: '/api/obstacle/answer',
     func: [m.user_mdw.put_user, m.obstacle_ctrl.awnser_obstacle],
     name: "Ajout d'une réponse",
     description: 'Propose une réponse à une question',
