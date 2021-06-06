@@ -13,20 +13,26 @@ import androidx.fragment.app.Fragment;
 
 import site.nohan.protoprogression.Controller.ButtonController;
 import site.nohan.protoprogression.Controller.SeekBarController;
+import site.nohan.protoprogression.Controller.ToileController;
+import site.nohan.protoprogression.Controller.ZoomBarController;
 import site.nohan.protoprogression.R;
 
 public class MapFragment extends Fragment {
 
-    Toile toile;
+    public Toile toile;
 
     SeekBar seekBar;
-    Button bPodometre;
+    SeekBar zoomBar;
+    Button bRecentrer;
     Button bVelo;
-    Button bEtape;
+    Button bMarche;
+    Button bCourse;
     Button bAddPrev;
     Button bAddCurrent;
     SeekBarController seekBarController;
     ButtonController buttonController;
+    ZoomBarController zoomBarController;
+
 
     public MapFragment() {
         super();
@@ -36,9 +42,11 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
-        seekBarController = new SeekBarController(this.getActivity());
-        buttonController = new ButtonController(this.getActivity());
+        toile.setOnTouchListener(new ToileController(toile));
+        seekBarController = new SeekBarController(this);
+        buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
+        zoomBarController = new ZoomBarController(toile);
         return toile;
     }
 
@@ -47,12 +55,16 @@ public class MapFragment extends Fragment {
         super.onResume();
         seekBar = getActivity().findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarController);
-        bPodometre = getActivity().findViewById(R.id.bEffacer);
-        bPodometre.setOnClickListener(buttonController);
-        bVelo = getActivity().findViewById(R.id.bModePodometre);
+        bRecentrer = getActivity().findViewById(R.id.bRecentrer);
+        bRecentrer.setOnClickListener(buttonController);
+        bVelo = getActivity().findViewById(R.id.bGPSVelo);
         bVelo.setOnClickListener(buttonController);
-        bEtape = getActivity().findViewById(R.id.bPodometre);
-        bEtape.setOnClickListener(buttonController);
+        bMarche = getActivity().findViewById(R.id.bPodometreMarche);
+        bMarche.setOnClickListener(buttonController);
+        bCourse = getActivity().findViewById(R.id.bPodometreCourse);
+        bCourse.setOnClickListener(buttonController);
+        zoomBar = getActivity().findViewById(R.id.zoombar);
+        zoomBar.setOnSeekBarChangeListener(zoomBarController);
         /*
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);

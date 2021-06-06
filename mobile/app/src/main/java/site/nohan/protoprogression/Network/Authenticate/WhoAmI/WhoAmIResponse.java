@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Model.Permission;
+import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
@@ -38,8 +40,11 @@ public class WhoAmIResponse implements APIListenner {
     public void onErrorResponse(VolleyError error) {
         Log.e("ERROR_WHOAMI_REQUEST: ", "\n\n\n" + error.networkResponse + "");
         //Retour sur le Fragment de connexion
-        DataBase.token_user = null;
-        Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
+        //DataBase.token_user = null;
+        User moi = DataBase.getMoi();
+        moi.setToken("NULL");
+        DataBase.setMoi(moi);
+        //Toast.makeText(activity,"Please try to reconnect !", Toast.LENGTH_SHORT).show();
     }
 
     /******************************************
@@ -52,14 +57,16 @@ public class WhoAmIResponse implements APIListenner {
         // Conversion de la réponse en JSON
         try {
             JSONObject json = new JSONObject((String) response);
-            DataBase.id_user = json.getInt("id");
-            DataBase.username_user = json.getString("username");
-            DataBase.email_user = json.getString("email");
-            DataBase.permission_user = json.getInt("permission");
-            DataBase.level_user = json.getInt("level");
-            DataBase.xp_user = json.getInt("xp");
-            DataBase.token_user = json.getString("jwt");
-            DataBase.token_last_update = new Date();
+            User user = new User();
+            user.setId(json.getInt("id"));
+            user.setUsername(json.getString("username"));
+            user.setEmail(json.getString("email"));
+            user.setPermission((int) json.getInt("permission") == 1 ? Permission.ADMIN : Permission.USER);
+            //user.setLevel() = json.getInt("level");
+            user.setExperience(json.getInt("xp"));
+            user.setToken(json.getString("jwt"));
+            user.setToken_last_update(new Date());
+            DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();
         }

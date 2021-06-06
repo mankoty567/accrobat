@@ -1,7 +1,6 @@
 package site.nohan.protoprogression.Controller.Pedometer;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,13 +25,15 @@ import com.google.android.gms.location.LocationServices;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
 
-import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
+import site.nohan.protoprogression.Model.User;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
+import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
 import static site.nohan.protoprogression.Controller.Pedometer.PedometerController.distance;
 import static site.nohan.protoprogression.Controller.Pedometer.PedometerController.tKilometres;
+import static site.nohan.protoprogression.View.ui.home.SigninFragment.hasFrauded;
 
 public class LocationService extends Service {
     /************************************************************************
@@ -46,9 +47,9 @@ public class LocationService extends Service {
     private double oldLongitude = 0;
     private double oldAltitude = 0;
     private int kilometres = 0;
+    private float metresForSpeed = 0;
     private int oldDistance = distance;
-    private Date oldDate;
-
+    private long oldDate;
 
     /************************************************************************
      * Callback de la notification permanente
@@ -61,23 +62,43 @@ public class LocationService extends Service {
                 double lattitude = locationResult.getLastLocation().getLatitude();
                 double longitude = locationResult.getLastLocation().getLongitude();
                 double altitude = locationResult.getLastLocation().getAltitude();
-                Date newDate = new Date();
-                double minSpeed = (newDate.getTime() - oldDate.getTime()) * 4.1;
+                long newDate = System.currentTimeMillis();
+                //double minSpeed = (newDate.getTime() - oldDate.getTime()) * 4.1;
 
                 Log.d("LOCATION_UPDATE", lattitude + ", " + longitude);
                 if (oldLatitude != 0 && oldLongitude != 0) {
                     float[] results = new float[1];
-                    int metres = 0;
+                    float metres = 0;
 
                     //On calcule la distance entre les 2 coordonnées
                     Location.distanceBetween(
                             oldLatitude,oldLongitude,
                             lattitude, longitude, results);
-                    metres = (int)results[0];
+                    metres = results[0];
+
+                    //Calcul de la vitesse
+                    metresForSpeed = metresForSpeed + metres;
+                    round(metresForSpeed, 3);
+                    float newDistance = metresForSpeed + oldDistance;
+                    float dateCalcul = (float) (newDate - oldDate) / 1000;
+                    float speedMS = (metres / (dateCalcul));
+                    double speed = (double) speedMS * 3.6;
+                    Log.e("SPEED", speed+" SPEEDMS :" + speedMS);
+                    Log.e("DISTANCE", metres+" DATECALCUL: " + dateCalcul + " NEWDATE:"+newDate+" OLDDATE:"+oldDate);
 
                     //On règles sur une vitesse moyenne de 15 km/h et on arrondi en mètres
-                    if(metres > minSpeed)kilometres = kilometres + metres;
+                    if(speed > 15)kilometres = kilometres + (int)metres;
                     round(kilometres,3);
+
+                    //Détection de Fraude en km/h
+                    if (speed > 60) {
+                        Toast.makeText(getApplicationContext(), "Fraude détectée, course arrêtée !",Toast.LENGTH_LONG).show();
+                        hasFrauded = true;
+                        User user = DataBase.getMoi();
+                        user.setToken("NULL");
+                        DataBase.setMoi(user);
+                        stopLocationService();
+                    }
 
                     //Mise à jour de la variable globale
                     distance = kilometres + oldDistance;
@@ -124,10 +145,10 @@ public class LocationService extends Service {
         Intent resultIntent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.mipmap.logo_app_runslike);
         builder.setContentTitle("Location Service");
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-        builder.setContentText("Running");
+        builder.setContentText("Cycling...");
         builder.setAutoCancel(false);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
@@ -168,7 +189,7 @@ public class LocationService extends Service {
             String action = intent.getAction();
             if (action != null) {
                 if (action.equals(ACTION_START_LOCATION_SERVICE)) {
-                    oldDate = new Date();
+                    oldDate = System.currentTimeMillis();
                     startLocationService();
                 } else if (action.equals(ACTION_STOP_LOCATION_SERVICE)) {
                     stopLocationService();

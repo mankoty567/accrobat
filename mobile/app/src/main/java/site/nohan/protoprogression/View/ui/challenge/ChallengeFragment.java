@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,9 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
@@ -30,20 +34,22 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
      /************************************************************************
       * Création des variables globales
       ************************************************************************/
-     private Fragment signin;
+     private int signin;
+
+     public static boolean isNotAPreview;
+     private LinearLayout ll_interaction;
 
      /************************************************************************
       * Création de la class et de la vue
       ************************************************************************/
-     @Override
-     public void onCreate(@Nullable Bundle savedInstanceState) {
-         super.onCreate(savedInstanceState);
-         signin = SigninFragment.newInstance();
-     }
-
      public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.progression, container, false);
+
+        signin = R.id.navigation_signin;
+        ll_interaction = root.findViewById(R.id.ll_challenge_interaction);
+        if(!isNotAPreview) ll_interaction.setVisibility(View.GONE);
+        else ll_interaction.setVisibility(View.VISIBLE);
 
          //Vérification que l'utilisateur est connecté
          if(!DataBase.isTokenValid()) ShowFragment(signin);
@@ -51,7 +57,7 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
              if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
          }
 
-        return root;
+         return root;
      }
 
      @Override
@@ -60,34 +66,14 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
          //Récupération du Challenge à afficher
          if(DataBase.isTokenValid() && DataBase.isTokenDateValid(new Date())){
-             if (DataBase.id_challenge_request == -1) {
-                 new MapRequest(this.getActivity(), 20); //default = 15 bonne = 20
-                 new ImageMapRequest(this.getActivity(), 20);
-
-             } else {
-                 new MapRequest(this.getActivity(), DataBase.id_challenge_request);
-                 new ImageMapRequest(this.getActivity(), DataBase.id_challenge_request);
-             }
+             // TODO: ????
          }
-     }
-
-     /******************************************
-      * Méthode utilisé pour créer l'instance ChallengeFragment
-      ******************************************/
-     public static ChallengeFragment newInstance() {
-         ChallengeFragment fragment = new ChallengeFragment();
-         Bundle args = new Bundle();
-         fragment.setArguments(args);
-         return fragment;
      }
 
      /******************************************
       * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
       ******************************************/
-     public void ShowFragment(Fragment fragment) {
-         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-         transaction.replace(R.id.nav_host_fragment, fragment);
-         transaction.addToBackStack(null);
-         transaction.commit();
+     public void ShowFragment(int fragment) {
+         Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
      }
 }

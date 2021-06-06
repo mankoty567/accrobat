@@ -1,59 +1,64 @@
 package site.nohan.protoprogression.Model;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import site.nohan.protoprogression.Model.Types.TypePointPassage;
 
 public class Map {
-    public static String libelle;
-    public static String desc;
-
-    public static int accompli;
-
-    public static PointPassage dernierPointPassage;
-    public static Chemin cheminActuel;
-
-    public static ArrayList<PointPassage> pointPassages;
-
-    public static Bitmap background;
 
 
+    public static int participationId;
+    public static Map mapActuelle;
 
-    public static int getDistanceTotale(){
+    public static ArrayList<Map> maps;
+
+    public int id;
+
+    public String libelle;
+    public Date date;
+    public String description;
+
+    public int accompli;
+
+    public PointPassage dernierPointPassage;
+    public Chemin cheminActuel;
+
+    public ArrayList<PointPassage> pointPassages;
+
+    public Bitmap background;
+
+    public String dateInscription;
+    public String dateDernierePartie;
+
+    public double echelle;
+
+
+
+    public int getDistanceTotale(){
         double distance = 0d;
-        for(PointPassage pointPassage : Map.pointPassages){
+        for(PointPassage pointPassage : this.pointPassages){
             for(Chemin chemin : pointPassage.chemins){
                 if(chemin.complete)
-                    distance += chemin.getLongueur(); //TODO: lors de l'implementation de la distance d'un chemin l'ajouter chemin.getKm()
+                    distance += chemin.getLongueur();
             }
         }
-        distance += (double) Map.accompli;
+        distance += (double) this.accompli;
         return (int) Math.round(distance);
     }
 
-
-    static{
-        accompli = 0;
-        /*
-        Chemin chemin = new Chemin();
-        chemin.points = new ArrayList<>();
-        chemin.points.add(new Point(20,20));
-        chemin.points.add(new Point(50,50));
-        chemin.points.add(new Point(60,60));
-        chemin.points.add(new Point(80,90));
-
-        Map.chemins = new ArrayList<>();
-        cheminActuel = chemin;
-        Map.chemins.add(chemin);
-        Log.e("static", chemin.getLongueurAt(chemin.points.get(1))+"");
-
-         */
+    public double distanceToM(double distance){
+        return distance*this.echelle;
     }
 
-    public static PointPassage getDepart() {
-        for(PointPassage p : Map.pointPassages){
+    public double MToDistance(double M){
+        return M/this.echelle;
+    }
+
+    public PointPassage getDepart() {
+        for(PointPassage p : this.pointPassages){
             if(p.type == TypePointPassage.DEPART){
                 return p;
             }
@@ -61,8 +66,8 @@ public class Map {
         throw new RuntimeException("Aucun départ dans la map");
     }
 
-    public static PointPassage getArrivee() {
-        for(PointPassage p : Map.pointPassages){
+    public PointPassage getArrivee() {
+        for(PointPassage p : this.pointPassages){
             if(p.type == TypePointPassage.ARRIVEE){
                 return p;
             }
@@ -70,4 +75,20 @@ public class Map {
         throw new RuntimeException("Aucune arrivée dans la map");
     }
 
+    @Override
+    public String toString() {
+        return "Map{" +
+                "id=" + id +
+                ", libelle='" + libelle + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", accompli=" + accompli +
+                ", dernierPointPassage=" + dernierPointPassage +
+                ", cheminActuel=" + cheminActuel +
+                ", pointPassages=" + pointPassages +
+                ", background=" + background +
+                ", dateInscription='" + dateInscription + '\'' +
+                ", dateDernierePartie='" + dateDernierePartie + '\'' +
+                '}';
+    }
 }

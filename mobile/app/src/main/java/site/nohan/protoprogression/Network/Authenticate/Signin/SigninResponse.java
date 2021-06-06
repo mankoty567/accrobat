@@ -11,8 +11,12 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.MainActivity;
+import site.nohan.protoprogression.Model.Permission;
+import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.home.HomeFragment;
 import site.nohan.protoprogression.View.ui.home.SigninFragment;
 
@@ -46,25 +50,29 @@ public class SigninResponse implements APIListenner {
      ******************************************/
     @Override
     public void onResponse(Object response) {
+        Log.d("login", "response");
         //Log.d("theTag",response.toString());
 
         // Conversion de la réponse en JSON
         try {
             JSONObject json = new JSONObject((String) response);
-            DataBase.id_user = json.getInt("id");
-            DataBase.username_user = json.getString("username");
-            DataBase.email_user = json.getString("email");
-            DataBase.permission_user = json.getInt("permission");
-            DataBase.level_user = json.getInt("level");
-            DataBase.xp_user = json.getInt("xp");
-            DataBase.token_user = json.getString("jwt");
-            DataBase.token_last_update = new Date();
+            User user = new User();
+            user.setId(json.getInt("id"));
+            user.setUsername(json.getString("username"));
+            user.setEmail(json.getString("email"));
+            user.setPermission((int) json.getInt("permission") == 1 ? Permission.ADMIN : Permission.USER);
+            //user.setLevel() = json.getInt("level");
+            user.setExperience(json.getInt("xp"));
+            user.setToken(json.getString("jwt"));
+            user.setToken_last_update(new Date());
+            DataBase.setMoi(user);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         //Passage sur le Fragment de Home
-        signinFragment.ShowFragment(HomeFragment.newInstance());
-        Toast.makeText(activity,"User successfully connected !", Toast.LENGTH_SHORT).show();
+        MainActivity.setBottomNavigationViewVisibility(0);
+        signinFragment.ShowFragment(R.id.navigation_home);
+        //Toast.makeText(activity,"User successfully connected !", Toast.LENGTH_SHORT).show();
     }
 }

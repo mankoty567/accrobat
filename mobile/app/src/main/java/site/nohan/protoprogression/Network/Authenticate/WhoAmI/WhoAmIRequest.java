@@ -23,8 +23,9 @@ public class WhoAmIRequest extends APIRequestGET {
     public WhoAmIRequest(Activity activity) {
         super(activity, "user/whoami", new WhoAmIResponse(activity));
         Log.d("net", this.getUrl());
-        APIRequestPOST.queue.add(this);
-        APIRequestPOST.queue.start();
+        Log.e("err", (APIRequestPOST.queue == null)+"");
+        APIRequestGET.queue.add(this);
+        APIRequestGET.queue.start();
     }
 
     /******************************************
@@ -34,11 +35,11 @@ public class WhoAmIRequest extends APIRequestGET {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.token_user != null && DataBase.token_user != "") {
+        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
-            headers.put("Authorization", "Bearer " + DataBase.token_user);
+            headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {
-            Log.e("TOKEN_EMPTY", DataBase.token_user + "");
+            Log.e("TOKEN_EMPTY", DataBase.getMoi().getToken() + "");
         }
         return headers;
     }
