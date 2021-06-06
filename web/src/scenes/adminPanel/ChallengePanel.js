@@ -44,6 +44,7 @@ let ChallengePanel = () => {
       img_avatar = avatar;
     }
 
+    console.log({ title, description, scale });
     API.challenge
       .createChallenge({
         img_avatar,
