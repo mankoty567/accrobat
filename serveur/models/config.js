@@ -4,11 +4,9 @@ module.exports = {
     dialect: 'mysql',
   },
   test: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
-    host: '127.0.0.1',
+    url: process.env.BDD_URL,
     dialect: 'mysql',
+    logging: false,
   },
   production: {
     url: process.env.BDD_URL,

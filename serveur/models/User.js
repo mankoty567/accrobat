@@ -4,12 +4,16 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
-      username: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
       password: DataTypes.STRING,
       email: DataTypes.STRING,
       permission: DataTypes.INTEGER,
       level: DataTypes.INTEGER,
       xp: DataTypes.INTEGER,
+      googleToken: DataTypes.STRING,
     },
     {}
   );
@@ -17,7 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     models.User.belongsToMany(models.Challenge, {
       through: models.UserChallengeAdmin,
     });
+    models.User.belongsToMany(models.ChallengeToVote, {
+      through: models.UserChallengeToVote,
+    });
     models.User.hasMany(models.Participation, { onDelete: 'cascade' });
+    models.User.hasMany(models.Fraude, { onDelete: 'cascade' });
+    models.User.hasMany(models.PropositionChallenge);
   };
   return User;
 };

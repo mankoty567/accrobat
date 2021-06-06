@@ -1,0 +1,62 @@
+- Evenement : date, type, challenge, data -> Sauvegarde les différentes évènements
+- Client Nazi: Quand tu arrive à un obstacle, ça n'avance plus, tu dois faire l'enigme sinon ça avance plus
+- Point de passage : Aussi un choix à faire, l'app s'arrête, popup pour le choix, si le choix n'est pas fait ça arrête tout
+
+type:
+
+- marche [Distance]
+- course [Distance]
+- velo [Distance]
+- pointpassage:arrivee
+- pointpassage:depart [Segment choisis]
+- obstacle:arrivee [Id de l'obstacle]
+- obstacle:image
+- obstacle:image_ok
+- obstacle:image_refused [Id de l'obstacle]
+- obstacle:bad_answer [Id de l'obstacle]
+- obstacle:completed
+
+## TODO TODAY
+
+- [x] Récupération de l'image d'un obstacle
+- [x] Modification d'obstacle
+- [x] Gestion de l'event obstacle
+- [x] Sauvegarde des images sur le disque
+- [x] Supprimer la description obligatoire du point de passage
+- [x] Ajouter paramètre custom quand on crée un point
+- [x] Renvoit de l'image soumise à un obstacle
+- [ ] Renvoit de la position par rapport à la personne
+- [x] Vérification de la réponse à l'obstacle question
+- [x] Ajout d'une image à obstacle type action
+- [x] Validation d'un obstacle type action
+- [x] récupération de toutes les images submitions type action
+- [x] Ajouter un status dans un challenge (en cours, ou disponible)
+- [x] Ajouter la possibilitée de dupliquer un challenge
+- [x] Ajouter une route de vérification du challenge avant la publication
+- [x] Ajouter une route qui publie un challenge
+- [x] Ajouter un petit avatar pour le challenge
+- [x] Ajouter un moyen de mettre pleins de données de tests
+- [x] Connection de l'utilisateur
+- [x] Route whoami
+- [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
+- [x] Ajouter propriété name au segment
+- [x] Déplacer toutes les routes dans des fichiers séparés
+- [x] Virer la vérification du body des controleurs
+- [x] Vérification du body grâce à la déclaration
+- [x] Mettre une transaction dans le clone de challenge
+- [x] Ajout de la table ProposalChallenge
+- [x] Ajout de la table ChallengeToVote
+- [x] Proposition de challenges
+- [x] Gestion des propositions de challenge
+- [x] Ajout d'un challenge à voter
+- [x] Ajout de vote pour un challenge
+- [x] Ajout de la gestion des images en webp avec resize
+- [x] Récupération des challenges à voter en mode admin
+- [x] Récupération des challenges à voter en mode user
+- [x] Bouton copier la route sur la doc
+- [x] Route pour récupérer tous les utilisateurs
+- [x] Route pour récupérer toutes les sessions
+- [x] Récupération des records
+- [x] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
+- [x] Route pour éditer les challengeToVote
+- [ ] Changer middleware pour passer a Utilisateur, Créateur, Administrateur (Utilisateur, comme avant, Créateur, Admin mais de tous les challenges, Administrateur, peut tout faire)

@@ -1,0 +1,29 @@
+.center {
+  text-align: center;
+  margin: 10px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px;
+}
+
+.status {
+  padding: 2px;
+  font-weight: bold;
+}
+
+.open {
+  background-color: #58D68D;
+}
+
+.close {
+  background-color: #E74C3C;
+}
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+}
