@@ -67,6 +67,15 @@
       {{/categories}}
     </div>
 
+    <h2 class="permissionsTitle">Permissions</h2>
+    <div class="permissions hidden">
+      <ul>
+        {{#permissions}}
+          <li><span class="permission" style="background-color: {{backColor}}; color: {{color}}">{{string}}</span>: {{description}}</li>
+        {{/permissions}}
+      </ul>
+    </div>
+
     <h2 class="bddTitle">Schéma de la base de donnée</h2>
     <img class="bdd hidden" src="./bdd.svg" alt="Base de donnée" />
 

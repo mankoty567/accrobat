@@ -1,8 +1,6 @@
 const bdd = require('../../models');
 const debug = require('debug')('serveur:segment');
 
-const challenge_mdw = require('../middleware/challenge_mdw');
-
 module.exports = {
   post_segment: (req, res) => {
     bdd.PointPassage.findOne({
@@ -12,46 +10,37 @@ module.exports = {
       if (ps === null) {
         res.status(404).send('PointStart not found');
       } else {
-        challenge_mdw
-          .check_is_challenge_admin_fc(ps.Challenge.id, req.user.id)
-          .then((isAdmin) => {
-            if (!isAdmin) {
-              res.status(403).send('Forbidden, you are not a challenge admin');
-              return;
-            }
-
-            if (ps.Challenge.published) {
-              res.status(400).send('Bad request: Challenge is published');
+        if (ps.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
+        } else {
+          bdd.PointPassage.findOne({
+            where: { id: req.body.PointEndId },
+            include: bdd.Challenge,
+          }).then((pe) => {
+            if (pe === null) {
+              res.status(404).send('PointEnd not found');
+            } else if (pe.Challenge.id !== ps.Challenge.id) {
+              res
+                .status(400)
+                .send(
+                  'Bad request: PointStart and PointEnd are not in the same challenge'
+                );
             } else {
-              bdd.PointPassage.findOne({
-                where: { id: req.body.PointEndId },
-                include: bdd.Challenge,
-              }).then((pe) => {
-                if (pe === null) {
-                  res.status(404).send('PointEnd not found');
-                } else if (pe.Challenge.id !== ps.Challenge.id) {
-                  res
-                    .status(400)
-                    .send(
-                      'Bad request: PointStart and PointEnd are not in the same challenge'
-                    );
-                } else {
-                  bdd.Segment.create({
-                    PointStartId: req.body.PointStartId,
-                    PointEndId: req.body.PointEndId,
-                    path: req.body.path,
-                    name: req.body.name,
-                  }).then((segment) => {
-                    debug('Création segment' + segment.id);
-                    res.json({
-                      ...segment.dataValues,
-                      frondId: req.body.frontId,
-                    });
-                  });
-                }
+              bdd.Segment.create({
+                PointStartId: req.body.PointStartId,
+                PointEndId: req.body.PointEndId,
+                path: req.body.path,
+                name: req.body.name,
+              }).then((segment) => {
+                debug('Création segment' + segment.id);
+                res.json({
+                  ...segment.dataValues,
+                  frondId: req.body.frontId,
+                });
               });
             }
           });
+        }
       }
     });
   },

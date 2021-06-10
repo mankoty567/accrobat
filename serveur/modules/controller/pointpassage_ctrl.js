@@ -1,8 +1,6 @@
 const bdd = require('../../models');
 const debug = require('debug')('serveur:pointpassage');
 
-const challenge_mdw = require('../middleware/challenge_mdw');
-
 module.exports = {
   get_pointpassage: (req, res) => {
     let query_obj = { where: { ChallengeId: req.params.id } };
@@ -52,28 +50,19 @@ module.exports = {
       if (pointpassage === null) {
         res.status(404).send('PointPassage not found');
       } else {
-        challenge_mdw
-          .check_is_challenge_admin_fc(pointpassage.Challenge.id, req.user.id)
-          .then((isAdmin) => {
-            if (!isAdmin) {
-              res.status(403).send('Forbidden, you are not a challenge admin');
-              return;
-            }
-
-            if (pointpassage.Challenge.published) {
-              res.status(400).send('Bad request: Challenge is published');
-            } else {
-              debug('Suppression point passage ' + pointpassage.id);
-              pointpassage
-                .destroy()
-                .then(() => {
-                  res.send('OK');
-                })
-                .catch((err) => {
-                  res.status(400).send(err);
-                });
-            }
-          });
+        if (pointpassage.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
+        } else {
+          debug('Suppression point passage ' + pointpassage.id);
+          pointpassage
+            .destroy()
+            .then(() => {
+              res.send('OK');
+            })
+            .catch((err) => {
+              res.status(400).send(err);
+            });
+        }
       }
     });
   },

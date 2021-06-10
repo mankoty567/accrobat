@@ -91,21 +91,25 @@ var permissionTab = {
         color: '#34495E',
         backColor: '#F7F9F9',
         string: 'Libre',
+        description: 'Pas de connexion nécéssaire',
     },
     '0': {
         color: '#F4F6F7',
         backColor: '#3498DB',
         string: 'Connecté',
+        description: 'Connexion obligatoire mais sans permissions',
     },
     '100': {
         color: '#F4F6F7',
         backColor: '#229954',
         string: 'Créateur',
+        description: 'Connexion obligatoire avec au moins un rôle de créateur',
     },
     '1000': {
-        color: '#8E44AD',
-        backColor: '#229954',
+        color: '#F4F6F7',
+        backColor: '#8E44AD',
         string: 'Administrateur',
+        description: "Connexion obligatoire avec au moins un rôle d'administrateur",
     },
 };
 fs.readdirSync(path.join(__dirname, '../../modules/route'))
@@ -145,11 +149,15 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
     });
 });
 var template = fs.readFileSync(path.join(__dirname, './template.mustache'), 'utf-8');
+var permissionKey = Object.keys(permissionTab);
 var html = mustache.render(template, {
     doc_name: process.env.DOC_NAME,
     last_build_date: new Date(),
     version: packageJson.version,
     categories: categories,
+    permissions: permissionKey.map(function (key) {
+        return permissionTab[key];
+    }),
 });
 var json = JSON.stringify({
     info: {

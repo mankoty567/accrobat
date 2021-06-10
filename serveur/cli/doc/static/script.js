@@ -24,6 +24,12 @@ bddTitle.addEventListener('click', () => {
   bddTitle.classList.toggle('opened');
 });
 
+const permissionsTitle = document.querySelector('.permissionsTitle');
+permissionsTitle.addEventListener('click', () => {
+  document.querySelector('.permissions').classList.toggle('hidden');
+  permissionsTitle.classList.toggle('opened');
+});
+
 document.querySelectorAll('.copyIcon').forEach((icon) => {
   icon.addEventListener('click', (e) => {
     copyToClipboard(e.target.getAttribute('urlValue'));

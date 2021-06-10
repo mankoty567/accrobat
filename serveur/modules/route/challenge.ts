@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 
-import { Route } from './_types';
+import { Route } from '../../_types';
 
 const m = require('../index');
 

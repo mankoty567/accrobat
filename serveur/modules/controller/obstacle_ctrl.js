@@ -4,8 +4,6 @@ const path = require('path');
 const utils = require('../utils');
 const fs = require('fs');
 
-const challenge_mdw = require('../middleware/challenge_mdw');
-
 module.exports = {
   post_obstacle: (req, res) => {
     if (req.body.type === 'question' && !req.body.enigme_awnser) {
@@ -25,54 +23,38 @@ module.exports = {
           if (segment.pointStart.Challenge.published) {
             res.status(400).send('Bad request: Challenge is published');
           } else {
-            challenge_mdw
-              .check_is_challenge_admin_fc(
-                segment.pointStart.Challenge.id,
-                req.user.id
-              )
-              .then((isAdmin) => {
-                if (!isAdmin) {
-                  res
-                    .status(403)
-                    .send('Forbidden, you are not a challenge admin');
-                  return;
-                }
-
-                bdd.Obstacle.create({
-                  title: req.body.title,
-                  description: req.body.description,
-                  type: req.body.type,
-                  distance: req.body.distance,
-                  enigme_awnser:
-                    req.body.type === 'question'
-                      ? req.body.enigme_awnser
-                      : null,
-                  SegmentId: req.body.SegmentId,
-                }).then((obstacle) => {
-                  if (req.body.enigme_img !== undefined) {
-                    utils.parseImg(req.body.enigme_img).then((buffer) => {
-                      fs.writeFileSync(
-                        path.join(
-                          __dirname,
-                          '../../data/obstacle/' + obstacle.id + '.webp'
-                        ),
-                        buffer
-                      );
-                      debug('Création obstacle ' + obstacle.id);
-                      res.json({
-                        ...obstacle.dataValues,
-                        frontId: req.body.frontId,
-                      });
-                    });
-                  } else {
-                    debug('Création obstacle ' + obstacle.id);
-                    res.json({
-                      ...obstacle.dataValues,
-                      frontId: req.body.frontId,
-                    });
-                  }
+            bdd.Obstacle.create({
+              title: req.body.title,
+              description: req.body.description,
+              type: req.body.type,
+              distance: req.body.distance,
+              enigme_awnser:
+                req.body.type === 'question' ? req.body.enigme_awnser : null,
+              SegmentId: req.body.SegmentId,
+            }).then((obstacle) => {
+              if (req.body.enigme_img !== undefined) {
+                utils.parseImg(req.body.enigme_img).then((buffer) => {
+                  fs.writeFileSync(
+                    path.join(
+                      __dirname,
+                      '../../data/obstacle/' + obstacle.id + '.webp'
+                    ),
+                    buffer
+                  );
+                  debug('Création obstacle ' + obstacle.id);
+                  res.json({
+                    ...obstacle.dataValues,
+                    frontId: req.body.frontId,
+                  });
                 });
-              });
+              } else {
+                debug('Création obstacle ' + obstacle.id);
+                res.json({
+                  ...obstacle.dataValues,
+                  frontId: req.body.frontId,
+                });
+              }
+            });
           }
         }
       });

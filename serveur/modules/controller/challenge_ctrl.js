@@ -470,6 +470,76 @@ module.exports = {
       res.json(challenges);
     });
   },
+  get_all_challenge_admin: (req, res) => {
+    let query = {
+      attributes: ['id', 'title', 'description', 'echelle', 'createdAt'],
+    };
+
+    if (req.query.include === 'point') {
+      query.include = [{ model: bdd.PointPassage }];
+    } else if (req.query.include === 'pointsegment') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+            },
+          ],
+        },
+      ];
+    } else if (req.query.include === 'pointsegmentobstacle') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    }
+    bdd.Challenge.findAll(query).then((challenges) => {
+      res.json(challenges);
+    });
+  },
   verif_validity: async (req, res) => {
     res.json(await require('../challengeValidation')(req.params.id));
   },

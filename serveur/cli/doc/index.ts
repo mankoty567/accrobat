@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const sequelizeErd = require('sequelize-erd');
 const bdd = require('../../models');
 
-import { Route } from '../../modules/route/_types';
+import { Route } from '../../_types';
 
 let categories = [];
 
@@ -78,27 +78,32 @@ const permissionTab: {
     color: string;
     backColor: string;
     string: string;
+    description: string;
   };
 } = {
   '-1': {
     color: '#34495E',
     backColor: '#F7F9F9',
     string: 'Libre',
+    description: 'Pas de connexion nécéssaire',
   },
   '0': {
     color: '#F4F6F7',
     backColor: '#3498DB',
     string: 'Connecté',
+    description: 'Connexion obligatoire mais sans permissions',
   },
   '100': {
     color: '#F4F6F7',
     backColor: '#229954',
     string: 'Créateur',
+    description: 'Connexion obligatoire avec au moins un rôle de créateur',
   },
   '1000': {
-    color: '#8E44AD',
-    backColor: '#229954',
+    color: '#F4F6F7',
+    backColor: '#8E44AD',
     string: 'Administrateur',
+    description: "Connexion obligatoire avec au moins un rôle d'administrateur",
   },
 };
 
@@ -145,11 +150,16 @@ const template = fs.readFileSync(
   'utf-8'
 );
 
+const permissionKey = Object.keys(permissionTab);
+
 const html = mustache.render(template, {
   doc_name: process.env.DOC_NAME,
   last_build_date: new Date(),
   version: packageJson.version,
   categories: categories,
+  permissions: permissionKey.map((key) => {
+    return permissionTab[key];
+  }),
 });
 
 const json = JSON.stringify(

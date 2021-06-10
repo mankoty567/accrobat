@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const bdd = require('../../mo');
+const bdd = require('../../models');
 
-import { Route } from './_types';
+import { Route } from '../../_types';
 
 const basename = path.basename(__filename);
 
@@ -30,6 +30,7 @@ module.exports = (app) => {
     .forEach((file) => {
       require('./' + file).routes.forEach((route: Route) => {
         associationObj[route.method.toLowerCase()][route.url] = route;
+
         app[route.method.toLowerCase()](route.url, [
           checkBody,
           checkUser,

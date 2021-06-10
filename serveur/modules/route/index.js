@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require('fs');
 var path = require('path');
 var jwt = require('jsonwebtoken');
-var bdd = require('../../mo');
+var bdd = require('../../models');
 var basename = path.basename(__filename);
 var associationObj = {
     get: {},

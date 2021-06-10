@@ -9,9 +9,9 @@ interface Result {
 }
 
 interface BodyArgument {
-  type: 'string' | 'number' | 'data_url' | 'date';
-  required: boolean;
-  values?: string[];
+  type: 'string' | 'number' | 'data_url' | 'date' | any;
+  required?: boolean;
+  value?: string[];
 }
 
 export interface Route {
@@ -20,7 +20,7 @@ export interface Route {
   func: Array<(req: any, res: any, next?: any) => void>;
   name: string;
   permission: -1 | 0 | 100 | 1000;
-  description: string;
+  description?: string;
   query?: Array<QueryParam>;
   result: Array<Result>;
   test?: true | false;

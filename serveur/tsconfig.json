@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES5",
+    "target": "ES5"
   },
   "include": ["modules", "./cli/doc/index.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "./_types.ts"]
 }
