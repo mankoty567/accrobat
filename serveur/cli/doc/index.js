@@ -156,7 +156,7 @@ var html = mustache.render(template, {
     version: packageJson.version,
     categories: categories,
     permissions: permissionKey.map(function (key) {
-        return permissionTab[key];
+        return __assign(__assign({}, permissionTab[key]), { number: key });
     }),
 });
 var json = JSON.stringify({

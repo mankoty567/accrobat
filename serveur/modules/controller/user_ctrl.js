@@ -207,4 +207,24 @@ module.exports = {
       res.json(users);
     });
   },
+  get_all_user_with_roles: (req, res) => {
+    bdd.User.findAll({
+      attributes: ['id', 'username', 'permission'],
+    }).then((users) => {
+      res.json(users);
+    });
+  },
+  update_user_permission: (req, res) => {
+    if (req.params.id === req.user.id) {
+      res.status(400).send('Cannot modify yourself');
+    } else {
+      bdd.User.findOne({ where: { id: req.params.id } }).then((user) => {
+        user.permission = req.body.permission;
+
+        user.save().then(() => {
+          res.send('OK');
+        });
+      });
+    }
+  },
 };

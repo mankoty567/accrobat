@@ -158,7 +158,7 @@ const html = mustache.render(template, {
   version: packageJson.version,
   categories: categories,
   permissions: permissionKey.map((key) => {
-    return permissionTab[key];
+    return { ...permissionTab[key], number: key };
   }),
 });
 

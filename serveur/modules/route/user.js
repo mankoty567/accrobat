@@ -177,5 +177,27 @@ var routes = [
             },
         ],
     },
+    {
+        method: 'GET',
+        url: '/api/user/get_user_with_roles',
+        permission: 1000,
+        name: 'Récupération de tous les utilisateurs et de leur permission',
+        func: [m.user_ctrl.get_all_user_with_roles],
+        result: [{ code: 200, content: [{ id: 0, username: '', permission: 0 }] }],
+    },
+    {
+        method: 'POST',
+        url: '/api/user/:id/permission',
+        permission: 1000,
+        name: "Modification des permissions d'un utilisateur",
+        func: [m.user_ctrl.update_user_permission],
+        body: {
+            permission: 'number',
+        },
+        result: [
+            { code: 200, content: 'OK' },
+            { code: 400, content: 'Cannot modify yourself' },
+        ],
+    },
 ];
 module.exports.routes = routes;
