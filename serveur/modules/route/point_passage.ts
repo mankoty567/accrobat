@@ -15,7 +15,7 @@ const routes: Route[] = [
     func: [m.pointpassage_ctrl.get_pointpassage],
     permission: 0,
     name: 'Récupération des PointPassage',
-    description: "Récupération des PointPassages d'un segment",
+    description: "Récupération des PointPassages d'un challenge",
     query: [
       {
         param: 'include=segment',
@@ -45,7 +45,7 @@ const routes: Route[] = [
     func: [m.pointpassage_ctrl.post_pointpassage],
     permission: 100,
     name: 'Ajout de PointPassage',
-    description: 'Ajoute un PointPassage à un segment',
+    description: 'Ajoute un PointPassage à un challenge',
     body: {
       title: 'string',
       description: { type: 'string', required: false },
