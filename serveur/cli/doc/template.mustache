@@ -32,7 +32,9 @@
           <div class="categorieContent hidden">
             {{#routes}}
               <div class="route">
-                <h3><span class="method {{method}}">{{method}}</span> {{url}} <img class="copyIcon" urlValue="{{url}}" src="./copy.svg" alt="Copier"/>
+                <h3><span class="method {{method}}">{{method}}</span> {{url}} 
+                  {{#permissionStr}}<span class="permission" style="background-color: {{permissionBackColor}}; color: {{permissionColor}}">{{permissionStr}}</span> {{/permissionStr}}
+                  <img class="copyIcon" urlValue="{{url}}" src="./copy.svg" alt="Copier"/>
                   {{#test}}<img class="testIcon" src="./test.svg" alt="Testé" />{{/test}}
                 </h3>
                 <div class="routeContent hidden">

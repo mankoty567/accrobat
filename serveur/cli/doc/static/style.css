@@ -74,6 +74,11 @@ h4 {
   text-align: justify;
 }
 
+.permission {
+  border-radius: 3px;
+  padding: 5px;
+}
+
 .method {
   border-radius: 3px;
   padding: 5px;
