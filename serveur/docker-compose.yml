@@ -1,13 +1,17 @@
-version: "3"
+version: '3'
 services:
   web:
     build: .
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - BDD_URL=mysql://acrobat:acrobat@database/database
+      - BDD_TEST_URL=mysql://acrobat:acrobat@database_test/database
       - DEBUG=serveur:*
       - JWT_SECRET=123456
       - HOST=http://localhost:1418
+      - FRONT_HOST=http://localhost:3000
       - DOC_NAME=Acrobatt
       - DOC_HOST=http://localhost:1418
     ports:
@@ -15,10 +19,36 @@ services:
     command: npm run dev
     volumes:
       - ./:/app
+  test:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=test
+      - BDD_URL=mysql://acrobat:acrobat@database_test/database
+      - DEBUG=serveur:*
+      - JWT_SECRET=123456
+      - HOST=http://localhost:1420
+      - FRONT_HOST=http://localhost:3000
+      - DOC_NAME=Acrobatt
+      - DOC_HOST=http://localhost:1420
+    command: /bin/bash
+    tty: true
+    volumes:
+      - ./:/app
   database:
     image: mysql:5.7
     ports:
       - 1419:3306
+    environment:
+      - MYSQL_DATABASE=database
+      - MYSQL_USER=acrobat
+      - MYSQL_PASSWORD=acrobat
+      - MYSQL_ROOT_PASSWORD=acrobat
+  database_test:
+    image: mysql:5.7
+    ports:
+      - 1421:3306
     environment:
       - MYSQL_DATABASE=database
       - MYSQL_USER=acrobat

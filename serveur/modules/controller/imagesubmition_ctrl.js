@@ -10,14 +10,14 @@ module.exports = {
       fs.existsSync(
         path.join(
           __dirname,
-          '../../data/imageSumbition/' + req.params.id + '.jpg'
+          '../../data/imageSumbition/' + req.params.id + '.webp'
         )
       )
     ) {
       res.sendFile(
         path.join(
           __dirname,
-          '../../data/imageSumbition/' + req.params.id + '.jpg'
+          '../../data/imageSumbition/' + req.params.id + '.webp'
         )
       );
     } else {
@@ -43,7 +43,7 @@ module.exports = {
           bdd.Obstacle.findOne({
             where: { id: Math.trunc(lastEvent.data) },
           }).then((obstacle) => {
-            if (!obstacle.type === 'action') {
+            if (obstacle.type !== 'action') {
               res.status(400).send('Bad request: Obstacle is not an action');
             } else {
               bdd.Event.create({
@@ -56,11 +56,11 @@ module.exports = {
                   ObstacleId: obstacle.id,
                   ok: false,
                 }).then((imagesubmition) => {
-                  utils.pngParser(req.body.img_data).then((buffer) => {
+                  utils.parseImg(req.body.img_data).then((buffer) => {
                     fs.writeFileSync(
                       path.join(
                         __dirname,
-                        '../../data/imageSubmition/' + event.id + '.jpg'
+                        '../../data/imageSubmition/' + event.id + '.webp'
                       ),
                       buffer
                     );
@@ -76,7 +76,6 @@ module.exports = {
     });
   },
   get_all_soumission: (req, res) => {
-    // TODO : Vérification que la personne est un admin/renvoyer uniquement les soumission qu'il a le droit
     bdd.ImageSubmition.findAll({ where: { ok: false, rejected: false } }).then(
       (imagesubmition) => {
         res.json(imagesubmition);

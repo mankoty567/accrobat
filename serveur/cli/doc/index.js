@@ -2,7 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const mustache = require('mustache');
-const package = require('../../package.json');
+const packageJson = require('../../package.json');
 const chalk = require('chalk');
 const sequelizeErd = require('sequelize-erd');
 const bdd = require('../../models');
@@ -90,6 +90,7 @@ fs.readdirSync(path.join(__dirname, '../../modules/route'))
           bodyJSON: stringifyBody(r.body, false),
           query: r.query,
           description: r.description,
+          test: r.test ?? false,
           result: r.result?.map((resu) => {
             return {
               code: resu.code,
@@ -109,7 +110,7 @@ const template = fs.readFileSync(
 const html = mustache.render(template, {
   doc_name: process.env.DOC_NAME,
   last_build_date: new Date(),
-  version: package.version,
+  version: packageJson.version,
   categories: categories,
 });
 
@@ -118,7 +119,7 @@ const json = JSON.stringify(
     info: {
       name: process.env.DOC_NAME || 'Documentation',
       _postman_id: `${process.env.DOC_NAME || 'undefined'}-documentation`,
-      version: package.version,
+      version: packageJson.version,
       schema:
         'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
     },

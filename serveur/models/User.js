@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       permission: DataTypes.INTEGER,
       level: DataTypes.INTEGER,
       xp: DataTypes.INTEGER,
+      googleToken: DataTypes.STRING,
     },
     {}
   );
@@ -20,7 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     models.User.belongsToMany(models.Challenge, {
       through: models.UserChallengeAdmin,
     });
+    models.User.belongsToMany(models.ChallengeToVote, {
+      through: models.UserChallengeToVote,
+    });
     models.User.hasMany(models.Participation, { onDelete: 'cascade' });
+    models.User.hasMany(models.Fraude, { onDelete: 'cascade' });
+    models.User.hasMany(models.PropositionChallenge);
   };
   return User;
 };

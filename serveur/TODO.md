@@ -2,8 +2,8 @@
 - Client Nazi: Quand tu arrive à un obstacle, ça n'avance plus, tu dois faire l'enigme sinon ça avance plus
 - Point de passage : Aussi un choix à faire, l'app s'arrête, popup pour le choix, si le choix n'est pas fait ça arrête tout
 
-
 type:
+
 - marche [Distance]
 - course [Distance]
 - velo [Distance]
@@ -17,6 +17,7 @@ type:
 - obstacle:completed
 
 ## TODO TODAY
+
 - [x] Récupération de l'image d'un obstacle
 - [x] Modification d'obstacle
 - [x] Gestion de l'event obstacle
@@ -38,8 +39,24 @@ type:
 - [x] Connection de l'utilisateur
 - [x] Route whoami
 - [x] Middleware de connection (verification de l'utilisateur, vérification de si bon l'utilisateur)
-- [ ] Ajouter propriété name au segment
+- [x] Ajouter propriété name au segment
 - [x] Déplacer toutes les routes dans des fichiers séparés
 - [x] Virer la vérification du body des controleurs
 - [x] Vérification du body grâce à la déclaration
-- [ ] Mettre une transaction dans le clone de challenge
+- [x] Mettre une transaction dans le clone de challenge
+- [x] Ajout de la table ProposalChallenge
+- [x] Ajout de la table ChallengeToVote
+- [x] Proposition de challenges
+- [x] Gestion des propositions de challenge
+- [x] Ajout d'un challenge à voter
+- [x] Ajout de vote pour un challenge
+- [x] Ajout de la gestion des images en webp avec resize
+- [x] Récupération des challenges à voter en mode admin
+- [x] Récupération des challenges à voter en mode user
+- [x] Bouton copier la route sur la doc
+- [x] Route pour récupérer tous les utilisateurs
+- [x] Route pour récupérer toutes les sessions
+- [x] Récupération des records
+- [x] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
+- [x] Route pour éditer les challengeToVote
+- [ ] Changer middleware pour passer a Utilisateur, Créateur, Administrateur (Utilisateur, comme avant, Créateur, Admin mais de tous les challenges, Administrateur, peut tout faire)

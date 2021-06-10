@@ -19,7 +19,9 @@ let ChallengeItem = ({ challenge, actionComponents }) => {
           alignContent="center"
           justify="center"
         >
-          <Avatar> </Avatar>
+          <Avatar
+            src={`https://api.acrobat.bigaston.dev/api/challenge/${challenge.id}/avatar`}
+          ></Avatar>
         </Grid>
         <Grid item xs={8}>
           <List>
@@ -29,20 +31,18 @@ let ChallengeItem = ({ challenge, actionComponents }) => {
               </Typography>
             </ListItem>
             <ListItem>
-              <Typography>{challenge.description}</Typography>
+              <Typography>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: challenge.description,
+                  }}
+                ></div>
+              </Typography>
             </ListItem>
           </List>
         </Grid>
         <Grid item xs={3} align="right">
           {actionComponents}
-          {/* <Button startIcon={<EditIcon />}>Modifier</Button>
-          <Button startIcon={<LayersIcon />}>Dupliquer</Button>
-          <Button
-            startIcon={<DeleteOutlineIcon />}
-            onClick={() => handleDelete(index)}
-          >
-            Supprimer
-          </Button> */}
         </Grid>
       </Grid>
     </>

@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 
 import kotlinx.coroutines.internal.SystemPropsKt;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.home.SigninFragment;
 import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
@@ -45,7 +46,7 @@ public class SignupResponse implements APIListenner {
     public void onResponse(Object response) {
         //Log.d("theTag",response.toString());
         //Retour sur le Fragment de connexion
-        signupFragment.ShowFragment((Fragment) SigninFragment.newInstance());
+        signupFragment.ShowFragment(R.id.navigation_signin);
         Toast.makeText(activity,"User successfully created !", Toast.LENGTH_SHORT).show();
     }
 }

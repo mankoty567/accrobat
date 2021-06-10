@@ -1,47 +1,50 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import ChallengeEditor from './scenes/ChallengeEditor';
-import AdminMenu from './scenes/adminPanel/AdminPanel';
-import MainPage from './scenes/MainPage';
-
+import MainPage from './scenes/mainPage/MainPage';
 import {
-  userApi,
-  userAtom,
-  duringConnectionAtom,
-  doneConnectionAtom,
-} from './eventApi/userApi';
-import { useRecoilState } from 'recoil';
+  createMuiTheme,
+  CssBaseline,
+  ThemeProvider,
+} from '@material-ui/core';
 
-const JWT_VALIDITY = 2 * 60 * 60 * 1000;
+export const themeOptions = {
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#2D292B',
+    },
+    secondary: {
+      main: '#4AACC1',
+    },
+    background: {
+      default: '#F0F0F2',
+      paper: '#F0F0F2',
+    },
+    text: {
+      secondary: '#647680',
+      disabled: '#2D292B',
+    },
+  },
+};
+
+const Theme = createMuiTheme(themeOptions);
+
+Theme.props = {
+  MuiButton: {
+    color: 'secondary',
+  },
+  button: {
+    color: 'secondary',
+  },
+};
 
 function App() {
-  // Tentative de connection automatique de l'utilisateur
-  const [, setUserState] = useRecoilState(userAtom);
-  const [, setDoneConnection] = useRecoilState(doneConnectionAtom);
-
-  // useEffect(() => {
-  //   launchConnection();
-  //   function launchConnection() {
-  //     userApi
-  //       .whoami()
-  //       .then((data) => {
-  //         localStorage.setItem('jwt', data.jwt);
-  //         setDoneConnection(true);
-  //         setUserState(data);
-
-  //         setTimeout(launchConnection, JWT_VALIDITY);
-  //       })
-  //       .catch((err) => {
-  //         setDoneConnection(true);
-  //       });
-  //   }
-  // }, []);
-
   return (
     <div className="App">
-      {/* <ChallengeEditor /> */}
-      {/* <AdminMenu /> */}
-      <MainPage />
+      <ThemeProvider theme={Theme}>
+        <CssBaseline />
+        <MainPage />
+      </ThemeProvider>
     </div>
   );
 }

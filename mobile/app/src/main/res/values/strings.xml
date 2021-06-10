@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- APP -->
-    <string name="app_name">ProtoProgression</string>
+    <string name="app_name">Run\'s Like</string>
 
     <!-- Navigation -->
     <string name="title_home">Home</string>
@@ -10,6 +11,7 @@
 
     <!-- Home Fragment -->
     <string name="title_challenges">Tous les challenges</string>
+    <string name="title_subscribedChallenges">Challenges privés</string>
 
     <!-- Signin Fragment -->
     <string name="title_signin">Espace de Connexion</string>
@@ -17,13 +19,21 @@
     <string name="txt_password">Mot de passe</string>
     <string name="txt_confirmation">Confirmer le mot de passe</string>
     <string name="button_connect">Connexion</string>
-    <string name="button_inscription">Inscription</string>
 
     <!-- Signup Fragment -->
     <string name="title_signup">Espace d\'Inscription</string>
     <string name="txt_mail">Email</string>
     <string name="txt_firstname">Prénom</string>
     <string name="txt_lastname">Nom</string>
-    <string name="button_send_inscription">Valider</string>
-    <string name="button_back">Back</string>
+    <string name="button_send_inscription">S\'inscrire</string>
+    <string name="button_back">Retour</string>
+    <string name="back_to_connection">Vous possédez déjà un compte ? Connectez-vous ici</string>
+    <string name="txt_go_to_inscription">Vous n\'avez pas de compte ? Inscrivez-vous ici</string>
+    <string name="txt_fraude">Fraude détectée, veuillez vous reconnecter !</string>
+
+    <!-- Subscribe Fragment -->
+    <string name="challenge_title">Title Challenge</string>
+    <string name="challenge_date">Date Challenge</string>
+    <string name="challenge_description">Description Challenge</string>
+    <string name="records">Records</string>
 </resources>

@@ -7,105 +7,96 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="55dp">
-    <!--
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="597dp"
-            android:scrollbars="vertical">
-
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-
-                              <ImageView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  app:srcCompat="@drawable/map" >            </ImageView>
-
-
-                              <fragment
-                                  android:id="@+id/fragment"
-                                  android:name="site.nohan.protoprogression.View.MapFragment"
-                                  android:layout_width="1000dp"
-                                  android:layout_height="1000dp"
-                                  android:background="@drawable/map" />
-
-
-          </HorizontalScrollView>
-
-      </ScrollView>
-  -->
- <!--
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="607dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_challenge_interaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bRecentrer"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/recenter"/>
+
+            <LinearLayout
+                android:id="@+id/ll_challenge_seekbar"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right">
+            <SeekBar
+                android:id="@+id/zoombar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_challenge_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right">
+
+                <Button
+                    android:id="@+id/bPodometreMarche"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/walking" />
+
+                <Button
+                    android:id="@+id/bPodometreCourse"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/running" />
+
+                <Button
+                    android:id="@+id/bGPSVelo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/cycling"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/routeSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
-            <fragment
-                android:id="@+id/fragment"
-                android:name="site.nohan.protoprogression.View.MapFragment"
-                android:layout_width="503dp"
-                android:layout_height="947dp"
-                android:background="@drawable/map" />
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="750px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tKilometres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--- ms"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
--->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bEffacer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Effacer" />
-
-        <Button
-            android:id="@+id/bPodometre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Start Podomètre" />
-
-        <Button
-            android:id="@+id/bModePodometre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Vélo" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/routeSelect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="750px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tKilometres"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="--- ms"/>
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -113,27 +104,8 @@
         android:name="site.nohan.protoprogression.View.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="visible" />
+        tools:visibility="visible" >
 
-    <!--
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                        <fragment
-                            android:id="@+id/fragment"
-                            android:name="site.nohan.protoprogression.View.MapFragment"
-                            android:layout_width="700dp"
-                            android:layout_height="700dp"
-                            android:background="@drawable/map" />
-
-            </LinearLayout>
-        </ScrollView>
-    -->
+    </androidx.fragment.app.FragmentContainerView>
 
 </LinearLayout>

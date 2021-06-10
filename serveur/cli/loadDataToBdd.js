@@ -17,8 +17,13 @@ async function pasBonChallenge() {
   });
 
   fs.copyFileSync(
-    path.join(__dirname, './fixture_data/map_fixture.jpg'),
-    path.join(__dirname, '../data/challenge/' + challenge.id + '.jpg')
+    path.join(__dirname, './fixture_data/map.webp'),
+    path.join(__dirname, '../data/challenge/' + challenge.id + '.webp')
+  );
+
+  fs.copyFileSync(
+    path.join(__dirname, './fixture_data/avatar.webp'),
+    path.join(__dirname, '../data/challengeAvatar/' + challenge.id + '.webp')
   );
 
   const pointStart = await bdd.PointPassage.create({
@@ -233,8 +238,13 @@ async function bonChallenge() {
   });
 
   fs.copyFileSync(
-    path.join(__dirname, './fixture_data/map_fixture.jpg'),
-    path.join(__dirname, '../data/challenge/' + challenge.id + '.jpg')
+    path.join(__dirname, './fixture_data/map.webp'),
+    path.join(__dirname, '../data/challenge/' + challenge.id + '.webp')
+  );
+
+  fs.copyFileSync(
+    path.join(__dirname, './fixture_data/avatar.webp'),
+    path.join(__dirname, '../data/challengeAvatar/' + challenge.id + '.webp')
   );
 
   const pointStart = await bdd.PointPassage.create({
@@ -422,8 +432,13 @@ async function challengeMobileTests() {
   });
 
   fs.copyFileSync(
-    path.join(__dirname, './fixture_data/map.jpg'),
-    path.join(__dirname, '../data/challenge/' + challenge.id + '.jpg')
+    path.join(__dirname, './fixture_data/map.webp'),
+    path.join(__dirname, '../data/challenge/' + challenge.id + '.webp')
+  );
+
+  fs.copyFileSync(
+    path.join(__dirname, './fixture_data/avatar.webp'),
+    path.join(__dirname, '../data/challengeAvatar/' + challenge.id + '.webp')
   );
 
   const pointStart = await bdd.PointPassage.create({

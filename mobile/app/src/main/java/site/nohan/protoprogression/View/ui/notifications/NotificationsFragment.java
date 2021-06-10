@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.View.ui.notifications;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import java.util.Date;
 
@@ -26,23 +28,21 @@ public class NotificationsFragment extends Fragment {
     /************************************************************************
      * Création des variables globales
      ************************************************************************/
-    private Fragment signin;
+    private int signin;
 
     /************************************************************************
      * Création de la class et de la vue
      ************************************************************************/
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        signin = SigninFragment.newInstance();
-    }
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
 
+        signin = R.id.navigation_signin;
+
         //Vérification que l'utilisateur est connecté
         if(!DataBase.isTokenValid()) ShowFragment(signin);
         else {
+            Log.i("TOKEN", DataBase.getMoi().getToken()+"");
             if(!DataBase.isTokenDateValid(new Date())) new WhoAmIRequest(this.getActivity());
         }
 
@@ -50,22 +50,9 @@ public class NotificationsFragment extends Fragment {
     }
 
     /******************************************
-     * Méthode utilisé pour créer l'instance NotificationsFragment
-     ******************************************/
-    public static NotificationsFragment newInstance() {
-        NotificationsFragment fragment = new NotificationsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /******************************************
      * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
      ******************************************/
-    public void ShowFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public void ShowFragment(int fragment) {
+        Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
     }
 }

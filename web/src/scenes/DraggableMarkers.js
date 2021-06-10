@@ -4,7 +4,7 @@ import {
   createEndIcon,
   createStartIcon,
 } from './MarkerIcons';
-import API from '../eventApi/eventApi';
+import { API } from '../eventApi/api';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -16,138 +16,82 @@ import API from '../eventApi/eventApi';
  * @param {Function} setLines Fonction pour update le state de lines
  */
 let DraggableMarkers = ({
+  addingLine,
+  addCurrentLine,
   markers,
+  handleContext,
   setMarkers,
   editMode,
   setEditMode,
-  lines,
-  setLines,
-  currentMarker,
   setCurrentMarker,
-  setStartPoint,
-  currentLine,
+  currentMarker,
+  setContextEvent,
+  contextRef,
+  addLine,
+  setAddingLine,
   setCurrentLine,
-  CHALLENGE_ID,
+  setValid,
+  errorMarkers,
+  inBounds,
+  fitInBounds,
+  removeMarker,
+  setCurrentObstacle,
+  lines,
+  obstacles,
+  updateObstacle,
 }) => {
-  //Ajoute un marker
-  let addMarker = async (event) => {
-    try {
-      var id = markers.length;
-      var newMarker = {
-        title: 'Point ' + id,
-        description: '',
-        type: markers.length > 0 ? 'point' : 'start',
-        x: event.latlng.lng,
-        y: event.latlng.lat,
-      };
-
-      // console.log(newMarker);
-
-      let data = await API.createMarker({
-        marker: newMarker,
-        challenge_id: CHALLENGE_ID,
-      });
-
-      setMarkers((current) => [...current, data]);
-      setStartPoint(data);
-      setCurrentMarker(data);
-
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  let inBounds = (coords) => {
-    return !(
-      coords.lat < 0 ||
-      coords.lat > 1 ||
-      coords.lng < 0 ||
-      coords.lng > 1
-    );
-  };
-
-  let fitInBounds = (coords) => {
-    if (coords.lat < 0) coords.lat = 0;
-    if (coords.lat > 1) coords.lat = 1;
-    if (coords.lng < 0) coords.lng = 0;
-    if (coords.lng > 1) coords.lng = 1;
-    return coords;
-  }
-
-  //Ajoute une ligne
-  let addLine = (start, end) => {
-    currentLine.shift();
-    var newLines = {
-      PointStartId: start.id,
-      PointEndId: end.id,
-      path: currentLine.map((p) => [p.lat, p.lng]),
-      name: 'Segment ' + lines.length,
-    };
-
-    // console.log(newLines);
-    return API.createSegment({ segment: newLines })
-      .then((res) => {
-        res.path = res.path.map((e) => [e[0], e[1]]);
-        setLines((current) => [...current, res]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  let addCurrentLine = (newPoint) => {
-    if (currentLine == []) {
-      setCurrentLine([newPoint.latlng]);
-    } else {
-      setCurrentLine((current) => [...current, newPoint.latlng]);
-    }
-  };
-
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
+    var error = errorMarkers.filter((val) => {
+      if (val.id == marker.id) return val;
+    });
     switch (marker.type) {
       case 'start':
-        return createStartIcon(marker == currentMarker);
+        return createStartIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
       case 'end':
-        return createEndIcon(marker == currentMarker);
+        return createEndIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
       case 'point':
-        return createCheckpointIcon(marker == currentMarker);
+        return createCheckpointIcon(
+          marker == currentMarker,
+          error.length > 0,
+        );
     }
   };
 
   //Pour éditer les maps
   let map = useMapEvent({
     click: async (event) => {
-      if (inBounds(event.latlng)) {
-        if (!markers.length > 0) {
-          addMarker(event);
+      if (event.originalEvent.target !== contextRef.current) {
+        setContextEvent(undefined);
+      }
+      if (addingLine) {
+        addCurrentLine(event);
+      }
+    },
+    contextmenu: (event) => {
+      if (event.originalEvent.target !== contextRef.current) {
+        setContextEvent(undefined);
+      }
+      if (inBounds(event)) {
+        if (addingLine) {
+          handleContext(event, 'addingLine');
         } else {
-          if (event.originalEvent.ctrlKey) {
-            if (currentMarker?.type !== "end") {
-              addCurrentLine(event);
-              setEditMode(true);
-            }
-          } else {
-            if (currentMarker) {
-              var newMarker = await addMarker(event);
-              if (currentMarker.type !== "end") {
-                addLine(currentMarker, newMarker);
-                setCurrentLine([event.latlng]);
-              }
-            } else {
-              await addMarker(event);
-              setCurrentLine([event.latlng]);
-            }
-          }
+          handleContext(event, 'map');
         }
       }
     },
-    // mousemove: (event) => {
-    //   if (inBounds(event)) {
-    //     setMousePosition({x: event.latlng.lat, y: event.latlng.lng});
-    //   }
-    // }
+    keydown: (event) => {
+      if (event.originalEvent.keyCode == '8' || '46') {
+        removeMarker(currentMarker);
+        setCurrentMarker(null);
+      }
+    },
   });
 
   return (
@@ -163,31 +107,23 @@ let DraggableMarkers = ({
                 icon={getIcon(item)}
                 eventHandlers={{
                   click: () => {
-                    // {currentMarker ? (currentMarker.id === item.id ? (editMode ? null : setCurrentMarker(null)) : setCurrentMarker(item)) : setCurrentMarker(item)}
                     var newCurrent = item;
                     if (currentMarker) {
                       if (currentMarker.id === item.id && editMode)
-                        newCurrent = null; 
-                    }
-                    if (
-                      editMode &&
-                      item.type != 'start' &&
-                      currentMarker.id != item.id &&
-                      currentMarker.type != "end"
-                    ) {
-                      setEditMode(false);
-                      addLine(currentMarker, item);
-                      // setStartPoint(item);
+                        newCurrent = null;
                     }
                     setCurrentMarker(newCurrent);
-                    setCurrentLine([{
-                      lng: newCurrent.x,
-                      lat: newCurrent.y
-                    }]);
+                    setCurrentObstacle(null);
+                    if (addingLine) {
+                      if (currentMarker.id !== item.id)
+                        addLine(currentMarker, item);
+                      setAddingLine(false);
+                      setCurrentLine([]);
+                    }
                   },
                   dragend: (event) => {
                     var coords = event.target._latlng;
-                    if(!inBounds(coords)) {
+                    if (!inBounds(coords)) {
                       coords = fitInBounds(coords);
                     }
                     setMarkers((markers) =>
@@ -198,13 +134,25 @@ let DraggableMarkers = ({
                             x: coords.lng,
                             y: coords.lat,
                           };
-
-                          API.updateMarker({ marker: newM }).catch(
-                            (err) => {
+                          API.checkpoint
+                            .updateMarker(newM)
+                            .catch((err) => {
                               console.log(err);
-                            },
+                            });
+                          setValid(false);
+                          var linesToUpdate = lines.filter(
+                            (val) =>
+                              val.PointStartId == item.id ||
+                              val.PointEndId == item.id,
                           );
-
+                          linesToUpdate.forEach((line) => {
+                            var obstaclesToUpdate = obstacles.filter(
+                              (val) => val.SegmentId == line.id,
+                            );
+                            obstaclesToUpdate.forEach((obstacle) => {
+                              updateObstacle(obstacle);
+                            });
+                          });
                           return newM;
                         } else {
                           return m;
@@ -212,6 +160,15 @@ let DraggableMarkers = ({
                       }),
                     );
                     setEditMode(false);
+                  },
+                  contextmenu: (event) => {
+                    var newCurrent = item;
+                    if (currentMarker) {
+                      if (currentMarker.id === item.id && editMode)
+                        newCurrent = null;
+                    }
+                    setCurrentMarker(newCurrent);
+                    if (!addingLine) handleContext(event, 'marker');
                   },
                 }}
               >

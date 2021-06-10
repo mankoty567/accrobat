@@ -4,7 +4,8 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: ['eslint:recommended', 'prettier'],
+  plugins: ['mocha'],
+  extends: ['eslint:recommended', 'prettier', 'plugin:mocha/recommended'],
   parserOptions: {
     ecmaVersion: 12,
   },
@@ -14,5 +15,6 @@ module.exports = {
     quotes: ['warn', 'single'],
     semi: ['warn', 'always'],
     'no-unused-vars': 'warn',
+    'mocha/no-exports': 'never',
   },
 };
