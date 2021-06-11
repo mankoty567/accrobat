@@ -48,9 +48,11 @@ module.exports = {
                 res.json({
                   segmentsParcourus: [],
                   type: 'PointPassage',
-                  entity: {
-                    ...pointPassage,
-                  },
+                  entity: JSON.parse(
+                    JSON.stringify({
+                      ...pointPassage,
+                    })
+                  ),
                 });
               });
             } else {
@@ -70,7 +72,7 @@ module.exports = {
                 bdd.PointPassage.findOne({
                   where: { id: Math.trunc(events[0].data) },
                 }).then((pointpassage) => {
-                  obj.entity = { ...pointpassage };
+                  obj.entity = JSON.parse(JSON.stringify({ ...pointpassage }));
                   res.json(obj);
                 });
               } else if (events[0].type === 'obstacle:arrivee') {
@@ -85,7 +87,7 @@ module.exports = {
                     'distance',
                   ],
                 }).then((obstacle) => {
-                  obj.entity = { ...obstacle };
+                  obj.entity = JSON.parse(JSON.stringify({ ...obstacle }));
                   obj.submitedImg = undefined;
                   res.json(obj);
                 });
@@ -105,7 +107,7 @@ module.exports = {
                     where: { EventId: events[0].id },
                     attributes: ['createdAt', 'updatedAt', 'ok'],
                   }).then((img) => {
-                    obj.entity = { ...obstacle };
+                    obj.entity = JSON.parse(JSON.stringify({ ...obstacle }));
                     obj.submitedImg = img;
                     res.json(obj);
                   });
@@ -130,7 +132,7 @@ module.exports = {
                   (segment) => {
                     obj.type = 'Segment';
                     obj.distance = distance;
-                    obj.entity = { ...segment };
+                    obj.entity = JSON.parse(JSON.stringify({ ...segment }));
                     res.json(obj);
                   }
                 );

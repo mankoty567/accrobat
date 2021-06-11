@@ -111,6 +111,7 @@ describe('Segment', function () {
   });
 
   describe('POST /api/segment/:id', () => {
+    // Passe pas
     it("Segment qui n'existe pas", function (done) {
       if (global.jwt_admin === undefined) {
         this.skip();
