@@ -1,8 +1,6 @@
 const { app } = require('../serveur');
 
 const global = require('./hooks').global;
-const fs = require('fs');
-const path = require('path');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
