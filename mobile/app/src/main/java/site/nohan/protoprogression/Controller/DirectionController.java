@@ -19,20 +19,17 @@ public class DirectionController implements View.OnClickListener {
     private Toile toile;
     private Activity activity;
 
-    private static SaveParticipationResponse saveParticipationResponse;
 
 
     public DirectionController(Activity activity, Chemin direction){
         this.activity = activity;
         this.direction = direction;
-        DirectionController.saveParticipationResponse = new SaveParticipationResponse();
     }
 
     public DirectionController(Chemin direction, Toile toile, Activity activity){
         this.direction = direction;
         this.toile = toile;
         this.activity = activity;
-        DirectionController.saveParticipationResponse = new SaveParticipationResponse();
     }
 
     @Override
@@ -44,7 +41,12 @@ public class DirectionController implements View.OnClickListener {
                     TypeEvent.ARIVEE,
                     this.direction.objectif.id,
                     Map.mapActuelle.id,
-                    DirectionController.saveParticipationResponse
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.ARIVEE,
+                            this.direction.objectif.id,
+                            Map.mapActuelle.id
+                    )
             );
 
         }
@@ -53,7 +55,12 @@ public class DirectionController implements View.OnClickListener {
                 TypeEvent.DEPART,
                 this.direction.id,
                 Map.mapActuelle.id,
-                DirectionController.saveParticipationResponse
+                new SaveParticipationResponse(
+                        this.activity,
+                        TypeEvent.DEPART,
+                        this.direction.id,
+                        Map.mapActuelle.id
+                )
         );
         Map.mapActuelle.cheminActuel = this.direction;
         Map.mapActuelle.accompli = 0;

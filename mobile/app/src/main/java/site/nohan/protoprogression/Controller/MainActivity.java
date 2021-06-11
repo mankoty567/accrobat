@@ -10,7 +10,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,4 +39,5 @@ public class MainActivity extends AppCompatActivity {
     public static void setBottomNavigationViewVisibility(int visibility){
         navView.setVisibility(visibility);
     }
+
 }

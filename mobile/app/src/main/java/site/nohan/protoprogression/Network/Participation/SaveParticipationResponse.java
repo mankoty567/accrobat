@@ -1,21 +1,36 @@
 package site.nohan.protoprogression.Network.Participation;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
 
 import java.io.UnsupportedEncodingException;
 
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.APIListenner;
+import site.nohan.protoprogression.Network.DataBase;
 
 public class SaveParticipationResponse implements APIListenner {
+    Activity activity;
+    TypeEvent typeEvent;
+    int data;
+    int id;
 
-    public SaveParticipationResponse(){}
+    public SaveParticipationResponse(Activity activity, TypeEvent typeEvent, int data, int id) {
+        this.activity = activity;
+        this.typeEvent = typeEvent;
+        this.data = data;
+        this.id = id;
+    }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("net/SavePartResp/err", error.toString() );
-        String body = "err sur err";
+        DataBase.addFailEvent(this.id, this.typeEvent, this.data);
+
+        Log.e("net/failEvent", error.toString() );
+
+        String body = "fail";
         if(error.networkResponse != null && error.networkResponse.data != null) {
             try {
                 body = new String(error.networkResponse.data,"UTF-8");
