@@ -75,68 +75,56 @@ module.exports = {
       if (obstacle === null) {
         res.status(404).send('Obstacle not found');
       } else {
-        challenge_mdw
-          .check_is_challenge_admin_fc(
-            obstacle.Segment.pointStart.Challenge.id,
-            req.user.id
-          )
-          .then((isAdmin) => {
-            if (!isAdmin) {
-              res.status(403).send('Forbidden, you are not a challenge admin');
-              return;
-            }
+        if (obstacle.Segment.pointStart.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
+        } else {
+          let edited = false;
+          if (req.body.title) {
+            obstacle.title = req.body.title;
+            edited = true;
+          }
 
-            if (obstacle.Segment.pointStart.Challenge.published) {
-              res.status(400).send('Bad request: Challenge is published');
-            } else {
-              let edited = false;
-              if (req.body.title) {
-                obstacle.title = req.body.title;
-                edited = true;
-              }
+          if (req.body.description) {
+            obstacle.description = req.body.description;
+            edited = true;
+          }
 
-              if (req.body.description) {
-                obstacle.description = req.body.description;
-                edited = true;
-              }
+          if (req.body.type) {
+            obstacle.type = req.body.type;
+            edited = true;
+          }
 
-              if (req.body.type) {
-                obstacle.type = req.body.type;
-                edited = true;
-              }
+          if (req.body.distance) {
+            obstacle.distance = req.body.distance;
+            edited = true;
+          }
 
-              if (req.body.distance) {
-                obstacle.distance = req.body.distance;
-                edited = true;
-              }
+          if (req.body.enigme_img) {
+            utils.parseImg(req.body.enigme_img).then((buffer) => {
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  '../../data/obstacle/' + obstacle.id + '.webp'
+                ),
+                buffer
+              );
+            });
+          }
 
-              if (req.body.enigme_img) {
-                utils.parseImg(req.body.enigme_img).then((buffer) => {
-                  fs.writeFileSync(
-                    path.join(
-                      __dirname,
-                      '../../data/obstacle/' + obstacle.id + '.webp'
-                    ),
-                    buffer
-                  );
-                });
-              }
+          if (req.body.enigme_awnser) {
+            obstacle.enigme_awnser = req.body.enigme_awnser;
+            edited = true;
+          }
 
-              if (req.body.enigme_awnser) {
-                obstacle.enigme_awnser = req.body.enigme_awnser;
-                edited = true;
-              }
-
-              if (edited) {
-                debug('Mise à jour de obstacle ' + obstacle.id);
-                obstacle.save().then(() => {
-                  res.json({ ...obstacle.dataValues, Segment: undefined });
-                });
-              } else {
-                res.json({ ...obstacle.dataValues, Segment: undefined });
-              }
-            }
-          });
+          if (edited) {
+            debug('Mise à jour de obstacle ' + obstacle.id);
+            obstacle.save().then(() => {
+              res.json({ ...obstacle.dataValues, Segment: undefined });
+            });
+          } else {
+            res.json({ ...obstacle.dataValues, Segment: undefined });
+          }
+        }
       }
     });
   },
@@ -155,42 +143,24 @@ module.exports = {
       if (obstacle === null) {
         res.status(404).send('Obstacle not found');
       } else {
-        challenge_mdw
-          .check_is_challenge_admin_fc(
-            obstacle.Segment.pointStart.Challenge.id,
-            req.user.id
+        if (
+          fs.existsSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.webp')
           )
-          .then((isAdmin) => {
-            if (!isAdmin) {
-              res.status(403).send('Forbidden, you are not a challenge admin');
-              return;
-            }
-
-            if (
-              fs.existsSync(
-                path.join(
-                  __dirname,
-                  '../../data/obstacle/' + obstacle.id + '.webp'
-                )
-              )
-            ) {
-              fs.unlinkSync(
-                path.join(
-                  __dirname,
-                  '../../data/obstacle/' + obstacle.id + '.webp'
-                )
-              );
-            }
-            obstacle
-              .destroy()
-              .then(() => {
-                debug('Obstacle supprimé ' + obstacle.id);
-                res.send('OK');
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(400).send('Bad Request');
-              });
+        ) {
+          fs.unlinkSync(
+            path.join(__dirname, '../../data/obstacle/' + obstacle.id + '.webp')
+          );
+        }
+        obstacle
+          .destroy()
+          .then(() => {
+            debug('Obstacle supprimé ' + obstacle.id);
+            res.send('OK');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(400).send('Bad Request');
           });
       }
     });

@@ -99,6 +99,7 @@ var routes = [
         permission: 100,
         name: "Modification d'un PointPassage",
         description: "Modifie les attributs d'un point de passage",
+        test: true,
         body: {
             title: {
                 type: 'string',
