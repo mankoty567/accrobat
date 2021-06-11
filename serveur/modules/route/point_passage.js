@@ -43,6 +43,7 @@ var routes = [
         permission: 100,
         name: 'Ajout de PointPassage',
         description: 'Ajoute un PointPassage à un challenge',
+        test: true,
         body: {
             title: 'string',
             description: { type: 'string', required: false },

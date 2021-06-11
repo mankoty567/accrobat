@@ -64,7 +64,7 @@ describe('PointPassage', function () {
         });
     });
 
-    it('Body correcte', (done) => {
+    it('Body correcte', function (done) {
       if (global.jwt_admin === undefined) {
         this.skip();
       }
@@ -87,7 +87,7 @@ describe('PointPassage', function () {
         .then(function (res) {
           expect(res.status).to.equal(200);
 
-          global.start_poind_id = res.body.id;
+          global.start_point_id = res.body.id;
 
           expect(res.body).to.have.property('title').with.equal('Début');
           expect(res.body)
@@ -129,7 +129,7 @@ describe('PointPassage', function () {
 
       expect(res1.status).to.equal(200);
 
-      global.middle_poind_id = res1.body.id;
+      global.middle_point_id = res1.body.id;
 
       let res2 = await chai
         .request(app)
@@ -145,7 +145,70 @@ describe('PointPassage', function () {
 
       expect(res2.status).to.equal(200);
 
-      global.end_poind_id = res2.body.id;
+      global.end_point_id = res2.body.id;
+    });
+  });
+
+  describe('POST /api/pointpassage/:id', () => {
+    it("Point qui n'existe pas", function (done) {
+      if (global.jwt_admin === undefined) {
+        this.skip();
+      }
+
+      chai
+        .request(app)
+        .post('/api/pointpassage/-1')
+        .set('Authorization', 'Bearer ' + global.jwt_admin)
+        .then(function (res) {
+          expect(res.status).to.equal(404);
+
+          done();
+        })
+        .catch(function (err) {
+          console.log(err);
+          throw err;
+        });
+    });
+
+    it('Modification du Point', function (done) {
+      if (global.jwt_admin === undefined) {
+        this.skip();
+      }
+
+      if (global.start_point_id === undefined) {
+        this.skip();
+      }
+
+      chai
+        .request(app)
+        .post('/api/pointpassage/' + global.start_point_id)
+        .set('Authorization', 'Bearer ' + global.jwt_admin)
+        .send({
+          title: 'Début Modifié',
+          description: 'Le premier point de passage du challenge Modifié',
+          x: 0.15,
+          y: 0.15,
+        })
+        .then(function (res) {
+          expect(res.status).to.equal(200);
+
+          expect(res.body)
+            .to.have.property('title')
+            .with.equal('Début Modifié');
+          expect(res.body)
+            .to.have.property('description')
+            .with.equal('Le premier point de passage du challenge Modifié');
+          expect(res.body).to.have.property('type').with.equal('start');
+
+          expect(res.body).to.have.property('x').with.equal(0.15);
+          expect(res.body).to.have.property('y').with.equal(0.15);
+
+          done();
+        })
+        .catch(function (err) {
+          console.log(err);
+          throw err;
+        });
     });
   });
 });

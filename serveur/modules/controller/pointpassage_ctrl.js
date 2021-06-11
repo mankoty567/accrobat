@@ -74,54 +74,52 @@ module.exports = {
       if (pointpassage === null) {
         res.status(404).send('PointPassage not found');
       } else {
-        challenge_mdw
-          .check_is_challenge_admin_fc(pointpassage.Challenge.id, req.user.id)
-          .then((isAdmin) => {
-            if (!isAdmin) {
-              res.status(403).send('Forbidden, you are not a challenge admin');
-              return;
-            }
+        if (pointpassage.Challenge.published) {
+          res.status(400).send('Bad request: Challenge is published');
+        } else {
+          let edited = false;
 
-            if (pointpassage.Challenge.published) {
-              res.status(400).send('Bad request: Challenge is published');
-            } else {
-              let edited = false;
+          console.log(req.body);
 
-              if (req.body.title) {
-                pointpassage.title = req.body.title;
-                edited = true;
-              }
+          if (req.body.title) {
+            pointpassage.title = req.body.title;
+            edited = true;
+          }
 
-              if (req.body.description) {
-                pointpassage.description = req.body.description;
-                edited = true;
-              }
+          if (req.body.description) {
+            pointpassage.description = req.body.description;
+            edited = true;
+          }
 
-              if (req.body.x !== undefined) {
-                pointpassage.x = req.body.x;
-                edited = true;
-              }
+          if (req.body.x !== undefined) {
+            pointpassage.x = req.body.x;
+            edited = true;
+          }
 
-              if (req.body.y !== undefined) {
-                pointpassage.y = req.body.y;
-                edited = true;
-              }
+          if (req.body.y !== undefined) {
+            pointpassage.y = req.body.y;
+            edited = true;
+          }
 
-              if (req.body.type !== undefined) {
-                pointpassage.type = req.body.type;
-                edited = true;
-              }
+          if (req.body.type !== undefined) {
+            pointpassage.type = req.body.type;
+            edited = true;
+          }
 
-              if (edited) {
-                debug('Update point passage ' + pointpassage.id);
-                pointpassage.save().then(() => {
-                  res.json(pointpassage);
-                });
-              } else {
+          if (edited) {
+            debug('Update point passage ' + pointpassage.id);
+            pointpassage
+              .save()
+              .then(() => {
                 res.json(pointpassage);
-              }
-            }
-          });
+              })
+              .catch((err) => {
+                res.status(500).send(err);
+              });
+          } else {
+            res.json(pointpassage);
+          }
+        }
       }
     });
   },
