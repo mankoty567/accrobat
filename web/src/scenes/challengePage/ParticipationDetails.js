@@ -331,6 +331,9 @@ let ParticipationDetails = ({
                 {position ? (
                   <ProgressMarker
                     position={position}
+                    segments={segments}
+                    markers={markers}
+                    obstacles={obstacles}
                     placeObstacle={placeObstacle}
                   />
                 ) : null}

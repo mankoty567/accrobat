@@ -84,6 +84,7 @@ let createObstacleIcon = (question, selected, error) => {
 let createProgressIcon = () => {
   return new L.Icon({
     iconUrl: progress,
+    iconAnchor: [17, 17],
   });
 };
 
