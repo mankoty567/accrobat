@@ -49,7 +49,7 @@ module.exports = {
                   segmentsParcourus: [],
                   type: 'PointPassage',
                   entity: {
-                    pointPassage,
+                    ...pointPassage,
                   },
                 });
               });
@@ -70,7 +70,7 @@ module.exports = {
                 bdd.PointPassage.findOne({
                   where: { id: Math.trunc(events[0].data) },
                 }).then((pointpassage) => {
-                  obj.entity = pointpassage;
+                  obj.entity = { ...pointpassage };
                   res.json(obj);
                 });
               } else if (events[0].type === 'obstacle:arrivee') {
@@ -85,7 +85,7 @@ module.exports = {
                     'distance',
                   ],
                 }).then((obstacle) => {
-                  obj.entity = obstacle;
+                  obj.entity = { ...obstacle };
                   obj.submitedImg = undefined;
                   res.json(obj);
                 });
@@ -105,7 +105,7 @@ module.exports = {
                     where: { EventId: events[0].id },
                     attributes: ['createdAt', 'updatedAt', 'ok'],
                   }).then((img) => {
-                    obj.entity = obstacle;
+                    obj.entity = { ...obstacle };
                     obj.submitedImg = img;
                     res.json(obj);
                   });
@@ -130,7 +130,7 @@ module.exports = {
                   (segment) => {
                     obj.type = 'Segment';
                     obj.distance = distance;
-                    obj.entity = segment;
+                    obj.entity = { ...segment };
                     res.json(obj);
                   }
                 );
