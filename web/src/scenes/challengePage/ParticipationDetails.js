@@ -208,6 +208,7 @@ let ParticipationDetails = ({
         setSegmentsFinished(res.segmentsParcourus);
         setPosition({
           type: res.type,
+          distance: res.distance,
           entity: res.entity,
         });
       });
