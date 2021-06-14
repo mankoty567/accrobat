@@ -7,10 +7,7 @@ import {
   Toolbar,
   IconButton,
   Avatar,
-  Menu,
   MenuItem,
-  ListItemIcon,
-  ListItemText,
   ClickAwayListener,
   Popper,
   Grow,
@@ -92,31 +89,39 @@ export const Navbar = () => {
             label="Accueil"
             component={Link}
             to="/home"
-            value="home"
+            value="/home"
           />
 
           {userState ? (
             <>
               <Tab
+                label="Tous les challenges"
+                component={Link}
+                to="/inscriptions"
+                value="/inscriptions"
+              />
+              <Tab
                 label="Vos challenges"
                 component={Link}
                 to="/challenges"
-                value="challenges"
+                value="/challenges"
               />
-              <Tab
-                label="Administration"
-                component={Link}
-                value="admin"
-                style={{ color: '#9c1809' }}
-                to="/admin"
-              />
+              {userState.permission > 99 ? (
+                <Tab
+                  label="Administration"
+                  component={Link}
+                  value="admin"
+                  style={{ color: '#9c1809' }}
+                  to="/admin"
+                />
+              ) : null}
             </>
           ) : (
             <Tab
               label="Se connecter"
               component={Link}
               to="/login"
-              value="login"
+              value="/login"
             />
           )}
         </Tabs>
