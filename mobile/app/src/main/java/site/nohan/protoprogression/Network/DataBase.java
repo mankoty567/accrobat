@@ -321,7 +321,7 @@ public class DataBase {
 
     public static String getRecordUsername(int position){
         int idParticipation = -1;
-        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+        if(recordsParticipationID.size() > 0 && recordsParticipationID.size() > position) idParticipation = recordsParticipationID.get(position);
 
         Cursor resultats = bdd.rawQuery("SELECT USERNAME FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
