@@ -10,6 +10,7 @@ var routes = [
         method: 'POST',
         url: '/api/obstacle',
         func: [m.obstacle_ctrl.post_obstacle],
+        test: true,
         permission: 100,
         body: {
             title: 'string',
@@ -94,6 +95,7 @@ var routes = [
         method: 'POST',
         url: '/api/obstacle/:id',
         func: [m.obstacle_ctrl.update_obstacle],
+        test: true,
         permission: 100,
         name: "Modification d'un obstacle",
         description: "Modifie les données d'un obstacle",

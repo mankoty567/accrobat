@@ -150,6 +150,7 @@ const routes: Route[] = [
     method: 'GET',
     url: '/api/challenge/:id/validity',
     func: [m.challenge_ctrl.verif_validity],
+    test: true,
     permission: 100,
     name: 'Vérification de la validité',
     description:
@@ -293,6 +294,7 @@ const routes: Route[] = [
     method: 'POST',
     url: '/api/challenge/:id/publish',
     func: [m.challenge_ctrl.publish_challenge],
+    test: true,
     permission: 100,
     name: "Publication d'un challenge",
     description:

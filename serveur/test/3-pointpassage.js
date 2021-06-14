@@ -120,7 +120,7 @@ describe('PointPassage', function () {
         .send({
           title: 'Milieu',
           description: 'Le deuxième point de passage du challenge',
-          type: 'start',
+          type: 'point',
           x: 0.4,
           y: 0.4,
         });

@@ -95,6 +95,7 @@ const routes: Route[] = [
     method: 'POST',
     url: '/api/segment/:id',
     name: "Mise à jour d'un segment",
+    test: true,
     func: [m.segment_ctrl.update_segment],
     permission: 100,
     body: {
