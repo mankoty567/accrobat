@@ -94,8 +94,8 @@ public class HomeFragment extends Fragment {
             challengesAdapter.notifyDataSetChanged();
         }
         lv_home_challenges.setOnItemClickListener(new MapsAdaptaterListenner(this));
-        buttonClicked.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_200, null)));
-        buttonErased.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_700, null)));
+        buttonClicked.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.light_gray_main, null)));
+        buttonErased.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bold_gray_main, null)));
     }
 
     /******************************************
