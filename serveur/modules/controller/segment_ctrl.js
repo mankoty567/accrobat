@@ -92,12 +92,11 @@ module.exports = {
         { model: bdd.PointPassage, as: 'pointEnd' },
       ],
     });
-
-    if (segment.pointStart.Challenge.published) {
-      res.status(400).send('Bad request: Challenge is published');
+    if (segment === null) {
+      res.status(404).send('Not Found');
     } else {
-      if (segment === null) {
-        res.status(404).send('Not Found');
+      if (segment.pointStart.Challenge.published) {
+        res.status(400).send('Bad request: Challenge is published');
       } else {
         let edited = false;
         if (req.body.path !== undefined && Array.isArray(req.body.path)) {

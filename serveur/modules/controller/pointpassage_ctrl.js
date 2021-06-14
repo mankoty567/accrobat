@@ -79,8 +79,6 @@ module.exports = {
         } else {
           let edited = false;
 
-          console.log(req.body);
-
           if (req.body.title) {
             pointpassage.title = req.body.title;
             edited = true;

@@ -108,6 +108,34 @@ describe('Segment', function () {
           throw err;
         });
     });
+
+    it('Bulk Ajout', async function () {
+      if (global.jwt_admin === undefined) {
+        this.skip();
+      }
+
+      if (
+        global.end_point_id === undefined ||
+        global.middle_point_id === undefined
+      ) {
+        this.skip();
+      }
+
+      let res1 = await chai
+        .request(app)
+        .post('/api/segment/')
+        .set('Authorization', 'Bearer ' + global.jwt_admin)
+        .send({
+          PointStartId: global.middle_point_id,
+          PointEndId: global.end_point_id,
+          path: [[0.6, 0.6]],
+          name: 'Segment Segment',
+        });
+
+      global.segment_2_id = res1.body.id;
+
+      expect(res1.status).to.equal(200);
+    });
   });
 
   describe('POST /api/segment/:id', () => {
