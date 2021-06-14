@@ -19,7 +19,7 @@ import Navbar from '../../components/Navbar';
 
 let MainPage = () => {
   // Tentative de connection automatique de l'utilisateur
-  const [, setUserState] = useRecoilState(API.user.userAtom);
+  const [UserState, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
     API.user.doneConnectionAtom,
   );
@@ -49,7 +49,6 @@ let MainPage = () => {
         <Switch>
           <Route path="/home">
             <PublicPage />
-            {/* <ChallengeEditor challenge_id={25} /> */}
           </Route>
           <Route path="/profile">
             <NeedLogin>

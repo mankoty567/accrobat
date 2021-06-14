@@ -8,21 +8,16 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import ChallengeEditor from '../ChallengeEditor';
-import ChallengeToVote from './ChallengeToVote';
 
 let ChallengePanel = () => {
   const [challenges, setChallenges] = useState([]);
   const [addmode, setAddmode] = useState('add');
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const getChallenges = () => {
-    setIsLoading(true);
     API.challenge.getAdminChallenges().then((res) => {
-      setIsLoading(false);
       setChallenges(res);
     });
   };
@@ -122,12 +117,7 @@ let ChallengePanel = () => {
       >
         Consulter les challenge existants
       </Button>
-      <Button
-        startIcon={<EmojiObjectsIcon />}
-        onClick={() => setAddmode('vote')}
-      >
-        Challenges à voter
-      </Button>
+
       {addmode === 'add' ? (
         <FormChallenge callback={addChallenge} />
       ) : addmode === 'list' ? (
@@ -145,9 +135,7 @@ let ChallengePanel = () => {
               })
             : null}
         </>
-      ) : (
-        <ChallengeToVote />
-      )}
+      ) : null}
       {selected ? (
         <ChallengeEditor
           challenge_id={selected}

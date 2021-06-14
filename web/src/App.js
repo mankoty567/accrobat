@@ -14,15 +14,18 @@ export const themeOptions = {
       main: '#2D292B',
     },
     secondary: {
-      main: '#4AACC1',
+      main: '#4a6dc1',
     },
     background: {
-      default: '#F0F0F2',
-      paper: '#F0F0F2',
+      default: '#F2E8C7',
+      paper: '#FFFCF0',
     },
     text: {
       secondary: '#647680',
       disabled: '#2D292B',
+    },
+    error: {
+      main: '#961415',
     },
   },
 };

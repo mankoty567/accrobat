@@ -1,113 +1,96 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  CircularProgress,
-  IconButton,
-} from '@material-ui/core';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { Typography, Tabs, Tab } from '@material-ui/core';
 import ChallengePanel from './ChallengePanel';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import {
+  Link,
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+  useLocation,
+} from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import PropositionPanel from './PropositionPanel';
+import UserAdminPanel from './UserAdminPanel';
+import ChallengeToVote from './ChallengeToVote';
+import { useRecoilState } from 'recoil';
 import { API } from '../../eventApi/api';
 
-import style from './AdminPanel.module.css';
-
 let AdminPanel = () => {
-  const [propositions, setPropositions] = useState([]);
-  const [isLoadingProposition, setIsLoadingPropositions] =
-    useState(true);
+  let location = useLocation();
 
-  useEffect(() => {
-    API.proposition.getPropositions().then((data) => {
-      setPropositions(data);
-      setIsLoadingPropositions(false);
-    });
-  }, []);
+  const history = createBrowserHistory();
+  const [page, setPage] = useState(location.pathname);
+  const [userState] = useRecoilState(API.user.userAtom);
 
-  function handleChangeProposition(id, status) {
-    API.proposition.updateProposition(id, status).then(() => {
-      setPropositions((before) => {
-        return before.filter((b) => b.id !== id);
-      });
-    });
-  }
-
-  let user = [
-    'Jules Poulain',
-    'Xavier Schuszter',
-    'Céleste Lavigne',
-    'Nohan Jaugey',
-    'Vincent Seyller',
-  ];
+  /**
+   * En cas de changement de valeurs
+   * @param {any} event Evenement actuel, non utilisé
+   * @param {String} value L'url de la page courante
+   */
+  const handleChanges = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <>
       <Typography variant="h3" style={{ paddingTop: '1vh' }}>
         Menu d'administration
       </Typography>
-      <Grid container spacing={4} style={{ padding: '3vh' }}>
-        <Grid item xs={4} align="left">
-          <Paper>
-            <div style={{ height: '30vh' }}>
-              <Typography variant="h4" align="center">
-                Gestion des utilisateurs
-              </Typography>
-              <Divider orientation="horizontal" />
 
-              {user.map((key, idx) => {
-                return <Typography key={idx}>{key}</Typography>;
-              })}
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={8} align="left">
-          <Paper>
-            <div style={{ height: '30vh' }}>
-              <Typography variant="h4" align="center">
-                Proposition des joueurs
-              </Typography>
-              <Divider orientation="horizontal" />
+      <Router basename="/admin">
+        <Tabs value={page} onChange={handleChanges}>
+          <Tab
+            label="Gestionnaire de challenge"
+            component={Link}
+            to="/admin/editor"
+            value="/admin/editor"
+          />
+          <Tab
+            label="Proposition utilisateurs"
+            component={Link}
+            to="/admin/propositions"
+            value="admin/propositions"
+          />
+          {userState.permission > 100 ? (
+            <Tab
+              label="Gestionnaire des utilisateurs"
+              component={Link}
+              to="/admin/user"
+              value="/admin/user"
+            />
+          ) : null}
 
-              {isLoadingProposition ? (
-                <CircularProgress />
-              ) : (
-                propositions.map((key) => {
-                  return (
-                    <div className={style.flexRow}>
-                      <Typography key={key.id}>
-                        {key.description}
-                      </Typography>
-                      <IconButton
-                        onClick={(e) =>
-                          handleChangeProposition(key.id, 'accepted')
-                        }
-                      >
-                        <CheckCircleIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={(e) =>
-                          handleChangeProposition(key.id, 'refused')
-                        }
-                      >
-                        <CancelIcon />
-                      </IconButton>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} align="left">
-          <Paper>
-            <div>
-              <ChallengePanel />
-            </div>
-          </Paper>
-        </Grid>
-      </Grid>
+          <Tab
+            label="Historique des fraudes"
+            component={Link}
+            to="/admin/fraud"
+            value="/admin/fraud"
+          />
+        </Tabs>
+        <Switch>
+          <Route path="/admin/editor">
+            <ChallengePanel />
+          </Route>
+          <Route path="/admin/propositions">
+            <PropositionPanel />
+            <ChallengeToVote />
+          </Route>
+          <Route path="/admin/user">
+            {userState.permission > 100 ? (
+              <UserAdminPanel />
+            ) : (
+              <Redirect path="admin/editor" />
+            )}
+          </Route>
+          <Route path="/admin/fraud">
+            <p>Not implemented yet</p>
+          </Route>
+          <Route path="/">
+            <Redirect path="/editor" />
+          </Route>
+        </Switch>
+      </Router>
     </>
   );
 };
