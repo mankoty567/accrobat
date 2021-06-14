@@ -83,10 +83,12 @@ public class SubscribeFragment extends Fragment {
             tv_title.setText(Map.maps.get(position).libelle);
             tv_date.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
             unencodedHtml = Map.maps.get(position).description;
+            unencodedHtml = "<div style='background-color : #F2E8C7'>" + unencodedHtml + "</div>";
         }
 
         String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(),
                 Base64.NO_PADDING);
+
         wvDescription.loadData(encodedHtml, "text/html", "base64");
         wvDescription.setHorizontalScrollBarEnabled(false);
         wvDescription.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);

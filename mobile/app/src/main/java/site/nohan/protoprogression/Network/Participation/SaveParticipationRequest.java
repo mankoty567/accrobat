@@ -3,22 +3,18 @@ package site.nohan.protoprogression.Network.Participation;
 import android.app.Activity;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.android.volley.AuthFailureError;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.APIListenner;
-import site.nohan.protoprogression.Network.APIRequestGET;
 import site.nohan.protoprogression.Network.APIRequestPOST;
+import site.nohan.protoprogression.Network.ConnectionManager;
 import site.nohan.protoprogression.Network.DataBase;
 
 public class SaveParticipationRequest extends APIRequestPOST {
@@ -27,6 +23,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
     public static double derniereDistance = 0;
     public static long deniereMsEnvoiProgression = 0;
 
+    Activity activity;
     TypeEvent type;
     int id;
     int data;
@@ -42,6 +39,13 @@ public class SaveParticipationRequest extends APIRequestPOST {
         this.data = data;
         this.id = id;
         this.type = type;
+        this.activity = activity;
+
+        if(ConnectionManager.wasDisconnected()){
+            Log.e("NET", "La requête de participation ne sera pas envoyée" );
+            DataBase.addFailEvent(id, type, data);
+            return;
+        }
 
         // Si cela fais longtemps que le deniere Envoi Progression a eu lieu on envoi sinon on ignore
         if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
@@ -55,16 +59,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
         APIRequestPOST.queue.start();
     }
 
-    public SaveParticipationRequest(Activity activity, TypeEvent type, int id, SaveParticipationResponse apiListenner) {
-        super(activity, "event/", apiListenner);
-        Log.e("update", type.toString() + " id: "+ id   );
-        this.id = id;
-        this.type = type;
 
-        APIRequestPOST.queue.add(this);
-        APIRequestPOST.queue.start();
-
-    }
 
     /******************************************
      * Méthode utilisé pour définir le type du BODY de la requête

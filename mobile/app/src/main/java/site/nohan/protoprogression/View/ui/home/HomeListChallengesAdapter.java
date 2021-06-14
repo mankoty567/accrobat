@@ -20,15 +20,19 @@ import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Map.AvatarMapRequest;
 import site.nohan.protoprogression.R;
 
 public class HomeListChallengesAdapter extends ArrayAdapter<String> {
+    public static HomeListChallengesAdapter lastInstance;
 
+    public ArrayList<Bitmap> bitmaps;
     private final Activity context;
 
     public HomeListChallengesAdapter(Activity context) {
         super(context, R.layout.home_list_challenges, new String[]{"Chargement"} );
-        // TODO Auto-generated constructor stub
+        lastInstance = this;
+        bitmaps = new ArrayList<>();
 
         //Mise en place des données de la DB
         this.context=context;
@@ -43,7 +47,9 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         TextView list_lastTimeUpdated = (TextView) rowView.findViewById(R.id.txt_list_lastTimeUpdated);
         TextView list_date = (TextView) rowView.findViewById(R.id.txt_list_date);
         ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
-
+        if(AvatarMapRequest.bitmaps.size() > position) {
+            avatar.setImageBitmap(AvatarMapRequest.bitmaps.get(position));
+        }
         if(HomeFragment.isOnPrivateChallenges) {
             Log.e("POSITION", position+"");
             if(position < DataBase.getSubscribed().size()) {
@@ -59,7 +65,8 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
             list_date.setVisibility(View.INVISIBLE);
         }
         // show The Image in a ImageView
-        new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
+        //new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
+
         return rowView;
     };
 
