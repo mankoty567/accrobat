@@ -17,7 +17,10 @@ import ModifyMarkerPopUp from './ModifyMarkerPopUp';
 import ModifyObstaclePopUp from './ModifyObstaclePopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
-import { createObstacleIcon } from './MarkerIcons';
+import {
+  createObstacleIcon,
+  createLineAnchorIcon,
+} from './MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -160,6 +163,43 @@ let ChallengeEditor = ({
     return [x, y];
   }
 
+  let Echelle = () => {
+    var positions = [
+      [0, 0],
+      [1, 1],
+    ];
+    var text = null;
+    if (challenge.echelle >= 2000) {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 1000 / challenge.echelle],
+      ];
+      text = '1000 mètres';
+    } else {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 100 / challenge.echelle],
+      ];
+      text = '100 mètres';
+    }
+    const center = L.polygon(positions).getBounds().getCenter();
+    return (
+      <>
+        <Marker
+          position={positions[0]}
+          icon={createLineAnchorIcon()}
+        />
+        <Polyline positions={positions} color={'black'}>
+          <Tooltip direction="top">{text}</Tooltip>
+        </Polyline>
+        <Marker
+          position={positions[1]}
+          icon={createLineAnchorIcon()}
+        />
+      </>
+    );
+  };
+
   const initializeMap = async (challenge_id) => {
     await API.challenge
       .getChallenge({
@@ -222,7 +262,6 @@ let ChallengeEditor = ({
                 distance: obstacle.distance,
                 enigme_awnser: obstacle.enigme_awnser,
                 SegmentId: obstacle.SegmentId,
-                // Valeur random en attendant de récupérer la bonne distance
                 x: coords[1],
                 y: coords[0],
               });
@@ -419,11 +458,10 @@ let ChallengeEditor = ({
     var coords = placeObstacle(positions, obstacle.distance);
     obstacle.x = coords[1];
     obstacle.y = coords[0];
-    setObstacles((current) =>
-      current.map((val) => {
-        if (val.id == obstacle.id) return obstacle;
-        return val;
-      }),
+    setObstacles(
+      obstacles.map((item) =>
+        item.id == obstacle.id ? { ...item, obstacle } : item,
+      ),
     );
   };
 
@@ -541,6 +579,10 @@ let ChallengeEditor = ({
       });
   };
 
+  // useEffect(() => {
+  //   console.log(obstacles);
+  //   console.log('update');
+  // }, [obstacles]);
   useEffect(() => initializeMap(challenge_id), []);
   useEffect(() => {
     if (!valid) {
@@ -596,9 +638,9 @@ let ChallengeEditor = ({
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                zoom={9}
-                maxZoom={11}
-                minZoom={8}
+                // zoom={9}
+                // maxZoom={11}
+                // minZoom={8}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -727,6 +769,7 @@ let ChallengeEditor = ({
                     ) : null}
                   </>
                 ) : null}
+                <Echelle />
               </MapContainer>
               <Grid container justify="center">
                 <div className={classes.actionButtons}>

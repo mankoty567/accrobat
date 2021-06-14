@@ -49,6 +49,6 @@ export default function ProgressMarker({
       key={'position'}
       position={[coords[0], coords[1]]}
       icon={createProgressIcon()}
-    ></Marker>
+    />
   );
 }

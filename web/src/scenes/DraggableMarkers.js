@@ -86,12 +86,6 @@ let DraggableMarkers = ({
         }
       }
     },
-    keydown: (event) => {
-      if (event.originalEvent.keyCode == '8' || '46') {
-        removeMarker(currentMarker);
-        setCurrentMarker(null);
-      }
-    },
   });
 
   return (
