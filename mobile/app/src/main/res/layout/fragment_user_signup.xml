@@ -9,15 +9,11 @@
     android:paddingBottom="55dp" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ll_base_style">
 
         <LinearLayout
             android:id="@+id/framelayout_signup"
@@ -30,71 +26,60 @@
             app:layout_constraintTop_toTopOf="parent"
             android:gravity="center">
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:src="@drawable/logo_runslike"
+                style="@style/image_logo_style"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signup_login"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                style="@style/til_secure_style">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_signup_login"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/tiet_secure_style"
                     android:hint="@string/txt_login"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signup_password"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-                android:layout_marginBottom="20dp">
+                style="@style/til_secure_style"
+                app:passwordToggleEnabled="true">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_signup_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/tiet_secure_style"
                     android:hint="@string/txt_password"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signup_password_confirmation"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-                android:layout_marginBottom="20dp">
+                style="@style/til_secure_style"
+                app:passwordToggleEnabled="true">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_signup_password_confirmation"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/tiet_secure_style"
                     android:hint="@string/txt_confirmation"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signup_mail"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                style="@style/til_secure_style">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_signup_mail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/tiet_secure_style"
                     android:hint="@string/txt_mail"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/txt_signup_back_to_connection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12dp"
+                style="@style/message_secure_style"
                 android:text="@string/back_to_connection" />
 
             <Button
                 android:id="@+id/btn_signup_send_inscription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_send_inscription"
-                android:layout_marginTop="20dp" />
+                style="@style/submit_button"
+                android:text="@string/button_send_inscription" />
 
         </LinearLayout>
     </LinearLayout>
