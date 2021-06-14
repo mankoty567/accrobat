@@ -11,14 +11,15 @@ import java.util.Map;
 import site.nohan.protoprogression.Network.APIRequestGET;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
+import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 import site.nohan.protoprogression.View.ui.home.SubscribeListRecordsAdapter;
 
 public class RecordRequest extends APIRequestGET {
     /******************************************
      * Constructeur de la requête
      ******************************************/
-    public RecordRequest(Activity activity, int id, SubscribeListRecordsAdapter subscribeListRecordsAdapter) {
-        super(activity, "challenge/"+id+"/records", new RecordResponse(activity, subscribeListRecordsAdapter));
+    public RecordRequest(Activity activity, int id, SubscribeListRecordsAdapter subscribeListRecordsAdapter, SubscribeFragment  subscribeFragment) {
+        super(activity, "challenge/"+id+"/records", new RecordResponse(activity, subscribeListRecordsAdapter, subscribeFragment));
         Log.d("net", this.getUrl());
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();

@@ -35,5 +35,5 @@
     <string name="challenge_title">Title Challenge</string>
     <string name="challenge_date">Date Challenge</string>
     <string name="challenge_description">Description Challenge</string>
-    <string name="records">Records</string>
+    <string name="records">Classement</string>
 </resources>
