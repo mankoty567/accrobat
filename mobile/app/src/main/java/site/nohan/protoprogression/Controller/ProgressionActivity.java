@@ -6,9 +6,12 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Timer;
 
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
@@ -20,10 +23,10 @@ import site.nohan.protoprogression.R;
 
 public class ProgressionActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("edf", "create" );
         this.setContentView(R.layout.progression);
         ConnectionManager connectionManager = new ConnectionManager(this);
 
@@ -39,19 +42,4 @@ public class ProgressionActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        new SaveParticipationRequest(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId,
-                new SaveParticipationResponse(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId)
-        );
-    }
 }

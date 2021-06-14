@@ -4,14 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.view.inputmethod.InlineSuggestionsRequest;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Event;
@@ -103,15 +99,15 @@ public class DataBase {
                 ");");
 
         bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT_FAILED_TO_SEND(" +
-                "PARTICIPATION_ID," +
-                "TYPE," +
-                "DATA" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER" +
                 ");");
 
         bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT(" +
-                "PARTICIPATION_ID," +
-                "TYPE," +
-                "DATA" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER" +
                 ");");
 
         //Créer la rangée unique
@@ -355,7 +351,7 @@ public class DataBase {
     }
 
     public static synchronized void addFailEvent(int participationId, TypeEvent typeEvent, int data){
-        Log.e("DB",  "Ajout d'un event " + typeEvent.toString());
+        Log.e("DB",  "Ajout d'un event faild" + typeEvent.toString());
         bdd.execSQL("INSERT INTO EVENT_FAILED_TO_SEND VALUES(" +
                 participationId + ", \"" +
                 typeEvent.toString() +"\"," +
@@ -364,7 +360,7 @@ public class DataBase {
         );
     }
 
-    public static synchronized void addEvent(int participationId, TypeEvent typeEvent, int data){
+    public static synchronized void addNewEvent(int participationId, TypeEvent typeEvent, int data){
         Log.e("DB",  "Ajout d'un event " + typeEvent.toString());
         bdd.execSQL("INSERT INTO EVENT VALUES(" +
                 participationId + ", \"" +
@@ -395,10 +391,16 @@ public class DataBase {
     }
 
 
-
-    public static synchronized void clearEvents(){
-        bdd.execSQL("DELETE FROM EVENT_FAILED_TO_SEND;");
+    public static synchronized void deleteFailedToSend(int participationId, TypeEvent typeEvent, int data) {
+        Log.e("DB", "Suppression d'un event failed" + typeEvent.toString());
+        bdd.execSQL("DELETE FROM EVENT_FAILED_TO_SEND WHERE " +
+                "PARTICIPATION_ID=" + participationId + " AND " +
+                "TYPE like \"" + typeEvent.toString() + "\" AND " +
+                "DATA = " + data + "" + ";"
+        );
     }
 
-
+    public static synchronized boolean needToSyncEventWithAPI(){
+        return !getFailEvents().isEmpty();
+    }
 }

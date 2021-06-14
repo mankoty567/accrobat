@@ -34,22 +34,6 @@ public class DirectionController implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(Map.mapActuelle.cheminActuel != null) {
-            Map.mapActuelle.cheminActuel.complete = true;
-            new SaveParticipationRequest(
-                    this.activity,
-                    TypeEvent.ARIVEE,
-                    this.direction.objectif.id,
-                    Map.mapActuelle.id,
-                    new SaveParticipationResponse(
-                            this.activity,
-                            TypeEvent.ARIVEE,
-                            this.direction.objectif.id,
-                            Map.mapActuelle.id
-                    )
-            );
-
-        }
         new SaveParticipationRequest(
                 this.activity,
                 TypeEvent.DEPART,

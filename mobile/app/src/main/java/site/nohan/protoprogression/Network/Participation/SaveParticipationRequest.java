@@ -41,9 +41,8 @@ public class SaveParticipationRequest extends APIRequestPOST {
         this.type = type;
         this.activity = activity;
 
-
-        if(!ConnectionManager.isConnected(activity)){
-            Log.e("NET", "déconnecté" );
+        if(ConnectionManager.wasDisconnected()){
+            Log.e("NET", "La requête de participation ne sera pas envoyée" );
             DataBase.addFailEvent(id, type, data);
             return;
         }
@@ -61,16 +60,6 @@ public class SaveParticipationRequest extends APIRequestPOST {
     }
 
 
-    public SaveParticipationRequest(Activity activity, TypeEvent type, int id, SaveParticipationResponse apiListenner) {
-        super(activity, "event/", apiListenner);
-        Log.e("update", type.toString() + " id: "+ id   );
-        this.id = id;
-        this.type = type;
-
-        APIRequestPOST.queue.add(this);
-        APIRequestPOST.queue.start();
-
-    }
 
     /******************************************
      * Méthode utilisé pour définir le type du BODY de la requête

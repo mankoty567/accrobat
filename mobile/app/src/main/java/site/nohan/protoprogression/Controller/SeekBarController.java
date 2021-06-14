@@ -97,6 +97,23 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         }
 
         if(progress == 100){
+            if(Map.mapActuelle.cheminActuel != null) {
+            Log.e("Direction", "Arrivé au bout du chemin ' "+ Map.mapActuelle.cheminActuel.nom + " '" );
+            Map.mapActuelle.cheminActuel.complete = true;
+            new SaveParticipationRequest(
+                    this.activity,
+                    TypeEvent.ARIVEE,
+                    Map.mapActuelle.cheminActuel.objectifId,
+                    Map.mapActuelle.id,
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.ARIVEE,
+                            Map.mapActuelle.cheminActuel.objectifId,
+                            Map.mapActuelle.id
+                    )
+            );
+
+        }
             if(directionLayout.getChildCount() < 1){
                 Log.e("chld", ""+directionLayout.getChildCount());
 
