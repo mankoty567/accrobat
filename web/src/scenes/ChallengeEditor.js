@@ -182,7 +182,6 @@ let ChallengeEditor = ({
       ];
       text = '100 mètres';
     }
-    const center = L.polygon(positions).getBounds().getCenter();
     return (
       <>
         <Marker
@@ -195,6 +194,78 @@ let ChallengeEditor = ({
         <Marker
           position={positions[1]}
           icon={createLineAnchorIcon()}
+        />
+      </>
+    );
+  };
+
+  let Line = (element) => {
+    var line = element.line;
+    const startMarker = markers.find(
+      (m) => m.id === line.PointStartId,
+    );
+    const endMarker = markers.find((m) => m.id === line.PointEndId);
+    const [positions, setPositions] = useState(() => [
+      [startMarker.y, startMarker.x],
+      ...line.path.map((elem) => {
+        return [elem[1], elem[0]];
+      }),
+      [endMarker.y, endMarker.x],
+    ]);
+
+    useEffect(() => console.log(positions), [positions]);
+
+    return (
+      <>
+        {positions.map((pos, idx) => {
+          if (0 < idx && idx < positions.length - 1) {
+            return (
+              <Marker
+                draggable
+                position={pos}
+                icon={createLineAnchorIcon()}
+                eventHandlers={{
+                  dragend: (event) => {
+                    var coords = event.target._latlng;
+                    if (!inBounds(coords)) {
+                      coords = fitInBounds(coords);
+                    }
+                    updateLine(line.id, {
+                      path: positions.map((p, i) => {
+                        if (i == idx) return [coords.lat, coords.lng];
+                        else return p;
+                      }),
+                    }).then((line) => {
+                      var test = [
+                        // [startMarker.y, startMarker.x],
+                        ...line.path.map((elem) => {
+                          return [elem[0], elem[1]];
+                        }),
+                        // [endMarker.y, endMarker.x],
+                      ];
+                      setPositions(test);
+                    });
+                  },
+                }}
+              />
+            );
+          } else {
+            return null;
+          }
+        })}
+        <Polyline
+          eventHandlers={{
+            contextmenu: (event) => {
+              setSelectedLine(line);
+              event.originalEvent.view.L.DomEvent.stopPropagation(
+                event,
+              );
+              handleContext(event, 'line');
+            },
+          }}
+          positions={positions}
+          key={line.id}
+          color={'black'}
         />
       </>
     );
@@ -272,7 +343,7 @@ let ChallengeEditor = ({
         setLines(newLines);
       })
       .then(() => {
-        setIsLoading(true);
+        setIsLoading(false);
       });
   };
 
@@ -340,15 +411,17 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
-    var linesToUpdate = lines.filter(
-      (val) =>
-        val.PointStartId == marker.id || val.PointEndId == marker.id,
-    );
-    linesToUpdate.forEach((line) => {
-      setObstacles((current) =>
-        current.filter((val) => val.SegmentId != line.id),
-      );
-    });
+    lines
+      .filter(
+        (val) =>
+          val.PointStartId == marker.id ||
+          val.PointEndId == marker.id,
+      )
+      .forEach((line) => {
+        setObstacles((current) =>
+          current.filter((val) => val.SegmentId != line.id),
+        );
+      });
     setLines((current) =>
       current.filter(
         (val) =>
@@ -364,24 +437,23 @@ let ChallengeEditor = ({
   };
 
   //Update un marker
-  let updateMarker = (marker) => {
-    API.checkpoint.updateMarker(marker).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-    setMarkers((current) =>
-      current.filter((val) => {
-        if (val.id == marker.id) val = marker;
-        return val;
-      }),
-    );
+  let updateMarker = (markerid, changes) => {
+    API.checkpoint
+      .updateMarker({ id: markerid, ...changes })
+      .then((marker) => {
+        setValid(false);
+        setMarkers((current) =>
+          current.map((val) => (val.id === markerid ? marker : val)),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let getMarkerCoordsFromId = (id) => {
-    var marker = markers.filter((current) => {
-      if (current.id == id) return current;
-    });
-    return [marker[0].x, marker[0].y];
+    var marker = markers.find((m) => m.id == id);
+    return [marker.x, marker.y];
   };
 
   //Ajoute une ligne
@@ -399,6 +471,18 @@ let ChallengeEditor = ({
         res.path = res.path.map((e) => [e[0], e[1]]);
         setLines((current) => [...current, res]);
         setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  let updateLine = (lineid, changes) => {
+    return API.segment
+      .updateSegment({ id: lineid, ...changes })
+      .then((res) => {
+        console.log(res);
+        return res;
       })
       .catch((err) => {
         console.log(err);
@@ -439,30 +523,22 @@ let ChallengeEditor = ({
   };
 
   let updateObstacle = (obstacle) => {
-    API.obstacle.updateObstacle(obstacle).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-    var segment = lines.filter((current) => {
-      if (current.id == obstacle.SegmentId) return current;
-    });
-    var pointStart = getMarkerCoordsFromId(segment[0].PointStartId);
-    var pointEnd = getMarkerCoordsFromId(segment[0].PointEndId);
-    var positions = [
-      [pointStart[1], pointStart[0]],
-      ...segment[0].path.map((elem) => {
-        return [elem[1], elem[0]];
-      }),
-      [pointEnd[1], pointEnd[0]],
-    ];
-    var coords = placeObstacle(positions, obstacle.distance);
-    obstacle.x = coords[1];
-    obstacle.y = coords[0];
-    setObstacles(
-      obstacles.map((item) =>
-        item.id == obstacle.id ? { ...item, obstacle } : item,
-      ),
-    );
+    API.obstacle
+      .updateObstacle(obstacle)
+      .then(() => {
+        setValid(false);
+        setObstacles((current) => {
+          console.log(current);
+          return current.map((item) => {
+            return item.id == obstacle.id
+              ? { ...item, ...obstacle }
+              : item;
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let removeObstacle = (obstacle) => {
@@ -579,10 +655,6 @@ let ChallengeEditor = ({
       });
   };
 
-  // useEffect(() => {
-  //   console.log(obstacles);
-  //   console.log('update');
-  // }, [obstacles]);
   useEffect(() => initializeMap(challenge_id), []);
   useEffect(() => {
     if (!valid) {
@@ -597,7 +669,7 @@ let ChallengeEditor = ({
         aria-describedby="content"
         open={open}
       >
-        {isLoading ? (
+        {!isLoading ? (
           <>
             <ContextMenu
               data={contextMenu}
@@ -656,7 +728,6 @@ let ChallengeEditor = ({
                   editMode={editMode}
                   setEditMode={setEditMode}
                   lines={lines}
-                  setLines={setLines}
                   setCurrentMarker={setCurrentMarker}
                   setCurrentLine={setCurrentLine}
                   currentLine={currentLine}
@@ -680,43 +751,35 @@ let ChallengeEditor = ({
                   updateObstacle={updateObstacle}
                   getMarkerCoordsFromId={getMarkerCoordsFromId}
                   placeObstacle={placeObstacle}
+                  updateMarker={updateMarker}
                 />
-                {lines.map((element) => {
-                  try {
-                    const startMarker = markers.find(
-                      (m) => m.id === element.PointStartId,
-                    );
-                    const endMarker = markers.find(
-                      (m) => m.id === element.PointEndId,
-                    );
-                    const positions = [
-                      [startMarker.y, startMarker.x],
-                      ...element.path.map((elem) => {
-                        return [elem[1], elem[0]];
-                      }),
-                      [endMarker.y, endMarker.x],
-                    ];
-                    return (
-                      <Polyline
-                        eventHandlers={{
-                          contextmenu: (event) => {
-                            setSelectedLine(element);
-                            event.originalEvent.view.L.DomEvent.stopPropagation(
-                              event,
-                            );
-                            handleContext(event, 'line');
-                          },
-                        }}
-                        positions={positions}
-                        key={element.id}
-                        color={'black'}
-                      />
-                    );
-                  } catch (err) {
-                    console.error(err);
-                  }
+                {lines.map((line) => {
+                  return <Line line={line} />;
                 })}
                 {obstacles.map((item) => {
+                  var segment = lines.find(
+                    (l) => l.id == item.SegmentId,
+                  );
+                  var pointStart = getMarkerCoordsFromId(
+                    segment.PointStartId,
+                  );
+                  var pointEnd = getMarkerCoordsFromId(
+                    segment.PointEndId,
+                  );
+                  var positions = [
+                    [pointStart[1], pointStart[0]],
+                    ...segment.path.map((elem) => {
+                      return [elem[1], elem[0]];
+                    }),
+                    [pointEnd[1], pointEnd[0]],
+                  ];
+                  var coords = placeObstacle(
+                    positions,
+                    item.distance,
+                  );
+                  item.x = coords[1];
+                  item.y = coords[0];
+
                   return (
                     <Marker
                       eventHandlers={{
