@@ -87,6 +87,7 @@ var routes = [
                     segmentsParcourus: [],
                     type: 'Segment',
                     distance: 0.0,
+                    distancePourcentage: 0.0,
                     entity: {
                         id: 0,
                         path: [[0.0, 0.0]],

@@ -99,6 +99,27 @@ module.exports = {
 
     return params;
   },
+  /**
+   * Renvoit le pourcentage de progression sur le segment
+   * @param {*} path Tableau [[0,0]] contenent PointStart et PointEnd
+   * @param {*} echelle 1 = combien de mêtres
+   * @param {*} distance Distance parcourue
+   * @returns
+   */
+  calcSegmentPourcentage: (path, echelle, distance) => {
+    let d = 0;
+
+    for (let i = 0; i < path.length - 1; i++) {
+      d =
+        d +
+        Math.sqrt(
+          Math.pow(path[i][0] - path[i + 1][0], 2) +
+            Math.pow(path[i][1] - path[i + 1][1], 2)
+        );
+    }
+
+    return d / distance;
+  },
 };
 
 function resizeImage(b64, size) {

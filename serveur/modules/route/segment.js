@@ -13,6 +13,7 @@ var routes = [
         permission: 100,
         name: "Création d'un segment",
         description: 'Ajoute un segment rataché aux PointStart et PointEnd',
+        test: true,
         body: {
             PointStartId: 'number',
             PointEndId: 'number',
