@@ -21,6 +21,8 @@ public class Map {
     public Date date;
     public String description;
 
+    public int participation;
+
     public int accompli;
 
     public PointPassage dernierPointPassage;

@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import site.nohan.protoprogression.Model.Avatar;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
@@ -78,7 +79,8 @@ public class ChallengesResponse implements APIListenner {
                 map.libelle = jMap.getString("title");
                 map.date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(jMap.getString("createdAt"));
                 map.description = jMap.getString("description");
-                new AvatarMapRequest(activity, map.id, AvatarMapRequest.bitmaps);
+                Log.e("onResponse: ", map.id+"");
+                new AvatarMapRequest(activity, map.id);
                 Map.maps.add(map);
             }
 

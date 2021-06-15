@@ -39,6 +39,11 @@ public class ConnectionManager extends ConnectivityManager.NetworkCallback {
                     new SaveParticipationResponse(
                             activity, event.getTypeEvent(), event.getData(), event.getParticipationId()
                     ));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //DataBase.deleteFailedToSend(event.getParticipationId(), event.getTypeEvent(), event.getData());
         }
         Log.e("DB", "" +events.size() + " events syncronisés ");

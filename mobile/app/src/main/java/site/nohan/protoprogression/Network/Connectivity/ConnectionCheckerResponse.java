@@ -18,7 +18,6 @@ public class ConnectionCheckerResponse implements APIListenner {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("Net" , "pas de co");
         if(!ConnectionManager.wasDisconnected()) {
             Log.e("Net" , "La connexion a été perdue \n" + error.toString());
         }
@@ -27,7 +26,6 @@ public class ConnectionCheckerResponse implements APIListenner {
 
     @Override
     public void onResponse(Object response) {
-        Log.e("Net" , "co ok\n" +response.toString());
         if(ConnectionManager.wasDisconnected()) {
             ConnectionManager.setConnected();
             Log.e("Net" , "La connexion a été récupérée ");
