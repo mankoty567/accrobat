@@ -19,4 +19,16 @@ Et enfin le choix de Nginx comme Reverse Proxy est très pragmatique, c'est celu
 
 ### Front-End Web
 
+Concernant l'application web, notre choix s'est porté sur React pour diverses raisons :
+* La première et la plus évidente est nos connaissances sur ce framework. Nous nous sentions capable de répondre au besoin évoqué à l'aide de React grâce aux nombreux cours, mais aussi aux connaissances que nous avions sur les framework en JavaScript.
+* La seconde est que certain professeurs de l'équipe pédagogique ont des connaissances sur le sujet, nous pouvions donc les soliciter en cas de besoin.
+* La dernière raison est que les personnes chargées du développement web appréciait tout simplement cette technologie.
+
+Nous avions choisi de partir sur du JavaScript et non du TypeScript par expérience, car le TypeScript réagit assez mal avec tout ce qui est élément mutable du DOM ou bien tout simplement localStorage, et nous ne voulions pas définir des types `any` dans toute l'application.
+
+Concernant le framework CSS, nous avions décidé de partir sur Material-Ui, car nous voulions essayer d'apprendre plus en profondeur sur ce framework CSS, mais aussi pour gagner beaucoup de temps dans tout ce qui concerne style d'interfaces.
+
+Enfin, concernant le coeur de l'application, nous avons penché pour Leaflet en tant que système de CRS, pour la carte donc. Il y avait diverses possiblités, cependant, en connaissance de quelques projets, comme la [carte communautaire interactive de satisfactory](https://satisfactory-calculator.com/en/interactive-map), nous savions que répondre aux besoins énoncés tel que créer un moteur de jeu basé sur une carte virtuelle serait possible avec Leaflet.
+
+
 ### Front-End Mobile
