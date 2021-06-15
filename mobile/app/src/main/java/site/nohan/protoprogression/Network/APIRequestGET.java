@@ -12,6 +12,7 @@ public class APIRequestGET extends StringRequest {
      * Création des variables
      ******************************************/
     public static RequestQueue queue;
+    public static String SERVERURL = "https://api.acrobat.bigaston.dev/";
     public static String APIURL = "https://api.acrobat.bigaston.dev/api/";
 
     /******************************************

@@ -46,6 +46,7 @@ public class SubscribeFragment extends Fragment {
     public static int position;
     private int idChallenge;
 
+    private TextView tv_records;
     private ListView lv_records;
 
     /************************************************************************
@@ -82,10 +83,12 @@ public class SubscribeFragment extends Fragment {
             tv_title.setText(Map.maps.get(position).libelle);
             tv_date.setText("Créé le : " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
             unencodedHtml = Map.maps.get(position).description;
+            unencodedHtml = "<div style='background-color : #F2E8C7'>" + unencodedHtml + "</div>";
         }
 
         String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(),
                 Base64.NO_PADDING);
+
         wvDescription.loadData(encodedHtml, "text/html", "base64");
         wvDescription.setHorizontalScrollBarEnabled(false);
         wvDescription.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -114,9 +117,10 @@ public class SubscribeFragment extends Fragment {
             btn_subscribe.setText("S'inscrire");
         }
 
+        tv_records = root.findViewById(R.id.txt_title_records);
         lv_records = root.findViewById(R.id.lv_subscribe_records);
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
-        new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter);
+        new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter, this);
         lv_records.setAdapter(subscribeAdapter);
 
         return root;
@@ -127,6 +131,13 @@ public class SubscribeFragment extends Fragment {
      ******************************************/
     public void subscribeToChallenge(){
         new SubscribeRequest(this.getActivity(), idChallenge, this);
+    }
+
+    /******************************************
+     * Méthode utilisé pour rendre invisible le titre Classement
+     ******************************************/
+    public void hideTitleRecords(int visibility){
+        tv_records.setVisibility(visibility);
     }
 
     /******************************************

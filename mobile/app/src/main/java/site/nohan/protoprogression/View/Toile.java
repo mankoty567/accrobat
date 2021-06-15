@@ -201,7 +201,7 @@ public class Toile extends View {
                     );
 
                     // On dessine la progression uniquement du chemin sur lequel on est
-                    if (c == Map.mapActuelle.cheminActuel) {
+                    if (c == Map.mapActuelle.cheminActuel && !Map.mapActuelle.cheminActuel.complete) {
 
                         this.stylo.setStrokeWidth(15);
                         // Si on est entre deux points

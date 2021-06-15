@@ -4,19 +4,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.view.inputmethod.InlineSuggestionsRequest;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 import site.nohan.protoprogression.Model.Chemin;
+import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Permission;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Model.User;
 
 public class DataBase {
@@ -98,6 +96,18 @@ public class DataBase {
                 "PARTICIPATION_ID," +
                 "DURATION," +
                 "USERNAME" +
+                ");");
+
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT_FAILED_TO_SEND(" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER" +
+                ");");
+
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT(" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER" +
                 ");");
 
         //Créer la rangée unique
@@ -291,7 +301,7 @@ public class DataBase {
 
     private static ArrayList<Integer> recordsParticipationID = new ArrayList<Integer>();
 
-    public static void addRecord(int idParticipation, long duration, String username){
+    public static synchronized void addRecord(int idParticipation, long duration, String username){
         bdd.execSQL("DELETE FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+ ";");
         bdd.execSQL("INSERT INTO RECORDS VALUES(" +
                 idParticipation + ", " +
@@ -302,14 +312,14 @@ public class DataBase {
         recordsParticipationID.add(idParticipation);
     }
 
-    public static void resetRecords(){
+    public static synchronized void resetRecords(){
         bdd.execSQL("DELETE FROM RECORDS;");
         recordsParticipationID.clear();
     }
 
     public static long getRecordDuration(int position){
         int idParticipation = -1;
-        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+        if(recordsParticipationID.size() > 0 && recordsParticipationID.size() < position) idParticipation = recordsParticipationID.get(position);
 
         Cursor resultats = bdd.rawQuery("SELECT DURATION FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
@@ -319,9 +329,9 @@ public class DataBase {
         return resultats.getLong(0);
     }
 
-    public static String getRecordUsername(int position){
+    public static synchronized String getRecordUsername(int position){
         int idParticipation = -1;
-        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+        if(recordsParticipationID.size() > 0 && recordsParticipationID.size() < position) idParticipation = recordsParticipationID.get(position);
 
         Cursor resultats = bdd.rawQuery("SELECT USERNAME FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
@@ -331,12 +341,66 @@ public class DataBase {
         return resultats.getString(0);
     }
 
-    public static int getRecordSize(){
+    public static synchronized int getRecordSize(){
         Cursor resultats = bdd.rawQuery("SELECT COUNT (*) FROM RECORDS ;",null);
         if(resultats.getCount() == 0)
             return -1;
         resultats.moveToFirst();
 
         return resultats.getInt(0);
+    }
+
+    public static synchronized void addFailEvent(int participationId, TypeEvent typeEvent, int data){
+        Log.e("DB",  "Ajout d'un event faild" + typeEvent.toString());
+        bdd.execSQL("INSERT INTO EVENT_FAILED_TO_SEND VALUES(" +
+                participationId + ", \"" +
+                typeEvent.toString() +"\"," +
+                data + "" +
+                ");"
+        );
+    }
+
+    public static synchronized void addNewEvent(int participationId, TypeEvent typeEvent, int data){
+        Log.e("DB",  "Ajout d'un event " + typeEvent.toString());
+        bdd.execSQL("INSERT INTO EVENT VALUES(" +
+                participationId + ", \"" +
+                typeEvent.toString() +"\"," +
+                data + "" +
+                ");"
+        );
+    }
+
+    public static synchronized  ArrayList<Event> getFailEvents(){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND;", null);
+        if(eventsCursor.getCount() == 0){
+            Log.e("restoreProgression", "rien à restorer pour les chemins");
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+
+    public static synchronized void deleteFailedToSend(int participationId, TypeEvent typeEvent, int data) {
+        Log.e("DB", "Suppression d'un event failed" + typeEvent.toString());
+        bdd.execSQL("DELETE FROM EVENT_FAILED_TO_SEND WHERE " +
+                "PARTICIPATION_ID=" + participationId + " AND " +
+                "TYPE like \"" + typeEvent.toString() + "\" AND " +
+                "DATA = " + data + "" + ";"
+        );
+    }
+
+    public static synchronized boolean needToSyncEventWithAPI(){
+        return !getFailEvents().isEmpty();
     }
 }
