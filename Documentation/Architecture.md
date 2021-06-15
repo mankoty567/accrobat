@@ -1,6 +1,6 @@
 # Architecture de l'application
 
-![Architecture](./Architecture.png)
+![Architecture](./img/Architecture.png)
 
 ## Choix de technologie
 L'application est séparée en 3 parties. Le Front-End Web, le Front-End Mobile et le Back-End. Dans chacunes des parties nous avons du faire des choix de technologies.
