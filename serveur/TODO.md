@@ -59,4 +59,4 @@ type:
 - [x] Récupération des records
 - [x] Quand on accepte une demande des utilisateurs, ça crée automatiquement un sondage
 - [x] Route pour éditer les challengeToVote
-- [ ] Changer middleware pour passer a Utilisateur, Créateur, Administrateur (Utilisateur, comme avant, Créateur, Admin mais de tous les challenges, Administrateur, peut tout faire)
+- [x] Changer middleware pour passer a Utilisateur, Créateur, Administrateur (Utilisateur, comme avant, Créateur, Admin mais de tous les challenges, Administrateur, peut tout faire)

@@ -18,9 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   User.associate = function (models) {
-    models.User.belongsToMany(models.Challenge, {
-      through: models.UserChallengeAdmin,
-    });
     models.User.belongsToMany(models.ChallengeToVote, {
       through: models.UserChallengeToVote,
     });

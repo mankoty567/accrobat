@@ -74,6 +74,11 @@ h4 {
   text-align: justify;
 }
 
+.permission {
+  border-radius: 3px;
+  padding: 5px;
+}
+
 .method {
   border-radius: 3px;
   padding: 5px;
@@ -153,4 +158,33 @@ li {
 
 .bdd:not(.hidden) {
   display: block;
+}
+
+/*Permissions*/
+.permissionsTitle {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.permissionsTitle::before {
+  content: '▶';
+}
+
+.permissionsTitle.opened::before {
+  content: '▼';
+}
+
+.permissions {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.permissions:not(.hidden) {
+  display: block;
+}
+
+.permissions li {
+  text-align: justify;
+  margin: 10px;
 }

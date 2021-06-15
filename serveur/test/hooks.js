@@ -2,10 +2,6 @@ const bdd = require('../models');
 
 const { server } = require('../serveur');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const path = require('path');
-
-const mocha = require('mocha');
 
 const ADMIN_PASSWORD = '123456';
 
@@ -24,7 +20,7 @@ module.exports.mochaHooks = {
       username: 'admin',
       password: bcrypt.hashSync(ADMIN_PASSWORD, 12),
       email: 'admin@example.com',
-      permission: 100,
+      permission: 1000,
       level: 0,
       xp: 0,
     });

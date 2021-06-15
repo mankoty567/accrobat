@@ -15,9 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Challenge.associate = function (models) {
-    models.Challenge.belongsToMany(models.User, {
-      through: models.UserChallengeAdmin,
-    });
     models.Challenge.hasMany(models.Participation, { onDelete: 'cascade' });
     models.Challenge.hasMany(models.PointPassage, { onDelete: 'cascade' });
   };
