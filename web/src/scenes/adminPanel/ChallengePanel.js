@@ -39,7 +39,6 @@ let ChallengePanel = () => {
       img_avatar = avatar;
     }
 
-    console.log({ title, description, scale });
     API.challenge
       .createChallenge({
         img_avatar,
@@ -61,7 +60,7 @@ let ChallengePanel = () => {
     getChallenges();
   }, [open]);
 
-  const Menu = ({ index }) => {
+  const Menu = ({ index, published }) => {
     const handleDelete = () => {
       API.challenge
         .deleteChallenge(index)
@@ -71,23 +70,45 @@ let ChallengePanel = () => {
           ),
         );
     };
-    const handleClone = () => {};
+    const handleClone = () => {
+      API.challenge
+        .cloneChallenge(index)
+        .then(() =>
+          setChallenges((current) => [
+            ...current,
+            current.find((elem) => elem.id === index),
+          ]),
+        )
+        .catch((err) => console.error(err));
+    };
     const handleEdit = () => {
       setSelected(index);
       setOpen(true);
     };
     return (
       <>
-        <Button startIcon={<EditIcon />} onClick={() => handleEdit()}>
-          Modifier
-        </Button>
-        <Button startIcon={<LayersIcon />}>Dupliquer</Button>
+        {!published ? (
+          <Button
+            startIcon={<EditIcon />}
+            onClick={() => handleEdit()}
+          >
+            Modifier
+          </Button>
+        ) : null}
         <Button
-          startIcon={<DeleteOutlineIcon />}
-          onClick={() => handleDelete()}
+          startIcon={<LayersIcon />}
+          onClick={() => handleClone()}
         >
-          Supprimer
+          Dupliquer
         </Button>
+        {!published ? (
+          <Button
+            startIcon={<DeleteOutlineIcon />}
+            onClick={() => handleDelete()}
+          >
+            Supprimer
+          </Button>
+        ) : null}
       </>
     );
   };
@@ -129,7 +150,12 @@ let ChallengePanel = () => {
                     challenge={key}
                     index={key.id}
                     key={idx}
-                    actionComponents={<Menu index={key.id} />}
+                    actionComponents={
+                      <Menu
+                        index={key.id}
+                        published={key.published}
+                      />
+                    }
                   />
                 );
               })

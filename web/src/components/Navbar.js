@@ -26,7 +26,9 @@ export const Navbar = () => {
   let location = useLocation();
 
   const [page, setPage] = useState(
-    '/' + location.pathname.split('/')[1],
+    location.pathname.split('/')[1]
+      ? '/' + location.pathname.split('/')[1]
+      : '/home',
   );
   const [userState] = useRecoilState(API.user.userAtom);
 
