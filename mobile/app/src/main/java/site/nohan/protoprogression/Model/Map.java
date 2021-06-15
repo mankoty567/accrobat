@@ -39,6 +39,7 @@ public class Map {
 
 
 
+
     public int getDistanceTotale(){
         double distance = 0d;
         for(PointPassage pointPassage : this.pointPassages){
@@ -76,6 +77,16 @@ public class Map {
         }
         throw new RuntimeException("Aucune arrivée dans la map");
     }
+
+
+    public static Map findById(int mapId) {
+        for(Map map : maps){
+            if(map.id == mapId)
+                return map;
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {

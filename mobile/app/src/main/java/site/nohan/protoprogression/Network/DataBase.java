@@ -114,7 +114,7 @@ public class DataBase {
                 "CREATED_AT DATETIME" +
                 ");");
 
-        bdd.execSQL("CREATE TABLE IF NOT EXISTS SUBSCRIBED(PARICIPATION_ID INTEGER);");
+
 
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
@@ -143,6 +143,22 @@ public class DataBase {
 
 
         return maps;
+    }
+
+    public static synchronized void newProgression(int participationId, int mapId){
+        Map map = Map.findById(mapId);
+        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
+                mapId + ", " +
+                participationId + ", " +
+                "NULL," +
+                "NULL, \"" +
+                map.libelle + "\",\"" +
+                map.description + " \"," +
+                "datetime()," +
+                "datetime()" +
+                ");"
+        );
+        Log.e("newProgression: ", "" + Map.participationId);
     }
 
     public static synchronized void saveProgression(){
@@ -197,7 +213,7 @@ public class DataBase {
     }
 
     public static synchronized void restoreProgression(){
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(resultats.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour la progression");
             return;
@@ -213,7 +229,7 @@ public class DataBase {
         resultats.close();
 
 
-        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+";", null);
+        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(accomplis.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour les chemins");
             return;
@@ -377,7 +393,7 @@ public class DataBase {
                 participationId + ", \"" +
                 typeEvent.toString() +"\"," +
                 data + ", " +
-                "NULL" +
+                "datetime()" +
                 ");"
         );
     }

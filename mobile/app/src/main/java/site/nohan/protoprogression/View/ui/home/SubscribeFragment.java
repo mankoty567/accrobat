@@ -86,8 +86,9 @@ public class SubscribeFragment extends Fragment {
             unencodedHtml = "<div style='background-color : #F2E8C7'>" + unencodedHtml + "</div>";
         }
 
-        String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(),
-                Base64.NO_PADDING);
+
+        String encodedHtml = unencodedHtml!=null ? Base64.encodeToString(unencodedHtml.getBytes(),
+                Base64.NO_PADDING) : "";
 
         wvDescription.loadData(encodedHtml, "text/html", "base64");
         wvDescription.setHorizontalScrollBarEnabled(false);
