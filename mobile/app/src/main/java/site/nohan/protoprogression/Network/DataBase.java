@@ -114,6 +114,8 @@ public class DataBase {
                 "CREATED_AT DATETIME" +
                 ");");
 
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS SUBSCRIBED(PARICIPATION_ID INTEGER);");
+
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
         Log.e("sql","L'utilisateur existe (CODE: "+resultats.getCount()+")");
@@ -374,7 +376,8 @@ public class DataBase {
         bdd.execSQL("INSERT INTO EVENT VALUES(" +
                 participationId + ", \"" +
                 typeEvent.toString() +"\"," +
-                data + "" +
+                data + ", " +
+                "NULL" +
                 ");"
         );
     }
