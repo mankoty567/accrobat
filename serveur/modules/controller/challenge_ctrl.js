@@ -472,7 +472,14 @@ module.exports = {
   },
   get_all_challenge_admin: (req, res) => {
     let query = {
-      attributes: ['id', 'title', 'description', 'echelle', 'createdAt'],
+      attributes: [
+        'id',
+        'title',
+        'description',
+        'echelle',
+        'createdAt',
+        'published',
+      ],
     };
 
     if (req.query.include === 'point') {
