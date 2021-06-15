@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -11,6 +11,12 @@ import {
   Select,
   Typography,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
@@ -20,11 +26,21 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import RemoveIcon from '@material-ui/icons/Remove';
+import ImageIcon from '@material-ui/icons/Image';
+import Image from '@tiptap/extension-image';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
     return null;
   }
+
+  const [imageDialog, setImageDialog] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+
+  const handleDialogClose = () => {
+    setImageUrl('');
+    setImageDialog(false);
+  };
 
   return (
     <div
@@ -110,6 +126,7 @@ const MenuBar = ({ editor }) => {
                     .run();
                 }
               }}
+              defaultValue={0}
             >
               <MenuItem value={0}>Normal</MenuItem>
               <MenuItem value={1}>Titre 1</MenuItem>
@@ -174,6 +191,47 @@ const MenuBar = ({ editor }) => {
                 <RemoveIcon />
               </IconButton>
             </Tooltip>
+
+            <IconButton
+              onClick={() => {
+                setImageDialog(true);
+              }}
+            >
+              <ImageIcon />
+            </IconButton>
+
+            <Dialog
+              open={imageDialog}
+              onClose={() => setImageDialog(false)}
+            >
+              <DialogTitle>Ajouter une image via url</DialogTitle>
+              <DialogContent>
+                <TextField
+                  label="Url de l'image :"
+                  helperText="Veuillez entrer une url de votre image"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                ></TextField>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => handleDialogClose()}>
+                  Annuler
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    editor
+                      .chain()
+                      .focus()
+                      .setImage({ src: imageUrl })
+                      .run();
+                    handleDialogClose();
+                  }}
+                >
+                  Valider
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </Grid>
       </Grid>
@@ -186,7 +244,7 @@ export default ({ callback }) => {
     onUpdate({ editor }) {
       callback(editor.getHTML());
     },
-    extensions: [StarterKit, Underline],
+    extensions: [StarterKit, Underline, Image],
     content: '',
   });
 

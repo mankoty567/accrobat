@@ -1,6 +1,6 @@
 import { Typography, Tabs, Tab } from '@material-ui/core';
 import ChallengePanel from './ChallengePanel';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Link,
   BrowserRouter as Router,
@@ -9,7 +9,6 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import PropositionPanel from './PropositionPanel';
 import UserAdminPanel from './UserAdminPanel';
 import ChallengeToVote from './ChallengeToVote';
@@ -19,8 +18,9 @@ import { API } from '../../eventApi/api';
 let AdminPanel = () => {
   let location = useLocation();
 
-  const history = createBrowserHistory();
-  const [page, setPage] = useState(location.pathname);
+  const [page, setPage] = useState(
+    '/' + location.pathname.split('/')[2],
+  );
   const [userState] = useRecoilState(API.user.userAtom);
 
   /**
@@ -31,6 +31,8 @@ let AdminPanel = () => {
   const handleChanges = (event, value) => {
     setPage(value);
   };
+
+  useEffect(() => console.log(page), [page]);
 
   return (
     <>
@@ -43,51 +45,51 @@ let AdminPanel = () => {
           <Tab
             label="Gestionnaire de challenge"
             component={Link}
-            to="/admin/editor"
-            value="/admin/editor"
+            to="/editor"
+            value="/editor"
           />
           <Tab
             label="Proposition utilisateurs"
             component={Link}
-            to="/admin/propositions"
-            value="admin/propositions"
+            to="/propositions"
+            value="/propositions"
           />
           {userState.permission > 100 ? (
             <Tab
               label="Gestionnaire des utilisateurs"
               component={Link}
-              to="/admin/user"
-              value="/admin/user"
+              to="/user"
+              value="/user"
             />
           ) : null}
 
           <Tab
             label="Historique des fraudes"
             component={Link}
-            to="/admin/fraud"
-            value="/admin/fraud"
+            to="/fraud"
+            value="/fraud"
           />
         </Tabs>
         <Switch>
-          <Route path="/admin/editor">
+          <Route path="/editor">
             <ChallengePanel />
           </Route>
-          <Route path="/admin/propositions">
+          <Route path="/propositions">
             <PropositionPanel />
             <ChallengeToVote />
           </Route>
-          <Route path="/admin/user">
+          <Route path="/user">
             {userState.permission > 100 ? (
               <UserAdminPanel />
             ) : (
               <Redirect path="admin/editor" />
             )}
           </Route>
-          <Route path="/admin/fraud">
+          <Route path="/fraud">
             <p>Not implemented yet</p>
           </Route>
           <Route path="/">
-            <Redirect path="/editor" />
+            <Redirect to="/editor" />
           </Route>
         </Switch>
       </Router>

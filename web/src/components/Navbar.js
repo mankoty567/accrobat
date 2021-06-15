@@ -26,15 +26,10 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 export const Navbar = () => {
   let location = useLocation();
 
-  const [page, setPage] = useState(location.pathname);
+  const [page, setPage] = useState(
+    '/' + location.pathname.split('/')[1],
+  );
   const [userState] = useRecoilState(API.user.userAtom);
-
-  const history = createBrowserHistory();
-
-  //En cas de changement d'url, est
-  useEffect(() => {
-    handleChanges(null, location.pathname.split('/')[1]);
-  }, [history]);
 
   /**
    * En cas de changement de valeurs
@@ -81,6 +76,8 @@ export const Navbar = () => {
     prevOpen.current = open;
   }, [open]);
 
+  useEffect(() => console.log(page), [page]);
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -93,37 +90,41 @@ export const Navbar = () => {
           />
 
           {userState ? (
-            <>
-              <Tab
-                label="Tous les challenges"
-                component={Link}
-                to="/inscriptions"
-                value="/inscriptions"
-              />
-              <Tab
-                label="Vos challenges"
-                component={Link}
-                to="/challenges"
-                value="/challenges"
-              />
-              {userState.permission > 99 ? (
-                <Tab
-                  label="Administration"
-                  component={Link}
-                  value="admin"
-                  style={{ color: '#9c1809' }}
-                  to="/admin"
-                />
-              ) : null}
-            </>
-          ) : (
+            <Tab
+              label="Vos challenges"
+              component={Link}
+              to="/challenges"
+              value="/challenges"
+            />
+          ) : null}
+
+          {/* {userState ? (
+            <Tab
+              label="Tous les challenges"
+              component={Link}
+              to="/inscriptions"
+              value="/inscriptions"
+            />
+          ) : null} */}
+
+          {userState && userState.permission > 99 ? (
+            <Tab
+              label="Administration"
+              component={Link}
+              value="/admin"
+              style={{ color: '#9c1809' }}
+              to="/admin/editor"
+            />
+          ) : null}
+
+          {!userState ? (
             <Tab
               label="Se connecter"
               component={Link}
               to="/login"
               value="/login"
             />
-          )}
+          ) : null}
         </Tabs>
         <Typography
           variant="h3"
@@ -134,6 +135,7 @@ export const Navbar = () => {
         >
           Run's Like
         </Typography>
+        <p>{page}</p>
 
         {userState ? (
           <div
