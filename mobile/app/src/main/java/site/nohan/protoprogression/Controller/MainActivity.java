@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Timer;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.ConnectionManager;
@@ -45,10 +46,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-
-
-
-
     }
 
     public static void setBottomNavigationViewVisibility(int visibility){
@@ -74,6 +71,21 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         if(Map.mapActuelle != null) {
+            //Condition vérifiant le mode sélectionné par l'utilisateur
+            // et activant / désactivant ses fonctionnalités
+            switch (DataBase.pedometerModeSelected) {
+                case 0:
+                    PedometerController.isRunning = false;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 1:
+                    PedometerController.isRunning = true;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 2:
+                    DataBase.pedometerController.bikeAction();
+                    break;
+            }
             new SaveParticipationRequest(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId,
                     new SaveParticipationResponse(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId)
             );

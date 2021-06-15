@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
@@ -97,6 +98,23 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         }
 
         if(progress == 100){
+
+            //Condition vérifiant le mode sélectionné par l'utilisateur
+            // et activant / désactivant ses fonctionnalités
+            switch (DataBase.pedometerModeSelected) {
+                case 0:
+                    PedometerController.isRunning = false;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 1:
+                    PedometerController.isRunning = true;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 2:
+                    DataBase.pedometerController.bikeAction();
+                    break;
+            }
+
             if(Map.mapActuelle.cheminActuel != null) {
             Log.e("Direction", "Arrivé au bout du chemin ' "+ Map.mapActuelle.cheminActuel.nom + " '" );
             Map.mapActuelle.cheminActuel.complete = true;

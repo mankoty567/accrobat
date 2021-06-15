@@ -21,6 +21,7 @@ import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
+import site.nohan.protoprogression.View.ui.home.HomeFragment;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
 import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 
@@ -64,7 +65,8 @@ public class SubscribeResponse implements APIListenner {
             JSONObject json = new JSONObject((String) response);
             User.challengesSubscribedIDs.add(json.getInt("ChallengeId"));
             Map.participationId = json.getInt("id");
-            subscribeFragment.subscribeToMap(true);
+            HomeFragment.isOnPrivateChallenges = true;
+            subscribeFragment.ShowFragment(R.id.navigation_home);
 
         } catch (JSONException e) {
             e.printStackTrace();
