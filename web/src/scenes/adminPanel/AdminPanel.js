@@ -1,6 +1,6 @@
 import { Typography, Tabs, Tab } from '@material-ui/core';
 import ChallengePanel from './ChallengePanel';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Link,
   BrowserRouter as Router,
@@ -31,8 +31,6 @@ let AdminPanel = () => {
   const handleChanges = (event, value) => {
     setPage(value);
   };
-
-  useEffect(() => console.log(page), [page]);
 
   return (
     <>

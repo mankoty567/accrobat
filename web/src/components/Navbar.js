@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Tabs,
@@ -17,7 +17,6 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { API } from '../eventApi/api';
 import { useRecoilState } from 'recoil';
-import { createBrowserHistory } from 'history';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 /**
@@ -76,8 +75,6 @@ export const Navbar = () => {
     prevOpen.current = open;
   }, [open]);
 
-  useEffect(() => console.log(page), [page]);
-
   return (
     <AppBar position="static">
       <Toolbar>
@@ -135,7 +132,6 @@ export const Navbar = () => {
         >
           Run's Like
         </Typography>
-        <p>{page}</p>
 
         {userState ? (
           <div
