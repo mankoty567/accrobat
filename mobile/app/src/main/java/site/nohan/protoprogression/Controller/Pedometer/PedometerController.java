@@ -35,9 +35,6 @@ public class PedometerController implements SensorEventListener, StepListener {
 
     //Variables d'affichages
     public static TextView tKilometres;
-    private Button bPodometreMarche;
-    private Button bPodometreCourse;
-    private Button bGPSVelo;
     public static SeekBar sbProgression;
 
     //Variable contenant la distance générale parcourue
@@ -60,9 +57,6 @@ public class PedometerController implements SensorEventListener, StepListener {
      *****************************************************************/
     public PedometerController(Activity activityUsed){
         activity = activityUsed;
-        bPodometreMarche = activity.findViewById(R.id.bPodometreMarche);
-        bPodometreCourse = activity.findViewById(R.id.bPodometreCourse);
-        bGPSVelo = activity.findViewById(R.id.bGPSVelo);
         tKilometres = activity.findViewById(R.id.tKilometres);
         sbProgression = activity.findViewById(R.id.seekBar);
 
@@ -82,7 +76,6 @@ public class PedometerController implements SensorEventListener, StepListener {
         if(isGPSOn){
             stopLocationService();
             isGPSOn = false;
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
 
         //Si le podomètre est éteint, on le lance
@@ -97,23 +90,14 @@ public class PedometerController implements SensorEventListener, StepListener {
 
             isPedometerOn = true;
             if(isRunning) {
-                bPodometreCourse.setBackgroundResource(R.drawable.running_bold);
-                bPodometreMarche.setBackgroundResource(R.drawable.walking);
             } else {
-                bPodometreCourse.setBackgroundResource(R.drawable.running);
-                bPodometreMarche.setBackgroundResource(R.drawable.walking_bold);
             }
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
         else{
             sensorManager.unregisterListener(this);
             tKilometres.setText(distance + " ms");
 
             isPedometerOn = false;
-
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
     }
 
@@ -126,8 +110,6 @@ public class PedometerController implements SensorEventListener, StepListener {
             sensorManager.unregisterListener(this);
             //tKilometres.setText("--- kms");
             isPedometerOn = false;
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
         }
 
         //Si le GPS est éteint, on le démarre
@@ -139,18 +121,10 @@ public class PedometerController implements SensorEventListener, StepListener {
                 startLocationService();
             }
             isGPSOn = true;
-
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling_bold);
         }
         else{
             stopLocationService();
             isGPSOn = false;
-
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
 
         }
     }
@@ -163,15 +137,12 @@ public class PedometerController implements SensorEventListener, StepListener {
         if(isGPSOn){
             stopLocationService();
             isGPSOn = false;
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
 
         if(isPedometerOn){
             sensorManager.unregisterListener(this);
             //tKilometres.setText("--- kms");
             isPedometerOn = false;
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
         }
     }
 

@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.ProtoProgression" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/light_gray_main</item>
+        <item name="colorPrimary">@color/blue_button</item>
         <item name="colorPrimaryVariant">@color/bold_gray_main</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->

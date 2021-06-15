@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/background_list" >
+
+    <ImageView
+        android:id="@+id/list_item_icon"
+        style="@style/image_list" />
+
+    <LinearLayout
+        style="@style/vertical_element_list">
+
+        <TextView
+            android:id="@+id/txt_list_title"
+            style="@style/title_list"/>
+
+        <TextView
+            android:id="@+id/txt_list_date"
+            style="@style/green_subtitle_list"
+            android:text="TextView"/>
+
+        <TextView
+            android:id="@+id/txt_list_lastTimeUpdated"
+            style="@style/blue_subtitle_list"
+            android:text="TextView" />
+
+    </LinearLayout>
+</LinearLayout>
