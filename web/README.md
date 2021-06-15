@@ -26,3 +26,15 @@ Il ne faut pas non plus hésiter à mettre des commentaires de fonctions, qui se
 
 Les nommages se font en général en camelCase, concernant les variables d'interface ou même de fonction, soit donc début en minuscule, puis chaque mot débute d'une majuscule.
 
+# 4.Liste des modules utilisés : 
+
+Il ne faut pas hésiter à consulter le [package.json](https://git.unistra.fr/equipe-3/projet-acrobatt/-/blob/feature/FrontWebCreation/web/package.json).
+
+Voici la liste exhaustive des modules mis en place : 
+* **Eslint :** un module qui permet de bannir certaines syntaxes ou façon de faire, afin de maintenir la qualité du code. Autement configurable, mais encore non mis en place. [Lien de la documentation](https://eslint.org/docs/user-guide/configuring/).
+* **Prettier :** un module qui fait office de code formatter pour le projet. Aucune configuration n'est donc requise, et le code est formatté toujours de la même manière, évitant d'avoir des syntaxes différentes pour chaques parties du projet.
+* **Material-ui :** framework CSS très complet bien que légèrement rigide sur certaines opérations, qui permet de mettre en place facilement une interface material design, ainsi qu'un thème mutualisé et de la responsivité. [Lien de la documentation](https://material-ui.com/), puis naviguez sur le menu déroulant de gauche.
+* **Tiptap :** Un éditeur de texte web, disposant de nombreuses extensions et laissant la main au développeur pour intégrer facilement ce qu'il souhaite. Utilisé surtout pour les descriptions en texte riche de challenge. [Lien de la documentation](https://www.tiptap.dev/installation).
+* **Leaflet :** Un module permettant de gérer un système de CRS, et ainsi permettant de créer une carte. Très complet, open-source, bien qu'il demande d'installer une surcouche afin de fonctionner sur React, ce qui rend les fonction de base difficile à utiliser parfois. [Lien de la documentation](https://leafletjs.com/reference-1.7.1.html) et pour la [surcouche react](https://react-leaflet.js.org/docs/example-popup-marker).
+* **Recoil :** Il s'agit d'un module implémentant des server-state globaux. Cela est notamment utile pour conserver et utiliser facilement les données de l'utilisateur connecté, afin d'éviter bon nombre de requêtes inutiles. [Lien de la documentation](https://recoiljs.org/docs/introduction/installation).
+* **Sass :** Un module permettant d'utiliser le SCSS, qui est un CSS avec de nouvelles fonctionnalités. Très peu utilisées pour le moment, il est tout de même possible de s'en servir. [Lien de la documentation](https://sass-lang.com/documentation).
