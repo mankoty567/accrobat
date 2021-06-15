@@ -18,17 +18,22 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import site.nohan.protoprogression.Model.Avatar;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Map.AvatarMapRequest;
 import site.nohan.protoprogression.R;
 
 public class HomeListChallengesAdapter extends ArrayAdapter<String> {
+    public static HomeListChallengesAdapter lastInstance;
 
+    public ArrayList<Bitmap> bitmaps;
     private final Activity context;
 
     public HomeListChallengesAdapter(Activity context) {
         super(context, R.layout.home_list_challenges, new String[]{"Chargement"} );
-        // TODO Auto-generated constructor stub
+        lastInstance = this;
+        bitmaps = new ArrayList<>();
 
         //Mise en place des données de la DB
         this.context=context;
@@ -44,8 +49,13 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         TextView list_date = (TextView) rowView.findViewById(R.id.txt_list_date);
         ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
 
+
         if(HomeFragment.isOnPrivateChallenges) {
-            Log.e("POSITION", position+"");
+
+            if(Avatar.getAvatar(DataBase.getSubscribed().get(position).id) != null){
+                avatar.setImageBitmap(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image);
+            }
+
             if(position < DataBase.getSubscribed().size()) {
                 //Log.e("DATABASE", DataBase.getSubscribed().get(position).libelle+"");
                 list_title.setText(DataBase.getSubscribed().get(position).libelle);
@@ -54,12 +64,14 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
                 list_date.setText("Inscrit le " + DataBase.getSubscribed().get(position).dateInscription);
             }
         } else {
+            if(Avatar.size() > position) {
+                avatar.setImageBitmap(Avatar.get(position).image);
+            }
             list_title.setText(Map.maps.get(position).libelle);
             list_lastTimeUpdated.setText("Créé le " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));
             list_date.setVisibility(View.INVISIBLE);
         }
-        // show The Image in a ImageView
-        new DownloadImageTask(avatar).execute("https://api.acrobat.bigaston.dev/api/challenge/"+position+"/avatar");
+
         return rowView;
     };
 
@@ -69,28 +81,4 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         else return Map.maps != null ? Map.maps.size() : 0;
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 }

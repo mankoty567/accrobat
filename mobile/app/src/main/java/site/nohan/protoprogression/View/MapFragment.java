@@ -47,6 +47,7 @@ public class MapFragment extends Fragment {
         buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);
+
         return toile;
     }
 

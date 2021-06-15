@@ -27,7 +27,12 @@ public class ArriveeController implements View.OnClickListener{
                 TypeEvent.ARIVEE,
                 this.direction.id,
                 Map.mapActuelle.id,
-                new SaveParticipationResponse()
+                new SaveParticipationResponse(
+                        this.activity,
+                        TypeEvent.ARIVEE,
+                        this.direction.id,
+                        Map.mapActuelle.id
+                )
         );
         this.activity.setContentView(R.layout.fragment_arrivee);
     }
