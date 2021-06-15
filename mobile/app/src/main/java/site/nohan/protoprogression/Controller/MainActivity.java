@@ -72,8 +72,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        new SaveParticipationRequest(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId,
-                new SaveParticipationResponse(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId)
-        );
+
+        if(Map.mapActuelle != null) {
+            new SaveParticipationRequest(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId)
+            );
+        }
+
     }
 }

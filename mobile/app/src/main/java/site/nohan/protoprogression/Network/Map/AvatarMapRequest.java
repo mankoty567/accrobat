@@ -17,17 +17,16 @@ import site.nohan.protoprogression.Network.DataBase;
 
 public class AvatarMapRequest extends ImageRequest {
 
-    public static ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
-    public AvatarMapRequest(Activity activity, int mapId, ArrayList<Bitmap> bitmaps) {
+    public AvatarMapRequest(Activity activity, int mapId) {
         super(
                 APIRequestGET.APIURL+"challenge/"+mapId+"/avatar",
-                new AvatarMapResponse(activity, bitmaps),
+                new AvatarMapResponse(activity, mapId),
                 0,
                 0,
                 ImageView.ScaleType.CENTER_CROP,
                 Bitmap.Config.RGB_565,
-                new AvatarMapResponse(activity, bitmaps)
+                new AvatarMapResponse(activity, mapId)
         );
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();

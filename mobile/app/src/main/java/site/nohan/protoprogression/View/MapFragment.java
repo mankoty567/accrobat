@@ -11,9 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import site.nohan.protoprogression.Controller.ActionButtonController;
 import site.nohan.protoprogression.Controller.ButtonController;
 import site.nohan.protoprogression.Controller.SeekBarController;
 import site.nohan.protoprogression.Controller.ToileController;
@@ -35,7 +32,6 @@ public class MapFragment extends Fragment {
     SeekBarController seekBarController;
     ButtonController buttonController;
     ZoomBarController zoomBarController;
-    ActionButtonController actionButtonController;
 
 
     public MapFragment() {
@@ -51,7 +47,6 @@ public class MapFragment extends Fragment {
         buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);
-        actionButtonController = new ActionButtonController(this.getActivity());
 
         return toile;
     }

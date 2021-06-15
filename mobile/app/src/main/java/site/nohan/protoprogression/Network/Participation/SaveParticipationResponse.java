@@ -27,7 +27,17 @@ public class SaveParticipationResponse implements APIListenner {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        DataBase.addFailEvent(this.id, this.typeEvent, this.data);
+
+        if( error != null && error.networkResponse != null && (error.toString().equals("Bad request: Participation not found") || error.networkResponse.statusCode == 400)){
+            Log.e("net/SavePartResp/ERR", "event supprimé (400) ");
+            Log.e("ERRR", error.toString() );
+            DataBase.deleteFailedToSend(this.id, this.typeEvent, this.data);
+            return;
+        }
+
+
+        // TODO: Si l'erreur est autre que un probleme de co (mauvaise données) ne pas faire le addFailEvent
+        //DataBase.addFailEvent(this.id, this.typeEvent, this.data);
         ConnectionManager.setDisconnected();
         Log.e("net/failEvent", error.toString() + "\n" + error.getMessage() );
 

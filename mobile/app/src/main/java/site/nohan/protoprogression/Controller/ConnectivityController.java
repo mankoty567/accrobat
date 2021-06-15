@@ -19,7 +19,6 @@ public class ConnectivityController extends TimerTask {
 
     @Override
     public void run() {
-        Log.e("CController", "Vérification de la connexion deco? " + ConnectionManager.wasDisconnected());
         new ConnectionCheckerRequest(activity);
     }
 }

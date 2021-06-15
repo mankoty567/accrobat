@@ -97,8 +97,15 @@ public class SubscribeFragment extends Fragment {
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                if(!HomeFragment.isOnPrivateChallenges) DataBase.deleteProgression(idChallenge);
-                subscribeToChallenge();
+                if(HomeFragment.isOnPrivateChallenges){
+                    // TODO: Charger la participation participationID
+                    Map.participationId = DataBase.getSubscribed().get(position).participation;
+                    subscribeToMap(true);
+
+                }else{
+                    subscribeToChallenge();
+                }
+
             }
         });
         btn_preview = root.findViewById(R.id.btn_challenge_preview);
