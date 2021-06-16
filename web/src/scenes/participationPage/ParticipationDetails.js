@@ -293,7 +293,7 @@ let ParticipationDetails = ({
                     const positions = [
                       [startMarker.y, startMarker.x],
                       ...element.path.map((elem) => {
-                        return [elem[1], elem[0]];
+                        return [elem[0], elem[1]];
                       }),
                       [endMarker.y, endMarker.x],
                     ];
