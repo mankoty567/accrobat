@@ -89,9 +89,6 @@ public class PedometerController implements SensorEventListener, StepListener {
             sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
             isPedometerOn = true;
-            if(isRunning) {
-            } else {
-            }
         }
         else{
             sensorManager.unregisterListener(this);
@@ -176,15 +173,8 @@ public class PedometerController implements SensorEventListener, StepListener {
         Log.i(TAG, distance + " ms");
 
         //Mise à jour de la seekbar
-        float distanceMap = distance * 1;
-        sbProgression.setProgress((int)distanceMap);
-
-        //Mise à jour de la toile
-        /*Map.accompli = (int) Math.floor(((float) distanceMap*Map.cheminActuel.getLongueur())/100);
-        int i=0;
-        for(Point p : Map.cheminActuel.points){
-            i++;
-        }*/
+        int distanceMap = distance;
+        sbProgression.setProgress(distanceMap);
     }
 
     /************************************************************************

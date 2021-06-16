@@ -105,9 +105,9 @@ public class LocationService extends Service {
                     tKilometres.setText(distance + " ms");
 
                     //Mise à jour de la seekbar
-                    float distanceMap = distance * 1;
+                    int distanceMap = distance;
                     SeekBar sbProgression = PedometerController.sbProgression;
-                    sbProgression.setProgress((int) distanceMap);
+                    sbProgression.setProgress(distanceMap);
 
 
 

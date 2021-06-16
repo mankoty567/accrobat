@@ -143,7 +143,7 @@ public class MapResponse implements APIListenner {
                         obstacle.titre =((JSONObject) jOstacles.get(obstaclei)).getString("title");
                         obstacle.description =((JSONObject) jOstacles.get(obstaclei)).getString("description");
                         obstacle.distance = ((JSONObject) jOstacles.get(obstaclei)).getDouble("distance");
-                        obstacle.type = ((JSONObject) jOstacles.get(obstaclei)).getString("description").equals("question") ? TypeObstacle.QUESTION : TypeObstacle.QUESTION;
+                        obstacle.type = TypeObstacle.QUESTION;
                         chemin.obstacles.add(obstacle);
                     }
 
