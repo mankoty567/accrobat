@@ -48,25 +48,25 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         TextView list_lastTimeUpdated = (TextView) rowView.findViewById(R.id.txt_list_lastTimeUpdated);
         TextView list_date = (TextView) rowView.findViewById(R.id.txt_list_date);
         ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
-        ArrayList<Map> subscribed = DataBase.getSubscribed();
+
 
         if(HomeFragment.isOnPrivateChallenges) {
 
-            if(Avatar.getAvatar(subscribed.get(position).id) != null){
-                if(Avatar.getAvatar(subscribed.get(position).id).image != null)
-                    avatar.setImageBitmap(Avatar.getAvatar(subscribed.get(position).id).image);
+            if(Avatar.getAvatar(DataBase.getSubscribed().get(position).id) != null){
+                if(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image != null)
+                    avatar.setImageBitmap(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image);
             }
 
-            if(position < subscribed.size()) {
+            if(position < DataBase.getSubscribed().size()) {
                 //Log.e("DATABASE", DataBase.getSubscribed().get(position).libelle+"");
-                list_title.setText(subscribed.get(position).libelle);
+                list_title.setText(DataBase.getSubscribed().get(position).libelle);
                 list_date.setVisibility(View.VISIBLE);
-                list_lastTimeUpdated.setText("Dernière mise à jour : " + subscribed.get(position).dateDernierePartie);
+                list_lastTimeUpdated.setText("Dernière mise à jour : " + DataBase.getSubscribed().get(position).dateDernierePartie);
                 list_date.setText("Inscrit le " + DataBase.getSubscribed().get(position).dateInscription);
             }
         } else {
             if(Avatar.size() > position) {
-                Log.e("getView: size : ", subscribed.size()+"" );
+                Log.e("getView: size : ", DataBase.getSubscribed().size()+"" );
                 try {
                     avatar.setImageBitmap(Avatar.getAvatar(Map.maps.get(position).id).image);
                 }catch (NullPointerException e){
@@ -83,8 +83,7 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        ArrayList<Map> subscribed = DataBase.getSubscribed();
-        if(HomeFragment.isOnPrivateChallenges) return subscribed != null ? subscribed.size() : 0;
+        if(HomeFragment.isOnPrivateChallenges) return DataBase.getSubscribed() != null ? DataBase.getSubscribed().size() : 0;
         else return Map.maps != null ? Map.maps.size() : 0;
     }
 

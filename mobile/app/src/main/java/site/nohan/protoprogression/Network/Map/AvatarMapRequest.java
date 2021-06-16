@@ -28,7 +28,6 @@ public class AvatarMapRequest extends ImageRequest {
                 Bitmap.Config.RGB_565,
                 new AvatarMapResponse(activity, mapId)
         );
-        Log.e("NET", "requête envoyée avatar" );
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();
     }
