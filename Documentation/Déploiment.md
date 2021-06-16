@@ -1,4 +1,37 @@
 # Documentation de Déploiment
+Pour déployer les applications vous aurez besoin:
+- [NodeJS](https://nodejs.org/en/)
+- [NPM](https://www.npmjs.com/)
+- [Docker](https://www.docker.com/)
+
+Et en plus sur votre serveur si vous n'en avez pas, un serveur web comme [Nginx](https://www.nginx.com/)
+
+Si vous n'avez pas configuré de Nginx, voici ci dessous deux exemple de configurations de sites, à mettre dans `/etc/nginx/sites-enabled`.
+```
+server {
+  server_name VOTRE_HOST_DU_BACK;
+
+  location / {
+    proxy_pass http://127.0.0.1:VOTRE_PORT;
+  } 
+  proxy_read_timeout 300;
+
+  client_max_body_size 10m;
+}
+```
+
+```
+server {
+  server_name VOTRE_HOST_DU_FRONT;
+
+  location / {
+    root LE_CHEMIN_VERS_BUILD;
+    try_files $uri /index.html;
+  }
+}
+```
+
+Sur votre configuration DNS, mettez en place deux redirection vers votre IP, une pour le front et une pour le back.
 
 ## Back-End
 Pour la partie développement, le déploiment se fait de la manière suivante:
@@ -36,5 +69,12 @@ Les variables déjà remplis dans le script peuvent rester comme ça, sinon il f
 Executez dans l'ordre `firstLaunch.sh` au début, puis `restartAcrobat.sh` à chaque modifications de l'image.
 
 ## Front-End Web
+Pour déployer le frond-end, clonez le répertoire git sur votre serveur, ensuite à l'interieur du répertoire executez les commandes suivantes:
+```
+npm install
+npm run build
+```
+
+Votre site apparaitra dans le dossier `build`. Vous pourrez alors le servir statiquement.
 
 ## Frond-End Mobile
