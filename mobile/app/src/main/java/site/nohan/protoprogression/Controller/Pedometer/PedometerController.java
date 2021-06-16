@@ -19,6 +19,9 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import site.nohan.protoprogression.Model.Chemin;
+import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.R;
 
 import static android.content.ContentValues.TAG;
@@ -173,7 +176,7 @@ public class PedometerController implements SensorEventListener, StepListener {
         Log.i(TAG, distance + " ms");
 
         //Mise à jour de la seekbar
-        int distanceMap = distance;
+        int distanceMap = (int) Math.floor(distance*100/ Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()));
         sbProgression.setProgress(distanceMap);
     }
 

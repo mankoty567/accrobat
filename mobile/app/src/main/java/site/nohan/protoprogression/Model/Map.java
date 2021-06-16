@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.Model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +54,8 @@ public class Map {
     }
 
     public double distanceToM(double distance){
-        return distance*this.echelle;
+        Log.e("distanceToM: ", (distance/100) + " ; " + ((distance/100)*echelle));
+        return (distance/100)*this.echelle;
     }
 
     public double MToDistance(double M){

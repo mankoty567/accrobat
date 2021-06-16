@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import com.android.volley.VolleyError;
 
@@ -20,10 +21,12 @@ import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Progression;
 import site.nohan.protoprogression.Model.Types.TypeObstacle;
 import site.nohan.protoprogression.Model.Types.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Participation.RetreiveParticipationRequest;
 import site.nohan.protoprogression.R;
 
 public class MapResponse implements APIListenner {
@@ -48,8 +51,7 @@ public class MapResponse implements APIListenner {
 
 
         try{
-            // Log de la map
-            //Log.e("map", response.toString());
+
             // Init des chemins
            this.map.pointPassages = new ArrayList<>();
 
@@ -128,8 +130,8 @@ public class MapResponse implements APIListenner {
                         // On l'ajoute à sa liste
                         chemin.points.add(
                                 new Point(
-                                        ((int) Math.round( (double) position.get(0)*100)),
-                                        100 - ((int) Math.round( (double) position.get(1)*100))
+                                        ((int) Math.round( (double) position.get(1)*100)),
+                                        100-((int) Math.round( (double) position.get(0)*100))
                                 )
                         );
                     }
@@ -172,21 +174,7 @@ public class MapResponse implements APIListenner {
             }
             Log.e("Model",this.map.pointPassages.toString());
 
-            LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
-            for(Chemin c :this.map.getDepart().chemins){
-                if(c.objectif == null)
-                    break;
-                Log.e("suiv",c.objectif.titre);
-                Button button = new Button(this.activity);
-                button.setOnClickListener(new DirectionController(this.activity, c));
-                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
-                button.setText(c.objectif.titre + " par " + c.nom);
-
-                linearLayout.addView(button);
-            }
-            //Map.mapActuelle.dernierPointPassage =this.map.pointPassages.get(0);
-            //Map.mapActuelle.cheminActuel =this.map.dernierPointPassage.chemins.get(0);
-
+            this.showDirections();
 
         }catch (JSONException jsonException){
             jsonException.printStackTrace();
@@ -194,7 +182,39 @@ public class MapResponse implements APIListenner {
         }
 
         Log.e("Map", "Chargement terminé");
-        DataBase.restoreProgression();
+        new RetreiveParticipationRequest(activity, Map.participationId);
+        //DataBase.restoreProgression();
     }
+
+    public void showDirections(){
+        Progression progression = DataBase.getProgression(Map.participationId);
+        Log.e("showDirections: ", DataBase.getProgression(Map.participationId).getProgression()+"" );
+        LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
+        SeekBar seekBar = this.activity.findViewById(R.id.seekBar);
+        if(progression.getProgression() == 0) {
+            for (Chemin c : this.map.getDepart().chemins) {
+                if (c.objectif == null)
+                    break;
+                Log.e("suiv", c.objectif.titre);
+                Button button = new Button(this.activity);
+                button.setOnClickListener(new DirectionController(this.activity, c));
+                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
+                button.setText(c.objectif.titre + " par " + c.nom);
+
+                linearLayout.addView(button);
+            }
+        }else{
+            Chemin c = Chemin.findById(this.map, progression.getCheminId());
+            Button button = new Button(this.activity);
+            button.setOnClickListener(new DirectionController(this.activity, c));
+            button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
+            button.setText(c.objectif.titre + " par " + c.nom);
+
+            seekBar.setProgress(progression.getProgression());
+            linearLayout.addView(button);
+        }
+    }
+
+
 
 }
