@@ -17,8 +17,11 @@ import { useRecoilState } from 'recoil';
 import ChallengePage from '../challengePage/ChallengePage';
 import Navbar from '../../components/Navbar';
 
+/**
+ * Page principale de l'application, contenant la navBar et le routage de base
+ */
 let MainPage = () => {
-  // Tentative de connection automatique de l'utilisateur
+  //Variable d'interface
   const [UserState, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
     API.user.doneConnectionAtom,

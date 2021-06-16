@@ -15,6 +15,10 @@ import React, { useState } from 'react';
 import ImageUploader from '../../components/ImageUploader';
 import MarkdownEditor from '../../components/MarkdownEditor';
 
+/**
+ * Formulaire pour créer un challenge
+ * @param {Function} callback Passage d'une fonction au composant parent
+ */
 let FormChallenge = ({ callback }) => {
   //Ajouter la prise en charge de l'échelle et de l'id
   const [title, setTitle] = useState('');
@@ -27,6 +31,11 @@ let FormChallenge = ({ callback }) => {
   const [errImage, setErrImage] = useState(false);
   const [errScale, setErrScale] = useState(false);
 
+  /**
+   * Permet de mettre l'interface dans l'état d'erreur ou non
+   * @param {any} value La valeur du state
+   * @param {Function} setValue La fonction de modification de l'élément non mutable
+   */
   const setError = (value, setValue) => {
     if (value.length === 0) {
       setValue(true);
@@ -35,6 +44,9 @@ let FormChallenge = ({ callback }) => {
     }
   };
 
+  /**
+   * Fonction pour créer un challenge
+   */
   const handleSubmit = () => {
     if (!errTitle || !errDesc || !errImage || !errScale) {
       callback(title, description, img_fond, scale, img_avatar);

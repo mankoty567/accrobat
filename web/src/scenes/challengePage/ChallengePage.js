@@ -12,12 +12,20 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { API } from '../../eventApi/api';
 
 let ChallengePage = () => {
+  //Variable d'interface
   const [selected, setSelected] = useState(null);
   const [challenges, setChallenges] = useState([]);
   const [participations, setParticipations] = useState([]);
   const [open, setOpen] = useState(true);
 
+  /**
+   * Menu pour les composants de challenge côté participation
+   * @param {Number} index L'index du challenge dans la liste
+   */
   const ParticipationMenu = ({ index }) => {
+    /**
+     * Lorsqu'on clique sur le bouton consulter
+     */
     const handleClick = () => {
       setSelected(participations[index].id);
     };
@@ -33,7 +41,14 @@ let ChallengePage = () => {
     );
   };
 
+  /**
+   * Menu pour les composants de challenge côté tout les challenge
+   * @param {Number} index L'index du challenge dans la liste
+   */
   const ChallengeMenu = ({ index }) => {
+    /**
+     * Lorsqu'on clique sur le bouton participer
+     */
     const handleClick = () => {
       setParticipations((current) => [...current, challenges[index]]);
       setChallenges((current) =>

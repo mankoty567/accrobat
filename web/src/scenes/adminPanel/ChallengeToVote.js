@@ -15,28 +15,40 @@ import {
   Checkbox,
   IconButton,
 } from '@material-ui/core';
-
 import EditIcon from '@material-ui/icons/Edit';
-
 import style from './ChallengeToVote.module.css';
 import { API } from '../../eventApi/api';
-
 import classnames from 'classnames';
-
 import Modal from '../../components/Modal';
 
+/**
+ * Interface de status
+ */
 const status = {
   open: 'Ouvert',
   close: 'Fermé',
 };
 
+/**
+ * Page permettant de voter pour des propositions
+ */
 export default function ChallengeToVote() {
+  //Variables d'interface
   const [showClosed, setShowClosed] = useState(false);
-
-  // Partie ajout de ChallengeToVote
   const [addDescription, setAddDescription] = useState('');
   const [isLoadingAdd, setIsLoadingAdd] = useState(false);
+  // Partie liste des challengeToVote
+  const [challenges, setChallenges] = useState([]);
+  const [shownChallenge, setShownChallenge] = useState([]);
+  const [isLoadingChallenges, setIsLoadingChallenges] =
+    useState(true);
+  const [editId, setEditId] = useState(undefined);
+  const [modalEditDescOpen, setModalEditDescOpen] = useState(false);
+  const [editDesc, setEditDesc] = useState('');
 
+  /**
+   * Fonction pour ajouter une proposition
+   */
   function handleClickAdd() {
     if (isLoadingAdd) return;
 
@@ -58,25 +70,10 @@ export default function ChallengeToVote() {
     });
   }
 
-  // Partie liste des challengeToVote
-  const [challenges, setChallenges] = useState([]);
-  const [shownChallenge, setShownChallenge] = useState([]);
-  const [isLoadingChallenges, setIsLoadingChallenges] =
-    useState(true);
-
-  useEffect(() => {
-    API.challengeToVote.getToVoteAdmin().then((data) => {
-      setIsLoadingChallenges(false);
-      setChallenges(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    setShownChallenge(
-      challenges.filter((c) => showClosed || c.status === 'open'),
-    );
-  }, [challenges, showClosed]);
-
+  /**
+   * Permet de faire de fermer l'ouverture d'un vote de proposition
+   * @param {Number} id L'id de la proposition en question
+   */
   function handleCloseChallenge(id) {
     API.challengeToVote
       .changeToVote(id, { status: 'close' })
@@ -93,6 +90,10 @@ export default function ChallengeToVote() {
       });
   }
 
+  /**
+   * Permet de mettre le status d'une proposition de vote à ouvert
+   * @param {Number} id L'id de la proposition
+   */
   function handleOpenChallenge(id) {
     API.challengeToVote
       .changeToVote(id, { status: 'open' })
@@ -109,10 +110,11 @@ export default function ChallengeToVote() {
       });
   }
 
-  const [editId, setEditId] = useState(undefined);
-  const [modalEditDescOpen, setModalEditDescOpen] = useState(false);
-  const [editDesc, setEditDesc] = useState('');
-
+  /**
+   * Fonction pour modifier les informaitons d'une proposition
+   * @param {Number} id Id de la proposition en question
+   * @param {String} desc Description de la proposition
+   */
   function handleClickEdit(id, desc) {
     setEditId(id);
     setEditDesc(desc);
@@ -136,6 +138,19 @@ export default function ChallengeToVote() {
         });
       });
   }
+
+  useEffect(() => {
+    API.challengeToVote.getToVoteAdmin().then((data) => {
+      setIsLoadingChallenges(false);
+      setChallenges(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    setShownChallenge(
+      challenges.filter((c) => showClosed || c.status === 'open'),
+    );
+  }, [challenges, showClosed]);
 
   return (
     <>

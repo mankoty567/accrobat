@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-
 import { TextField, Typography, Button } from '@material-ui/core';
 import { API, host } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
-
 import { useHistory } from 'react-router-dom';
 
+/**
+ * Formulaire de connexion
+ */
 export default function LoginForm() {
+  //Variable d'interface
   const history = useHistory();
-
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginDuring, setLoginDuring] = useState(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState('');
-
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerPasswordRepeat, setRegisterPasswordRepeat] =
@@ -22,15 +22,16 @@ export default function LoginForm() {
   const [registerDuring, setRegisterDuring] = useState(false);
   const [registerErrorMessage, setRegisterErrorMessage] =
     useState('');
-
   const [registerCallbackMessage, setRegisterCallbackMessage] =
     useState('');
-
   const [, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
     API.user.doneConnectionAtom,
   );
 
+  /**
+   * Fonction pour permettre à l'utilisateur de s'inscrire
+   */
   function handleRegister() {
     if (registerPassword !== registerPasswordRepeat) {
       setRegisterErrorMessage(
@@ -61,6 +62,9 @@ export default function LoginForm() {
       });
   }
 
+  /**
+   * Fonction permettant de se connecter
+   */
   function handleLogin() {
     if (loginDuring) return;
 
@@ -83,6 +87,9 @@ export default function LoginForm() {
       });
   }
 
+  /**
+   * Fonction pour regénérer le JWT
+   */
   function refreshJWT() {
     API.user
       .whoami()
@@ -100,6 +107,9 @@ export default function LoginForm() {
       });
   }
 
+  /**
+   * Fonction pour utiliser les services de google
+   */
   function handleGoogle() {
     window.location = host + '/api/google/connect';
   }
