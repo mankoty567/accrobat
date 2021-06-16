@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PublicPage from '../PublicPage';
+import PublicPage from '../publicPage/PublicPage';
 import ProfilePage from '../profilePage/ProfilePage';
 import AdminPanel from '../adminPanel/AdminPanel';
 import LoginForm from '../loginForm/LoginForm';
