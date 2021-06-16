@@ -15,9 +15,12 @@ import ChallengeToVote from './ChallengeToVote';
 import { useRecoilState } from 'recoil';
 import { API } from '../../eventApi/api';
 
+/**
+ * La page de base du menu d'administration. C'est le point d'entrée de la page admin
+ */
 let AdminPanel = () => {
+  //Variables d'interface
   let location = useLocation();
-
   const [page, setPage] = useState(
     '/' + location.pathname.split('/')[2],
   );

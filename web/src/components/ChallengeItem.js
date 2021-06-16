@@ -7,6 +7,11 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 
+/**
+ * Composant permettant d'afficher un challenge dans une petite carte
+ * @param {Object} challenge Le challenge à afficher
+ * @param {JSX.Element} actionComponents Les composants qui s'afficheront à droite du composant
+ */
 let ChallengeItem = ({ challenge, actionComponents }) => {
   return (
     <>

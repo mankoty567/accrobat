@@ -1,8 +1,15 @@
 import React from 'react';
-
 import style from './Modal.module.css';
 
+/**
+ * Un modal (petite fenêtre popup) qui peut être utilisé dans l'application
+ * @param {Object[]} props Props du composant
+ * @returns
+ */
 export default function Modal(props) {
+  /**
+   * Fonction en cas de de sortie du modal
+   */
   function quit() {
     if (props.onCancel !== undefined) props.onCancel();
   }

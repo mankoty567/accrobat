@@ -10,18 +10,33 @@ import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ChallengeEditor from '../ChallengeEditor';
 
+/**
+ * Le panel d'administration pour les challenges
+ */
 let ChallengePanel = () => {
+  //Variable d'interface
   const [challenges, setChallenges] = useState([]);
   const [addmode, setAddmode] = useState('add');
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(true);
 
+  /**
+   * Fonction pour récupérer tout les challenges de l'API
+   */
   const getChallenges = () => {
     API.challenge.getAdminChallenges().then((res) => {
       setChallenges(res);
     });
   };
 
+  /**
+   * Fonction permettant d'ajouter un challenge sur l'API
+   * @param {String} title Titre du challenge
+   * @param {String} description Description du challenge
+   * @param {Object} img_fond Image de fond de la carte
+   * @param {Number} scale Echelle de la carte
+   * @param {object} avatar Avatar du challenge
+   */
   const addChallenge = (
     title,
     description,
@@ -31,7 +46,6 @@ let ChallengePanel = () => {
   ) => {
     setAddmode('add');
     //Tester si la img_avatar est null, si c'est le cas, on met undefined
-
     let img_avatar;
     if (!avatar) {
       img_avatar = undefined;
@@ -54,13 +68,16 @@ let ChallengePanel = () => {
       .catch((err) => console.error(err));
   };
 
-  useEffect(() => getChallenges(), []);
-
-  useEffect(() => {
-    getChallenges();
-  }, [open]);
-
+  /**
+   * Menu des objets de challenge dans l'interface admin
+   * @param {Number} index L'id du challenge
+   * @param {Boolean} published Si le challenge est publié
+   * @returns
+   */
   const Menu = ({ index, published }) => {
+    /**
+     * Fonction pour gérer la délétion d'un challenge
+     */
     const handleDelete = () => {
       API.challenge
         .deleteChallenge(index)
@@ -70,6 +87,9 @@ let ChallengePanel = () => {
           ),
         );
     };
+    /**
+     * Fonction permettant de dupliquer un challenge
+     */
     const handleClone = () => {
       API.challenge
         .cloneChallenge(index)
@@ -81,10 +101,20 @@ let ChallengePanel = () => {
         )
         .catch((err) => console.error(err));
     };
+    /**
+     * Fonction permettant de modifier les informaitons d'un challenge
+     */
     const handleEdit = () => {
       setSelected(index);
       setOpen(true);
     };
+
+    useEffect(() => getChallenges(), []);
+
+    useEffect(() => {
+      getChallenges();
+    }, [open]);
+
     return (
       <>
         {!published ? (

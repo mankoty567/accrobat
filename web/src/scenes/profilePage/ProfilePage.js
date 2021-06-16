@@ -17,6 +17,9 @@ import PasswordPage from './PasswordPage';
 import { useRecoilState } from 'recoil';
 import ImageUploader from '../../components/ImageUploader';
 
+/**
+ * Page de profile
+ */
 let ProfilePage = () => {
   //Variable d'interface
   const [edit, setEdit] = useState(false);

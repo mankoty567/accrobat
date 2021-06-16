@@ -1,17 +1,19 @@
 import {
-  List,
-  ListItem,
   TextField,
   Typography,
-  Divider,
   Select,
   MenuItem,
 } from '@material-ui/core';
 import { useRecoilState } from 'recoil';
-
 import React, { useEffect, useState } from 'react';
 import { API } from '../../eventApi/api';
 
+/**
+ * Composant pour afficher un utilisateur
+ * @param {Number} userId L'id de l'utilisateur
+ * @param {String} username L'username concerné
+ * @param {Number} permission Rôle de l'user
+ */
 const UserItem = ({ userId, username, permission }) => {
   return (
     <tr style={{ width: '100%' }}>
@@ -37,17 +39,20 @@ const UserItem = ({ userId, username, permission }) => {
   );
 };
 
+/**
+ * Le panel permettant de gérer les utilisateurs
+ */
 const UserAdminPanel = () => {
+  //Variable d'interface
   const [UserState] = useRecoilState(API.user.userAtom);
+  const [userList, setUserList] = useState([]);
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     API.user.getUserWithPerms().then((res) => {
       setUserList(res.filter((elem) => elem.id !== UserState.id));
     });
   }, []);
-
-  const [userList, setUserList] = useState([]);
-  const [filter, setFilter] = useState('');
 
   return (
     <div style={{ marginLeft: 'auto', marginRight: 'auto' }}>
