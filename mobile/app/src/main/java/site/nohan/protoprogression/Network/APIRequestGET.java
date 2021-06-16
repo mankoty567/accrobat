@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.Network;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -20,6 +21,7 @@ public class APIRequestGET extends StringRequest {
      ******************************************/
     public APIRequestGET(Activity activity, String ressource, APIListenner apiListenner){
         super(Method.GET,APIRequestGET.APIURL+ressource, apiListenner, apiListenner);
+        Log.e("NET", "requête envoyée à " + ressource );
         if(APIRequestGET.queue == null)
             APIRequestGET.queue = Volley.newRequestQueue(activity);
     }

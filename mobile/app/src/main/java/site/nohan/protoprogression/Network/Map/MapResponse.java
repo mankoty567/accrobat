@@ -26,6 +26,7 @@ import site.nohan.protoprogression.Model.Types.TypeObstacle;
 import site.nohan.protoprogression.Model.Types.TypePointPassage;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Participation.RetreiveParticipationRequest;
 import site.nohan.protoprogression.R;
 
 public class MapResponse implements APIListenner {
@@ -181,7 +182,8 @@ public class MapResponse implements APIListenner {
         }
 
         Log.e("Map", "Chargement terminé");
-        DataBase.restoreProgression();
+        new RetreiveParticipationRequest(activity, Map.participationId);
+        //DataBase.restoreProgression();
     }
 
     public void showDirections(){
@@ -212,5 +214,7 @@ public class MapResponse implements APIListenner {
             linearLayout.addView(button);
         }
     }
+
+
 
 }

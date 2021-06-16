@@ -16,11 +16,12 @@ import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
 
 public class RetreiveParticipationRequest extends APIRequestGET {
 
+
     /******************************************
      * Constructeur de la requête
      ******************************************/
     public RetreiveParticipationRequest(Activity activity, int participationId) {
-        super(activity, "api/participation/"+participationId+"/whereiam", new RetreiveParticipationResponse());
+        super(activity, "participation/"+participationId+"/whereiam", new RetreiveParticipationResponse(activity));
         Log.e("net", this.getUrl());
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();

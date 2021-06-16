@@ -30,6 +30,7 @@ public class APIRequestPOST extends StringRequest {
      ******************************************/
     public APIRequestPOST(Activity activity, String ressource, APIListenner apiListenner){
         super(Method.POST,APIRequestPOST.APIURL+ressource, apiListenner, apiListenner);
+        Log.e("NET", "requête envoyée à " + ressource );
         if(APIRequestPOST.queue == null)
             APIRequestPOST.queue = Volley.newRequestQueue(activity);
     }
