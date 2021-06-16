@@ -4,7 +4,6 @@ import {
   createEndIcon,
   createStartIcon,
 } from './MarkerIcons';
-import { API } from '../eventApi/api';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -13,14 +12,13 @@ import { API } from '../eventApi/api';
  * @param {Object[]} editMode Est-ce qu'on est en train d'ajouter un segment à un point déjà existant
  * @param {Function} setEditMode Fonction pour update le state de editMode
  * @param {Object[]} lines La liste des lignes à afficher sur la map
- * @param {Function} setLines Fonction pour update le state de lines
  */
 let DraggableMarkers = ({
   addingLine,
   addCurrentLine,
   markers,
   handleContext,
-  setMarkers,
+  updateMarker,
   editMode,
   setEditMode,
   setCurrentMarker,
@@ -30,15 +28,10 @@ let DraggableMarkers = ({
   addLine,
   setAddingLine,
   setCurrentLine,
-  setValid,
   errorMarkers,
   inBounds,
   fitInBounds,
-  removeMarker,
   setCurrentObstacle,
-  lines,
-  obstacles,
-  updateObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
@@ -86,12 +79,6 @@ let DraggableMarkers = ({
         }
       }
     },
-    keydown: (event) => {
-      if (event.originalEvent.keyCode == '8' || '46') {
-        removeMarker(currentMarker);
-        setCurrentMarker(null);
-      }
-    },
   });
 
   return (
@@ -126,39 +113,10 @@ let DraggableMarkers = ({
                     if (!inBounds(coords)) {
                       coords = fitInBounds(coords);
                     }
-                    setMarkers((markers) =>
-                      markers.map((m) => {
-                        if (m.id === item.id) {
-                          let newM = {
-                            ...m,
-                            x: coords.lng,
-                            y: coords.lat,
-                          };
-                          API.checkpoint
-                            .updateMarker(newM)
-                            .catch((err) => {
-                              console.log(err);
-                            });
-                          setValid(false);
-                          var linesToUpdate = lines.filter(
-                            (val) =>
-                              val.PointStartId == item.id ||
-                              val.PointEndId == item.id,
-                          );
-                          linesToUpdate.forEach((line) => {
-                            var obstaclesToUpdate = obstacles.filter(
-                              (val) => val.SegmentId == line.id,
-                            );
-                            obstaclesToUpdate.forEach((obstacle) => {
-                              updateObstacle(obstacle);
-                            });
-                          });
-                          return newM;
-                        } else {
-                          return m;
-                        }
-                      }),
-                    );
+                    updateMarker(item.id, {
+                      x: coords.lng,
+                      y: coords.lat,
+                    });
                     setEditMode(false);
                   },
                   contextmenu: (event) => {
