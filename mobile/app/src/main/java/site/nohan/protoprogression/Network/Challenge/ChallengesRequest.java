@@ -32,7 +32,7 @@ public class ChallengesRequest extends APIRequestGET {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {

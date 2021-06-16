@@ -19,7 +19,9 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.R;
+import site.nohan.protoprogression.View.MapFragment;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.SENSOR_SERVICE;
@@ -30,6 +32,7 @@ public class PedometerController implements SensorEventListener, StepListener {
      * Création des variables globales de la class
      *****************************************************************/
     private Activity activity;
+    private MapFragment mapFragment;
 
     public static boolean isRunning;
 
@@ -55,8 +58,9 @@ public class PedometerController implements SensorEventListener, StepListener {
     /*****************************************************************
      * Constructeur de la class
      *****************************************************************/
-    public PedometerController(Activity activityUsed){
-        activity = activityUsed;
+    public PedometerController(Activity activityUsed, MapFragment mapFragment){
+        this.activity = activityUsed;
+        this.mapFragment = mapFragment;
         tKilometres = activity.findViewById(R.id.tKilometres);
         sbProgression = activity.findViewById(R.id.seekBar);
 
@@ -66,6 +70,13 @@ public class PedometerController implements SensorEventListener, StepListener {
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
+    }
+
+    /*****************************************************************
+     * Accesseur au Fragment Map
+     *****************************************************************/
+    public MapFragment getMapFragment() {
+        return this.mapFragment;
     }
 
     /*****************************************************************
@@ -89,9 +100,6 @@ public class PedometerController implements SensorEventListener, StepListener {
             sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
             isPedometerOn = true;
-            if(isRunning) {
-            } else {
-            }
         }
         else{
             sensorManager.unregisterListener(this);
@@ -176,15 +184,8 @@ public class PedometerController implements SensorEventListener, StepListener {
         Log.i(TAG, distance + " ms");
 
         //Mise à jour de la seekbar
-        float distanceMap = distance * 1;
-        sbProgression.setProgress((int)distanceMap);
-
-        //Mise à jour de la toile
-        /*Map.accompli = (int) Math.floor(((float) distanceMap*Map.cheminActuel.getLongueur())/100);
-        int i=0;
-        for(Point p : Map.cheminActuel.points){
-            i++;
-        }*/
+        int distanceMap = distance;
+        sbProgression.setProgress(distanceMap);
     }
 
     /************************************************************************

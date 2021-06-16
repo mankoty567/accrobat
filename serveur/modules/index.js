@@ -10,5 +10,6 @@ module.exports = {
   google_ctrl: require('./controller/google_ctrl'),
   propositionchallenge_ctrl: require('./controller/propositionchallenge_ctrl'),
   challengetovote_ctrl: require('./controller/challengetovote_ctrl'),
+  fraude_ctrl: require('./controller/fraude_ctrl'),
   utils: require('./utils'),
 };
