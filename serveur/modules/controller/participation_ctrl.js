@@ -155,6 +155,10 @@ module.exports = {
                   delete segment.pointStart;
                   delete segment.pointEnd;
 
+                  obj.segmentsParcourus = obj.segmentsParcourus.filter(
+                    (s) => s !== segment.id
+                  );
+
                   obj.type = 'Segment';
                   obj.distance = distance;
                   obj.distancePourcentage = pourcentage;
