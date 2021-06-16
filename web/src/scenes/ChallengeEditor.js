@@ -15,9 +15,13 @@ import { API } from '../eventApi/api';
 import ContextMenu from './ContextMenu';
 import ModifyMarkerPopUp from './ModifyMarkerPopUp';
 import ModifyObstaclePopUp from './ModifyObstaclePopUp';
+import ModifyLinePopUp from './ModifyLinePopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
-import { createObstacleIcon } from './MarkerIcons';
+import {
+  createObstacleIcon,
+  createLineAnchorIcon,
+} from './MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -83,6 +87,7 @@ let ChallengeEditor = ({
   const [addingLine, setAddingLine] = useState(false);
   const [modifyMarker, setModifyMarker] = useState(false);
   const [modifyObstacle, setModifyObstacle] = useState(false);
+  const [modifyLine, setModifyLine] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
@@ -160,6 +165,119 @@ let ChallengeEditor = ({
     return [x, y];
   }
 
+  let Echelle = () => {
+    var positions = [
+      [0, 0],
+      [1, 1],
+    ];
+    var text = null;
+    if (challenge.echelle >= 15000) {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 10000 / challenge.echelle],
+      ];
+      text = '10000 mètres';
+    } else if (challenge.echelle >= 1500) {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 1000 / challenge.echelle],
+      ];
+      text = '1000 mètres';
+    } else if (challenge.echelle >= 150) {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 100 / challenge.echelle],
+      ];
+      text = '100 mètres';
+    } else {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 10 / challenge.echelle],
+      ];
+      text = '10 mètres';
+    }
+    return (
+      <>
+        <Marker
+          position={positions[0]}
+          icon={createLineAnchorIcon()}
+        />
+        <Polyline positions={positions} color={'black'}>
+          <Tooltip direction="top">{text}</Tooltip>
+        </Polyline>
+        <Marker
+          position={positions[1]}
+          icon={createLineAnchorIcon()}
+        />
+      </>
+    );
+  };
+
+  let Line = (element) => {
+    var line = element.line;
+    const startMarker = markers.find(
+      (m) => m.id === line.PointStartId,
+    );
+    const endMarker = markers.find((m) => m.id === line.PointEndId);
+
+    var positions = [
+      [startMarker.y, startMarker.x],
+      ...line.path.map((elem) => {
+        return [elem[0], elem[1]];
+      }),
+      [endMarker.y, endMarker.x],
+    ];
+
+    return (
+      <>
+        {positions.map((pos, idx) => {
+          if (0 < idx && idx < positions.length - 1) {
+            return (
+              <Marker
+                draggable
+                position={pos}
+                icon={createLineAnchorIcon()}
+                eventHandlers={{
+                  dragend: (event) => {
+                    var coords = event.target._latlng;
+                    if (!inBounds(coords)) {
+                      coords = fitInBounds(coords);
+                    }
+                    var path = positions.map((p, i) => {
+                      if (i == idx) return [coords.lat, coords.lng];
+                      else return p;
+                    });
+                    path.shift();
+                    path.pop();
+                    updateLine(line.id, {
+                      path: path,
+                    });
+                  },
+                }}
+              />
+            );
+          } else {
+            return null;
+          }
+        })}
+        <Polyline
+          eventHandlers={{
+            contextmenu: (event) => {
+              setSelectedLine(line);
+              event.originalEvent.view.L.DomEvent.stopPropagation(
+                event,
+              );
+              handleContext(event, 'line');
+            },
+          }}
+          positions={positions}
+          key={line.id}
+          color={'black'}
+        />
+      </>
+    );
+  };
+
   const initializeMap = async (challenge_id) => {
     await API.challenge
       .getChallenge({
@@ -195,6 +313,7 @@ let ChallengeEditor = ({
               PointStartId: segment.PointStartId,
               PointEndId: segment.PointEndId,
               path: segment.path,
+              name: segment.name,
             });
             segment.Obstacles.forEach((obstacle) => {
               var startMarker = res.PointPassages.find(
@@ -222,7 +341,6 @@ let ChallengeEditor = ({
                 distance: obstacle.distance,
                 enigme_awnser: obstacle.enigme_awnser,
                 SegmentId: obstacle.SegmentId,
-                // Valeur random en attendant de récupérer la bonne distance
                 x: coords[1],
                 y: coords[0],
               });
@@ -233,7 +351,7 @@ let ChallengeEditor = ({
         setLines(newLines);
       })
       .then(() => {
-        setIsLoading(true);
+        setIsLoading(false);
       });
   };
 
@@ -301,15 +419,18 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
-    var linesToUpdate = lines.filter(
-      (val) =>
-        val.PointStartId == marker.id || val.PointEndId == marker.id,
-    );
-    linesToUpdate.forEach((line) => {
-      setObstacles((current) =>
-        current.filter((val) => val.SegmentId != line.id),
-      );
-    });
+    setCurrentLine(null);
+    lines
+      .filter(
+        (val) =>
+          val.PointStartId == marker.id ||
+          val.PointEndId == marker.id,
+      )
+      .forEach((line) => {
+        setObstacles((current) =>
+          current.filter((val) => val.SegmentId != line.id),
+        );
+      });
     setLines((current) =>
       current.filter(
         (val) =>
@@ -325,24 +446,23 @@ let ChallengeEditor = ({
   };
 
   //Update un marker
-  let updateMarker = (marker) => {
-    API.checkpoint.updateMarker(marker).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-    setMarkers((current) =>
-      current.filter((val) => {
-        if (val.id == marker.id) val = marker;
-        return val;
-      }),
-    );
+  let updateMarker = (markerId, changes) => {
+    API.checkpoint
+      .updateMarker({ id: markerId, ...changes })
+      .then((marker) => {
+        setValid(false);
+        setMarkers((current) =>
+          current.map((val) => (val.id === markerId ? marker : val)),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let getMarkerCoordsFromId = (id) => {
-    var marker = markers.filter((current) => {
-      if (current.id == id) return current;
-    });
-    return [marker[0].x, marker[0].y];
+    var marker = markers.find((m) => m.id == id);
+    return [marker.x, marker.y];
   };
 
   //Ajoute une ligne
@@ -357,9 +477,22 @@ let ChallengeEditor = ({
     return API.segment
       .createSegment(newLine)
       .then((res) => {
-        res.path = res.path.map((e) => [e[0], e[1]]);
+        res.path = res.path.map((e) => [e[1], e[0]]);
         setLines((current) => [...current, res]);
         setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  let updateLine = (lineId, changes) => {
+    API.segment
+      .updateSegment({ id: lineId, ...changes })
+      .then((line) => {
+        setLines((current) =>
+          current.map((val) => (val.id === lineId ? line : val)),
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -400,31 +533,21 @@ let ChallengeEditor = ({
   };
 
   let updateObstacle = (obstacle) => {
-    API.obstacle.updateObstacle(obstacle).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-    var segment = lines.filter((current) => {
-      if (current.id == obstacle.SegmentId) return current;
-    });
-    var pointStart = getMarkerCoordsFromId(segment[0].PointStartId);
-    var pointEnd = getMarkerCoordsFromId(segment[0].PointEndId);
-    var positions = [
-      [pointStart[1], pointStart[0]],
-      ...segment[0].path.map((elem) => {
-        return [elem[1], elem[0]];
-      }),
-      [pointEnd[1], pointEnd[0]],
-    ];
-    var coords = placeObstacle(positions, obstacle.distance);
-    obstacle.x = coords[1];
-    obstacle.y = coords[0];
-    setObstacles((current) =>
-      current.map((val) => {
-        if (val.id == obstacle.id) return obstacle;
-        return val;
-      }),
-    );
+    API.obstacle
+      .updateObstacle(obstacle)
+      .then(() => {
+        setValid(false);
+        setObstacles((current) => {
+          return current.map((item) => {
+            return item.id == obstacle.id
+              ? { ...item, ...obstacle }
+              : item;
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let removeObstacle = (obstacle) => {
@@ -486,6 +609,9 @@ let ChallengeEditor = ({
     }
     if (event === 'deleteObstacle') {
       removeObstacle(currentObstacle);
+    }
+    if (event === 'updateLine') {
+      setModifyLine(true);
     }
     setContextEvent(undefined);
   };
@@ -555,7 +681,7 @@ let ChallengeEditor = ({
         aria-describedby="content"
         open={open}
       >
-        {isLoading ? (
+        {!isLoading ? (
           <>
             <ContextMenu
               data={contextMenu}
@@ -596,9 +722,9 @@ let ChallengeEditor = ({
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                zoom={9}
-                maxZoom={11}
-                minZoom={8}
+                // zoom={9}
+                // maxZoom={11}
+                // minZoom={8}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
@@ -614,7 +740,6 @@ let ChallengeEditor = ({
                   editMode={editMode}
                   setEditMode={setEditMode}
                   lines={lines}
-                  setLines={setLines}
                   setCurrentMarker={setCurrentMarker}
                   setCurrentLine={setCurrentLine}
                   currentLine={currentLine}
@@ -635,46 +760,37 @@ let ChallengeEditor = ({
                   setCurrentObstacle={setCurrentObstacle}
                   setObstacles={setObstacles}
                   obstacles={obstacles}
-                  updateObstacle={updateObstacle}
                   getMarkerCoordsFromId={getMarkerCoordsFromId}
                   placeObstacle={placeObstacle}
+                  updateMarker={updateMarker}
                 />
-                {lines.map((element) => {
-                  try {
-                    const startMarker = markers.find(
-                      (m) => m.id === element.PointStartId,
-                    );
-                    const endMarker = markers.find(
-                      (m) => m.id === element.PointEndId,
-                    );
-                    const positions = [
-                      [startMarker.y, startMarker.x],
-                      ...element.path.map((elem) => {
-                        return [elem[1], elem[0]];
-                      }),
-                      [endMarker.y, endMarker.x],
-                    ];
-                    return (
-                      <Polyline
-                        eventHandlers={{
-                          contextmenu: (event) => {
-                            setSelectedLine(element);
-                            event.originalEvent.view.L.DomEvent.stopPropagation(
-                              event,
-                            );
-                            handleContext(event, 'line');
-                          },
-                        }}
-                        positions={positions}
-                        key={element.id}
-                        color={'black'}
-                      />
-                    );
-                  } catch (err) {
-                    console.error(err);
-                  }
+                {lines.map((line) => {
+                  return <Line line={line} />;
                 })}
                 {obstacles.map((item) => {
+                  var segment = lines.find(
+                    (l) => l.id == item.SegmentId,
+                  );
+                  var pointStart = getMarkerCoordsFromId(
+                    segment.PointStartId,
+                  );
+                  var pointEnd = getMarkerCoordsFromId(
+                    segment.PointEndId,
+                  );
+                  var positions = [
+                    [pointStart[1], pointStart[0]],
+                    ...segment.path.map((elem) => {
+                      return [elem[0], elem[1]];
+                    }),
+                    [pointEnd[1], pointEnd[0]],
+                  ];
+                  var coords = placeObstacle(
+                    positions,
+                    item.distance,
+                  );
+                  item.x = coords[1];
+                  item.y = coords[0];
+
                   return (
                     <Marker
                       eventHandlers={{
@@ -727,6 +843,7 @@ let ChallengeEditor = ({
                     ) : null}
                   </>
                 ) : null}
+                <Echelle />
               </MapContainer>
               <Grid container justify="center">
                 <div className={classes.actionButtons}>
@@ -772,6 +889,17 @@ let ChallengeEditor = ({
                   setObstacles={setObstacles}
                   currentObstacle={currentObstacle}
                   updateObstacle={updateObstacle}
+                />
+              ) : null}
+              {selectedLine ? (
+                <ModifyLinePopUp
+                  modifyLine={modifyLine}
+                  setModifyLine={setModifyLine}
+                  setLines={setLines}
+                  selectedLine={selectedLine}
+                  updateLine={updateLine}
+                  echelle={challenge.echelle}
+                  getMarkerCoordsFromId={getMarkerCoordsFromId}
                 />
               ) : null}
             </main>

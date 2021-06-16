@@ -16,6 +16,7 @@ const obstacleQ = process.env.PUBLIC_URL + '/icons/obstacleQ.png';
 const obstacleAS = process.env.PUBLIC_URL + '/icons/obstacleAS.png';
 const obstacleQS = process.env.PUBLIC_URL + '/icons/obstacleQS.png';
 const progress = process.env.PUBLIC_URL + '/icons/progress.png';
+const lineAnchor = process.env.PUBLIC_URL + '/icons/lineAnchor.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
@@ -76,14 +77,21 @@ let createObstacleIcon = (question, selected, error) => {
       : question
       ? obstacleQ
       : obstacleA,
-    iconSize: [40, 40],
-    shadowSize: [20, 20],
+    iconAnchor: [17, 17],
   });
 };
 
 let createProgressIcon = () => {
   return new L.Icon({
     iconUrl: progress,
+    iconAnchor: [17, 17],
+  });
+};
+
+let createLineAnchorIcon = () => {
+  return new L.Icon({
+    iconUrl: lineAnchor,
+    iconAnchor: [6, 6],
   });
 };
 
@@ -93,4 +101,5 @@ export {
   createStartIcon,
   createObstacleIcon,
   createProgressIcon,
+  createLineAnchorIcon,
 };

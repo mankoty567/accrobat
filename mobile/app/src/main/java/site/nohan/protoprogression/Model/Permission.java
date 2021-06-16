@@ -22,7 +22,7 @@ public enum  Permission {
     }
 
     public static Permission fromString(String permission) {
-        if(permission == "ADMIN")
+        if(permission.equals("ADMIN"))
             return Permission.ADMIN;
         return Permission.USER;
     }

@@ -50,8 +50,9 @@ let ModifyMarkerPopUp = ({
               value={currentMarker.title}
               label="Titre"
               onChange={(e) => {
-                currentMarker.title = e.target.value;
-                updateMarker(currentMarker);
+                updateMarker(currentMarker.id, {
+                  title: e.target.value,
+                });
               }}
             />
           </ListItem>
@@ -64,8 +65,9 @@ let ModifyMarkerPopUp = ({
               }
               label="Description"
               onChange={(e) => {
-                currentMarker.description = e.target.value;
-                updateMarker(currentMarker);
+                updateMarker(currentMarker.id, {
+                  description: e.target.value,
+                });
               }}
             />
           </ListItem>
@@ -78,8 +80,9 @@ let ModifyMarkerPopUp = ({
                 labelId="select-label"
                 value={currentMarker.type}
                 onChange={(e) => {
-                  currentMarker.type = e.target.value;
-                  updateMarker(currentMarker);
+                  updateMarker(currentMarker.id, {
+                    type: e.target.value,
+                  });
                   if (currentMarker.type == 'end') {
                     setStartPoint(markers.slice(-2)[0]);
                   }

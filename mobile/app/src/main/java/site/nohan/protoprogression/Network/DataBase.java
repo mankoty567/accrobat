@@ -33,19 +33,28 @@ public class DataBase {
      * Création des variables globales
      ******************************************/
     public static boolean isTokenValid(){
+        User moi = null;
         try {
-            getMoi().getToken();
-        } catch (Exception e){
+            moi = getMoi();
+        } catch (NullPointerException e){
             Log.e("TOKEN_VALIDITY", e+"");
             return false;
         }
-        return (getMoi().getToken() != null && !getMoi().getToken().equals("NULL"));
+        if(moi != null) return (moi.getToken() != null && !moi.getToken().equals("NULL"));
+        else return false;
     }
 
     public static boolean isTokenDateValid(Date date){
         boolean res = false;
-        if(getMoi().getToken_last_update() == null) return false;
-        final long diff = (date.getTime() - getMoi().getToken_last_update().getTime()) / 1000L;
+        User moi = null;
+        try {
+            moi = getMoi();
+        } catch (NullPointerException e){
+            Log.e("TOKEN_LAST_UPDATE", e+"");
+        }
+        if(moi == null) return false;
+        else if(moi.getToken_last_update() == null) return false;
+        final long diff = (date.getTime() - moi.getToken_last_update().getTime()) / 1000L;
         if(diff <= 7200L) res = true;
         return res;
     }
@@ -57,6 +66,7 @@ public class DataBase {
          * TABLE USER
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
+        //bdd.execSQL("DROP TABLE EVENT");
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
                 "USERNAME VARCHAR(255)," +

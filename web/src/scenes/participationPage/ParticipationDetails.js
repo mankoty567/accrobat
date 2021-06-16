@@ -208,6 +208,7 @@ let ParticipationDetails = ({
         setSegmentsFinished(res.segmentsParcourus);
         setPosition({
           type: res.type,
+          distance: res.distance,
           entity: res.entity,
         });
       });
@@ -331,6 +332,9 @@ let ParticipationDetails = ({
                 {position ? (
                   <ProgressMarker
                     position={position}
+                    segments={segments}
+                    markers={markers}
+                    obstacles={obstacles}
                     placeObstacle={placeObstacle}
                   />
                 ) : null}

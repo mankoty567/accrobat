@@ -53,7 +53,7 @@ export default function ContextMenu({ data, onEvent }) {
               <MenuItem onClick={() => onEvent('addObstacle')}>
                 Ajouter un obstacle
               </MenuItem>
-              <MenuItem onClick={() => onEvent('updateSegment')}>
+              <MenuItem onClick={() => onEvent('updateLine')}>
                 Modifier
               </MenuItem>
             </div>

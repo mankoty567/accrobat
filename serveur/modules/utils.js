@@ -118,7 +118,7 @@ module.exports = {
         );
     }
 
-    return d / distance;
+    return (d * echelle) / distance;
   },
 };
 
