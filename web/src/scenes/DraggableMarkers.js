@@ -4,7 +4,6 @@ import {
   createEndIcon,
   createStartIcon,
 } from './MarkerIcons';
-import { API } from '../eventApi/api';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées

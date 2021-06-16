@@ -760,7 +760,6 @@ let ChallengeEditor = ({
                   setCurrentObstacle={setCurrentObstacle}
                   setObstacles={setObstacles}
                   obstacles={obstacles}
-                  updateObstacle={updateObstacle}
                   getMarkerCoordsFromId={getMarkerCoordsFromId}
                   placeObstacle={placeObstacle}
                   updateMarker={updateMarker}
@@ -781,7 +780,7 @@ let ChallengeEditor = ({
                   var positions = [
                     [pointStart[1], pointStart[0]],
                     ...segment.path.map((elem) => {
-                      return [elem[1], elem[0]];
+                      return [elem[0], elem[1]];
                     }),
                     [pointEnd[1], pointEnd[0]],
                   ];
