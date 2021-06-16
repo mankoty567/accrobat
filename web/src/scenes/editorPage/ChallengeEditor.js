@@ -10,6 +10,7 @@ import {
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
 import Markers from './Markers';
+import Lines from './Lines';
 import ContextMenu from './ContextMenu';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './modifyElements/ModifyChallenge';
@@ -22,15 +23,7 @@ import {
   createObstacleIcon,
   createLineAnchorIcon,
 } from '../../components/MarkerIcons';
-
-let inBounds = (event) => {
-  return !(
-    event.latlng.lat < 0 ||
-    event.latlng.lat > 1 ||
-    event.latlng.lng < 0 ||
-    event.latlng.lng > 1
-  );
-};
+import { inBounds, fitInBounds } from '../../components/Bounds';
 
 let PreviewLine = ({ from }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -215,71 +208,6 @@ let ChallengeEditor = ({
     );
   };
 
-  let Line = (element) => {
-    var line = element.line;
-    const startMarker = markers.find(
-      (m) => m.id === line.PointStartId,
-    );
-    const endMarker = markers.find((m) => m.id === line.PointEndId);
-
-    var positions = [
-      [startMarker.y, startMarker.x],
-      ...line.path.map((elem) => {
-        return [elem[0], elem[1]];
-      }),
-      [endMarker.y, endMarker.x],
-    ];
-
-    return (
-      <>
-        {positions.map((pos, idx) => {
-          if (0 < idx && idx < positions.length - 1) {
-            return (
-              <Marker
-                draggable
-                position={pos}
-                icon={createLineAnchorIcon()}
-                eventHandlers={{
-                  dragend: (event) => {
-                    var coords = event.target._latlng;
-                    if (!inBounds(coords)) {
-                      coords = fitInBounds(coords);
-                    }
-                    var path = positions.map((p, i) => {
-                      if (i == idx) return [coords.lat, coords.lng];
-                      else return p;
-                    });
-                    path.shift();
-                    path.pop();
-                    updateLine(line.id, {
-                      path: path,
-                    });
-                  },
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
-        })}
-        <Polyline
-          eventHandlers={{
-            contextmenu: (event) => {
-              setSelectedLine(line);
-              event.originalEvent.view.L.DomEvent.stopPropagation(
-                event,
-              );
-              handleContext(event, 'line');
-            },
-          }}
-          positions={positions}
-          key={line.id}
-          color={'black'}
-        />
-      </>
-    );
-  };
-
   const initializeMap = async (challenge_id) => {
     await API.challenge
       .getChallenge({
@@ -355,23 +283,6 @@ let ChallengeEditor = ({
       .then(() => {
         setIsLoading(false);
       });
-  };
-
-  let inBounds = (coords) => {
-    return !(
-      coords.lat < 0 ||
-      coords.lat > 1 ||
-      coords.lng < 0 ||
-      coords.lng > 1
-    );
-  };
-
-  let fitInBounds = (coords) => {
-    if (coords.lat < 0) coords.lat = 0;
-    if (coords.lat > 1) coords.lat = 1;
-    if (coords.lng < 0) coords.lng = 0;
-    if (coords.lng > 1) coords.lng = 1;
-    return coords;
   };
 
   let updateChallenge = async (challenge) => {
@@ -743,13 +654,15 @@ let ChallengeEditor = ({
                   setAddingLine={setAddingLine}
                   setPreviewLine={setPreviewLine}
                   errorMarkers={errorMarkers}
-                  inBounds={inBounds}
-                  fitInBounds={fitInBounds}
                   setCurrentObstacle={setCurrentObstacle}
                 />
-                {lines.map((line) => {
-                  return <Line line={line} />;
-                })}
+                <Lines
+                  lines={lines}
+                  markers={markers}
+                  updateLine={updateLine}
+                  setSelectedLine={setSelectedLine}
+                  handleContext={handleContext}
+                />
                 {obstacles.map((item) => {
                   var segment = lines.find(
                     (l) => l.id == item.SegmentId,
