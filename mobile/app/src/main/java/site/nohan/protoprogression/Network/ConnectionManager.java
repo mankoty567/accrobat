@@ -42,7 +42,9 @@ public class ConnectionManager extends ConnectivityManager.NetworkCallback {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e("InterruptedException", e+"");
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
             //DataBase.deleteFailedToSend(event.getParticipationId(), event.getTypeEvent(), event.getData());
         }

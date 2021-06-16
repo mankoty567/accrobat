@@ -39,15 +39,17 @@ public class SaveParticipationResponse implements APIListenner {
         // TODO: Si l'erreur est autre que un probleme de co (mauvaise données) ne pas faire le addFailEvent
         //DataBase.addFailEvent(this.id, this.typeEvent, this.data);
         ConnectionManager.setDisconnected();
-        Log.e("net/failEvent", error.toString() + "\n" + error.getMessage() );
+        if( error != null) Log.e("net/failEvent", error.toString() + "\n" + error.getMessage() );
 
 
         String body = "fail";
-        if(error.networkResponse != null && error.networkResponse.data != null) {
-            try {
-                body = new String(error.networkResponse.data,"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+        if( error != null) {
+            if(error.networkResponse != null && error.networkResponse.data != null) {
+                try {
+                    body = new String(error.networkResponse.data,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
         Log.e("net/SavePartResp/err", body.toString() );
