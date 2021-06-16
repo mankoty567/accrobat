@@ -15,7 +15,7 @@ import {
  */
 let Markers = ({
   addingLine,
-  addCurrentLine,
+  addPreviewLine,
   markers,
   handleContext,
   updateMarker,
@@ -27,7 +27,7 @@ let Markers = ({
   contextRef,
   addLine,
   setAddingLine,
-  setCurrentLine,
+  setPreviewLine,
   errorMarkers,
   inBounds,
   fitInBounds,
@@ -64,7 +64,7 @@ let Markers = ({
         setContextEvent(undefined);
       }
       if (addingLine) {
-        addCurrentLine(event);
+        addPreviewLine(event);
       }
     },
     contextmenu: (event) => {
@@ -105,7 +105,7 @@ let Markers = ({
                       if (currentMarker.id !== item.id)
                         addLine(currentMarker, item);
                       setAddingLine(false);
-                      setCurrentLine([]);
+                      setPreviewLine([]);
                     }
                   },
                   dragend: (event) => {
