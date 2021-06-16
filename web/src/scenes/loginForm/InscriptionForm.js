@@ -10,10 +10,6 @@ import { useHistory } from 'react-router-dom';
 export default function InscriptionForm() {
   //Variable d'interface
   const history = useHistory();
-  const [loginUsername, setLoginUsername] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [loginDuring, setLoginDuring] = useState(false);
-  const [loginErrorMessage, setLoginErrorMessage] = useState('');
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerPasswordRepeat, setRegisterPasswordRepeat] =
@@ -63,31 +59,6 @@ export default function InscriptionForm() {
   }
 
   /**
-   * Fonction permettant de se connecter
-   */
-  function handleLogin() {
-    if (loginDuring) return;
-
-    setLoginDuring(true);
-    API.user
-      .login({ username: loginUsername, password: loginPassword })
-      .then((data) => {
-        localStorage.setItem('token', data.jwt);
-        setUserState(data);
-        setDoneConnection(true);
-
-        setLoginDuring(false);
-
-        setTimeout(refreshJWT, API.user.JWT_VALIDITY);
-        history.push('/home');
-      })
-      .catch((err) => {
-        setLoginDuring(false);
-        setLoginErrorMessage('Mauvais login ou mot de passe');
-      });
-  }
-
-  /**
    * Fonction pour regénérer le JWT
    */
   function refreshJWT() {
@@ -105,13 +76,6 @@ export default function InscriptionForm() {
 
         localStorage.setItem('token', undefined);
       });
-  }
-
-  /**
-   * Fonction pour utiliser les services de google
-   */
-  function handleGoogle() {
-    window.location = host + '/api/google/connect';
   }
 
   return (
@@ -132,7 +96,7 @@ export default function InscriptionForm() {
         value={registerPassword}
         onChange={(e) => setRegisterPassword(e.target.value)}
         type="password"
-      />{' '}
+      />
       <TextField
         placeholder="Retapez le mot de passe"
         value={registerPasswordRepeat}
@@ -164,15 +128,6 @@ export default function InscriptionForm() {
           {registerErrorMessage}
         </p>
       ) : null}
-      <br />
-      <br />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleGoogle}
-      >
-        Se connecter avec Google
-      </Button>
     </>
   );
 }

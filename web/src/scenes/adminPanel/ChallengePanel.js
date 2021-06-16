@@ -64,6 +64,7 @@ let ChallengePanel = () => {
       .then((res) => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
+        setOpen(true);
       })
       .catch((err) => console.error(err));
   };
