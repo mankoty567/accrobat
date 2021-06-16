@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import {
   Paper,
   Typography,
@@ -7,11 +6,9 @@ import {
   TextField,
   Button,
 } from '@material-ui/core';
-
-import SmallMessage from '../components/SmallMessage';
-import { API } from '../eventApi/api';
-
-import style from './PublicPage.module.css';
+import SmallMessage from '../../components/SmallMessage';
+import { API } from '../../eventApi/api';
+import style from './Proposition.module.css';
 import classnames from 'classnames';
 
 let Proposition = () => {
@@ -92,7 +89,7 @@ let Proposition = () => {
           <Paper>
             <div style={{ padding: '5px' }}>
               <Typography variant="h5" align="center">
-                Proposer un challenge
+                Proposition
               </Typography>
 
               <TextField
