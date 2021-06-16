@@ -103,19 +103,19 @@ export const Navbar = () => {
             <Tab
               label="Vos challenges"
               component={Link}
+              to="/participations"
+              value="/participations"
+            />
+          ) : null}
+
+          {userState ? (
+            <Tab
+              label="Tous les challenges"
+              component={Link}
               to="/challenges"
               value="/challenges"
             />
           ) : null}
-
-          {/* {userState ? (
-            <Tab
-              label="Tous les challenges"
-              component={Link}
-              to="/inscriptions"
-              value="/inscriptions"
-            />
-          ) : null} */}
 
           {userState && userState.permission > 99 ? (
             <Tab

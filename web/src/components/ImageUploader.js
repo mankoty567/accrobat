@@ -73,8 +73,6 @@ let ImageUploader = ({ callback, maxSize, setErrMessage }) => {
         onChange={() => handleChange()}
         inputRef={inputFile}
       ></Input>
-
-      {childs ? childs : null}
     </>
   );
 };
