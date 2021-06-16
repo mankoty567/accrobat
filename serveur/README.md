@@ -102,3 +102,5 @@ Pour le déploiment, vous pouvez copier sur votre serveur les script `./script/f
 Les variables déjà remplis dans le script peuvent rester comme ça, sinon il faut les modifier avec des bons paramètres. 
 
 Executez dans l'ordre `firstLaunch.sh` au début, puis `restartAcrobat.sh` à chaque modifications de l'image.
+
+Pour voir comment publier son site avec Nginx [voir ce document](../Documentation/Nginx.md)

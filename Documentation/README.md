@@ -1,6 +1,10 @@
 # Documentation
-Vous trouverez dans ce dossier toute la documentation de notre projet Acrobatt.
+Vous trouverez dans ce dossier tous les documents que nous avons utilisés pendant notre projet, dans le dossier `drive`.  
+Vous trouverez aussi un sommaire 
 
-- [Architecture](./Architecture.md): L'organisation des différentes composantes du projet, et le choix des technologies utilisées
-- [Déploiement](./Déploiement.md): Comment build et déployer les différentes parties de l'application
-- [Développeur](./Developpeur.md): L'organisation des différents fichiers dans les différentes parties du projet
+## Architecture
+![Architecture](./img/Architecture.png)
+
+- [FrontEnd Web](../web/README.md#Architecture)
+- [FrontEnd Mobile](../mobile/README.md#Architecture)
+- [BackEnd](../serveur/README.md#Architecture)
