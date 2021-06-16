@@ -3,6 +3,7 @@ import checkpointApi from './checkpointApi';
 import obstacleApi from './obstacleApi';
 import participationApi from './participationApi';
 import segmentApi from './segmentApi';
+import eventApi from './eventApi';
 import userApi from './userApi';
 import propositionApi from './propositionApi';
 import challengeToVoteApi from './challengeToVoteApi';
@@ -23,7 +24,7 @@ export const checkStatus = (res) => {
 export const API = {
   challenge: challengeApi,
   checkpoint: checkpointApi,
-  //   event: eventApi,
+  event: eventApi,
   //   imageSubmition: imageSubmitionApi,
   obstacle: obstacleApi,
   participation: participationApi,
