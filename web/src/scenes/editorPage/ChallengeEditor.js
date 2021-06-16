@@ -11,6 +11,7 @@ import {
 import { Grid, Button, Modal } from '@material-ui/core';
 import Markers from './Markers';
 import Lines from './Lines';
+import Obstacles from './Obstacles';
 import ContextMenu from './ContextMenu';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './modifyElements/ModifyChallenge';
@@ -19,11 +20,9 @@ import ModifyObstaclePopUp from './modifyElements/ModifyObstaclePopUp';
 import ModifyLinePopUp from './modifyElements/ModifyLinePopUp';
 import { API } from '../../eventApi/api';
 import useStyles from '../../components/MaterialUI';
-import {
-  createObstacleIcon,
-  createLineAnchorIcon,
-} from '../../components/MarkerIcons';
+import { createLineAnchorIcon } from '../../components/MarkerIcons';
 import { inBounds, fitInBounds } from '../../components/Bounds';
+import placeOnSegment from '../../components/PlaceOnSegments';
 
 let PreviewLine = ({ from }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -95,70 +94,6 @@ let ChallengeEditor = ({
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
   const [currentObstacle, setCurrentObstacle] = useState(null);
-
-  // Récupérer les valeurs x,y des obstacles
-  function placeObstacle(pointTab, pourcentage) {
-    pourcentage *= 100;
-    let distanceArray = [];
-    let sum = 0;
-
-    for (let i = 0; i < pointTab.length - 1; i++) {
-      let p1 = { x: pointTab[i][0], y: pointTab[i][1] };
-      let p2 = { x: pointTab[i + 1][0], y: pointTab[i + 1][1] };
-
-      let distance = Math.sqrt(
-        Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2),
-      );
-
-      distanceArray[i] = distance;
-      sum = sum + distance;
-    }
-
-    let pourcentageArray = distanceArray.map((d) => (d * 100) / sum);
-
-    let table = distanceArray.map((d, i) => ({
-      distance: d,
-      pourcentage: pourcentageArray[i],
-    }));
-
-    let segment = 0;
-
-    let oldSum = 0;
-    let totalSum = 0;
-    let tableSum = table.map((t) => {
-      oldSum = totalSum;
-      totalSum = totalSum + t.pourcentage;
-      return oldSum;
-    });
-    while (
-      tableSum[segment + 1] < pourcentage &&
-      segment < tableSum.length
-    ) {
-      segment = segment + 1;
-    }
-
-    let pourcentSomme = 0;
-
-    for (let l = 0; l < segment; l++) {
-      pourcentSomme = pourcentSomme + table[l].pourcentage;
-    }
-
-    let pourcentageInSegment = pourcentage - pourcentSomme;
-
-    let obstaclePercent =
-      (100 * pourcentageInSegment) / table[segment].pourcentage;
-
-    let x =
-      pointTab[segment][0] +
-      (pointTab[segment + 1][0] - pointTab[segment][0]) *
-        (obstaclePercent / 100);
-    let y =
-      pointTab[segment][1] +
-      (pointTab[segment + 1][1] - pointTab[segment][1]) *
-        (obstaclePercent / 100);
-
-    return [x, y];
-  }
 
   let Echelle = () => {
     var positions = [
@@ -259,7 +194,7 @@ let ChallengeEditor = ({
                 }),
                 [endMarker.y, endMarker.x],
               ];
-              var coords = placeObstacle(
+              var coords = placeOnSegment(
                 positions,
                 obstacle.distance,
               );
@@ -432,7 +367,7 @@ let ChallengeEditor = ({
         SegmentId: selectedLine.id,
       };
       let data = await API.obstacle.createObstacle(newObstacle);
-      var coords = placeObstacle(positions, data.distance);
+      var coords = placeOnSegment(positions, data.distance);
       data.x = coords[1];
       data.y = coords[0];
       setObstacles((current) => [...current, data]);
@@ -663,68 +598,15 @@ let ChallengeEditor = ({
                   setSelectedLine={setSelectedLine}
                   handleContext={handleContext}
                 />
-                {obstacles.map((item) => {
-                  var segment = lines.find(
-                    (l) => l.id == item.SegmentId,
-                  );
-                  var pointStart = getMarkerCoordsFromId(
-                    segment.PointStartId,
-                  );
-                  var pointEnd = getMarkerCoordsFromId(
-                    segment.PointEndId,
-                  );
-                  var positions = [
-                    [pointStart[1], pointStart[0]],
-                    ...segment.path.map((elem) => {
-                      return [elem[0], elem[1]];
-                    }),
-                    [pointEnd[1], pointEnd[0]],
-                  ];
-                  var coords = placeObstacle(
-                    positions,
-                    item.distance,
-                  );
-                  item.x = coords[1];
-                  item.y = coords[0];
-
-                  return (
-                    <Marker
-                      eventHandlers={{
-                        click: () => {
-                          var newCurrent = item;
-                          if (currentObstacle) {
-                            if (currentObstacle.id === item.id)
-                              newCurrent = null;
-                          }
-                          setCurrentMarker(null);
-                          setCurrentObstacle(newCurrent);
-                        },
-                        contextmenu: (event) => {
-                          setCurrentObstacle(item);
-                          event.originalEvent.view.L.DomEvent.stopPropagation(
-                            event,
-                          );
-                          handleContext(event, 'obstacle');
-                        },
-                      }}
-                      draggable={false}
-                      key={item.id}
-                      position={[item.y, item.x]}
-                      icon={createObstacleIcon(
-                        item.type == 'question',
-                        item === currentObstacle,
-                      )}
-                    >
-                      <Tooltip
-                        direction="top"
-                        offset={[0, -15]}
-                        permanent
-                      >
-                        {item.title}
-                      </Tooltip>
-                    </Marker>
-                  );
-                })}
+                <Obstacles
+                  obstacles={obstacles}
+                  currentObstacle={currentObstacle}
+                  lines={lines}
+                  getMarkerCoordsFromId={getMarkerCoordsFromId}
+                  handleContext={handleContext}
+                  setCurrentMarker={setCurrentMarker}
+                  setCurrentObstacle={setCurrentObstacle}
+                />
                 {currentMarker && previewLine ? (
                   <>
                     <Polyline
