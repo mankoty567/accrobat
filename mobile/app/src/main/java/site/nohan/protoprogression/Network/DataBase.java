@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +17,7 @@ import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Permission;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Progression;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Model.User;
 
@@ -166,6 +169,24 @@ public class DataBase {
         Log.e("newProgression: ", "" + Map.participationId);
     }
 
+    @Nullable
+    public static Progression getProgression(int participation){
+        Progression progression = null;
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+participation+";", null);
+        resultats.moveToFirst();
+        if(resultats.getCount() > 0) {
+            progression = new Progression(
+                    Map.findById(resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"))),
+                    participation,
+                    resultats.getInt(resultats.getColumnIndex("PROGRESSION")),
+                    resultats.getInt(resultats.getColumnIndex("CHEMIN_ID"))
+            );
+            Log.e("getProgression: ", progression.toString());
+        }
+        resultats.close();
+        return progression;
+    }
+
     public static synchronized void saveProgression(){
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -174,7 +195,7 @@ public class DataBase {
 
 
 
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+";", null);
         resultats.moveToFirst();
         if(resultats.getCount() == 0){
             dateInscription = "" + dateAujourdhui;

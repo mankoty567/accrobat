@@ -46,7 +46,7 @@ public class Chemin {
                     return c;
             }
         }
-        throw new RuntimeException("Chemin " + id + " introuvable");
+        return null;
     }
 
     // Renvoi la longueur jusqu'au dernier segment
