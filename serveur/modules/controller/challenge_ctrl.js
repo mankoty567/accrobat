@@ -125,47 +125,35 @@ module.exports = {
       description: req.body.description,
       echelle: req.body.echelle,
     }).then((challenge) => {
-      utils
-        .parseMap(req.body.img_fond)
-        .then((buffer) => {
-          fs.writeFileSync(
-            path.join(
-              __dirname,
-              '../../data/challenge/' + challenge.id + '.webp'
-            ),
-            buffer
-          );
+      utils.parseMap(req.body.img_fond).then((buffer) => {
+        fs.writeFileSync(
+          path.join(
+            __dirname,
+            '../../data/challenge/' + challenge.id + '.webp'
+          ),
+          buffer
+        );
 
-          bdd.UserChallengeAdmin.create({
-            isAuthor: true,
-            UserId: req.user.id,
-            ChallengeId: challenge.id,
-          }).then(() => {
-            if (req.body.img_avatar !== undefined) {
-              utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
-                fs.writeFileSync(
-                  path.join(
-                    __dirname,
-                    '../../data/challengeAvatar/' + challenge.id + '.webp'
-                  ),
-                  bufferAvater
-                );
-                debug('Création du challenge ' + challenge.id);
-                res.json({
-                  ...challenge.dataValues,
-                  frontId: req.body.frontId,
-                });
-              });
-            } else {
-              debug('Création du challenge ' + challenge.id);
-              res.json({ ...challenge.dataValues, frontId: req.body.frontId });
-            }
+        if (req.body.img_avatar !== undefined) {
+          utils.parseAvatar(req.body.img_avatar).then((bufferAvater) => {
+            fs.writeFileSync(
+              path.join(
+                __dirname,
+                '../../data/challengeAvatar/' + challenge.id + '.webp'
+              ),
+              bufferAvater
+            );
+            debug('Création du challenge ' + challenge.id);
+            res.json({
+              ...challenge.dataValues,
+              frontId: req.body.frontId,
+            });
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).send(err);
-        });
+        } else {
+          debug('Création du challenge ' + challenge.id);
+          res.json({ ...challenge.dataValues, frontId: req.body.frontId });
+        }
+      });
     });
   },
   delete_challenge: (req, res) => {
@@ -299,15 +287,6 @@ module.exports = {
             description: challenge.description,
             echelle: challenge.echelle,
             published: false,
-          },
-          { transaction: t }
-        );
-
-        await bdd.UserChallengeAdmin.create(
-          {
-            isAuthor: true,
-            ChallengeId: newChallenge.id,
-            UserId: req.user.id,
           },
           { transaction: t }
         );
@@ -492,33 +471,80 @@ module.exports = {
     });
   },
   get_all_challenge_admin: (req, res) => {
-    bdd.Challenge.findAll({
-      attributes: ['id', 'title', 'description', 'echelle'],
-      include: [
-        { model: bdd.User, where: { id: req.user.id }, required: false },
+    let query = {
+      attributes: [
+        'id',
+        'title',
+        'description',
+        'echelle',
+        'createdAt',
+        'published',
       ],
-    }).then((challenges) => {
-      let challengeReturn = challenges.map((k) => {
-        let obj = JSON.parse(JSON.stringify(k));
-        if (obj.Users.length !== 0) {
-          obj.isAdmin = true;
+    };
 
-          if (obj.Users[0].UserChallengeAdmin.isAuthor) {
-            obj.isAuthor = true;
-          } else {
-            obj.isAuthor = false;
-          }
-        } else {
-          obj.isAdmin = false;
-          obj.isAuthor = false;
-        }
-
-        delete obj.Users;
-
-        return obj;
-      });
-
-      res.json(challengeReturn);
+    if (req.query.include === 'point') {
+      query.include = [{ model: bdd.PointPassage }];
+    } else if (req.query.include === 'pointsegment') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+            },
+          ],
+        },
+      ];
+    } else if (req.query.include === 'pointsegmentobstacle') {
+      query.include = [
+        {
+          model: bdd.PointPassage,
+          include: [
+            {
+              model: bdd.Segment,
+              as: 'pointStart',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+            {
+              model: bdd.Segment,
+              as: 'pointEnd',
+              include: [
+                {
+                  model: bdd.Obstacle,
+                  attributes: [
+                    'id',
+                    'title',
+                    'description',
+                    'type',
+                    'distance',
+                    'SegmentId',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    }
+    bdd.Challenge.findAll(query).then((challenges) => {
+      res.json(challenges);
     });
   },
   verif_validity: async (req, res) => {
@@ -541,21 +567,6 @@ module.exports = {
         res.status(400).send('Challenge is not valid');
       }
     }
-  },
-  add_challenge_admin: (req, res) => {
-    bdd.User.findOne({ where: { id: req.body.user_id } }).then((toAddUser) => {
-      if (toAddUser === null) {
-        res.status(400).send('Bad Request: User not exist');
-      } else {
-        bdd.UserChallengeAdmin.create({
-          isAuthor: false,
-          UserId: req.body.user_id,
-          ChallengeId: req.params.id,
-        }).then(() => {
-          res.send('OK');
-        });
-      }
-    });
   },
   get_records: (req, res) => {
     bdd.Challenge.findOne({ where: { id: req.params.id } }).then(

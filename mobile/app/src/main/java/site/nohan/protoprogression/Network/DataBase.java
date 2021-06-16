@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
@@ -21,6 +22,9 @@ public class DataBase {
     public static final String DBNAME = "RUNSLIKE";
     public static Context context;
     private static SQLiteDatabase bdd;
+
+    public static int pedometerModeSelected = 0;
+    public static PedometerController pedometerController = null;
 
     /******************************************
      * Création des variables globales
@@ -45,6 +49,7 @@ public class DataBase {
 
     public static synchronized void init(Context ctx) {
         DataBase.context = context;
+
         /*
          * TABLE USER
          */

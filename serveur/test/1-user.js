@@ -105,7 +105,7 @@ describe('User', function () {
           expect(res.body)
             .to.have.property('email')
             .with.equal('admin@example.com');
-          expect(res.body).to.have.property('permission').with.equal(100);
+          expect(res.body).to.have.property('permission').with.equal(1000);
           expect(res.body).to.have.property('jwt');
 
           global.jwt_admin = res.body.jwt;
