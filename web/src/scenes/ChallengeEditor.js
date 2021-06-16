@@ -169,18 +169,30 @@ let ChallengeEditor = ({
       [1, 1],
     ];
     var text = null;
-    if (challenge.echelle >= 2000) {
+    if (challenge.echelle >= 15000) {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 10000 / challenge.echelle],
+      ];
+      text = '10000 mètres';
+    } else if (challenge.echelle >= 1500) {
       positions = [
         [0.1, 0.1],
         [0.1, 1000 / challenge.echelle],
       ];
       text = '1000 mètres';
-    } else {
+    } else if (challenge.echelle >= 150) {
       positions = [
         [0.1, 0.1],
         [0.1, 100 / challenge.echelle],
       ];
       text = '100 mètres';
+    } else {
+      positions = [
+        [0.1, 0.1],
+        [0.1, 10 / challenge.echelle],
+      ];
+      text = '10 mètres';
     }
     return (
       <>
@@ -205,15 +217,14 @@ let ChallengeEditor = ({
       (m) => m.id === line.PointStartId,
     );
     const endMarker = markers.find((m) => m.id === line.PointEndId);
-    const [positions, setPositions] = useState(() => [
+
+    var positions = [
       [startMarker.y, startMarker.x],
       ...line.path.map((elem) => {
-        return [elem[1], elem[0]];
+        return [elem[0], elem[1]];
       }),
       [endMarker.y, endMarker.x],
-    ]);
-
-    useEffect(() => console.log(positions), [positions]);
+    ];
 
     return (
       <>
@@ -230,20 +241,14 @@ let ChallengeEditor = ({
                     if (!inBounds(coords)) {
                       coords = fitInBounds(coords);
                     }
+                    var path = positions.map((p, i) => {
+                      if (i == idx) return [coords.lat, coords.lng];
+                      else return p;
+                    });
+                    path.shift();
+                    path.pop();
                     updateLine(line.id, {
-                      path: positions.map((p, i) => {
-                        if (i == idx) return [coords.lat, coords.lng];
-                        else return p;
-                      }),
-                    }).then((line) => {
-                      var test = [
-                        // [startMarker.y, startMarker.x],
-                        ...line.path.map((elem) => {
-                          return [elem[0], elem[1]];
-                        }),
-                        // [endMarker.y, endMarker.x],
-                      ];
-                      setPositions(test);
+                      path: path,
                     });
                   },
                 }}
@@ -437,13 +442,13 @@ let ChallengeEditor = ({
   };
 
   //Update un marker
-  let updateMarker = (markerid, changes) => {
+  let updateMarker = (markerId, changes) => {
     API.checkpoint
-      .updateMarker({ id: markerid, ...changes })
+      .updateMarker({ id: markerId, ...changes })
       .then((marker) => {
         setValid(false);
         setMarkers((current) =>
-          current.map((val) => (val.id === markerid ? marker : val)),
+          current.map((val) => (val.id === markerId ? marker : val)),
         );
       })
       .catch((err) => {
@@ -477,12 +482,13 @@ let ChallengeEditor = ({
       });
   };
 
-  let updateLine = (lineid, changes) => {
-    return API.segment
-      .updateSegment({ id: lineid, ...changes })
-      .then((res) => {
-        console.log(res);
-        return res;
+  let updateLine = (lineId, changes) => {
+    API.segment
+      .updateSegment({ id: lineId, ...changes })
+      .then((line) => {
+        setLines((current) =>
+          current.map((val) => (val.id === lineId ? line : val)),
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -528,7 +534,6 @@ let ChallengeEditor = ({
       .then(() => {
         setValid(false);
         setObstacles((current) => {
-          console.log(current);
           return current.map((item) => {
             return item.id == obstacle.id
               ? { ...item, ...obstacle }
