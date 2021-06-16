@@ -109,12 +109,6 @@ let ChallengePanel = () => {
       setOpen(true);
     };
 
-    useEffect(() => getChallenges(), []);
-
-    useEffect(() => {
-      getChallenges();
-    }, [open]);
-
     return (
       <>
         {!published ? (
@@ -143,6 +137,14 @@ let ChallengePanel = () => {
     );
   };
 
+  useEffect(() => {
+    getChallenges();
+  }, []);
+
+  useEffect(() => {
+    getChallenges();
+  }, [open]);
+
   return (
     <>
       <Typography variant="h4" align="center">
@@ -164,7 +166,9 @@ let ChallengePanel = () => {
       </Button>
       <Button
         startIcon={<MenuBookIcon />}
-        onClick={() => setAddmode('list')}
+        onClick={() => {
+          setAddmode('list');
+        }}
       >
         Consulter les challenge existants
       </Button>
