@@ -9,19 +9,19 @@ import {
   Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
-import DraggableMarkers from './DraggableMarkers';
-import useStyles from './MaterialUI';
-import { API } from '../eventApi/api';
+import Markers from './Markers';
 import ContextMenu from './ContextMenu';
-import ModifyMarkerPopUp from './ModifyMarkerPopUp';
-import ModifyObstaclePopUp from './ModifyObstaclePopUp';
-import ModifyLinePopUp from './ModifyLinePopUp';
 import ErrorView from './ErrorView';
-import ModifyChallenge from './ModifyChallenge';
+import ModifyChallenge from './modifyElements/ModifyChallenge';
+import ModifyMarkerPopUp from './modifyElements/ModifyMarkerPopUp';
+import ModifyObstaclePopUp from './modifyElements/ModifyObstaclePopUp';
+import ModifyLinePopUp from './modifyElements/ModifyLinePopUp';
+import { API } from '../../eventApi/api';
+import useStyles from '../../components/MaterialUI';
 import {
   createObstacleIcon,
   createLineAnchorIcon,
-} from './MarkerIcons';
+} from '../../components/MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -532,18 +532,16 @@ let ChallengeEditor = ({
     }
   };
 
-  let updateObstacle = (obstacle) => {
+  let updateObstacle = (obstacleId, changes) => {
     API.obstacle
-      .updateObstacle(obstacle)
-      .then(() => {
+      .updateObstacle({ id: obstacleId, ...changes })
+      .then((obstacle) => {
+        setObstacles((current) =>
+          current.map((val) =>
+            val.id === obstacleId ? obstacle : val,
+          ),
+        );
         setValid(false);
-        setObstacles((current) => {
-          return current.map((item) => {
-            return item.id == obstacle.id
-              ? { ...item, ...obstacle }
-              : item;
-          });
-        });
       })
       .catch((err) => {
         console.log(err);
@@ -730,7 +728,7 @@ let ChallengeEditor = ({
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
                   bounds={bounds}
                 ></ImageOverlay>
-                <DraggableMarkers
+                <Markers
                   addingLine={addingLine}
                   addCurrentLine={addCurrentLine}
                   setAddingLine={setAddingLine}

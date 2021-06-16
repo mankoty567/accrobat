@@ -1,6 +1,6 @@
 import React from 'react';
 import { Marker } from 'react-leaflet';
-import { createProgressIcon } from '../MarkerIcons';
+import { createProgressIcon } from '../../components/MarkerIcons';
 
 export default function ProgressMarker({
   position,
@@ -8,7 +8,6 @@ export default function ProgressMarker({
   markers,
   placeObstacle,
 }) {
-  console.log(position);
   var coords = [0.5, 0.5];
   if (position.type == 'PointPassage') {
     coords = [position.entity.y, position.entity.x];

@@ -3,7 +3,7 @@ import {
   createCheckpointIcon,
   createEndIcon,
   createStartIcon,
-} from './MarkerIcons';
+} from '../../components/MarkerIcons';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -13,7 +13,7 @@ import {
  * @param {Function} setEditMode Fonction pour update le state de editMode
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  */
-let DraggableMarkers = ({
+let Markers = ({
   addingLine,
   addCurrentLine,
   markers,
@@ -141,4 +141,4 @@ let DraggableMarkers = ({
   );
 };
 
-export default DraggableMarkers;
+export default Markers;

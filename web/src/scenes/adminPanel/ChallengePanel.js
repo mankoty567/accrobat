@@ -8,7 +8,7 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import ChallengeEditor from '../ChallengeEditor';
+import ChallengeEditor from '../editorPage/ChallengeEditor';
 
 /**
  * Le panel d'administration pour les challenges
