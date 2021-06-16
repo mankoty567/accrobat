@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
@@ -12,9 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import site.nohan.protoprogression.Controller.ButtonController;
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Controller.SeekBarController;
 import site.nohan.protoprogression.Controller.ToileController;
 import site.nohan.protoprogression.Controller.ZoomBarController;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
 public class MapFragment extends Fragment {
@@ -43,10 +46,14 @@ public class MapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         toile = new Toile(this.getContext());
         toile.setOnTouchListener(new ToileController(toile));
+
+        if(DataBase.pedometerController == null) DataBase.pedometerController = new PedometerController(this.getActivity());
+
         seekBarController = new SeekBarController(this);
         buttonController = new ButtonController(this);
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);
+
         return toile;
     }
 
@@ -57,14 +64,22 @@ public class MapFragment extends Fragment {
         seekBar.setOnSeekBarChangeListener(seekBarController);
         bRecentrer = getActivity().findViewById(R.id.bRecentrer);
         bRecentrer.setOnClickListener(buttonController);
-        bVelo = getActivity().findViewById(R.id.bGPSVelo);
-        bVelo.setOnClickListener(buttonController);
-        bMarche = getActivity().findViewById(R.id.bPodometreMarche);
-        bMarche.setOnClickListener(buttonController);
-        bCourse = getActivity().findViewById(R.id.bPodometreCourse);
-        bCourse.setOnClickListener(buttonController);
         zoomBar = getActivity().findViewById(R.id.zoombar);
         zoomBar.setOnSeekBarChangeListener(zoomBarController);
+
+        //Affichage du mode sélectionné
+        ImageView img_mode_selected = getActivity().findViewById(R.id.img_mode_selected);
+        switch (DataBase.pedometerModeSelected){
+            case 0:
+                img_mode_selected.setBackgroundResource(R.drawable.walking_green);
+                break;
+            case 1:
+                img_mode_selected.setBackgroundResource(R.drawable.running_green);
+                break;
+            case 2:
+                img_mode_selected.setBackgroundResource(R.drawable.cycling_green);
+                break;
+        }
         /*
         bAddPrev = getActivity().findViewById(R.id.bAddPrev);
         bAddPrev.setOnClickListener(buttonController);

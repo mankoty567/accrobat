@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
-
 import { API } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
-
 import { useHistory } from 'react-router-dom';
 
+/**
+ * middleware qui permet de récupérer le JWT envoyé par google
+ */
 export default function GoogleReturn() {
+  //Variable d'interface
   const history = useHistory();
-
   const [, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
     API.user.doneConnectionAtom,
@@ -33,6 +34,9 @@ export default function GoogleReturn() {
       });
   }, []);
 
+  /**
+   * Fonction permettant de refresh le jwt
+   */
   function refreshJWT() {
     API.user
       .whoami()

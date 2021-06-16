@@ -29,29 +29,6 @@ public class ButtonController implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         //Log.e("controller", Map.chemins.toString());
-
-        //Initialisation de l'objet permettant l'interaction avec le GPS et l'Accéléromètre
-        if(pedometerController == null) pedometerController = new PedometerController(this.mapFragment.getActivity());
-        //Bouton qui démarre/arrête le PodomètreMarche
-        if(v.getId() == R.id.bPodometreMarche){
-            PedometerController.isRunning = false;
-            pedometerController.pedometerAction();
-            return;
-        }
-
-        //Bouton qui démarre/arrête le PodomètreCourse
-        if(v.getId() == R.id.bPodometreCourse){
-            PedometerController.isRunning = true;
-            pedometerController.pedometerAction();
-            return;
-        }
-
-        //Bouton qui démarre/arrête le GPS
-        if(v.getId() == R.id.bGPSVelo){
-            pedometerController.bikeAction();
-            return;
-        }
-
         // Recentrer la vue
         if(v.getId() == R.id.bRecentrer){
             mapFragment.toile.recentrer();

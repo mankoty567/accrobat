@@ -17,16 +17,24 @@ import ReplyIcon from '@material-ui/icons/Reply';
 import { API } from '../../eventApi/api';
 import CheckIcon from '@material-ui/icons/Check';
 
+/**
+ * Page permettant de modifier le mot de passe
+ * @param {Function} setMode
+ * @param {Function} callback
+ */
 let PasswordPage = ({ setMode, callback }) => {
+  //variable d'interface
   const [password, setPassword] = useState('');
   const [confirmationPass, setConfirmationPass] = useState('');
   const [confirmationPass2, setConfirmationPass2] = useState('');
   const [error, setErr] = useState('');
-
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [showPassword3, setShowPassword3] = useState(false);
 
+  /**
+   * Fonction permettant de confirmer la modification du mot de passe
+   */
   const handleSubmit = () => {
     API.user
       .editPassword(password, confirmationPass, confirmationPass2)

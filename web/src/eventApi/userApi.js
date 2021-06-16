@@ -128,6 +128,33 @@ const userApi = {
       .then(checkStatus)
       .then((res) => res.json());
   },
+
+  getUserWithPerms: () => {
+    return fetch(`${host}/api/user/get_user_with_roles`, {
+      method: 'GET',
+      headers: {
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+      .then(checkStatus)
+      .then((res) => res.json());
+  },
+
+  editUserPerms: (id, permission) => {
+    return fetch(`${host}/api/user/${id}/permission`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization:
+          'Bearer ' + window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ permission }),
+    })
+      .then(checkStatus)
+      .then((res) => res.text())
+      .catch((err) => err.text());
+  },
 };
 
 /* Code de la connection

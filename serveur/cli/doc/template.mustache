@@ -32,7 +32,9 @@
           <div class="categorieContent hidden">
             {{#routes}}
               <div class="route">
-                <h3><span class="method {{method}}">{{method}}</span> {{url}} <img class="copyIcon" urlValue="{{url}}" src="./copy.svg" alt="Copier"/>
+                <h3><span class="method {{method}}">{{method}}</span> {{url}} 
+                  {{#permissionStr}}<span class="permission" style="background-color: {{permissionBackColor}}; color: {{permissionColor}}">{{permissionStr}}</span> {{/permissionStr}}
+                  <img class="copyIcon" urlValue="{{url}}" src="./copy.svg" alt="Copier"/>
                   {{#test}}<img class="testIcon" src="./test.svg" alt="Testé" />{{/test}}
                 </h3>
                 <div class="routeContent hidden">
@@ -63,6 +65,15 @@
           </div>
         </div>
       {{/categories}}
+    </div>
+
+    <h2 class="permissionsTitle">Permissions</h2>
+    <div class="permissions hidden">
+      <ul>
+        {{#permissions}}
+          <li><span class="permission" style="background-color: {{backColor}}; color: {{color}}">{{string}}</span> [{{number}}]: {{description}}</li>
+        {{/permissions}}
+      </ul>
     </div>
 
     <h2 class="bddTitle">Schéma de la base de donnée</h2>

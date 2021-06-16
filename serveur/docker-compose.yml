@@ -32,6 +32,8 @@ services:
       - FRONT_HOST=http://localhost:3000
       - DOC_NAME=Acrobatt
       - DOC_HOST=http://localhost:1420
+    ports:
+      - 1420:1418
     command: /bin/bash
     tty: true
     volumes:

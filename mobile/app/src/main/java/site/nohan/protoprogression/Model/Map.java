@@ -21,6 +21,8 @@ public class Map {
     public Date date;
     public String description;
 
+    public int participation;
+
     public int accompli;
 
     public PointPassage dernierPointPassage;
@@ -34,6 +36,7 @@ public class Map {
     public String dateDernierePartie;
 
     public double echelle;
+
 
 
 
@@ -74,6 +77,16 @@ public class Map {
         }
         throw new RuntimeException("Aucune arrivée dans la map");
     }
+
+
+    public static Map findById(int mapId) {
+        for(Map map : maps){
+            if(map.id == mapId)
+                return map;
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {

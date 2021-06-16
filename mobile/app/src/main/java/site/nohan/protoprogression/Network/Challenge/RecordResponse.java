@@ -3,6 +3,7 @@ package site.nohan.protoprogression.Network.Challenge;
 import android.app.Activity;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -19,6 +20,7 @@ import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
+import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 import site.nohan.protoprogression.View.ui.home.SubscribeListRecordsAdapter;
 
 import static site.nohan.protoprogression.Network.DataBase.resetRecords;
@@ -30,13 +32,15 @@ public class RecordResponse implements APIListenner {
      ******************************************/
     private Activity activity;
     private SubscribeListRecordsAdapter subscribeListRecordsAdapter;
+    private SubscribeFragment subscribeFragment;
 
     /******************************************
      * Constructeur de la réponse
      ******************************************/
-    public RecordResponse(Activity activity, SubscribeListRecordsAdapter subscribeListRecordsAdapter) {
+    public RecordResponse(Activity activity, SubscribeListRecordsAdapter subscribeListRecordsAdapter, SubscribeFragment subscribeFragment) {
         this.activity = activity;
         this.subscribeListRecordsAdapter = subscribeListRecordsAdapter;
+        this.subscribeFragment = subscribeFragment;
     }
 
     /******************************************
@@ -70,7 +74,11 @@ public class RecordResponse implements APIListenner {
                 DataBase.addRecord(participationID, duration, username);
             }
 
-            if(jsonArray.length() == 0) resetRecords();
+            if(jsonArray.length() == 0) {
+                subscribeFragment.hideTitleRecords(View.GONE);
+                resetRecords();
+            }
+            else subscribeFragment.hideTitleRecords(View.VISIBLE);
 
             subscribeListRecordsAdapter.notifyDataSetChanged();
         } catch (JSONException e) {

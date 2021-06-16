@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
@@ -39,6 +40,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     private final Toile toile;
     private final TextView tKm;
     private final LinearLayout directionLayout;
+    public static int progress = 0;
     ButtonController buttonController;
 
     public SeekBarController(MapFragment mapFragment){
@@ -47,6 +49,10 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         this.toile = mapFragment.toile;
         this.tKm = this.activity.findViewById(R.id.tKilometres);
         this.directionLayout = this.activity.findViewById(R.id.routeSelect);
+
+        SeekBar seekBar = mapFragment.getActivity().findViewById(R.id.seekBar);
+        //seekBar.setEnabled(false);
+
     }
 
     public void setButtonController(ButtonController buttonController) {
@@ -55,6 +61,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        SeekBarController.progress = progress;
         // On reserve de la place dans la mémoire pour modifier le bouton que l'on va façonner
         Button button;
 
@@ -68,7 +75,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
         DataBase.saveProgression();
 
-        new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
+        //new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
         //Log.e("lele", DataBase.getSubscribed().toString());
         Obstacle obstacle = this.detecterObstacle();
         if(obstacle != null){
@@ -78,7 +85,12 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     TypeEvent.OSTACLE,
                     obstacle.id,
                     Map.participationId,
-                    new SaveParticipationResponse()
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.OSTACLE,
+                            obstacle.id,
+                            Map.participationId
+                    )
             );
             new ObstacleAlertDialog(this.activity, obstacle);
 
@@ -86,6 +98,40 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         }
 
         if(progress == 100){
+
+            //Condition vérifiant le mode sélectionné par l'utilisateur
+            // et activant / désactivant ses fonctionnalités
+            switch (DataBase.pedometerModeSelected) {
+                case 0:
+                    PedometerController.isRunning = false;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 1:
+                    PedometerController.isRunning = true;
+                    DataBase.pedometerController.pedometerAction();
+                    break;
+                case 2:
+                    DataBase.pedometerController.bikeAction();
+                    break;
+            }
+
+            if(Map.mapActuelle.cheminActuel != null) {
+            Log.e("Direction", "Arrivé au bout du chemin ' "+ Map.mapActuelle.cheminActuel.nom + " '" );
+            Map.mapActuelle.cheminActuel.complete = true;
+            new SaveParticipationRequest(
+                    this.activity,
+                    TypeEvent.ARIVEE,
+                    Map.mapActuelle.cheminActuel.objectifId,
+                    Map.mapActuelle.id,
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.ARIVEE,
+                            Map.mapActuelle.cheminActuel.objectifId,
+                            Map.mapActuelle.id
+                    )
+            );
+
+        }
             if(directionLayout.getChildCount() < 1){
                 Log.e("chld", ""+directionLayout.getChildCount());
 
