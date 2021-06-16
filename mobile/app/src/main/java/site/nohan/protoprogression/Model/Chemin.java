@@ -46,7 +46,7 @@ public class Chemin {
                     return c;
             }
         }
-        return null;
+        throw new RuntimeException("Chemin " + id + " introuvable");
     }
 
     // Renvoi la longueur jusqu'au dernier segment
@@ -57,7 +57,6 @@ public class Chemin {
         }
         return (int) Math.floor(longueur);
     }
-
 
     // Renvoi la longueur jusqu'au point p
     public int getLongueurAt(Point objectif){

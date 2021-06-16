@@ -1,31 +1,32 @@
-package site.nohan.protoprogression.Network.Participation;
+package site.nohan.protoprogression.Network.Fraud;
 
 import android.app.Activity;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import site.nohan.protoprogression.Network.APIListenner;
-import site.nohan.protoprogression.Network.APIRequestGET;
-import site.nohan.protoprogression.Network.Challenge.ChallengesResponse;
+import site.nohan.protoprogression.Network.APIRequestPOST;
+import site.nohan.protoprogression.Network.Challenge.SubscribeResponse;
 import site.nohan.protoprogression.Network.DataBase;
-import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
+import site.nohan.protoprogression.View.MapFragment;
+import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 
-public class RetreiveParticipationRequest extends APIRequestGET {
-
+public class FraudRequest extends APIRequestPOST {
 
     /******************************************
      * Constructeur de la requête
      ******************************************/
-    public RetreiveParticipationRequest(Activity activity, int participationId) {
-        super(activity, "participation/"+participationId+"/whereiam", new RetreiveParticipationResponse(activity));
-        Log.e("net", this.getUrl());
-        APIRequestGET.queue.add(this);
-        APIRequestGET.queue.start();
-        Log.e("net", "Recupération de la progression");
+    public FraudRequest(Activity activity) {
+        super(activity, "fraude", new FraudResponse(activity));
+
+        Log.d("net", "Envoie de Fraude");
+        APIRequestPOST.queue.add(this);
+        APIRequestPOST.queue.start();
     }
 
     /******************************************
@@ -35,7 +36,7 @@ public class RetreiveParticipationRequest extends APIRequestGET {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if (DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if (DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {

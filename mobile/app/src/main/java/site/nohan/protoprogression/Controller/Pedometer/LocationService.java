@@ -26,9 +26,9 @@ import com.google.android.gms.location.LocationServices;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.DataBase;
+import site.nohan.protoprogression.Network.Fraud.FraudRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
@@ -92,13 +92,13 @@ public class LocationService extends Service {
                     round(kilometres,3);
 
                     //Détection de Fraude en km/h
-                    if (speed > 60) {
-                        Toast.makeText(getApplicationContext(), "Fraude détectée, course arrêtée !",Toast.LENGTH_LONG).show();
+                    if (speed >= 0) {
+                        Toast.makeText(getApplicationContext(), "Fraude détectée, course annulée !",Toast.LENGTH_LONG).show();
                         hasFrauded = true;
-                        User user = DataBase.getMoi();
-                        user.setToken("NULL");
-                        DataBase.setMoi(user);
+                        distance = 0;
                         stopLocationService();
+                        new FraudRequest(DataBase.pedometerController.getMapFragment().getActivity());
+                        DataBase.pedometerController.getMapFragment().ShowFragment(R.id.navigation_subscribe);
                     }
 
                     //Mise à jour de la variable globale
@@ -106,7 +106,7 @@ public class LocationService extends Service {
                     tKilometres.setText(distance + " ms");
 
                     //Mise à jour de la seekbar
-                    int distanceMap = (int) Math.floor(distance*100/ Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()));
+                    int distanceMap = distance;
                     SeekBar sbProgression = PedometerController.sbProgression;
                     sbProgression.setProgress(distanceMap);
 
