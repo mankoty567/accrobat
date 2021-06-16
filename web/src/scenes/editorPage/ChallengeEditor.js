@@ -75,7 +75,6 @@ let ChallengeEditor = ({
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [previewLine, setPreviewLine] = useState([]);
-  const [startPoint, setStartPoint] = useState(null);
   const [contextMenu, setContextEvent] = useState(undefined);
   const contextRef = useRef(undefined);
   const [addingLine, setAddingLine] = useState(false);
@@ -94,6 +93,7 @@ let ChallengeEditor = ({
   const [errorMarkers, setErrorMarkers] = useState([]);
   const [selectedLine, setSelectedLine] = useState(null);
   const [currentObstacle, setCurrentObstacle] = useState(null);
+  const [waitingAPI, setWaitingAPI] = useState(false);
 
   let Echelle = () => {
     var positions = [
@@ -242,55 +242,64 @@ let ChallengeEditor = ({
   let addMarker = async (event) => {
     var coords = event.latlng;
     if (!inBounds(coords)) coords = fitInBounds(coords);
-    try {
-      var newMarker = {
-        title: 'Point ' + markers.length,
-        description: '',
-        type: markers.length > 0 ? 'point' : 'start',
-        x: coords.lng,
-        y: coords.lat,
-      };
-      let data = await API.checkpoint.createMarker({
+    var newMarker = {
+      title: 'Point ' + markers.length,
+      description: '',
+      type: markers.length > 0 ? 'point' : 'start',
+      x: coords.lng,
+      y: coords.lat,
+    };
+    return API.checkpoint
+      .createMarker({
         marker: newMarker,
         challenge_id: challenge_id,
+      })
+      .then((res) => {
+        setMarkers((current) => [...current, res]);
+        setCurrentMarker(res);
+        setValid(false);
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      setMarkers((current) => [...current, data]);
-      setStartPoint(data);
-      setCurrentMarker(data);
-      setValid(false);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   //Supprime un marker
   let removeMarker = (marker) => {
-    setMarkers((current) => current.filter((val) => val != marker));
-    setPreviewLine([]);
-    lines
-      .filter(
-        (val) =>
-          val.PointStartId == marker.id ||
-          val.PointEndId == marker.id,
-      )
-      .forEach((line) => {
-        setObstacles((current) =>
-          current.filter((val) => val.SegmentId != line.id),
+    setWaitingAPI(true);
+    API.checkpoint
+      .deleteMarker(marker.id)
+      .then(() => {
+        setMarkers((current) =>
+          current.filter((val) => val != marker),
         );
+        setPreviewLine([]);
+        lines
+          .filter(
+            (val) =>
+              val.PointStartId == marker.id ||
+              val.PointEndId == marker.id,
+          )
+          .forEach((line) => {
+            setObstacles((current) =>
+              current.filter((val) => val.SegmentId != line.id),
+            );
+          });
+        setLines((current) =>
+          current.filter(
+            (val) =>
+              val.PointStartId != marker.id &&
+              val.PointEndId != marker.id,
+          ),
+        );
+        setValid(false);
+        setWaitingAPI(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setWaitingAPI(false);
       });
-    setLines((current) =>
-      current.filter(
-        (val) =>
-          val.PointStartId != marker.id &&
-          val.PointEndId != marker.id,
-      ),
-    );
-    setStartPoint(markers.slice(-1)[0]);
-    API.checkpoint.deleteMarker(marker.id).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
   };
 
   //Update un marker
@@ -357,27 +366,28 @@ let ChallengeEditor = ({
       }),
       [pointEnd[1], pointEnd[0]],
     ];
-    try {
-      var newObstacle = {
-        title: 'Obstacle ' + obstacles.length,
-        description: ' ',
-        type: 'question',
-        enigme_awnser: ' ',
-        distance: 0.1,
-        SegmentId: selectedLine.id,
-      };
-      let data = await API.obstacle.createObstacle(newObstacle);
-      var coords = placeOnSegment(positions, data.distance);
-      data.x = coords[1];
-      data.y = coords[0];
-      setObstacles((current) => [...current, data]);
-      setValid(false);
-      setCurrentObstacle(data);
-      setModifyObstacle(true);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
+    var newObstacle = {
+      title: 'Obstacle ' + obstacles.length,
+      description: ' ',
+      type: 'question',
+      enigme_awnser: ' ',
+      distance: 0.1,
+      SegmentId: selectedLine.id,
+    };
+    return API.obstacle
+      .createObstacle(newObstacle)
+      .then((res) => {
+        var coords = placeOnSegment(positions, res.distance);
+        res.x = coords[1];
+        res.y = coords[0];
+        setObstacles((current) => [...current, res]);
+        setCurrentObstacle(res);
+        setModifyObstacle(true);
+        setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let updateObstacle = (obstacleId, changes) => {
@@ -397,13 +407,17 @@ let ChallengeEditor = ({
   };
 
   let removeObstacle = (obstacle) => {
-    setObstacles((current) =>
-      current.filter((val) => val != obstacle),
-    );
-    API.obstacle.deleteObstacle(obstacle.id).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
+    API.obstacle
+      .deleteObstacle(obstacle.id)
+      .then(() => {
+        setObstacles((current) =>
+          current.filter((val) => val != obstacle),
+        );
+        setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   let addPreviewLine = (newPoint) => {
@@ -591,13 +605,15 @@ let ChallengeEditor = ({
                   errorMarkers={errorMarkers}
                   setCurrentObstacle={setCurrentObstacle}
                 />
-                <Lines
-                  lines={lines}
-                  markers={markers}
-                  updateLine={updateLine}
-                  setSelectedLine={setSelectedLine}
-                  handleContext={handleContext}
-                />
+                {!waitingAPI ? (
+                  <Lines
+                    lines={lines}
+                    markers={markers}
+                    updateLine={updateLine}
+                    setSelectedLine={setSelectedLine}
+                    handleContext={handleContext}
+                  />
+                ) : null}
                 <Obstacles
                   obstacles={obstacles}
                   currentObstacle={currentObstacle}
@@ -648,7 +664,6 @@ let ChallengeEditor = ({
                   )}
                 </div>
               </Grid>
-
               {currentMarker ? (
                 <ModifyMarkerPopUp
                   modifyMarker={modifyMarker}
@@ -656,7 +671,6 @@ let ChallengeEditor = ({
                   setMarkers={setMarkers}
                   currentMarker={currentMarker}
                   markers={markers}
-                  setStartPoint={setStartPoint}
                   updateMarker={updateMarker}
                 />
               ) : null}

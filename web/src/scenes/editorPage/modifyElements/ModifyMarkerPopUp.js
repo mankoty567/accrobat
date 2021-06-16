@@ -15,7 +15,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 
 let ModifyMarkerPopUp = ({
   currentMarker,
-  setStartPoint,
   markers,
   updateMarker,
   modifyMarker,
@@ -83,9 +82,6 @@ let ModifyMarkerPopUp = ({
                   updateMarker(currentMarker.id, {
                     type: e.target.value,
                   });
-                  if (currentMarker.type == 'end') {
-                    setStartPoint(markers.slice(-2)[0]);
-                  }
                 }}
               >
                 <MenuItem value={'start'}>Départ</MenuItem>
