@@ -38,6 +38,20 @@
         <item name="android:textSize">20dp</item>
     </style>
 
+    <!-- Base progress bar theme. -->
+    <style name="progress_bar_style">
+        <item name="android:thumbTint">@color/blue_button</item>
+        <item name="android:progressTint">@color/gray_text_disabled</item>
+        <item name="android:progressBackgroundTint">@color/gray_text</item>
+    </style>
+
+    <!-- Base logo mode theme. -->
+    <style name="logo_mode_style">
+        <item name="android:layout_width">65dp</item>
+        <item name="android:layout_height">65dp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
     <!-- Base button theme. -->
     <style name="submit_button">
         <item name="android:layout_height">wrap_content</item>

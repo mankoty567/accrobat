@@ -23,14 +23,20 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
  * La barre de navigation du site, utilisable partout
  */
 export const Navbar = () => {
-  let location = useLocation();
+  //Variable d'interface
 
+  //Pour la navbar
+  let location = useLocation();
   const [page, setPage] = useState(
     location.pathname.split('/')[1]
       ? '/' + location.pathname.split('/')[1]
       : '/home',
   );
   const [userState] = useRecoilState(API.user.userAtom);
+  //Pour le popup à droite
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+  const prevOpen = React.useRef(open);
 
   /**
    * En cas de changement de valeurs
@@ -41,14 +47,17 @@ export const Navbar = () => {
     setPage(value);
   };
 
-  //Variable pour le menu
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-
+  /**
+   * Fonction permettant d'afficher le popup
+   */
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
 
+  /**
+   * Fonction permettant de gérer la fermeture du popup
+   * @param {any} event Evénement en cas de fermeture
+   */
   const handleClose = (event) => {
     if (
       anchorRef.current &&
@@ -60,6 +69,10 @@ export const Navbar = () => {
     setOpen(false);
   };
 
+  /**
+   * Fonction permettant de gérer le focus
+   * @param {any} event Evénement lors de l'exécution
+   */
   function handleListKeyDown(event) {
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -67,8 +80,6 @@ export const Navbar = () => {
     }
   }
 
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();

@@ -179,7 +179,7 @@ public class MapResponse implements APIListenner {
                 Log.e("suiv",c.objectif.titre);
                 Button button = new Button(this.activity);
                 button.setOnClickListener(new DirectionController(this.activity, c));
-                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
+                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
                 button.setText(c.objectif.titre + " par " + c.nom);
 
                 linearLayout.addView(button);

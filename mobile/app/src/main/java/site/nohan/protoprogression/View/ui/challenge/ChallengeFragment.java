@@ -49,7 +49,7 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
         signin = R.id.navigation_signin;
         ll_interaction = root.findViewById(R.id.ll_challenge_interaction);
         if(!isNotAPreview) ll_interaction.setVisibility(View.GONE);
-        else ll_interaction.setVisibility(View.VISIBLE);
+        //else ll_interaction.setVisibility(View.VISIBLE);
 
          //Vérification que l'utilisateur est connecté
          if(!DataBase.isTokenValid()) ShowFragment(signin);

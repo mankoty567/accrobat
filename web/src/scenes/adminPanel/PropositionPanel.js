@@ -9,10 +9,26 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import React, { useState, useEffect } from 'react';
 import { API } from '../../eventApi/api';
 
+/**
+ * Pannel permettant de gérer les propositions
+ */
 const PropositionPanel = () => {
+  //Variable d'interface
   const [propositions, setPropositions] = useState([]);
   const [isLoadingProposition, setIsLoadingPropositions] =
     useState(true);
+  /**
+   * Permet de mettre à jour la proposition voulue
+   * @param {*} id
+   * @param {*} status
+   */
+  function handleChangeProposition(id, status) {
+    API.proposition.updateProposition(id, status).then(() => {
+      setPropositions((before) => {
+        return before.filter((b) => b.id !== id);
+      });
+    });
+  }
 
   useEffect(() => {
     API.proposition.getPropositions().then((data) => {
@@ -21,13 +37,6 @@ const PropositionPanel = () => {
     });
   }, []);
 
-  function handleChangeProposition(id, status) {
-    API.proposition.updateProposition(id, status).then(() => {
-      setPropositions((before) => {
-        return before.filter((b) => b.id !== id);
-      });
-    });
-  }
   return (
     <div style={{ height: '30vh' }}>
       <Typography variant="h4" align="center">

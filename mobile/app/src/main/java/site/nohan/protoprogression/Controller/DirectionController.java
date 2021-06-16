@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
@@ -46,6 +48,23 @@ public class DirectionController implements View.OnClickListener {
                         Map.mapActuelle.id
                 )
         );
+
+        //Condition vérifiant le mode sélectionné par l'utilisateur
+        // et activant / désactivant ses fonctionnalités
+        switch (DataBase.pedometerModeSelected) {
+            case 0:
+                PedometerController.isRunning = false;
+                DataBase.pedometerController.pedometerAction();
+                break;
+            case 1:
+                PedometerController.isRunning = true;
+                DataBase.pedometerController.pedometerAction();
+                break;
+            case 2:
+                DataBase.pedometerController.bikeAction();
+                break;
+        }
+
         Map.mapActuelle.cheminActuel = this.direction;
         Map.mapActuelle.accompli = 0;
         if(toile != null)

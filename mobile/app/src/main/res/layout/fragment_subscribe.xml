@@ -77,6 +77,48 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/subscribe_mode_selection"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/error_secure_style"
+                    android:text="Sélectionner votre mode de déplacement" />
+
+                <LinearLayout
+                    android:id="@+id/ll_challenge_interaction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/ll_challenge_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <Button
+                            android:id="@+id/bPodometreMarche"
+                            style="@style/logo_mode_style"
+                            android:background="@drawable/walking" />
+
+                        <Button
+                            android:id="@+id/bPodometreCourse"
+                            style="@style/logo_mode_style"
+                            android:background="@drawable/running" />
+
+                        <Button
+                            android:id="@+id/bGPSVelo"
+                            style="@style/logo_mode_style"
+                            android:background="@drawable/cycling"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+
+
         </LinearLayout>
     </LinearLayout>
 

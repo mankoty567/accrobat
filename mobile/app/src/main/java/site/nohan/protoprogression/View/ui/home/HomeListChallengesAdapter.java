@@ -53,7 +53,8 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         if(HomeFragment.isOnPrivateChallenges) {
 
             if(Avatar.getAvatar(DataBase.getSubscribed().get(position).id) != null){
-                avatar.setImageBitmap(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image);
+                if(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image != null)
+                    avatar.setImageBitmap(Avatar.getAvatar(DataBase.getSubscribed().get(position).id).image);
             }
 
             if(position < DataBase.getSubscribed().size()) {
@@ -65,7 +66,12 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
             }
         } else {
             if(Avatar.size() > position) {
-                avatar.setImageBitmap(Avatar.get(position).image);
+                Log.e("getView: size : ", DataBase.getSubscribed().size()+"" );
+                try {
+                    avatar.setImageBitmap(Avatar.getAvatar(Map.maps.get(position).id).image);
+                }catch (NullPointerException e){
+                    Log.e("getView", "Avatar " + Map.maps.get(position).id + " introuvable");
+                }
             }
             list_title.setText(Map.maps.get(position).libelle);
             list_lastTimeUpdated.setText("Créé le " + new SimpleDateFormat("dd/MM/yyyy 'à' hh'h'mm").format(Map.maps.get(position).date));

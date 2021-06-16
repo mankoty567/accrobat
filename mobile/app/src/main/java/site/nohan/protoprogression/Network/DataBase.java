@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
@@ -21,6 +22,9 @@ public class DataBase {
     public static final String DBNAME = "RUNSLIKE";
     public static Context context;
     private static SQLiteDatabase bdd;
+
+    public static int pedometerModeSelected = 0;
+    public static PedometerController pedometerController = null;
 
     /******************************************
      * Création des variables globales
@@ -45,6 +49,7 @@ public class DataBase {
 
     public static synchronized void init(Context ctx) {
         DataBase.context = context;
+
         /*
          * TABLE USER
          */
@@ -114,6 +119,8 @@ public class DataBase {
                 "CREATED_AT DATETIME" +
                 ");");
 
+
+
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
         Log.e("sql","L'utilisateur existe (CODE: "+resultats.getCount()+")");
@@ -141,6 +148,22 @@ public class DataBase {
 
 
         return maps;
+    }
+
+    public static synchronized void newProgression(int participationId, int mapId){
+        Map map = Map.findById(mapId);
+        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
+                mapId + ", " +
+                participationId + ", " +
+                "NULL," +
+                "NULL, \"" +
+                map.libelle + "\",\"" +
+                map.description + " \"," +
+                "datetime()," +
+                "datetime()" +
+                ");"
+        );
+        Log.e("newProgression: ", "" + Map.participationId);
     }
 
     public static synchronized void saveProgression(){
@@ -195,7 +218,7 @@ public class DataBase {
     }
 
     public static synchronized void restoreProgression(){
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(resultats.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour la progression");
             return;
@@ -211,7 +234,7 @@ public class DataBase {
         resultats.close();
 
 
-        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+";", null);
+        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(accomplis.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour les chemins");
             return;
@@ -374,7 +397,8 @@ public class DataBase {
         bdd.execSQL("INSERT INTO EVENT VALUES(" +
                 participationId + ", \"" +
                 typeEvent.toString() +"\"," +
-                data + "" +
+                data + ", " +
+                "datetime()" +
                 ");"
         );
     }

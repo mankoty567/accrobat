@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -49,6 +50,12 @@ public class SubscribeFragment extends Fragment {
     private TextView tv_records;
     private ListView lv_records;
 
+    private LinearLayout ll_subscribe;
+    private LinearLayout ll_mode_selection;
+    private Button btn_pedometer;
+    private Button btn_pedometer_run;
+    private Button btn_bike;
+
     /************************************************************************
      * Création de la class et de la vue
      ************************************************************************/
@@ -74,6 +81,39 @@ public class SubscribeFragment extends Fragment {
 
         String unencodedHtml;
 
+        //Affichage du mode de déplacement
+        ll_mode_selection = root.findViewById(R.id.subscribe_mode_selection);
+        ll_mode_selection.setVisibility(View.GONE);
+        ll_subscribe = root.findViewById(R.id.ll_signin_button);
+        ll_subscribe.setVisibility(View.VISIBLE);
+        btn_pedometer = root.findViewById(R.id.bPodometreMarche);
+        btn_pedometer_run = root.findViewById(R.id.bPodometreCourse);
+        btn_bike = root.findViewById(R.id.bGPSVelo);
+        btn_pedometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBase.pedometerModeSelected = 0;
+                Map.participationId = DataBase.getSubscribed().get(position).participation;
+                subscribeToMap(true);
+            }
+        });
+        btn_pedometer_run.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBase.pedometerModeSelected = 1;
+                Map.participationId = DataBase.getSubscribed().get(position).participation;
+                subscribeToMap(true);
+            }
+        });
+        btn_bike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBase.pedometerModeSelected = 2;
+                Map.participationId = DataBase.getSubscribed().get(position).participation;
+                subscribeToMap(true);
+            }
+        });
+
         if(HomeFragment.isOnPrivateChallenges) {
             tv_title.setText(DataBase.getSubscribed().get(position).libelle);
             unencodedHtml = DataBase.getSubscribed().get(position).description ;
@@ -86,8 +126,9 @@ public class SubscribeFragment extends Fragment {
             unencodedHtml = "<div style='background-color : #F2E8C7'>" + unencodedHtml + "</div>";
         }
 
-        String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(),
-                Base64.NO_PADDING);
+
+        String encodedHtml = unencodedHtml!=null ? Base64.encodeToString(unencodedHtml.getBytes(),
+                Base64.NO_PADDING) : "";
 
         wvDescription.loadData(encodedHtml, "text/html", "base64");
         wvDescription.setHorizontalScrollBarEnabled(false);
@@ -99,9 +140,8 @@ public class SubscribeFragment extends Fragment {
             public void onClick(View v){
                 if(HomeFragment.isOnPrivateChallenges){
                     // TODO: Charger la participation participationID
-                    Map.participationId = DataBase.getSubscribed().get(position).participation;
-                    subscribeToMap(true);
-
+                    ll_mode_selection.setVisibility(View.VISIBLE);
+                    ll_subscribe.setVisibility(View.GONE);
                 }else{
                     subscribeToChallenge();
                 }
@@ -118,12 +158,13 @@ public class SubscribeFragment extends Fragment {
 
         if(HomeFragment.isOnPrivateChallenges) {
             btn_preview.setVisibility(View.GONE);
-            btn_subscribe.setText("Reprendre");
+            btn_subscribe.setText("Lancer");
         } else {
             btn_preview.setVisibility(View.VISIBLE);
             btn_subscribe.setText("S'inscrire");
         }
 
+        //Affichage des records du challenge
         tv_records = root.findViewById(R.id.txt_title_records);
         lv_records = root.findViewById(R.id.lv_subscribe_records);
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
