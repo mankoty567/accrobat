@@ -25,7 +25,7 @@ public class SubscribeRequest extends APIRequestPOST {
      * Constructeur de la requête
      ******************************************/
     public SubscribeRequest(Activity activity, int challengeID, SubscribeFragment subscribeFragment) {
-        super(activity, "participation", new SubscribeResponse(activity, subscribeFragment));
+        super(activity, "participation", new SubscribeResponse(activity, subscribeFragment, challengeID));
 
         this.challengeID = challengeID;
 
