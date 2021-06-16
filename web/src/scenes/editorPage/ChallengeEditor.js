@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CRS } from 'leaflet';
 import {
   MapContainer,
   ImageOverlay,
   Polyline,
-  useMapEvent,
   Marker,
   Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
 import Markers from './Markers';
 import Lines from './Lines';
+import PreviewLine from './PreviewLine';
 import Obstacles from './Obstacles';
 import ContextMenu from './ContextMenu';
 import ErrorView from './ErrorView';
@@ -23,36 +23,6 @@ import useStyles from '../../components/MaterialUI';
 import { createLineAnchorIcon } from '../../components/MarkerIcons';
 import { inBounds, fitInBounds } from '../../components/Bounds';
 import placeOnSegment from '../../components/PlaceOnSegments';
-
-let PreviewLine = ({ from }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  let map = useMapEvent(
-    useMemo(
-      () => ({
-        mousemove: (event) => {
-          if (inBounds(event)) {
-            setMousePosition({
-              x: event.latlng.lat,
-              y: event.latlng.lng,
-            });
-          }
-        },
-      }),
-      [],
-    ),
-  );
-
-  if (from.length == 0) return <></>;
-  var positions = [
-    from[from.length - 1],
-    [mousePosition.x, mousePosition.y],
-  ];
-
-  return (
-    <Polyline positions={positions} color={'black'} dashArray={5} />
-  );
-};
 
 let ChallengeEditor = ({
   challenge_id,
