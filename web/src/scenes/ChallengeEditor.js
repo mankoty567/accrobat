@@ -15,6 +15,7 @@ import { API } from '../eventApi/api';
 import ContextMenu from './ContextMenu';
 import ModifyMarkerPopUp from './ModifyMarkerPopUp';
 import ModifyObstaclePopUp from './ModifyObstaclePopUp';
+import ModifyLinePopUp from './ModifyLinePopUp';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './ModifyChallenge';
 import {
@@ -86,6 +87,7 @@ let ChallengeEditor = ({
   const [addingLine, setAddingLine] = useState(false);
   const [modifyMarker, setModifyMarker] = useState(false);
   const [modifyObstacle, setModifyObstacle] = useState(false);
+  const [modifyLine, setModifyLine] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [checkMessage, setCheckMessage] = useState({});
   const [valid, setValid] = useState(false);
@@ -311,6 +313,7 @@ let ChallengeEditor = ({
               PointStartId: segment.PointStartId,
               PointEndId: segment.PointEndId,
               path: segment.path,
+              name: segment.name,
             });
             segment.Obstacles.forEach((obstacle) => {
               var startMarker = res.PointPassages.find(
@@ -416,6 +419,7 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
+    setCurrentLine(null);
     lines
       .filter(
         (val) =>
@@ -473,7 +477,7 @@ let ChallengeEditor = ({
     return API.segment
       .createSegment(newLine)
       .then((res) => {
-        res.path = res.path.map((e) => [e[0], e[1]]);
+        res.path = res.path.map((e) => [e[1], e[0]]);
         setLines((current) => [...current, res]);
         setValid(false);
       })
@@ -605,6 +609,9 @@ let ChallengeEditor = ({
     }
     if (event === 'deleteObstacle') {
       removeObstacle(currentObstacle);
+    }
+    if (event === 'updateLine') {
+      setModifyLine(true);
     }
     setContextEvent(undefined);
   };
@@ -883,6 +890,17 @@ let ChallengeEditor = ({
                   setObstacles={setObstacles}
                   currentObstacle={currentObstacle}
                   updateObstacle={updateObstacle}
+                />
+              ) : null}
+              {selectedLine ? (
+                <ModifyLinePopUp
+                  modifyLine={modifyLine}
+                  setModifyLine={setModifyLine}
+                  setLines={setLines}
+                  selectedLine={selectedLine}
+                  updateLine={updateLine}
+                  echelle={challenge.echelle}
+                  getMarkerCoordsFromId={getMarkerCoordsFromId}
                 />
               ) : null}
             </main>
