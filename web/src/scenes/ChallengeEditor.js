@@ -419,7 +419,7 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
-    setCurrentLine(null);
+    setCurrentLine([]);
     lines
       .filter(
         (val) =>
@@ -722,9 +722,6 @@ let ChallengeEditor = ({
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                // zoom={9}
-                // maxZoom={11}
-                // minZoom={8}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}

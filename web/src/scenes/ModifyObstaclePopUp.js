@@ -44,7 +44,7 @@ let ModifyObstaclePopUp = ({
         <List id="content">
           <ListItem>
             <TextField
-              value={currentObstacle.title}
+              defaultValue={currentObstacle.title}
               label="Titre"
               onChange={(e) => {
                 currentObstacle.title = e.target.value;
@@ -54,7 +54,7 @@ let ModifyObstaclePopUp = ({
           </ListItem>
           <ListItem>
             <TextField
-              value={
+              defaultValue={
                 currentObstacle.description != ' '
                   ? currentObstacle.description
                   : ''
@@ -68,7 +68,7 @@ let ModifyObstaclePopUp = ({
           </ListItem>
           <ListItem>
             <TextField
-              value={currentObstacle.enigme_awnser}
+              defaultValue={currentObstacle.enigme_awnser}
               label="Réponse"
               onChange={(e) => {
                 currentObstacle.enigme_awnser = e.target.value;

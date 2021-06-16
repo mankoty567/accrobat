@@ -47,7 +47,7 @@ let ModifyMarkerPopUp = ({
         <List id="content">
           <ListItem>
             <TextField
-              value={currentMarker.title}
+              defaultValue={currentMarker.title}
               label="Titre"
               onChange={(e) => {
                 updateMarker(currentMarker.id, {
@@ -58,7 +58,7 @@ let ModifyMarkerPopUp = ({
           </ListItem>
           <ListItem>
             <TextField
-              value={
+              defaultValue={
                 currentMarker.description
                   ? currentMarker.description
                   : ''
@@ -78,7 +78,7 @@ let ModifyMarkerPopUp = ({
               </InputLabel>
               <Select
                 labelId="select-label"
-                value={currentMarker.type}
+                defaultValue={currentMarker.type}
                 onChange={(e) => {
                   updateMarker(currentMarker.id, {
                     type: e.target.value,
