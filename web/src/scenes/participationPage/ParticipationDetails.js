@@ -8,14 +8,14 @@ import {
   Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
-import useStyles from '../MaterialUI';
+import useStyles from '../../components/MaterialUI';
 import { API } from '../../eventApi/api';
 import {
   createCheckpointIcon,
   createEndIcon,
   createStartIcon,
   createObstacleIcon,
-} from '../MarkerIcons';
+} from '../../components/MarkerIcons';
 import ProgressMarker from './ProgressMarker';
 
 let ParticipationDetails = ({
@@ -293,7 +293,7 @@ let ParticipationDetails = ({
                     const positions = [
                       [startMarker.y, startMarker.x],
                       ...element.path.map((elem) => {
-                        return [elem[1], elem[0]];
+                        return [elem[0], elem[1]];
                       }),
                       [endMarker.y, endMarker.x],
                     ];

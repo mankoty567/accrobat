@@ -1,6 +1,6 @@
 import React from 'react';
 import { Marker } from 'react-leaflet';
-import { createProgressIcon } from '../MarkerIcons';
+import { createProgressIcon } from '../../components/MarkerIcons';
 
 export default function ProgressMarker({
   position,

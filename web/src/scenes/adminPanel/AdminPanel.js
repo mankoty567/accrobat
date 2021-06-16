@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom';
 import PropositionPanel from './PropositionPanel';
 import UserAdminPanel from './UserAdminPanel';
+import FraudPanel from './FraudPanel';
 import ChallengeToVote from './ChallengeToVote';
 import { useRecoilState } from 'recoil';
 import { API } from '../../eventApi/api';
@@ -64,12 +65,14 @@ let AdminPanel = () => {
             />
           ) : null}
 
-          <Tab
-            label="Historique des fraudes"
-            component={Link}
-            to="/fraud"
-            value="/fraud"
-          />
+          {userState.permission > 100 ? (
+            <Tab
+              label="Historique des fraudes"
+              component={Link}
+              to="/fraud"
+              value="/fraud"
+            />
+          ) : null}
         </Tabs>
         <Switch>
           <Route path="/editor">
@@ -86,9 +89,11 @@ let AdminPanel = () => {
               <Redirect path="admin/editor" />
             )}
           </Route>
-          <Route path="/fraud">
-            <p>Not implemented yet</p>
-          </Route>
+          {userState.permission > 100 ? (
+            <Route path="/fraud">
+              <FraudPanel />
+            </Route>
+          ) : null}
           <Route path="/">
             <Redirect to="/editor" />
           </Route>

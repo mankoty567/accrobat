@@ -1,5 +1,5 @@
 import React from 'react';
-import useStyles from './MaterialUI';
+import useStyles from '../../../components/MaterialUI';
 import {
   List,
   ListItem,
@@ -40,15 +40,16 @@ let ModifyObstaclePopUp = ({
       }}
     >
       <div className={classes.modifyPaper}>
-        <h2 id="title">Modifier le point</h2>
+        <h2 id="title">Modifier l'obstacle</h2>
         <List id="content">
           <ListItem>
             <TextField
               defaultValue={currentObstacle.title}
               label="Titre"
               onChange={(e) => {
-                currentObstacle.title = e.target.value;
-                updateObstacle(currentObstacle);
+                updateObstacle(currentObstacle.id, {
+                  title: e.target.value,
+                });
               }}
             />
           </ListItem>
@@ -59,10 +60,11 @@ let ModifyObstaclePopUp = ({
                   ? currentObstacle.description
                   : ''
               }
-              label="Description"
+              label="Question"
               onChange={(e) => {
-                currentObstacle.description = e.target.value;
-                updateObstacle(currentObstacle);
+                updateObstacle(currentObstacle.id, {
+                  description: e.target.value,
+                });
               }}
             />
           </ListItem>
@@ -71,8 +73,9 @@ let ModifyObstaclePopUp = ({
               defaultValue={currentObstacle.enigme_awnser}
               label="Réponse"
               onChange={(e) => {
-                currentObstacle.enigme_awnser = e.target.value;
-                updateObstacle(currentObstacle);
+                updateObstacle(currentObstacle.id, {
+                  enigme_awnser: e.target.value,
+                });
               }}
             />
           </ListItem>
@@ -91,8 +94,9 @@ let ModifyObstaclePopUp = ({
               min={0.05}
               max={0.95}
               onChangeCommitted={(e, value) => {
-                currentObstacle.distance = value;
-                updateObstacle(currentObstacle);
+                updateObstacle(currentObstacle.id, {
+                  distance: value,
+                });
               }}
             />
           </ListItem>

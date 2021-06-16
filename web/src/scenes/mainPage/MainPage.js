@@ -4,6 +4,8 @@ import ProfilePage from '../profilePage/ProfilePage';
 import ParticipationPage from '../participationPage/ParticipationPage';
 import AdminPanel from '../adminPanel/AdminPanel';
 import LoginForm from '../loginForm/LoginForm';
+import InscriptionForm from '../loginForm/InscriptionForm';
+
 import Logout from '../loginForm/Logout';
 import NeedLogin from '../loginForm/NeedLogin';
 import GoogleReturn from '../loginForm/GoogleReturn';
@@ -74,9 +76,11 @@ let MainPage = () => {
               <ParticipationPage />
             </NeedLogin>
           </Route>
-
           <Route path="/login">
             <LoginForm />
+          </Route>
+          <Route path="/register">
+            <InscriptionForm />
           </Route>
           <Route path="/logout">
             <Logout />

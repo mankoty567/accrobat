@@ -9,19 +9,19 @@ import {
   Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
-import DraggableMarkers from './DraggableMarkers';
-import useStyles from './MaterialUI';
-import { API } from '../eventApi/api';
+import Markers from './Markers';
 import ContextMenu from './ContextMenu';
-import ModifyMarkerPopUp from './ModifyMarkerPopUp';
-import ModifyObstaclePopUp from './ModifyObstaclePopUp';
-import ModifyLinePopUp from './ModifyLinePopUp';
 import ErrorView from './ErrorView';
-import ModifyChallenge from './ModifyChallenge';
+import ModifyChallenge from './modifyElements/ModifyChallenge';
+import ModifyMarkerPopUp from './modifyElements/ModifyMarkerPopUp';
+import ModifyObstaclePopUp from './modifyElements/ModifyObstaclePopUp';
+import ModifyLinePopUp from './modifyElements/ModifyLinePopUp';
+import { API } from '../../eventApi/api';
+import useStyles from '../../components/MaterialUI';
 import {
   createObstacleIcon,
   createLineAnchorIcon,
-} from './MarkerIcons';
+} from '../../components/MarkerIcons';
 
 let inBounds = (event) => {
   return !(
@@ -32,7 +32,7 @@ let inBounds = (event) => {
   );
 };
 
-let NewPolyline = ({ from }) => {
+let PreviewLine = ({ from }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   let map = useMapEvent(
@@ -50,11 +50,13 @@ let NewPolyline = ({ from }) => {
       [],
     ),
   );
+
   if (from.length == 0) return <></>;
   var positions = [
     from[from.length - 1],
     [mousePosition.x, mousePosition.y],
   ];
+
   return (
     <Polyline positions={positions} color={'black'} dashArray={5} />
   );
@@ -80,7 +82,7 @@ let ChallengeEditor = ({
   const [obstacles, setObstacles] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentMarker, setCurrentMarker] = useState(null);
-  const [currentLine, setCurrentLine] = useState([]);
+  const [previewLine, setPreviewLine] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
   const [contextMenu, setContextEvent] = useState(undefined);
   const contextRef = useRef(undefined);
@@ -419,7 +421,7 @@ let ChallengeEditor = ({
   //Supprime un marker
   let removeMarker = (marker) => {
     setMarkers((current) => current.filter((val) => val != marker));
-    setCurrentLine([]);
+    setPreviewLine([]);
     lines
       .filter(
         (val) =>
@@ -467,11 +469,11 @@ let ChallengeEditor = ({
 
   //Ajoute une ligne
   let addLine = (start, end) => {
-    currentLine.shift();
+    previewLine.shift();
     var newLine = {
       PointStartId: start.id,
       PointEndId: end.id,
-      path: currentLine.map((p) => [p.lng, p.lat]),
+      path: previewLine.map((p) => [p.lng, p.lat]),
       name: 'Segment ' + lines.length,
     };
     return API.segment
@@ -532,18 +534,16 @@ let ChallengeEditor = ({
     }
   };
 
-  let updateObstacle = (obstacle) => {
+  let updateObstacle = (obstacleId, changes) => {
     API.obstacle
-      .updateObstacle(obstacle)
-      .then(() => {
+      .updateObstacle({ id: obstacleId, ...changes })
+      .then((obstacle) => {
+        setObstacles((current) =>
+          current.map((val) =>
+            val.id === obstacleId ? obstacle : val,
+          ),
+        );
         setValid(false);
-        setObstacles((current) => {
-          return current.map((item) => {
-            return item.id == obstacle.id
-              ? { ...item, ...obstacle }
-              : item;
-          });
-        });
       })
       .catch((err) => {
         console.log(err);
@@ -560,15 +560,15 @@ let ChallengeEditor = ({
     setValid(false);
   };
 
-  let addCurrentLine = (newPoint) => {
+  let addPreviewLine = (newPoint) => {
     var coords = newPoint.latlng;
     if (!inBounds(coords)) {
       coords = fitInBounds(coords);
     }
-    if (currentLine == []) {
-      setCurrentLine([coords]);
+    if (previewLine == []) {
+      setPreviewLine([coords]);
     } else {
-      setCurrentLine((current) => [...current, coords]);
+      setPreviewLine((current) => [...current, coords]);
     }
   };
 
@@ -586,14 +586,14 @@ let ChallengeEditor = ({
     }
     if (event === 'addLine') {
       setAddingLine(true);
-      addCurrentLine(contextMenu.event);
+      addPreviewLine(contextMenu.event);
     }
     if (event === 'addMarkerJoined') {
       var newMarker = await addMarker(contextMenu.event);
-      addCurrentLine(contextMenu.event);
+      addPreviewLine(contextMenu.event);
       addLine(currentMarker, newMarker);
       setAddingLine(false);
-      setCurrentLine([]);
+      setPreviewLine([]);
     }
     if (event === 'updateMarker') {
       setModifyMarker(true);
@@ -727,39 +727,25 @@ let ChallengeEditor = ({
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
                   bounds={bounds}
                 ></ImageOverlay>
-                <DraggableMarkers
+                <Markers
                   addingLine={addingLine}
-                  addCurrentLine={addCurrentLine}
-                  setAddingLine={setAddingLine}
+                  addPreviewLine={addPreviewLine}
                   markers={markers}
                   handleContext={handleContext}
-                  setMarkers={setMarkers}
+                  updateMarker={updateMarker}
                   editMode={editMode}
                   setEditMode={setEditMode}
-                  lines={lines}
                   setCurrentMarker={setCurrentMarker}
-                  setCurrentLine={setCurrentLine}
-                  currentLine={currentLine}
                   currentMarker={currentMarker}
-                  setStartPoint={setStartPoint}
-                  startPoint={startPoint}
-                  setCurrentLine={setCurrentLine}
                   setContextEvent={setContextEvent}
                   contextRef={contextRef}
                   addLine={addLine}
                   setAddingLine={setAddingLine}
-                  setCurrentLine={setCurrentLine}
-                  setValid={setValid}
+                  setPreviewLine={setPreviewLine}
                   errorMarkers={errorMarkers}
                   inBounds={inBounds}
                   fitInBounds={fitInBounds}
-                  removeMarker={removeMarker}
                   setCurrentObstacle={setCurrentObstacle}
-                  setObstacles={setObstacles}
-                  obstacles={obstacles}
-                  getMarkerCoordsFromId={getMarkerCoordsFromId}
-                  placeObstacle={placeObstacle}
-                  updateMarker={updateMarker}
                 />
                 {lines.map((line) => {
                   return <Line line={line} />;
@@ -826,17 +812,17 @@ let ChallengeEditor = ({
                     </Marker>
                   );
                 })}
-                {currentMarker ? (
+                {currentMarker && previewLine ? (
                   <>
                     <Polyline
                       positions={[
                         [currentMarker.y, currentMarker.x],
-                        ...currentLine,
+                        ...previewLine,
                       ]}
                       color={'black'}
                     />
                     {currentMarker.type != 'end' ? (
-                      <NewPolyline from={currentLine} />
+                      <PreviewLine from={previewLine} />
                     ) : null}
                   </>
                 ) : null}
