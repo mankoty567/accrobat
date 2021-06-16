@@ -1,6 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
+/**
+ * Page publique de l'application web
+ */
 let PublicPage = () => {
   //Variable d'interface
   const history = useHistory();

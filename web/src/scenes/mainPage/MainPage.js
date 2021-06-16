@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import PublicPage from '../publicPage/PublicPage';
 import ProfilePage from '../profilePage/ProfilePage';
+import ParticipationPage from '../participationPage/ParticipationPage';
 import AdminPanel from '../adminPanel/AdminPanel';
 import LoginForm from '../loginForm/LoginForm';
 import Logout from '../loginForm/Logout';
@@ -66,6 +67,11 @@ let MainPage = () => {
           <Route path="/admin">
             <NeedLogin admin={true}>
               <AdminPanel />
+            </NeedLogin>
+          </Route>
+          <Route path="/participations">
+            <NeedLogin>
+              <ParticipationPage />
             </NeedLogin>
           </Route>
 
