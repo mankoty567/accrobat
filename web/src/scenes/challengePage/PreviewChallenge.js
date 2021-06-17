@@ -110,7 +110,7 @@ let PreviewChallenge = ({
               var positions = [
                 [startMarker.y, startMarker.x],
                 ...segment.path.map((elem) => {
-                  return [elem[1], elem[0]];
+                  return [elem[0], elem[1]];
                 }),
                 [endMarker.y, endMarker.x],
               ];

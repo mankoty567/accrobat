@@ -317,7 +317,7 @@ let ChallengeEditor = ({
               var positions = [
                 [startMarker.y, startMarker.x],
                 ...segment.path.map((elem) => {
-                  return [elem[1], elem[0]];
+                  return [elem[0], elem[1]];
                 }),
                 [endMarker.y, endMarker.x],
               ];
@@ -468,13 +468,13 @@ let ChallengeEditor = ({
     var newLine = {
       PointStartId: start.id,
       PointEndId: end.id,
-      path: previewLine.map((p) => [p.lng, p.lat]),
+      path: previewLine.map((p) => [p.lat, p.lng]),
       name: 'Segment ' + lines.length,
     };
     return API.segment
       .createSegment(newLine)
       .then((res) => {
-        res.path = res.path.map((e) => [e[1], e[0]]);
+        res.path = res.path;
         setLines((current) => [...current, res]);
         setValid(false);
       })

@@ -10,10 +10,10 @@ export default function ProgressMarker({
 }) {
   var coords = [0.5, 0.5];
   if (position.type == 'PointPassage') {
-    coords = [position.entity.y, position.entity.x];
+    coords = [position.entity.x, position.entity.y];
   }
   if (position.type == 'Segment') {
-    segment = position.entity;
+    var segment = position.entity;
     var startMarker = markers.find(
       (m) => m.id === segment.PointStartId,
     );
@@ -21,14 +21,14 @@ export default function ProgressMarker({
     var positions = [
       [startMarker.y, startMarker.x],
       ...segment.path.map((elem) => {
-        return [elem[1], elem[0]];
+        return [elem[0], elem[1]];
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeOnSegment(positions, position.distance / 100);
+    coords = placeOnSegment(positions, position.distance).reverse();
   }
   if (position.type == 'Obstacle') {
-    obstacle = position.entity;
+    var obstacle = position.entity;
     var segment = segments.find((s) => (s.id = obstacle.SegmentId));
     var startMarker = markers.find(
       (m) => m.id === segment.PointStartId,
@@ -37,16 +37,16 @@ export default function ProgressMarker({
     var positions = [
       [startMarker.y, startMarker.x],
       ...segment.path.map((elem) => {
-        return [elem[1], elem[0]];
+        return [elem[0], elem[1]];
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeOnSegment(positions, position.distance / 100);
+    coords = placeOnSegment(positions, position.distance);
   }
   return (
     <Marker
       key={'position'}
-      position={[coords[0], coords[1]]}
+      position={[coords[1], coords[0]]}
       icon={createProgressIcon()}
     />
   );

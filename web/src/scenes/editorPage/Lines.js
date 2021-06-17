@@ -69,6 +69,7 @@ let Line = ({
             <Marker
               draggable
               position={pos}
+              key={pos}
               icon={createLineAnchorIcon()}
               eventHandlers={{
                 dragend: (event) => {
