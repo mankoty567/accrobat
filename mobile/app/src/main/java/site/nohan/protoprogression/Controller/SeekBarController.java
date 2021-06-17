@@ -159,10 +159,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
             }
         }else{
-            for(int i=0;i<directionLayout.getChildCount();i++)
-            {
-                directionLayout.removeAllViews();
-            }
+            directionLayout.removeAllViews();
         }
 
         Map.mapActuelle.accompli = (int) Math.floor(((float) progress*Map.mapActuelle.cheminActuel.getLongueur())/100);
