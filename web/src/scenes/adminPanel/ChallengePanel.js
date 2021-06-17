@@ -201,6 +201,18 @@ let ChallengePanel = () => {
               marginBottom: '1vh',
             }}
           >
+            <Grid item xs={12}>
+              <Button
+                startIcon={<AddIcon />}
+                onClick={() => {
+                  setSelected(null);
+                  setPage('form');
+                }}
+              >
+                Ajouter un challenge
+              </Button>
+            </Grid>
+
             <Grid item xs={6}>
               <Typography variant="h5">Publiés</Typography>
               <table
@@ -265,15 +277,7 @@ let ChallengePanel = () => {
               })}
             </Grid>
           </Grid>
-          <Button
-            startIcon={<AddIcon />}
-            onClick={() => {
-              setSelected(null);
-              setPage('form');
-            }}
-          >
-            Ajouter un challenge
-          </Button>
+
           {selected ? (
             <ChallengeEditor
               challenge_id={selected}
