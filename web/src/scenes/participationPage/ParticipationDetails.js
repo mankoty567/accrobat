@@ -61,12 +61,6 @@ let ParticipationDetails = ({
   };
 
   const initializeMap = async (challenge_id) => {
-    await API.participation.getParticipations().then((res) => {
-      res.forEach((participation) => {
-        if (participation.ChallengeId == challenge_id)
-          participation_id = participation.id;
-      });
-    });
     await API.challenge
       .getChallenge({
         challenge_id,
