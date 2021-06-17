@@ -8,7 +8,7 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import ChallengeEditor from '../ChallengeEditor';
+import ChallengeEditor from '../editorPage/ChallengeEditor';
 
 /**
  * Le panel d'administration pour les challenges
@@ -64,6 +64,7 @@ let ChallengePanel = () => {
       .then((res) => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
+        setOpen(true);
       })
       .catch((err) => console.error(err));
   };
@@ -109,12 +110,6 @@ let ChallengePanel = () => {
       setOpen(true);
     };
 
-    useEffect(() => getChallenges(), []);
-
-    useEffect(() => {
-      getChallenges();
-    }, [open]);
-
     return (
       <>
         {!published ? (
@@ -143,6 +138,14 @@ let ChallengePanel = () => {
     );
   };
 
+  useEffect(() => {
+    getChallenges();
+  }, []);
+
+  useEffect(() => {
+    getChallenges();
+  }, [open]);
+
   return (
     <>
       <Typography variant="h4" align="center">
@@ -164,7 +167,9 @@ let ChallengePanel = () => {
       </Button>
       <Button
         startIcon={<MenuBookIcon />}
-        onClick={() => setAddmode('list')}
+        onClick={() => {
+          setAddmode('list');
+        }}
       >
         Consulter les challenge existants
       </Button>

@@ -3,7 +3,8 @@ import {
   createCheckpointIcon,
   createEndIcon,
   createStartIcon,
-} from './MarkerIcons';
+} from '../../components/MarkerIcons';
+import { inBounds, fitInBounds } from '../../components/Bounds';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -13,9 +14,9 @@ import {
  * @param {Function} setEditMode Fonction pour update le state de editMode
  * @param {Object[]} lines La liste des lignes à afficher sur la map
  */
-let DraggableMarkers = ({
+let Markers = ({
   addingLine,
-  addCurrentLine,
+  addPreviewLine,
   markers,
   handleContext,
   updateMarker,
@@ -27,10 +28,8 @@ let DraggableMarkers = ({
   contextRef,
   addLine,
   setAddingLine,
-  setCurrentLine,
+  setPreviewLine,
   errorMarkers,
-  inBounds,
-  fitInBounds,
   setCurrentObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker
@@ -64,7 +63,7 @@ let DraggableMarkers = ({
         setContextEvent(undefined);
       }
       if (addingLine) {
-        addCurrentLine(event);
+        addPreviewLine(event);
       }
     },
     contextmenu: (event) => {
@@ -105,7 +104,7 @@ let DraggableMarkers = ({
                       if (currentMarker.id !== item.id)
                         addLine(currentMarker, item);
                       setAddingLine(false);
-                      setCurrentLine([]);
+                      setPreviewLine([]);
                     }
                   },
                   dragend: (event) => {
@@ -141,4 +140,4 @@ let DraggableMarkers = ({
   );
 };
 
-export default DraggableMarkers;
+export default Markers;

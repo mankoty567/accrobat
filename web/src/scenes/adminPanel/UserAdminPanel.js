@@ -88,9 +88,10 @@ const UserAdminPanel = () => {
       >
         {userList
           .filter((elem) => elem.username.includes(filter))
-          .map((user) => {
+          .map((user, idx) => {
             return (
               <UserItem
+                key={idx}
                 userId={user.id}
                 username={user.username}
                 permission={user.permission}

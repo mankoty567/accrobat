@@ -135,6 +135,14 @@ export const Navbar = () => {
               value="/login"
             />
           ) : null}
+          {!userState ? (
+            <Tab
+              label="S'inscrire'"
+              component={Link}
+              to="/register"
+              value="/register"
+            />
+          ) : null}
         </Tabs>
         <Typography
           variant="h3"
