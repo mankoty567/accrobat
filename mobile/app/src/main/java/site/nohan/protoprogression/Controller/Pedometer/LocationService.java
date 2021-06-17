@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.User;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Fraud.FraudRequest;
@@ -96,7 +97,7 @@ public class LocationService extends Service {
                         Toast.makeText(getApplicationContext(), "Fraude détectée, course annulée !",Toast.LENGTH_LONG).show();
                         hasFrauded = true;
                         distance = 0;
-                        stopLocationService();
+                        DataBase.pedometerController.bikeAction();
                         new FraudRequest(DataBase.pedometerController.getMapFragment().getActivity());
                         DataBase.pedometerController.getMapFragment().ShowFragment(R.id.navigation_subscribe);
                     }
@@ -106,7 +107,7 @@ public class LocationService extends Service {
                     tKilometres.setText(distance + " ms");
 
                     //Mise à jour de la seekbar
-                    int distanceMap = distance;
+                    int distanceMap = (int) Math.floor(distance*100/ Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()));
                     SeekBar sbProgression = PedometerController.sbProgression;
                     sbProgression.setProgress(distanceMap);
 

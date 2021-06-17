@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/background_list" >
+
+    <LinearLayout
+        style="@style/ll_left_element_list">
+
+        <TextView
+            android:id="@+id/txt_list_history"
+            style="@style/title_list" />
+
+    </LinearLayout>
+
+</LinearLayout>

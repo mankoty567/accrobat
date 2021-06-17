@@ -107,6 +107,10 @@ module.exports = {
    * @returns
    */
   calcSegmentPourcentage: (path, echelle, distance) => {
+    if (distance === 0) {
+      return 0;
+    }
+
     let d = 0;
 
     for (let i = 0; i < path.length - 1; i++) {
@@ -118,7 +122,7 @@ module.exports = {
         );
     }
 
-    return (d * echelle) / distance;
+    return distance / (d * echelle);
   },
 };
 

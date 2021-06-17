@@ -1,11 +1,17 @@
 package site.nohan.protoprogression.View;
 
+import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.proto.ProtoOutputStream;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
@@ -18,6 +24,7 @@ import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Controller.SeekBarController;
 import site.nohan.protoprogression.Controller.ToileController;
 import site.nohan.protoprogression.Controller.ZoomBarController;
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
@@ -28,14 +35,14 @@ public class MapFragment extends Fragment {
     SeekBar seekBar;
     SeekBar zoomBar;
     Button bRecentrer;
-    Button bVelo;
-    Button bMarche;
-    Button bCourse;
-    Button bAddPrev;
-    Button bAddCurrent;
     SeekBarController seekBarController;
     ButtonController buttonController;
     ZoomBarController zoomBarController;
+    Button btn_history;
+    LinearLayout ll_history_events;
+    ListView lv_history_events;
+    MapHistoryAdapter mapHistoryAdapter;
+    public static Boolean historyON = false;
 
 
     public MapFragment() {
@@ -55,6 +62,8 @@ public class MapFragment extends Fragment {
         seekBarController.setButtonController(buttonController);
         zoomBarController = new ZoomBarController(toile);
 
+        mapHistoryAdapter = new MapHistoryAdapter(this.getActivity());
+
         return toile;
     }
 
@@ -67,6 +76,12 @@ public class MapFragment extends Fragment {
         bRecentrer.setOnClickListener(buttonController);
         zoomBar = getActivity().findViewById(R.id.zoombar);
         zoomBar.setOnSeekBarChangeListener(zoomBarController);
+        btn_history = getActivity().findViewById(R.id.btn_history);
+        btn_history.setOnClickListener(buttonController);
+        ll_history_events = getActivity().findViewById(R.id.ll_history_events);
+        lv_history_events = getActivity().findViewById(R.id.lv_history_events);
+        lv_history_events.setAdapter(mapHistoryAdapter);
+
 
         //Affichage du mode sélectionné
         ImageView img_mode_selected = getActivity().findViewById(R.id.img_mode_selected);
@@ -88,6 +103,19 @@ public class MapFragment extends Fragment {
         bAddCurrent.setOnClickListener(buttonController);
 
          */
+    }
+
+    /******************************************
+     * Méthode utilisé pour afficher la liste de l'historique des events
+     ******************************************/
+    public void updateHistory(){
+        Log.e("LIST",DataBase.getEventsOf(Map.participationId).size()+"");
+        if(historyON){
+            mapHistoryAdapter.notifyDataSetChanged();
+            ll_history_events.setVisibility(View.VISIBLE);
+        } else {
+            ll_history_events.setVisibility(View.GONE);
+        }
     }
 
     /******************************************

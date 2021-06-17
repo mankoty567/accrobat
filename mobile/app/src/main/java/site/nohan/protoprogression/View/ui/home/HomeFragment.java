@@ -18,10 +18,15 @@ import androidx.navigation.Navigation;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
+import site.nohan.protoprogression.Controller.SeekBarController;
 import site.nohan.protoprogression.Controller.ui.MapsAdaptaterListenner;
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Challenge.ChallengesRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
@@ -80,6 +85,12 @@ public class HomeFragment extends Fragment {
         lv_home_challenges.setAdapter(challengesAdapter);
         if(!isOnPrivateChallenges) updateViewButtonMenu(btn_allChallenges,btn_privateChallenges);
         else updateViewButtonMenu(btn_privateChallenges,btn_allChallenges);
+
+        if(SeekBarController.progress > 0) {
+            new SaveParticipationRequest(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId)
+            );
+        }
 
         return root;
     }

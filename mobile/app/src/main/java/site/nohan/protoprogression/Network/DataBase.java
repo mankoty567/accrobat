@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +17,7 @@ import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Permission;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Progression;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Model.User;
 
@@ -64,6 +67,7 @@ public class DataBase {
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
         //bdd.execSQL("DROP TABLE EVENT");
+
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
                 "USERNAME VARCHAR(255)," +
@@ -176,6 +180,24 @@ public class DataBase {
         Log.e("newProgression: ", "" + Map.participationId);
     }
 
+    @Nullable
+    public static Progression getProgression(int participation){
+        Progression progression = null;
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+participation+";", null);
+        resultats.moveToFirst();
+        if(resultats.getCount() > 0) {
+            progression = new Progression(
+                    Map.findById(resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"))),
+                    participation,
+                    resultats.getInt(resultats.getColumnIndex("PROGRESSION")),
+                    resultats.getInt(resultats.getColumnIndex("CHEMIN_ID"))
+            );
+            Log.e("getProgression: ", progression.toString());
+        }
+        resultats.close();
+        return progression;
+    }
+
     public static synchronized void saveProgression(){
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -184,7 +206,7 @@ public class DataBase {
 
 
 
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+";", null);
         resultats.moveToFirst();
         if(resultats.getCount() == 0){
             dateInscription = "" + dateAujourdhui;
@@ -419,7 +441,25 @@ public class DataBase {
 
         Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT;", null);
         if(eventsCursor.getCount() == 0){
-            Log.e("restoreProgression", "rien à restorer pour les chemins");
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+    public static synchronized  ArrayList<Event> getEventsOf(int participationId){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT;", null);
+        if(eventsCursor.getCount() == 0){
             return new ArrayList<>();
         }
         Event event;
@@ -447,4 +487,5 @@ public class DataBase {
     public static synchronized boolean needToSyncEventWithAPI(){
         return !getFailEvents().isEmpty();
     }
+
 }

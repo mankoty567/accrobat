@@ -115,7 +115,7 @@ module.exports = {
                 let i = 0;
                 let segmentId = undefined;
 
-                while (!isOnPoint) {
+                while (!isOnPoint && i !== events.length) {
                   if (events[i].type === 'pointpassage:depart') {
                     isOnPoint = true;
                     segmentId = Math.trunc(events[i].data);
@@ -123,6 +123,11 @@ module.exports = {
                     distance = distance + events[i].data;
                     i++;
                   }
+                }
+
+                if (segmentId === undefined) {
+                  res.status(500).send('No Start Point');
+                  return;
                 }
 
                 bdd.Segment.findOne({
@@ -139,7 +144,6 @@ module.exports = {
                     },
                   ],
                 }).then((segment) => {
-                  console.log();
                   let pourcentage = utils.calcSegmentPourcentage(
                     [
                       [segment.pointStart.x, segment.pointStart.y],
