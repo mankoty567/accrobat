@@ -11,12 +11,12 @@ const end = process.env.PUBLIC_URL + '/icons/End.png';
 const endS = process.env.PUBLIC_URL + '/icons/EndS.png';
 const endE = process.env.PUBLIC_URL + '/icons/EndE.png';
 const endES = process.env.PUBLIC_URL + '/icons/EndES.png';
-const obstacleA = process.env.PUBLIC_URL + '/icons/obstacleA.png';
-const obstacleQ = process.env.PUBLIC_URL + '/icons/obstacleQ.png';
-const obstacleAS = process.env.PUBLIC_URL + '/icons/obstacleAS.png';
-const obstacleQS = process.env.PUBLIC_URL + '/icons/obstacleQS.png';
-const progress = process.env.PUBLIC_URL + '/icons/progress.png';
-const lineAnchor = process.env.PUBLIC_URL + '/icons/lineAnchor.png';
+const obstacleA = process.env.PUBLIC_URL + '/icons/ObstacleA.png';
+const obstacleQ = process.env.PUBLIC_URL + '/icons/ObstacleQ.png';
+const obstacleAS = process.env.PUBLIC_URL + '/icons/ObstacleAS.png';
+const obstacleQS = process.env.PUBLIC_URL + '/icons/ObstacleQS.png';
+const progress = process.env.PUBLIC_URL + '/icons/Progress.png';
+const lineAnchor = process.env.PUBLIC_URL + '/icons/LineAnchor.png';
 const shadow =
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
 
