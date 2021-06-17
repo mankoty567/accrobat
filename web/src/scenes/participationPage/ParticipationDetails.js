@@ -25,6 +25,7 @@ let ParticipationDetails = ({
   setSelected,
   open,
   setOpen,
+  participation_id,
 }) => {
   //Utilisation des classes CSS
   const classes = useStyles();
@@ -35,7 +36,6 @@ let ParticipationDetails = ({
     [1, 1],
   ];
 
-  var participation_id = null;
   const [markers, setMarkers] = useState([]);
   const [segments, setSegments] = useState([]);
   const [segmentsFinished, setSegmentsFinished] = useState([]);
