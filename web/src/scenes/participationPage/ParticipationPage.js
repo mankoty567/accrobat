@@ -26,6 +26,7 @@ let ParticipationPage = () => {
      */
     const handleClick = () => {
       setSelected(participations[index].id);
+      setOpen(true);
     };
     return (
       <>

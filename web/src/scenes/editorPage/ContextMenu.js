@@ -6,8 +6,14 @@ import {
   Divider,
 } from '@material-ui/core';
 
+/**
+ * Menu lors d'un clic droit sur la map
+ * @param {String} data Le type de la donnée à afficher
+ * @param {String} onEvent La fonction à exécuter lors d'un event
+ */
 export default function ContextMenu({ data, onEvent }) {
   if (data != undefined) {
+    //Variables d'interface
     var x = data.event.originalEvent.clientX;
     var y = data.event.originalEvent.clientY;
     return (
