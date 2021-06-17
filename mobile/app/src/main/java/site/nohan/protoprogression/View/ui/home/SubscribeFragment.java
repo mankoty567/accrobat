@@ -33,6 +33,8 @@ import site.nohan.protoprogression.Network.Map.MapRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
+import static site.nohan.protoprogression.Network.DataBase.resetRecords;
+
 public class SubscribeFragment extends Fragment {
     /************************************************************************
      * Création des variables globales
@@ -183,6 +185,7 @@ public class SubscribeFragment extends Fragment {
         //Affichage des records du challenge
         tv_records = root.findViewById(R.id.txt_title_records);
         lv_records = root.findViewById(R.id.lv_subscribe_records);
+        resetRecords();
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
         new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter, this);
         lv_records.setAdapter(subscribeAdapter);

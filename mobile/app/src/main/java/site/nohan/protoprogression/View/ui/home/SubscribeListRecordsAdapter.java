@@ -49,10 +49,10 @@ public class SubscribeListRecordsAdapter extends ArrayAdapter<String> {
         TextView list_record = (TextView) rowView.findViewById(R.id.txt_list_recordDate);
 
         //creating Date from millisecond
-        long secondes = TimeUnit.MILLISECONDS.toSeconds(getRecordDuration(position));
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(getRecordDuration(position));
-        long heures = TimeUnit.MILLISECONDS.toHours(getRecordDuration(position));
-        long jours = TimeUnit.MILLISECONDS.toDays(getRecordDuration(position));
+        long secondes = TimeUnit.MILLISECONDS.toSeconds(getRecordDuration(position)) % 60;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(getRecordDuration(position)) % 60;
+        long heures = TimeUnit.MILLISECONDS.toHours(getRecordDuration(position)) % 60;
+        long jours = TimeUnit.MILLISECONDS.toDays(getRecordDuration(position)) % 24;
 
         String date = "";
         if(jours > 0) {

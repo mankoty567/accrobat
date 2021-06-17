@@ -67,6 +67,7 @@ public class DataBase {
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
         //bdd.execSQL("DROP TABLE EVENT");
+
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
                 "USERNAME VARCHAR(255)," +
