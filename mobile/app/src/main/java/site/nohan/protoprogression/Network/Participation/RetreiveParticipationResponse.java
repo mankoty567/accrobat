@@ -72,6 +72,8 @@ public class RetreiveParticipationResponse implements APIListenner {
         Button button;
         LinearLayout directionLayout = this.activity.findViewById(R.id.routeSelect);
 
+        if(Map.mapActuelle.cheminActuel == null) return;
+
         for(Chemin c : Map.mapActuelle.cheminActuel.objectif.chemins){
             if(c.objectif == null)
                 break;
