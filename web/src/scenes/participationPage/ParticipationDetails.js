@@ -129,9 +129,6 @@ let ParticipationDetails = ({
         });
         setObstacles(obstacles);
         setSegments(newSegments);
-      })
-      .then(() => {
-        setIsLoading(true);
       });
     await API.participation
       .getProgression(participation_id)
@@ -139,9 +136,10 @@ let ParticipationDetails = ({
         setSegmentsFinished(res.segmentsParcourus);
         setPosition({
           type: res.type,
-          distance: res.distance,
+          distance: res.distancePourcentage / 100,
           entity: res.entity,
         });
+        setIsLoading(false);
       });
   };
 
@@ -154,7 +152,7 @@ let ParticipationDetails = ({
         aria-describedby="content"
         open={open}
       >
-        {isLoading ? (
+        {!isLoading ? (
           <>
             <main id="content" className={classes.content}>
               <Grid
@@ -265,7 +263,7 @@ let ParticipationDetails = ({
                     position={position}
                     segments={segments}
                     markers={markers}
-                    obstacles={obstacles}
+                    segmentsFinished={segmentsFinished}
                   />
                 ) : null}
               </MapContainer>
