@@ -1,6 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
+import style from './PublicPage.module.css';
+import classnames from 'classnames';
+
 /**
  * Page publique de l'application web
  */
@@ -16,9 +19,12 @@ let PublicPage = () => {
   };
 
   return (
-    <>
+    <div className={style.wrapper}>
       <h1>Dépassez vos limites</h1>
-      <img src={`${process.env.PUBLIC_URL}/images/Running.jpg`} />
+      <img
+        className={style.img}
+        src={`${process.env.PUBLIC_URL}/images/Running.jpg`}
+      />
       <h3>Découvrez le nouveau défi à la mode : Run's Like</h3>
       <p>
         Vous en avez marre d'être toujours devant votre ordinateur et
@@ -31,35 +37,59 @@ let PublicPage = () => {
         gagner de l'expérience, des succès et bien plus encore !
       </p>
       <h2>En bref</h2>
-      <ul>
-        <li>
-          <p>
-            De nombreuses courses à accomplir dans divers univers.
-          </p>
+      <ul className={style.argList}>
+        <li
+          style={{
+            listStyleImage: `url("${process.env.PUBLIC_URL}/images/running.svg")`,
+          }}
+        >
+          De nombreuses courses à accomplir dans divers univers.
         </li>
-        <li>
-          <p>Des défis à relever qui pimenterons votre expérience.</p>
+        <li
+          style={{
+            listStyleImage: `url("${process.env.PUBLIC_URL}/images/dragon.svg")`,
+          }}
+        >
+          Des défis à relever qui pimenterons votre expérience.
         </li>
-        <li>
-          <p>Un classement mis à jour en temps réel.</p>
+        <li
+          style={{
+            listStyleImage: `url("${process.env.PUBLIC_URL}/images/crown.svg")`,
+          }}
+        >
+          Un classement mis à jour en temps réel.
         </li>
-        <li>
-          <p>
-            Un leveling fluide et récompensant les plus performants.
-          </p>
+        <li
+          style={{
+            listStyleImage: `url("${process.env.PUBLIC_URL}/images/arrow.svg")`,
+          }}
+        >
+          Un leveling fluide et récompensant les plus performants.
         </li>
-        <li>
-          <p>Des succès pour montrer vos différentes prouesses.</p>
+        <li
+          style={{
+            listStyleImage: `url("${process.env.PUBLIC_URL}/images/trophy.svg")`,
+          }}
+        >
+          Des succès pour montrer vos différentes prouesses.
         </li>
       </ul>
       <h3>
         Qui n'a jamais rêvé de refaire le périple de la quête de
         l'anneau ?
       </h3>
-      <button onClick={() => goToChallenges()}>
-        Voir tous les challenges disponible
+
+      <img
+        className={style.img}
+        src={`${process.env.PUBLIC_URL}/images/Map.png`}
+      />
+      <button
+        className={style.button}
+        onClick={() => goToChallenges()}
+      >
+        Voir tous les challenges disponibles
       </button>
-    </>
+    </div>
   );
 };
 
