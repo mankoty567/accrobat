@@ -49,8 +49,6 @@ let ParticipationDetails = ({
     echelle: 0,
   });
 
-  // useEffect(() => console.log(position), [position]);
-
   let getIcon = (marker) => {
     switch (marker.type) {
       case 'start':
