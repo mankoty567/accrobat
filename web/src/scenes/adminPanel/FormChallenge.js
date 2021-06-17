@@ -19,7 +19,7 @@ import MarkdownEditor from '../../components/MarkdownEditor';
  * Formulaire pour créer un challenge
  * @param {Function} callback Passage d'une fonction au composant parent
  */
-let FormChallenge = ({ callback }) => {
+let FormChallenge = ({ callback, handleCancel }) => {
   //Ajouter la prise en charge de l'échelle et de l'id
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -153,8 +153,12 @@ let FormChallenge = ({ callback }) => {
         <Avatar src={img_avatar}></Avatar>
       </ListItem>
 
-      <Button onClick={() => handleSubmit()} align="center" fullWidth>
-        Créer le challenge
+      <Button onClick={() => handleCancel()} align="center">
+        Annuler
+      </Button>
+
+      <Button onClick={() => handleSubmit()} align="center">
+        Créer un nouveau challenge
       </Button>
     </List>
   );

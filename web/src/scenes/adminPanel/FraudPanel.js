@@ -28,11 +28,17 @@ export default function FraudPanel() {
               paddingRight: 'auto',
             }}
           >
-            <Typography variant="h6" style={{ paddingRight: '40px' }}>
+            <Typography
+              variant="h6"
+              key={idx * 1000 + 10000000}
+              style={{ paddingRight: '40px' }}
+            >
               {elem.User.username}
             </Typography>
 
-            <Typography variant="h6">{elem.createdAt}</Typography>
+            <Typography variant="h6" key={idx / 1000 + 1000000}>
+              {Date(elem.createdAt).toString()}
+            </Typography>
           </div>
         );
       })}

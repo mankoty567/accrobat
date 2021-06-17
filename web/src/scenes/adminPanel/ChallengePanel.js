@@ -16,16 +16,29 @@ import ChallengeEditor from '../editorPage/ChallengeEditor';
 let ChallengePanel = () => {
   //Variable d'interface
   const [challenges, setChallenges] = useState([]);
-  const [addmode, setAddmode] = useState('add');
+  const [publishedChallenges, setPublishedChallenges] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [formChallenge, setFormChallenge] = useState(false);
   const [open, setOpen] = useState(true);
+  const [page, setPage] = useState('list'); //list ou form
 
   /**
    * Fonction pour récupérer tout les challenges de l'API
    */
   const getChallenges = () => {
     API.challenge.getAdminChallenges().then((res) => {
-      setChallenges(res);
+      if (res) {
+        res.forEach((challenge) => {
+          if (challenge.published) {
+            setPublishedChallenges((current) => [
+              ...current,
+              challenge,
+            ]);
+          } else {
+            setChallenges((current) => [...current, challenge]);
+          }
+        });
+      }
     });
   };
 
@@ -44,7 +57,6 @@ let ChallengePanel = () => {
     scale,
     avatar,
   ) => {
-    setAddmode('add');
     //Tester si la img_avatar est null, si c'est le cas, on met undefined
     let img_avatar;
     if (!avatar) {
@@ -65,6 +77,7 @@ let ChallengePanel = () => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
         setOpen(true);
+        setPage('list');
       })
       .catch((err) => console.error(err));
   };
@@ -148,63 +161,88 @@ let ChallengePanel = () => {
 
   return (
     <>
-      <Typography variant="h4" align="center">
-        {addmode == 'add'
-          ? 'Ajouter un challenge'
-          : addmode === 'list'
-          ? 'Liste des challenges'
-          : 'Challenges à voter'}
-      </Typography>
-      <Divider orientation="horizontal" />
-      <Button
-        startIcon={<AddIcon />}
-        onClick={() => {
-          setAddmode('add');
-          setSelected(null);
-        }}
-      >
-        Ajouter un challenge
-      </Button>
-      <Button
-        startIcon={<MenuBookIcon />}
-        onClick={() => {
-          setAddmode('list');
-        }}
-      >
-        Consulter les challenge existants
-      </Button>
-
-      {addmode === 'add' ? (
-        <FormChallenge callback={addChallenge} />
-      ) : addmode === 'list' ? (
+      {page === 'list' ? (
         <>
-          {challenges
-            ? challenges.map((key, idx) => {
+          <Typography variant="h4" align="center">
+            Gestionnaire des challenges
+          </Typography>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h6">Publiés</Typography>
+              <table
+                style={{
+                  display: 'block',
+                }}
+              >
+                {publishedChallenges.map((challenge, idx) => {
+                  return (
+                    <tr>
+                      <td>
+                        <ChallengeItem
+                          challenge={challenge}
+                          index={challenge.id}
+                          key={idx}
+                          actionComponents={
+                            <Menu
+                              index={challenge.id}
+                              published={challenge.published}
+                            />
+                          }
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </table>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h6">Non publiés</Typography>
+              {challenges.map((challenge, idx) => {
                 return (
-                  <ChallengeItem
-                    challenge={key}
-                    index={key.id}
-                    key={idx}
-                    actionComponents={
-                      <Menu
-                        index={key.id}
-                        published={key.published}
+                  <tr>
+                    <td>
+                      <ChallengeItem
+                        challenge={challenge}
+                        index={challenge.id}
+                        key={idx}
+                        actionComponents={
+                          <Menu
+                            index={challenge.id}
+                            published={challenge.published}
+                          />
+                        }
                       />
-                    }
-                  />
+                    </td>
+                  </tr>
                 );
-              })
-            : null}
+              })}
+            </div>
+          </div>
+          <Divider orientation="horizontal" />
+          <Button
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setSelected(null);
+              setPage('form');
+            }}
+          >
+            Ajouter un challenge
+          </Button>
+          {selected ? (
+            <ChallengeEditor
+              challenge_id={selected}
+              setSelected={setSelected}
+              open={open}
+              setOpen={setOpen}
+            />
+          ) : null}
         </>
-      ) : null}
-      {selected ? (
-        <ChallengeEditor
-          challenge_id={selected}
-          setSelected={setSelected}
-          open={open}
-          setOpen={setOpen}
+      ) : (
+        <FormChallenge
+          callback={addChallenge}
+          handleCancel={() => setPage('list')}
         />
-      ) : null}
+      )}
     </>
   );
 };
