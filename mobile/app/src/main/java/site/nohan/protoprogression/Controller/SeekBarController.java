@@ -147,7 +147,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                         break;
                     Log.e("suiv",c.objectif.titre);
                     button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c,toile,this.activity));
+                    button.setOnClickListener(new DirectionController(c,toile,this.activity,true));
                     button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
                     button.setText(c.objectif.titre + " par " + c.nom);
 

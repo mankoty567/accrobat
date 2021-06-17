@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     DataBase.pedometerController.bikeAction();
                     break;
             }
+            Log.e("onPause: ", "sauvegarde accompli");
             new SaveParticipationRequest(this, PedometerController.mode, SeekBarController.progress, Map.participationId,
                     new SaveParticipationResponse(this, PedometerController.mode, SeekBarController.progress, Map.participationId)
             );

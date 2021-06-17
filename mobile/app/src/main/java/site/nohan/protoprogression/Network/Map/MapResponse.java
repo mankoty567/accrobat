@@ -183,8 +183,27 @@ public class MapResponse implements APIListenner {
         }
 
         Log.e("Map", "Chargement terminé");
-        new RetreiveParticipationRequest(activity, Map.participationId);
-        //DataBase.restoreProgression();
+        //new RetreiveParticipationRequest(activity, Map.participationId);
+        DataBase.restoreProgression();
+
+        Button button;
+        LinearLayout directionLayout = this.activity.findViewById(R.id.routeSelect);
+        if(Map.mapActuelle.cheminActuel != null) {
+
+
+        }else{
+            for (Chemin c : Map.mapActuelle.getDepart().chemins) {
+                if (c.objectif == null)
+                    break;
+                Log.e("suiv", c.objectif.titre);
+                button = new Button(this.activity);
+                button.setOnClickListener(new DirectionController(this.activity, c, false));
+                button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
+                button.setText(c.objectif.titre + " par " + c.nom);
+
+                directionLayout.addView(button);
+            }
+        }
     }
 
     public void showDirections(){
@@ -210,7 +229,7 @@ public class MapResponse implements APIListenner {
         }else{
             Chemin c = Chemin.findById(this.map, progression.getCheminId());
             Button button = new Button(this.activity);
-            button.setOnClickListener(new DirectionController(this.activity, c));
+            button.setOnClickListener(new DirectionController(this.activity, c,false));
             button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
             button.setText(c.objectif.titre + " par " + c.nom);
 
