@@ -72,6 +72,7 @@ public class MapFragment extends Fragment {
         super.onResume();
         seekBar = getActivity().findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(seekBarController);
+        PedometerController.sbProgression = seekBar;
         bRecentrer = getActivity().findViewById(R.id.bRecentrer);
         bRecentrer.setOnClickListener(buttonController);
         zoomBar = getActivity().findViewById(R.id.zoombar);
