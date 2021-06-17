@@ -79,7 +79,7 @@ public class RetreiveParticipationResponse implements APIListenner {
                 break;
             Log.e("suiv",c.objectif.titre);
             button = new Button(this.activity);
-            button.setOnClickListener(new DirectionController(this.activity, c));
+            button.setOnClickListener(new DirectionController(this.activity, c,false));
             button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
             button.setText(c.objectif.titre + " par " + c.nom);
 
