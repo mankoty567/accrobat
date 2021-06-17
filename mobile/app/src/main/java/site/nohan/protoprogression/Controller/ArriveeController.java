@@ -17,21 +17,22 @@ import site.nohan.protoprogression.Network.Participation.SaveParticipationReques
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ArriveeFragment;
+import site.nohan.protoprogression.View.MapFragment;
 
 public class ArriveeController implements View.OnClickListener{
 
     private Activity activity;
     private PointPassage direction;
-    private Fragment arriveeFragment;
+    private MapFragment mapFragment;
 
-    public ArriveeController(Activity activity, PointPassage direction) {
+    public ArriveeController(Activity activity, PointPassage direction, MapFragment mapFragment) {
         this.activity = activity;
         this.direction = direction;
+        this.mapFragment = mapFragment;
     }
 
     @Override
     public void onClick(View v) {
-        arriveeFragment = new ArriveeFragment();
         DataBase.terminer(Map.participationId);
         new SaveParticipationRequest(
                 this.activity,
@@ -45,14 +46,6 @@ public class ArriveeController implements View.OnClickListener{
                         Map.participationId
                 )
         );
-
-
-        Button bFinal = this.activity.findViewById(R.id.bFinal);
-        bFinal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        mapFragment.ShowFragment(R.id.navigation_challenge_finished);
     }
 }

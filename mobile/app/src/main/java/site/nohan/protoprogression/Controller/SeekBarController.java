@@ -156,7 +156,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
                 if(Map.mapActuelle.cheminActuel.objectif.chemins.get(0).objectif == null){
                     button = new Button(this.activity);
-                    button.setOnClickListener(new ArriveeController(this.activity, Map.mapActuelle.cheminActuel.objectif));
+                    button.setOnClickListener(new ArriveeController(this.activity, Map.mapActuelle.cheminActuel.objectif, mapFragment));
                     button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.green, null)));
                     button.setText("Terminer la course");
                     directionLayout.addView(button);
