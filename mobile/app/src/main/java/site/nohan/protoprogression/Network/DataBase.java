@@ -232,8 +232,9 @@ public class DataBase {
                 Map.mapActuelle.libelle + "\",\"" +
                 Map.mapActuelle.description + " \",'" +
                 dateInscription + "','" +
-                dateAujourdhui +
-                "');"
+                dateAujourdhui + "'," +
+                "0" +
+                ");"
         );
 
         bdd.execSQL("DELETE FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+";");
