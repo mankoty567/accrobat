@@ -93,11 +93,11 @@ public class LocationService extends Service {
                     round(kilometres,3);
 
                     //Détection de Fraude en km/h
-                    if (speed >= 0) {
+                    if (speed > 60) {
                         Toast.makeText(getApplicationContext(), "Fraude détectée, course annulée !",Toast.LENGTH_LONG).show();
                         hasFrauded = true;
                         distance = 0;
-                        DataBase.pedometerController.bikeAction();
+                        DataBase.pedometerController.bikeStop();
                         new FraudRequest(DataBase.pedometerController.getMapFragment().getActivity());
                         DataBase.pedometerController.getMapFragment().ShowFragment(R.id.navigation_subscribe);
                     }

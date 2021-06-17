@@ -26,7 +26,6 @@ public class DataBase {
     public static Context context;
     private static SQLiteDatabase bdd;
 
-    public static int pedometerModeSelected = 0;
     public static PedometerController pedometerController = null;
 
     /******************************************

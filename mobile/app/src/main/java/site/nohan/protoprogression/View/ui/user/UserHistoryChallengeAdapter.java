@@ -5,13 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
 
+import site.nohan.protoprogression.Model.Avatar;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
+import static site.nohan.protoprogression.Network.DataBase.getProgressions;
 import static site.nohan.protoprogression.Network.DataBase.getRecordDuration;
 import static site.nohan.protoprogression.Network.DataBase.getRecordSize;
 import static site.nohan.protoprogression.Network.DataBase.getRecordUsername;
@@ -31,37 +34,25 @@ public class UserHistoryChallengeAdapter extends ArrayAdapter<String> {
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.subscribe_list_records, null,true);
+        View rowView=inflater.inflate(R.layout.user_history_challenges_list, null,true);
 
-        TextView list_title = (TextView) rowView.findViewById(R.id.txt_list_pseudo);
-        TextView list_record = (TextView) rowView.findViewById(R.id.txt_list_recordDate);
+        TextView list_title = (TextView) rowView.findViewById(R.id.txt_history_name_challenge);
+        TextView list_date = (TextView) rowView.findViewById(R.id.txt_history_date_challenge);
+        ImageView avatar = rowView.findViewById(R.id.list_history_challenge);
 
-        //creating Date from millisecond
-        long secondes = TimeUnit.MILLISECONDS.toSeconds(getRecordDuration(position)) % 60;
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(getRecordDuration(position)) % 60;
-        long heures = TimeUnit.MILLISECONDS.toHours(getRecordDuration(position)) % 60;
-        long jours = TimeUnit.MILLISECONDS.toDays(getRecordDuration(position)) % 24;
-
-        String date = "";
-        if(jours > 0) {
-            date += jours+"j, ";
+        if(Avatar.getAvatar(getProgressions(true).get(position).getMap().id) != null){
+            if(Avatar.getAvatar(getProgressions(true).get(position).getMap().id).image != null)
+                avatar.setImageBitmap(Avatar.getAvatar(getProgressions(true).get(position).getMap().id).image);
         }
-        if(heures > 0){
-            date += heures+"h ";
-        }
-        if(minutes > 0){
-            date += minutes+"m ";
-        }
-        date += secondes+"s";
 
-        list_title.setText(getRecordUsername(position)+"");
-        list_record.setText(date);
+        list_title.setText(getProgressions(true).get(position).getMap().libelle+"");
+        list_date.setText("Terminé le : "+getProgressions(true).get(position).getMap().dateDernierePartie);
 
         return rowView;
     };
 
     @Override
     public int getCount() {
-        return getRecordSize() != -1 ? DataBase.getRecordSize() : 0;
+        return getProgressions(true).size() != -1 ? getProgressions(true).size() : 0;
     }
 }

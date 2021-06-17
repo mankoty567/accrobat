@@ -29,6 +29,8 @@ import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Participation.RetreiveParticipationRequest;
 import site.nohan.protoprogression.R;
 
+import static site.nohan.protoprogression.View.ui.challenge.ChallengeFragment.isNotAPreview;
+
 public class MapResponse implements APIListenner {
 
     private final Activity activity;
@@ -175,7 +177,7 @@ public class MapResponse implements APIListenner {
             }
             Log.e("Model",this.map.pointPassages.toString());
 
-            this.showDirections();
+            if(isNotAPreview) this.showDirections();
 
         }catch (JSONException jsonException){
             jsonException.printStackTrace();

@@ -50,21 +50,22 @@ public class DirectionController implements View.OnClickListener {
         );
 
         //Condition vérifiant le mode sélectionné par l'utilisateur
-        // et activant / désactivant ses fonctionnalités
-        switch (DataBase.pedometerModeSelected) {
-            case 0:
+        // et activant ses fonctionnalités
+        PedometerController.distance = 0;
+
+        switch (PedometerController.modeSelected) {
+            case MARCHE:
                 PedometerController.isRunning = false;
-                DataBase.pedometerController.pedometerAction();
+                DataBase.pedometerController.pedometerStart();
                 break;
-            case 1:
+            case COURSE:
                 PedometerController.isRunning = true;
-                DataBase.pedometerController.pedometerAction();
+                DataBase.pedometerController.pedometerStart();
                 break;
-            case 2:
-                DataBase.pedometerController.bikeAction();
+            case VELO:
+                DataBase.pedometerController.bikeStart();
                 break;
         }
-        PedometerController.distance = 0;
 
         Map.mapActuelle.cheminActuel = this.direction;
         Map.mapActuelle.accompli = 0;

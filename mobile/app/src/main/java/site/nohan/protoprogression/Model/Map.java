@@ -14,7 +14,7 @@ public class Map {
     public static int participationId;
     public static Map mapActuelle;
 
-    public static ArrayList<Map> maps;
+    public static ArrayList<Map> maps = new ArrayList<>();
 
     public static ArrayList<Map> sauvegardes = new ArrayList<>();
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import site.nohan.protoprogression.Model.Avatar;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Progression;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.AvatarMapRequest;
 import site.nohan.protoprogression.R;
@@ -48,25 +49,25 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
         TextView list_lastTimeUpdated = (TextView) rowView.findViewById(R.id.txt_list_lastTimeUpdated);
         TextView list_date = (TextView) rowView.findViewById(R.id.txt_list_date);
         ImageView avatar = (ImageView) rowView.findViewById(R.id.list_item_icon);
-        ArrayList<Map> subscribed = DataBase.getSubscribed();
+        ArrayList<Progression> progressions = DataBase.getProgressions(false);
 
         if(HomeFragment.isOnPrivateChallenges) {
 
-            if(Avatar.getAvatar(subscribed.get(position).id) != null){
-                if(Avatar.getAvatar(subscribed.get(position).id).image != null)
-                    avatar.setImageBitmap(Avatar.getAvatar(subscribed.get(position).id).image);
+            if(Avatar.getAvatar(progressions.get(position).getMap().id) != null){
+                if(Avatar.getAvatar(progressions.get(position).getMap().id).image != null)
+                    avatar.setImageBitmap(Avatar.getAvatar(progressions.get(position).getMap().id).image);
             }
 
-            if(position < subscribed.size()) {
+            if(position < progressions.size()) {
                 //Log.e("DATABASE", DataBase.getSubscribed().get(position).libelle+"");
-                list_title.setText(subscribed.get(position).libelle);
+                list_title.setText(progressions.get(position).getMap().libelle);
                 list_date.setVisibility(View.VISIBLE);
-                list_lastTimeUpdated.setText("Dernière mise à jour : " + subscribed.get(position).dateDernierePartie);
+                list_lastTimeUpdated.setText("Dernière mise à jour : " + progressions.get(position).getMap().dateDernierePartie);
                 list_date.setText("Inscrit le " + DataBase.getSubscribed().get(position).dateInscription);
             }
         } else {
             if(Avatar.size() > position) {
-                Log.e("getView: size : ", subscribed.size()+"" );
+                Log.e("getView: size : ", Map.maps.size()+"" );
                 try {
                     avatar.setImageBitmap(Avatar.getAvatar(Map.maps.get(position).id).image);
                 }catch (NullPointerException e){
@@ -83,8 +84,9 @@ public class HomeListChallengesAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        ArrayList<Map> subscribed = DataBase.getSubscribed();
-        if(HomeFragment.isOnPrivateChallenges) return subscribed != null ? subscribed.size() : 0;
+        ArrayList<Progression> progressions = null;
+        if(DataBase.getProgressions(false) != null) progressions = DataBase.getProgressions(false);
+        if(HomeFragment.isOnPrivateChallenges) return progressions != null ? progressions.size() : 0;
         else return Map.maps != null ? Map.maps.size() : 0;
     }
 
