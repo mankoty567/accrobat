@@ -1,15 +1,17 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CRS } from 'leaflet';
 import {
   MapContainer,
   ImageOverlay,
   Polyline,
-  useMapEvent,
   Marker,
   Tooltip,
 } from 'react-leaflet';
 import { Grid, Button, Modal } from '@material-ui/core';
 import Markers from './Markers';
+import Lines from './Lines';
+import PreviewLine from './PreviewLine';
+import Obstacles from './Obstacles';
 import ContextMenu from './ContextMenu';
 import ErrorView from './ErrorView';
 import ModifyChallenge from './modifyElements/ModifyChallenge';
@@ -18,50 +20,64 @@ import ModifyObstaclePopUp from './modifyElements/ModifyObstaclePopUp';
 import ModifyLinePopUp from './modifyElements/ModifyLinePopUp';
 import { API } from '../../eventApi/api';
 import useStyles from '../../components/MaterialUI';
-import {
-  createObstacleIcon,
-  createLineAnchorIcon,
-} from '../../components/MarkerIcons';
+import { createLineAnchorIcon } from '../../components/MarkerIcons';
+import { inBounds, fitInBounds } from '../../components/Bounds';
+import placeOnSegment from '../../components/PlaceOnSegments';
 
-let inBounds = (event) => {
-  return !(
-    event.latlng.lat < 0 ||
-    event.latlng.lat > 1 ||
-    event.latlng.lng < 0 ||
-    event.latlng.lng > 1
-  );
-};
-
-let PreviewLine = ({ from }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  let map = useMapEvent(
-    useMemo(
-      () => ({
-        mousemove: (event) => {
-          if (inBounds(event)) {
-            setMousePosition({
-              x: event.latlng.lat,
-              y: event.latlng.lng,
-            });
-          }
-        },
-      }),
-      [],
-    ),
-  );
-
-  if (from.length == 0) return <></>;
+/**
+ * Composant permettant d'afficher l'échelle sur la carte
+ * @param {Number} echelle Échelle de la carte
+ * @returns
+ */
+let Echelle = ({ echelle }) => {
   var positions = [
-    from[from.length - 1],
-    [mousePosition.x, mousePosition.y],
+    [0, 0],
+    [1, 1],
   ];
-
+  var text = null;
+  if (echelle >= 15000) {
+    positions = [
+      [0.1, 0.1],
+      [0.1, 10000 / echelle],
+    ];
+    text = '10000 mètres';
+  } else if (echelle >= 1500) {
+    positions = [
+      [0.1, 0.1],
+      [0.1, 1000 / echelle],
+    ];
+    text = '1000 mètres';
+  } else if (echelle >= 150) {
+    positions = [
+      [0.1, 0.1],
+      [0.1, 100 / echelle],
+    ];
+    text = '100 mètres';
+  } else {
+    positions = [
+      [0.1, 0.1],
+      [0.1, 10 / echelle],
+    ];
+    text = '10 mètres';
+  }
   return (
-    <Polyline positions={positions} color={'black'} dashArray={5} />
+    <>
+      <Marker position={positions[0]} icon={createLineAnchorIcon()} />
+      <Polyline positions={positions} color={'black'}>
+        <Tooltip direction="top">{text}</Tooltip>
+      </Polyline>
+      <Marker position={positions[1]} icon={createLineAnchorIcon()} />
+    </>
   );
 };
 
+/**
+ * Le Modal d'édition d'un Challenge
+ * @param {Number} challenge_id L'id du Challenge à éditer
+ * @param {Function} setSelected UseState permettant de définir le Challenge comme sélectionné ou non
+ * @param {Boolean} open Boolean pour spécifier si le Modal est ouvert ou non
+ * @param {Function} setOpen UseState permettant d'ouvrir et de fermer le Modal
+ */
 let ChallengeEditor = ({
   challenge_id,
   setSelected,
@@ -71,497 +87,65 @@ let ChallengeEditor = ({
   //Utilisation des classes CSS
   const classes = useStyles();
 
-  //Informations sur la carte
+  //Scale de la map
   const bounds = [
     [0, 0],
     [1, 1],
   ];
 
-  const [markers, setMarkers] = useState([]);
-  const [lines, setLines] = useState([]);
-  const [obstacles, setObstacles] = useState([]);
-  const [editMode, setEditMode] = useState(false);
-  const [currentMarker, setCurrentMarker] = useState(null);
-  const [previewLine, setPreviewLine] = useState([]);
-  const [startPoint, setStartPoint] = useState(null);
-  const [contextMenu, setContextEvent] = useState(undefined);
-  const contextRef = useRef(undefined);
-  const [addingLine, setAddingLine] = useState(false);
-  const [modifyMarker, setModifyMarker] = useState(false);
-  const [modifyObstacle, setModifyObstacle] = useState(false);
-  const [modifyLine, setModifyLine] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [checkMessage, setCheckMessage] = useState({});
-  const [valid, setValid] = useState(false);
+  //Variables d'interface
   const [challenge, setChallenge] = useState({
     id: '',
     title: '',
     description: '',
     echelle: 0,
   });
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [markers, setMarkers] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [obstacles, setObstacles] = useState([]);
   const [errorMarkers, setErrorMarkers] = useState([]);
-  const [selectedLine, setSelectedLine] = useState(null);
+
+  const [modifyMarker, setModifyMarker] = useState(false);
+  const [modifyLine, setModifyLine] = useState(false);
+  const [modifyObstacle, setModifyObstacle] = useState(false);
+
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [currentLine, setCurrentLine] = useState(null);
   const [currentObstacle, setCurrentObstacle] = useState(null);
 
-  // Récupérer les valeurs x,y des obstacles
-  function placeObstacle(pointTab, pourcentage) {
-    pourcentage *= 100;
-    let distanceArray = [];
-    let sum = 0;
+  //Doted line
+  const [previewLine, setPreviewLine] = useState([]);
+  //Segment en cours de création ?
+  const [addingLine, setAddingLine] = useState(false);
 
-    for (let i = 0; i < pointTab.length - 1; i++) {
-      let p1 = { x: pointTab[i][0], y: pointTab[i][1] };
-      let p2 = { x: pointTab[i + 1][0], y: pointTab[i + 1][1] };
+  const [editMode, setEditMode] = useState(false);
 
-      let distance = Math.sqrt(
-        Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2),
-      );
+  const [contextMenu, setContextEvent] = useState(undefined);
+  const [valid, setValid] = useState(false);
+  const [checkMessage, setCheckMessage] = useState({});
 
-      distanceArray[i] = distance;
-      sum = sum + distance;
-    }
+  const [waitingAPI, setWaitingAPI] = useState(false);
 
-    let pourcentageArray = distanceArray.map((d) => (d * 100) / sum);
+  const contextRef = useRef(undefined);
 
-    let table = distanceArray.map((d, i) => ({
-      distance: d,
-      pourcentage: pourcentageArray[i],
-    }));
-
-    let segment = 0;
-
-    let oldSum = 0;
-    let totalSum = 0;
-    let tableSum = table.map((t) => {
-      oldSum = totalSum;
-      totalSum = totalSum + t.pourcentage;
-      return oldSum;
-    });
-    while (
-      tableSum[segment + 1] < pourcentage &&
-      segment < tableSum.length
-    ) {
-      segment = segment + 1;
-    }
-
-    let pourcentSomme = 0;
-
-    for (let l = 0; l < segment; l++) {
-      pourcentSomme = pourcentSomme + table[l].pourcentage;
-    }
-
-    let pourcentageInSegment = pourcentage - pourcentSomme;
-
-    let obstaclePercent =
-      (100 * pourcentageInSegment) / table[segment].pourcentage;
-
-    let x =
-      pointTab[segment][0] +
-      (pointTab[segment + 1][0] - pointTab[segment][0]) *
-        (obstaclePercent / 100);
-    let y =
-      pointTab[segment][1] +
-      (pointTab[segment + 1][1] - pointTab[segment][1]) *
-        (obstaclePercent / 100);
-
-    return [x, y];
-  }
-
-  let Echelle = () => {
-    var positions = [
-      [0, 0],
-      [1, 1],
-    ];
-    var text = null;
-    if (challenge.echelle >= 15000) {
-      positions = [
-        [0.1, 0.1],
-        [0.1, 10000 / challenge.echelle],
-      ];
-      text = '10000 mètres';
-    } else if (challenge.echelle >= 1500) {
-      positions = [
-        [0.1, 0.1],
-        [0.1, 1000 / challenge.echelle],
-      ];
-      text = '1000 mètres';
-    } else if (challenge.echelle >= 150) {
-      positions = [
-        [0.1, 0.1],
-        [0.1, 100 / challenge.echelle],
-      ];
-      text = '100 mètres';
-    } else {
-      positions = [
-        [0.1, 0.1],
-        [0.1, 10 / challenge.echelle],
-      ];
-      text = '10 mètres';
-    }
-    return (
-      <>
-        <Marker
-          position={positions[0]}
-          icon={createLineAnchorIcon()}
-        />
-        <Polyline positions={positions} color={'black'}>
-          <Tooltip direction="top">{text}</Tooltip>
-        </Polyline>
-        <Marker
-          position={positions[1]}
-          icon={createLineAnchorIcon()}
-        />
-      </>
-    );
-  };
-
-  let Line = (element) => {
-    var line = element.line;
-    const startMarker = markers.find(
-      (m) => m.id === line.PointStartId,
-    );
-    const endMarker = markers.find((m) => m.id === line.PointEndId);
-
-    var positions = [
-      [startMarker.y, startMarker.x],
-      ...line.path.map((elem) => {
-        return [elem[0], elem[1]];
-      }),
-      [endMarker.y, endMarker.x],
-    ];
-
-    return (
-      <>
-        {positions.map((pos, idx) => {
-          if (0 < idx && idx < positions.length - 1) {
-            return (
-              <Marker
-                draggable
-                position={pos}
-                icon={createLineAnchorIcon()}
-                eventHandlers={{
-                  dragend: (event) => {
-                    var coords = event.target._latlng;
-                    if (!inBounds(coords)) {
-                      coords = fitInBounds(coords);
-                    }
-                    var path = positions.map((p, i) => {
-                      if (i == idx) return [coords.lat, coords.lng];
-                      else return p;
-                    });
-                    path.shift();
-                    path.pop();
-                    updateLine(line.id, {
-                      path: path,
-                    });
-                  },
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
-        })}
-        <Polyline
-          eventHandlers={{
-            contextmenu: (event) => {
-              setSelectedLine(line);
-              event.originalEvent.view.L.DomEvent.stopPropagation(
-                event,
-              );
-              handleContext(event, 'line');
-            },
-          }}
-          positions={positions}
-          key={line.id}
-          color={'black'}
-        />
-      </>
-    );
-  };
-
-  const initializeMap = async (challenge_id) => {
-    await API.challenge
-      .getChallenge({
-        challenge_id,
-        include: 'pointsegmentobstacle',
-      })
-      .then((res) => {
-        setChallenge({
-          id: challenge_id,
-          title: res.title,
-          description: res.description,
-          echelle: res.echelle,
-        });
-        res.PointPassages.forEach((element) => {
-          setMarkers((current) => [
-            ...current,
-            {
-              id: element.id,
-              title: element.title,
-              description: element.description,
-              type: element.type,
-              x: element.x,
-              y: element.y,
-            },
-          ]);
-        });
-        let newLines = [];
-        let obstacles = [];
-        res.PointPassages.forEach((pp) => {
-          pp.pointStart.forEach((segment) => {
-            newLines.push({
-              id: segment.id,
-              PointStartId: segment.PointStartId,
-              PointEndId: segment.PointEndId,
-              path: segment.path,
-              name: segment.name,
-            });
-            segment.Obstacles.forEach((obstacle) => {
-              var startMarker = res.PointPassages.find(
-                (m) => m.id === segment.PointStartId,
-              );
-              var endMarker = res.PointPassages.find(
-                (m) => m.id === segment.PointEndId,
-              );
-              var positions = [
-                [startMarker.y, startMarker.x],
-                ...segment.path.map((elem) => {
-                  return [elem[1], elem[0]];
-                }),
-                [endMarker.y, endMarker.x],
-              ];
-              var coords = placeObstacle(
-                positions,
-                obstacle.distance,
-              );
-              obstacles.push({
-                id: obstacle.id,
-                title: obstacle.title,
-                description: obstacle.description,
-                type: obstacle.type,
-                distance: obstacle.distance,
-                enigme_awnser: obstacle.enigme_awnser,
-                SegmentId: obstacle.SegmentId,
-                x: coords[1],
-                y: coords[0],
-              });
-            });
-          });
-        });
-        setObstacles(obstacles);
-        setLines(newLines);
-      })
-      .then(() => {
-        setIsLoading(false);
-      });
-  };
-
-  let inBounds = (coords) => {
-    return !(
-      coords.lat < 0 ||
-      coords.lat > 1 ||
-      coords.lng < 0 ||
-      coords.lng > 1
-    );
-  };
-
-  let fitInBounds = (coords) => {
-    if (coords.lat < 0) coords.lat = 0;
-    if (coords.lat > 1) coords.lat = 1;
-    if (coords.lng < 0) coords.lng = 0;
-    if (coords.lng > 1) coords.lng = 1;
-    return coords;
-  };
-
-  let updateChallenge = async (challenge) => {
-    API.challenge
-      .updateChallenge({
-        challenge: challenge,
-      })
-      .then((res) => {
-        setChallenge({
-          id: res.id,
-          title: res.title,
-          description: res.description,
-          echelle: res.echelle,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  //Ajoute un marker
-  let addMarker = async (event) => {
-    var coords = event.latlng;
-    if (!inBounds(coords)) coords = fitInBounds(coords);
-    try {
-      var newMarker = {
-        title: 'Point ' + markers.length,
-        description: '',
-        type: markers.length > 0 ? 'point' : 'start',
-        x: coords.lng,
-        y: coords.lat,
-      };
-      let data = await API.checkpoint.createMarker({
-        marker: newMarker,
-        challenge_id: challenge_id,
-      });
-      setMarkers((current) => [...current, data]);
-      setStartPoint(data);
-      setCurrentMarker(data);
-      setValid(false);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  //Supprime un marker
-  let removeMarker = (marker) => {
-    setMarkers((current) => current.filter((val) => val != marker));
-    setPreviewLine([]);
-    lines
-      .filter(
-        (val) =>
-          val.PointStartId == marker.id ||
-          val.PointEndId == marker.id,
-      )
-      .forEach((line) => {
-        setObstacles((current) =>
-          current.filter((val) => val.SegmentId != line.id),
-        );
-      });
-    setLines((current) =>
-      current.filter(
-        (val) =>
-          val.PointStartId != marker.id &&
-          val.PointEndId != marker.id,
-      ),
-    );
-    setStartPoint(markers.slice(-1)[0]);
-    API.checkpoint.deleteMarker(marker.id).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-  };
-
-  //Update un marker
-  let updateMarker = (markerId, changes) => {
-    API.checkpoint
-      .updateMarker({ id: markerId, ...changes })
-      .then((marker) => {
-        setValid(false);
-        setMarkers((current) =>
-          current.map((val) => (val.id === markerId ? marker : val)),
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  let getMarkerCoordsFromId = (id) => {
-    var marker = markers.find((m) => m.id == id);
+  /**
+   * Fonction qui permet de récupérer les coordonnées d'un Marker via son Id
+   * @param {Number} markerId
+   * @returns
+   */
+  let getMarkerCoordsFromId = (markerId) => {
+    var marker = markers.find((m) => m.id == markerId);
     return [marker.x, marker.y];
   };
 
-  //Ajoute une ligne
-  let addLine = (start, end) => {
-    previewLine.shift();
-    var newLine = {
-      PointStartId: start.id,
-      PointEndId: end.id,
-      path: previewLine.map((p) => [p.lng, p.lat]),
-      name: 'Segment ' + lines.length,
-    };
-    return API.segment
-      .createSegment(newLine)
-      .then((res) => {
-        res.path = res.path.map((e) => [e[1], e[0]]);
-        setLines((current) => [...current, res]);
-        setValid(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  let updateLine = (lineId, changes) => {
-    API.segment
-      .updateSegment({ id: lineId, ...changes })
-      .then((line) => {
-        setLines((current) =>
-          current.map((val) => (val.id === lineId ? line : val)),
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  let addObstacle = async (event) => {
-    var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
-    var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
-    var positions = [
-      [pointStart[1], pointStart[0]],
-      ...selectedLine.path.map((elem) => {
-        return [elem[1], elem[0]];
-      }),
-      [pointEnd[1], pointEnd[0]],
-    ];
-    try {
-      var newObstacle = {
-        title: 'Obstacle ' + obstacles.length,
-        description: ' ',
-        type: 'question',
-        enigme_awnser: ' ',
-        distance: 0.1,
-        SegmentId: selectedLine.id,
-      };
-      let data = await API.obstacle.createObstacle(newObstacle);
-      var coords = placeObstacle(positions, data.distance);
-      data.x = coords[1];
-      data.y = coords[0];
-      setObstacles((current) => [...current, data]);
-      setValid(false);
-      setCurrentObstacle(data);
-      setModifyObstacle(true);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  let updateObstacle = (obstacleId, changes) => {
-    API.obstacle
-      .updateObstacle({ id: obstacleId, ...changes })
-      .then((obstacle) => {
-        setObstacles((current) =>
-          current.map((val) =>
-            val.id === obstacleId ? obstacle : val,
-          ),
-        );
-        setValid(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  let removeObstacle = (obstacle) => {
-    setObstacles((current) =>
-      current.filter((val) => val != obstacle),
-    );
-    API.obstacle.deleteObstacle(obstacle.id).catch((err) => {
-      console.log(err);
-    });
-    setValid(false);
-  };
-
-  let addPreviewLine = (newPoint) => {
-    var coords = newPoint.latlng;
+  /**
+   * Fonction qui met à jour la PreviewLine pour pouvoir voir à quoi va ressembler la line en cours de création
+   * @param {Object} event Évenement Leaflet qui trigger la création de la PreviewLine
+   */
+  let addPreviewLine = (event) => {
+    var coords = event.latlng;
     if (!inBounds(coords)) {
       coords = fitInBounds(coords);
     }
@@ -572,11 +156,20 @@ let ChallengeEditor = ({
     }
   };
 
+  /**
+   * Fonction qui gère le clic droit dans l'application et met à jour le ContextEvent avec le type d'appel
+   * @param {Object} event Évenemnt Leaflet
+   * @param {String} type Type de l'appel (par exemple addMarker)
+   */
   let handleContext = (event, type) => {
     event.originalEvent.preventDefault();
     setContextEvent({ event: event, type: type });
   };
 
+  /**
+   * Fonction qui crée l'appel aux fonctions via le clic droit
+   * @param {Object} event Évenement Leaflet
+   */
   let handleContextEvent = async (event) => {
     if (event === 'addMarker') {
       addMarker(contextMenu.event);
@@ -616,10 +209,13 @@ let ChallengeEditor = ({
     setContextEvent(undefined);
   };
 
+  /**
+   * Fonction qui permet de sauvegarder les modifications du challenge et vérifier s'il est valide
+   */
   let handleCheck = () => {
-    updateChallenge(challenge);
-    setErrorMarkers([]);
     API.challenge.checkValidity(challenge_id).then((data) => {
+      updateChallenge(challenge);
+      setErrorMarkers([]);
       setValid(data.valid);
       if (data.valid) {
         setCheckMessage({
@@ -656,11 +252,325 @@ let ChallengeEditor = ({
     });
   };
 
+  /**
+   * Fonction qui permet de publier le Challenge courant
+   */
   let handlePublish = () => {
     API.challenge
       .publishChallenge(challenge_id)
       .then((data) => {
         setOpen(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Récupère toutes les informations du challenge pour les afficher sur l'éditeur
+   * @param {Number} challenge_id
+   */
+  const initializeMap = async (challenge_id) => {
+    await API.challenge
+      .getChallenge({
+        challenge_id,
+        include: 'pointsegmentobstacle',
+      })
+      .then((res) => {
+        let newLines = [];
+        let obstacles = [];
+        setChallenge({
+          id: challenge_id,
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
+        res.PointPassages.forEach((element) => {
+          setMarkers((current) => [
+            ...current,
+            {
+              id: element.id,
+              title: element.title,
+              description: element.description,
+              type: element.type,
+              x: element.x,
+              y: element.y,
+            },
+          ]);
+        });
+        res.PointPassages.forEach((pp) => {
+          pp.pointStart.forEach((segment) => {
+            newLines.push({
+              id: segment.id,
+              PointStartId: segment.PointStartId,
+              PointEndId: segment.PointEndId,
+              path: segment.path,
+              name: segment.name,
+            });
+            segment.Obstacles.forEach((obstacle) => {
+              var startMarker = res.PointPassages.find(
+                (m) => m.id === segment.PointStartId,
+              );
+              var endMarker = res.PointPassages.find(
+                (m) => m.id === segment.PointEndId,
+              );
+              var positions = [
+                [startMarker.y, startMarker.x],
+                ...segment.path.map((elem) => {
+                  return [elem[1], elem[0]];
+                }),
+                [endMarker.y, endMarker.x],
+              ];
+              var coords = placeOnSegment(
+                positions,
+                obstacle.distance,
+              );
+              obstacles.push({
+                id: obstacle.id,
+                title: obstacle.title,
+                description: obstacle.description,
+                type: obstacle.type,
+                distance: obstacle.distance,
+                enigme_awnser: obstacle.enigme_awnser,
+                SegmentId: obstacle.SegmentId,
+                x: coords[1],
+                y: coords[0],
+              });
+            });
+          });
+        });
+        setObstacles(obstacles);
+        setLines(newLines);
+      })
+      .then(() => {
+        setIsLoading(false);
+      });
+  };
+
+  /**
+   * Met à jour le Challenge avec celui entré en paramètre
+   * @param {Object} challenge
+   */
+  let updateChallenge = async (challenge) => {
+    API.challenge
+      .updateChallenge({
+        challenge: challenge,
+      })
+      .then((res) => {
+        setChallenge({
+          id: res.id,
+          title: res.title,
+          description: res.description,
+          echelle: res.echelle,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui ajoute un marker dans la base via l'évenement Leaflet
+   * @param {Object} event Évenement Leaflet qui trigger la création du Marker
+   */
+  let addMarker = async (event) => {
+    var coords = event.latlng;
+    var newMarker = {
+      title: 'Point ' + markers.length,
+      description: '',
+      type: markers.length > 0 ? 'point' : 'start',
+      x: coords.lng,
+      y: coords.lat,
+    };
+    if (!inBounds(coords)) coords = fitInBounds(coords);
+    return API.checkpoint
+      .createMarker({
+        marker: newMarker,
+        challenge_id: challenge_id,
+      })
+      .then((res) => {
+        setMarkers((current) => [...current, res]);
+        setCurrentMarker(res);
+        setValid(false);
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui supprime un marker
+   * @param {Object} marker
+   */
+  let removeMarker = (marker) => {
+    setWaitingAPI(true);
+    API.checkpoint
+      .deleteMarker(marker.id)
+      .then(() => {
+        setMarkers((current) =>
+          current.filter((val) => val != marker),
+        );
+        setPreviewLine([]);
+        lines
+          .filter(
+            (val) =>
+              val.PointStartId == marker.id ||
+              val.PointEndId == marker.id,
+          )
+          .forEach((line) => {
+            setObstacles((current) =>
+              current.filter((val) => val.SegmentId != line.id),
+            );
+          });
+        setLines((current) =>
+          current.filter(
+            (val) =>
+              val.PointStartId != marker.id &&
+              val.PointEndId != marker.id,
+          ),
+        );
+        setValid(false);
+        setWaitingAPI(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setWaitingAPI(false);
+      });
+  };
+
+  /**
+   * Fonction qui met à jour un Marker
+   * @param {Number} markerId Id du Marker à update
+   * @param {Object} changes Changements à effectuer sur le Marker
+   */
+  let updateMarker = (markerId, changes) => {
+    API.checkpoint
+      .updateMarker({ id: markerId, ...changes })
+      .then((marker) => {
+        setValid(false);
+        setMarkers((current) =>
+          current.map((val) => (val.id === markerId ? marker : val)),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui ajoute la ligne PreviewLigne entre les Markers de début et d'arrivée
+   * @param {Object} start PointStartId de la ligne
+   * @param {Object} end PointEndId de la ligne
+   */
+  let addLine = (start, end) => {
+    previewLine.shift();
+    var newLine = {
+      PointStartId: start.id,
+      PointEndId: end.id,
+      path: previewLine.map((p) => [p.lng, p.lat]),
+      name: 'Segment ' + lines.length,
+    };
+    return API.segment
+      .createSegment(newLine)
+      .then((res) => {
+        res.path = res.path.map((e) => [e[1], e[0]]);
+        setLines((current) => [...current, res]);
+        setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui met à jour une ligne
+   * @param {Number} lineId Id de la ligne à update
+   * @param {Object} changes Changements à effectuer sur la ligne
+   */
+  let updateLine = (lineId, changes) => {
+    API.segment
+      .updateSegment({ id: lineId, ...changes })
+      .then((line) => {
+        setLines((current) =>
+          current.map((val) => (val.id === lineId ? line : val)),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui ajoute un obstacle à la currentLine
+   */
+  let addObstacle = async () => {
+    var pointStart = getMarkerCoordsFromId(currentLine.PointStartId);
+    var pointEnd = getMarkerCoordsFromId(currentLine.PointEndId);
+    var positions = [
+      [pointStart[1], pointStart[0]],
+      ...currentLine.path.map((elem) => {
+        return [elem[1], elem[0]];
+      }),
+      [pointEnd[1], pointEnd[0]],
+    ];
+    var newObstacle = {
+      title: 'Obstacle ' + obstacles.length,
+      description: ' ',
+      type: 'question',
+      enigme_awnser: ' ',
+      distance: 0.1,
+      SegmentId: currentLine.id,
+    };
+    return API.obstacle
+      .createObstacle(newObstacle)
+      .then((res) => {
+        var coords = placeOnSegment(positions, res.distance);
+        res.x = coords[1];
+        res.y = coords[0];
+        setObstacles((current) => [...current, res]);
+        setCurrentObstacle(res);
+        setModifyObstacle(true);
+        setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui met à jour un obstacle
+   * @param {Number} obstacleId Id de l'obstacle à update
+   * @param {Object} changes Changements à effectuer sur l'obstacle
+   */
+  let updateObstacle = (obstacleId, changes) => {
+    API.obstacle
+      .updateObstacle({ id: obstacleId, ...changes })
+      .then((obstacle) => {
+        setObstacles((current) =>
+          current.map((val) =>
+            val.id === obstacleId ? obstacle : val,
+          ),
+        );
+        setValid(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  /**
+   * Fonction qui supprime un obstacle
+   * @param {Object} obstacle Obstacle à supprimer
+   */
+  let removeObstacle = (obstacle) => {
+    API.obstacle
+      .deleteObstacle(obstacle.id)
+      .then(() => {
+        setObstacles((current) =>
+          current.filter((val) => val != obstacle),
+        );
+        setValid(false);
       })
       .catch((err) => {
         console.log(err);
@@ -688,203 +598,165 @@ let ChallengeEditor = ({
               onEvent={handleContextEvent}
             />
             <main id="content" className={classes.content}>
-              <Grid
-                id="title"
-                style={{
-                  marginTop: 0,
-                  marginBottom: 10,
-                  display: 'flex',
-                }}
-                container
-                justify="space-between"
-              >
-                <h2 style={{ margin: 0 }}>
-                  Édition de {challenge.title}
-                </h2>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    setSelected(null);
-                    setOpen(false);
-                  }}
-                >
-                  X
-                </Button>
-              </Grid>
-              <ModifyChallenge
-                challenge={challenge}
-                setChallenge={setChallenge}
-              />
-              <MapContainer
-                className={classes.mapContainer}
-                crs={CRS.Simple}
-                center={[bounds[1][0] / 2, bounds[1][1] / 2]}
-                bounds={bounds}
-                maxBounds={bounds}
-              >
-                <ImageOverlay
-                  url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
-                  bounds={bounds}
-                ></ImageOverlay>
-                <Markers
-                  addingLine={addingLine}
-                  addPreviewLine={addPreviewLine}
-                  markers={markers}
-                  handleContext={handleContext}
-                  updateMarker={updateMarker}
-                  editMode={editMode}
-                  setEditMode={setEditMode}
-                  setCurrentMarker={setCurrentMarker}
-                  currentMarker={currentMarker}
-                  setContextEvent={setContextEvent}
-                  contextRef={contextRef}
-                  addLine={addLine}
-                  setAddingLine={setAddingLine}
-                  setPreviewLine={setPreviewLine}
-                  errorMarkers={errorMarkers}
-                  inBounds={inBounds}
-                  fitInBounds={fitInBounds}
-                  setCurrentObstacle={setCurrentObstacle}
-                />
-                {lines.map((line) => {
-                  return <Line line={line} />;
-                })}
-                {obstacles.map((item) => {
-                  var segment = lines.find(
-                    (l) => l.id == item.SegmentId,
-                  );
-                  var pointStart = getMarkerCoordsFromId(
-                    segment.PointStartId,
-                  );
-                  var pointEnd = getMarkerCoordsFromId(
-                    segment.PointEndId,
-                  );
-                  var positions = [
-                    [pointStart[1], pointStart[0]],
-                    ...segment.path.map((elem) => {
-                      return [elem[0], elem[1]];
-                    }),
-                    [pointEnd[1], pointEnd[0]],
-                  ];
-                  var coords = placeObstacle(
-                    positions,
-                    item.distance,
-                  );
-                  item.x = coords[1];
-                  item.y = coords[0];
-
-                  return (
-                    <Marker
-                      eventHandlers={{
-                        click: () => {
-                          var newCurrent = item;
-                          if (currentObstacle) {
-                            if (currentObstacle.id === item.id)
-                              newCurrent = null;
-                          }
-                          setCurrentMarker(null);
-                          setCurrentObstacle(newCurrent);
-                        },
-                        contextmenu: (event) => {
-                          setCurrentObstacle(item);
-                          event.originalEvent.view.L.DomEvent.stopPropagation(
-                            event,
-                          );
-                          handleContext(event, 'obstacle');
-                        },
+              <Grid container spacing={5} justify="space-between">
+                <Grid item xs={12}>
+                  <Grid
+                    id="title"
+                    style={{
+                      // marginTop: 0,
+                      marginBottom: 10,
+                      display: 'flex',
+                    }}
+                    container
+                    justify="space-between"
+                  >
+                    <h2 style={{ margin: 0 }}>
+                      Édition de {challenge.title}
+                    </h2>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => {
+                        setSelected(null);
+                        setOpen(false);
                       }}
-                      draggable={false}
-                      key={item.id}
-                      position={[item.y, item.x]}
-                      icon={createObstacleIcon(
-                        item.type == 'question',
-                        item === currentObstacle,
-                      )}
                     >
-                      <Tooltip
-                        direction="top"
-                        offset={[0, -15]}
-                        permanent
-                      >
-                        {item.title}
-                      </Tooltip>
-                    </Marker>
-                  );
-                })}
-                {currentMarker && previewLine ? (
-                  <>
-                    <Polyline
-                      positions={[
-                        [currentMarker.y, currentMarker.x],
-                        ...previewLine,
-                      ]}
-                      color={'black'}
+                      X
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid item xs={5} justify="center">
+                  <ModifyChallenge
+                    challenge={challenge}
+                    setChallenge={setChallenge}
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <MapContainer
+                    className={classes.mapContainer}
+                    crs={CRS.Simple}
+                    center={[bounds[1][0] / 2, bounds[1][1] / 2]}
+                    bounds={bounds}
+                    maxBounds={bounds}
+                  >
+                    <ImageOverlay
+                      url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
+                      bounds={bounds}
+                    ></ImageOverlay>
+                    <Markers
+                      addingLine={addingLine}
+                      addPreviewLine={addPreviewLine}
+                      markers={markers}
+                      handleContext={handleContext}
+                      updateMarker={updateMarker}
+                      editMode={editMode}
+                      setEditMode={setEditMode}
+                      setCurrentMarker={setCurrentMarker}
+                      currentMarker={currentMarker}
+                      setContextEvent={setContextEvent}
+                      contextRef={contextRef}
+                      addLine={addLine}
+                      setAddingLine={setAddingLine}
+                      setPreviewLine={setPreviewLine}
+                      errorMarkers={errorMarkers}
+                      setCurrentObstacle={setCurrentObstacle}
                     />
-                    {currentMarker.type != 'end' ? (
-                      <PreviewLine from={previewLine} />
+                    {!waitingAPI ? (
+                      <>
+                        <Lines
+                          lines={lines}
+                          markers={markers}
+                          updateLine={updateLine}
+                          setCurrentLine={setCurrentLine}
+                          handleContext={handleContext}
+                        />
+                        <Obstacles
+                          obstacles={obstacles}
+                          currentObstacle={currentObstacle}
+                          lines={lines}
+                          getMarkerCoordsFromId={
+                            getMarkerCoordsFromId
+                          }
+                          handleContext={handleContext}
+                          setCurrentMarker={setCurrentMarker}
+                          setCurrentObstacle={setCurrentObstacle}
+                        />
+                      </>
                     ) : null}
-                  </>
-                ) : null}
-                <Echelle />
-              </MapContainer>
-              <Grid container justify="center">
-                <div className={classes.actionButtons}>
-                  {valid ? (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handlePublish}
-                      >
-                        Publier
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCheck}
-                      >
-                        Vérifier / Mettre à jour
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </Grid>
 
-              {currentMarker ? (
-                <ModifyMarkerPopUp
-                  modifyMarker={modifyMarker}
-                  setModifyMarker={setModifyMarker}
-                  setMarkers={setMarkers}
-                  currentMarker={currentMarker}
-                  markers={markers}
-                  setStartPoint={setStartPoint}
-                  updateMarker={updateMarker}
-                />
-              ) : null}
-              {currentObstacle ? (
-                <ModifyObstaclePopUp
-                  modifyObstacle={modifyObstacle}
-                  setModifyObstacle={setModifyObstacle}
-                  setObstacles={setObstacles}
-                  currentObstacle={currentObstacle}
-                  updateObstacle={updateObstacle}
-                />
-              ) : null}
-              {selectedLine ? (
-                <ModifyLinePopUp
-                  modifyLine={modifyLine}
-                  setModifyLine={setModifyLine}
-                  setLines={setLines}
-                  selectedLine={selectedLine}
-                  updateLine={updateLine}
-                  echelle={challenge.echelle}
-                  getMarkerCoordsFromId={getMarkerCoordsFromId}
-                />
-              ) : null}
+                    {currentMarker && previewLine ? (
+                      <>
+                        <Polyline
+                          positions={[
+                            [currentMarker.y, currentMarker.x],
+                            ...previewLine,
+                          ]}
+                          color={'black'}
+                        />
+                        {currentMarker.type != 'end' ? (
+                          <PreviewLine from={previewLine} />
+                        ) : null}
+                      </>
+                    ) : null}
+                    <Echelle echelle={challenge.echelle} />
+                  </MapContainer>
+                </Grid>
+                <Grid item xs={12} justify="center">
+                  <div className={classes.actionButtons}>
+                    {valid ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handlePublish}
+                        >
+                          Publier
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleCheck}
+                        >
+                          Vérifier / Mettre à jour
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </Grid>
+                {currentMarker ? (
+                  <ModifyMarkerPopUp
+                    modifyMarker={modifyMarker}
+                    setModifyMarker={setModifyMarker}
+                    setMarkers={setMarkers}
+                    currentMarker={currentMarker}
+                    markers={markers}
+                    updateMarker={updateMarker}
+                  />
+                ) : null}
+                {currentObstacle ? (
+                  <ModifyObstaclePopUp
+                    modifyObstacle={modifyObstacle}
+                    setModifyObstacle={setModifyObstacle}
+                    setObstacles={setObstacles}
+                    currentObstacle={currentObstacle}
+                    updateObstacle={updateObstacle}
+                  />
+                ) : null}
+                {currentLine ? (
+                  <ModifyLinePopUp
+                    modifyLine={modifyLine}
+                    setModifyLine={setModifyLine}
+                    setLines={setLines}
+                    currentLine={currentLine}
+                    updateLine={updateLine}
+                    echelle={challenge.echelle}
+                    getMarkerCoordsFromId={getMarkerCoordsFromId}
+                  />
+                ) : null}
+              </Grid>
             </main>
             {Object.keys(checkMessage).length === 0 ? null : (
               <>

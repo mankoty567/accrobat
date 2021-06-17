@@ -1,29 +1,32 @@
-package site.nohan.protoprogression.Network.Challenge;
+package site.nohan.protoprogression.Network.Fraud;
 
 import android.app.Activity;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import site.nohan.protoprogression.Network.APIRequestGET;
+import site.nohan.protoprogression.Network.APIRequestPOST;
+import site.nohan.protoprogression.Network.Challenge.SubscribeResponse;
 import site.nohan.protoprogression.Network.DataBase;
-import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
+import site.nohan.protoprogression.View.MapFragment;
 import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
-import site.nohan.protoprogression.View.ui.home.SubscribeListRecordsAdapter;
 
-public class RecordRequest extends APIRequestGET {
+public class FraudRequest extends APIRequestPOST {
+
     /******************************************
      * Constructeur de la requête
      ******************************************/
-    public RecordRequest(Activity activity, int id, SubscribeListRecordsAdapter subscribeListRecordsAdapter, SubscribeFragment  subscribeFragment) {
-        super(activity, "challenge/"+id+"/records", new RecordResponse(activity, subscribeListRecordsAdapter, subscribeFragment));
-        Log.d("net", this.getUrl());
-        APIRequestGET.queue.add(this);
-        APIRequestGET.queue.start();
-        Log.d("RECORD_REQUEST", "Demande records envoyé");
+    public FraudRequest(Activity activity) {
+        super(activity, "fraude", new FraudResponse(activity));
+
+        Log.d("net", "Envoie de Fraude");
+        APIRequestPOST.queue.add(this);
+        APIRequestPOST.queue.start();
     }
 
     /******************************************
@@ -31,9 +34,9 @@ public class RecordRequest extends APIRequestGET {
      ******************************************/
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
+        if (DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {

@@ -38,6 +38,7 @@ public class SubscribeFragment extends Fragment {
     private int signin = R.id.navigation_signin;;
     private int challenge = R.id.navigation_challenge;
 
+    private Button btn_back;
     private Button btn_subscribe;
     private Button btn_preview;
     private TextView tv_title;
@@ -134,6 +135,16 @@ public class SubscribeFragment extends Fragment {
         wvDescription.setHorizontalScrollBarEnabled(false);
         wvDescription.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
+        //Ajout du bouton back
+        btn_back = root.findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowFragment(R.id.navigation_home);
+            }
+        });
+
+        //Ajout des actions pour les boutons d'inscriptions et de prévisualisation
         btn_subscribe = root.findViewById(R.id.btn_challenge_subscribe);
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override

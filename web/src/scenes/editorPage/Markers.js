@@ -4,6 +4,7 @@ import {
   createEndIcon,
   createStartIcon,
 } from '../../components/MarkerIcons';
+import { inBounds, fitInBounds } from '../../components/Bounds';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
@@ -29,8 +30,6 @@ let Markers = ({
   setAddingLine,
   setPreviewLine,
   errorMarkers,
-  inBounds,
-  fitInBounds,
   setCurrentObstacle,
 }) => {
   //Récupère l'icône en fonction du type du marker

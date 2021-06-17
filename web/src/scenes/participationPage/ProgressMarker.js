@@ -1,12 +1,12 @@
 import React from 'react';
 import { Marker } from 'react-leaflet';
 import { createProgressIcon } from '../../components/MarkerIcons';
+import placeOnSegment from '../../components/PlaceOnSegments';
 
 export default function ProgressMarker({
   position,
   segments,
   markers,
-  placeObstacle,
 }) {
   var coords = [0.5, 0.5];
   if (position.type == 'PointPassage') {
@@ -25,7 +25,7 @@ export default function ProgressMarker({
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeObstacle(positions, position.distance / 100);
+    coords = placeOnSegment(positions, position.distance / 100);
   }
   if (position.type == 'Obstacle') {
     obstacle = position.entity;
@@ -41,7 +41,7 @@ export default function ProgressMarker({
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeObstacle(positions, position.distance / 100);
+    coords = placeOnSegment(positions, position.distance / 100);
   }
   return (
     <Marker

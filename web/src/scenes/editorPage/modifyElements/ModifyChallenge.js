@@ -1,13 +1,18 @@
 import React from 'react';
 import { List, ListItem, TextField } from '@material-ui/core';
+import MarkdownEditor from '../../../components/MarkdownEditor';
+import useStyles from '../../../components/MaterialUI';
 
 let ModifyChallenge = ({ challenge, setChallenge }) => {
+  //Utilisation des classes CSS
+  const classes = useStyles();
+
   return (
-    <List style={{ display: 'inline-block' }}>
-      <ListItem style={{ width: '70%', float: 'left' }}>
+    <List>
+      <ListItem>
         <TextField
-          style={{ width: '100%' }}
-          value={challenge.title}
+          className={classes.input}
+          defaultValue={challenge.title}
           label="Titre"
           onChange={(e) => {
             setChallenge({ ...challenge, title: e.target.value });
@@ -15,10 +20,10 @@ let ModifyChallenge = ({ challenge, setChallenge }) => {
           variant="outlined"
         />
       </ListItem>
-      <ListItem style={{ width: '30%', float: 'left' }}>
+      <ListItem>
         <TextField
-          style={{ width: '100%' }}
-          value={challenge.echelle}
+          className={classes.input}
+          defaultValue={challenge.echelle}
           label="Échelle (m)"
           type="number"
           onChange={(e) => {
@@ -27,21 +32,21 @@ let ModifyChallenge = ({ challenge, setChallenge }) => {
           variant="outlined"
         />
       </ListItem>
-      <ListItem style={{ width: '100%', float: 'left' }}>
-        <TextField
-          style={{ width: '100%' }}
-          value={challenge.description ? challenge.description : ''}
-          label="Description"
-          onChange={(e) => {
+      <ListItem
+        style={{
+          'justify-content': 'center',
+          // height: '50vh',
+        }}
+      >
+        <MarkdownEditor
+          callback={(e) =>
             setChallenge({
               ...challenge,
-              description: e.target.value,
-            });
-          }}
-          multiline
-          rows={2}
-          variant="outlined"
-        />{' '}
+              description: e.toString(),
+            })
+          }
+          defaultText={challenge.description}
+        />
       </ListItem>
     </List>
   );

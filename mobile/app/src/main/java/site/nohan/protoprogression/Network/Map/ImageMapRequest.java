@@ -36,7 +36,7 @@ public class ImageMapRequest extends ImageRequest {
     public java.util.Map<String, String> getHeaders() throws AuthFailureError {
         java.util.Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {
