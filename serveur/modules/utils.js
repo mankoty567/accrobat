@@ -122,7 +122,7 @@ module.exports = {
         );
     }
 
-    return (d * echelle) / distance;
+    return distance / (d * echelle);
   },
 };
 
