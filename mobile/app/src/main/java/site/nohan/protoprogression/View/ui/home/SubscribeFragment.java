@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import site.nohan.protoprogression.Controller.MainActivity;
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.Challenge.RecordRequest;
 import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
@@ -95,6 +97,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.MARCHE;
                 DataBase.pedometerModeSelected = 0;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
@@ -103,6 +106,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer_run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.COURSE;
                 DataBase.pedometerModeSelected = 1;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
@@ -111,6 +115,7 @@ public class SubscribeFragment extends Fragment {
         btn_bike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.VELO;
                 DataBase.pedometerModeSelected = 2;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);

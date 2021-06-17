@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.MapFragment;
 
@@ -28,6 +29,8 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class PedometerController implements SensorEventListener, StepListener {
 
+
+    public static TypeEvent mode = TypeEvent.MARCHE;
     /*****************************************************************
      * Création des variables globales de la class
      *****************************************************************/

@@ -33,7 +33,7 @@ public class RetreiveParticipationResponse implements APIListenner {
     @Override
     public void onErrorResponse(VolleyError error) {
         Log.e("NET", "onErrorResponse " + error.toString() );
-        DataBase.restoreProgression();
+       // DataBase.restoreProgression();
     }
 
     @Override
@@ -46,17 +46,19 @@ public class RetreiveParticipationResponse implements APIListenner {
 
             this.restorerSegments(json.getJSONArray("segmentsParcourus"));
 
-            if(json.getString("type").equals(TypeProgression.POINT_PASSAGE)){
+            if(json.getString("type").equals(TypeProgression.POINT_PASSAGE.toString())){
                 restorePointPassage(json.getJSONObject("entity"));
             }
-            if(json.getString("type").equals(TypeProgression.OBSTACLE)){
+            else if(json.getString("type").equals(TypeProgression.OBSTACLE.toString())){
 
             }
-            if(json.getString("type").equals(TypeProgression.SEGMENT)){
+            else if(json.getString("type").equals(TypeProgression.SEGMENT.toString())){
                 restoreProgression(
                         json.getDouble("distancePourcentage"),
-                        json.getJSONObject("entite").getInt("id")
+                        json.getJSONObject("entity").getInt("id")
                 );
+            }else{
+                Log.e("onResponse: ", "TYPE " + json.getString("type") + " inconnu ");
             }
 
 
@@ -92,6 +94,9 @@ public class RetreiveParticipationResponse implements APIListenner {
         directionLayout.removeAllViews();
         ((SeekBar) activity.findViewById(R.id.seekBar)).setProgress((int) Math.floor(distancePourcentage));
         Map.mapActuelle.cheminActuel = Chemin.findById(Map.mapActuelle, idChemin);
+
+        int progress = (int) Math.floor(distancePourcentage);
+        Map.mapActuelle.accompli = (int) Math.floor(((float) progress*Map.mapActuelle.cheminActuel.getLongueur())/100);
         Log.e("NET", "Chemin acutel " +  Map.mapActuelle.cheminActuel.id);
 
 

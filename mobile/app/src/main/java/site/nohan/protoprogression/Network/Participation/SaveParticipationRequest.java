@@ -49,10 +49,14 @@ public class SaveParticipationRequest extends APIRequestPOST {
 
         // Si cela fais longtemps que le deniere Envoi Progression a eu lieu on envoi sinon on ignore
         if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
+            /*
             long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
             if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
                 return;
             }
+             */
+            if(data < derniereDistance)
+                return;
         }
 
         APIRequestPOST.queue.add(this);

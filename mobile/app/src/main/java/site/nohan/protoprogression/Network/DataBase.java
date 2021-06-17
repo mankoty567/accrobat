@@ -441,7 +441,25 @@ public class DataBase {
 
         Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT;", null);
         if(eventsCursor.getCount() == 0){
-            Log.e("restoreProgression", "rien à restorer pour les chemins");
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+    public static synchronized  ArrayList<Event> getEventsOf(int participationId){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT;", null);
+        if(eventsCursor.getCount() == 0){
             return new ArrayList<>();
         }
         Event event;
@@ -469,4 +487,5 @@ public class DataBase {
     public static synchronized boolean needToSyncEventWithAPI(){
         return !getFailEvents().isEmpty();
     }
+
 }

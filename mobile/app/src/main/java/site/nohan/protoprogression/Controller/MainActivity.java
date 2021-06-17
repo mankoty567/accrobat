@@ -73,21 +73,21 @@ public class MainActivity extends AppCompatActivity {
         if(Map.mapActuelle != null) {
             //Condition vérifiant le mode sélectionné par l'utilisateur
             // et activant / désactivant ses fonctionnalités
-            switch (DataBase.pedometerModeSelected) {
-                case 0:
+            switch (PedometerController.mode) {
+                case MARCHE:
                     PedometerController.isRunning = false;
                     DataBase.pedometerController.pedometerAction();
                     break;
-                case 1:
+                case COURSE:
                     PedometerController.isRunning = true;
                     DataBase.pedometerController.pedometerAction();
                     break;
-                case 2:
+                case VELO:
                     DataBase.pedometerController.bikeAction();
                     break;
             }
-            new SaveParticipationRequest(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId,
-                    new SaveParticipationResponse(this, TypeEvent.MARCHE, SeekBarController.progress, Map.participationId)
+            new SaveParticipationRequest(this, PedometerController.mode, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this, PedometerController.mode, SeekBarController.progress, Map.participationId)
             );
         }
 
