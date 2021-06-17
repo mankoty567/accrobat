@@ -30,6 +30,7 @@ import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
 import site.nohan.protoprogression.Network.Map.MapRequest;
+import site.nohan.protoprogression.Network.Participation.RetreiveParticipationRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
@@ -212,14 +213,17 @@ public class SubscribeFragment extends Fragment {
      ******************************************/
     public void subscribeToMap(boolean subscribe){
         /*
-        if(Map.findById(idChallenge) == null) {
+        if(Map.findSauvegardeById(idChallenge) == null) {
             Map.mapActuelle = new Map();
             new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
         }else{
-            Map.mapActuelle = Map.findById(idChallenge);
-        }
 
-         */
+            Map.mapActuelle = Map.findSauvegardeById(idChallenge);
+
+            new RetreiveParticipationRequest(this.getActivity(), Map.participationId);
+        }
+        */
+
         Map.mapActuelle = new Map();
         new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
         //

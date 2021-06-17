@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.APIListenner;
 import site.nohan.protoprogression.Network.APIRequestPOST;
@@ -35,7 +36,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
      * @param apiListenner*/
     public SaveParticipationRequest(Activity activity, TypeEvent type, int data,  int id  , APIListenner apiListenner) {
         super(activity, "event/", apiListenner);
-        Log.e("update", type.toString() + " data: " + data + " id: "+ id  );
+
         this.data = data;
         this.id = id;
         this.type = type;
@@ -49,12 +50,16 @@ public class SaveParticipationRequest extends APIRequestPOST {
 
         // Si cela fais longtemps que le deniere Envoi Progression a eu lieu on envoi sinon on ignore
         if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
-            /*
-            long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
-            if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
+            if(site.nohan.protoprogression.Model.Map.mapActuelle == null) {
+                Log.e("SavePartReq", "Pas de map actuel sur laquel progresser");
                 return;
             }
-             */
+            long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
+            if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
+                Log.e("SavePartReq", "Trop tot");
+                return;
+            }
+
             if(data < derniereDistance)
                 return;
         }
@@ -98,9 +103,12 @@ public class SaveParticipationRequest extends APIRequestPOST {
             if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
 
 
-                double deltaDistance = (site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()/2f - derniereDistance);
+                double deltaDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
+                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()) - derniereDistance;
                 jsonBody.put("data", "" + deltaDistance);
-                derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale() / 2f;
+                derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
+                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()
+                );
 
             }else if(type == TypeEvent.ARIVEE){
                 jsonBody.put("data", data);

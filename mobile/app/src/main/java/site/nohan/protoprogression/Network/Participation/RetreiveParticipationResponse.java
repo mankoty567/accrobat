@@ -32,8 +32,8 @@ public class RetreiveParticipationResponse implements APIListenner {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("NET", "onErrorResponse " + error.toString() );
-       // DataBase.restoreProgression();
+        Log.e("NET", "onErrorResponse Participation" + error.toString() );
+        //DataBase.restoreProgression();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RetreiveParticipationResponse implements APIListenner {
             }
             else if(json.getString("type").equals(TypeProgression.SEGMENT.toString())){
                 restoreProgression(
-                        json.getDouble("distancePourcentage"),
+                        json.getDouble("distancePourcentage")*100,
                         json.getJSONObject("entity").getInt("id")
                 );
             }else{
@@ -72,7 +72,7 @@ public class RetreiveParticipationResponse implements APIListenner {
         Button button;
         LinearLayout directionLayout = this.activity.findViewById(R.id.routeSelect);
 
-        for(Chemin c : Map.mapActuelle.cheminActuel.objectif.chemins){
+        for(Chemin c : pointPassage.chemins){
             if(c.objectif == null)
                 break;
             Log.e("suiv",c.objectif.titre);

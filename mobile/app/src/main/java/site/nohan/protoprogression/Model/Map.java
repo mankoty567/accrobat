@@ -16,6 +16,8 @@ public class Map {
 
     public static ArrayList<Map> maps;
 
+    public static ArrayList<Map> sauvegardes = new ArrayList<>();
+
     public int id;
 
     public String libelle;
@@ -38,10 +40,6 @@ public class Map {
 
     public double echelle;
 
-    public Map(){
-        //this.maps = new ArrayList<>();
-        //this.maps.add(this);
-    }
 
 
     public int getDistanceTotale(){
@@ -85,6 +83,14 @@ public class Map {
 
     public static Map findById(int mapId) {
         for(Map map : maps){
+            if(map.id == mapId)
+                return map;
+        }
+        return null;
+    }
+
+    public static Map findSauvegardeById(int mapId){
+        for(Map map : sauvegardes){
             if(map.id == mapId)
                 return map;
         }

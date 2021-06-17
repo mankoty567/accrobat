@@ -74,11 +74,15 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             return;
 
         // On affiche la progression a coté de la barre
-        tKm.setText(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale())+" m ");
+        tKm.setText((int) Math.floor(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale()))+" m ");
 
         DataBase.saveProgression();
 
-        //new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
+        new SaveParticipationRequest(this.activity, PedometerController.mode, progress, Map.participationId,
+            new SaveParticipationResponse(
+                this.activity, PedometerController.mode, progress,  Map.participationId
+            )
+        );
         //Log.e("lele", DataBase.getSubscribed().toString());
         Obstacle obstacle = this.detecterObstacle();
         if(obstacle != null){
