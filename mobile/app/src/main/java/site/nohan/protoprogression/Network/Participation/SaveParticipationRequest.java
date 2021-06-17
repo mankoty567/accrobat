@@ -54,14 +54,17 @@ public class SaveParticipationRequest extends APIRequestPOST {
                 Log.e("SavePartReq", "Pas de map actuel sur laquel progresser");
                 return;
             }
+
+            if(data < derniereDistance) {
+                Log.e("SavePartReq", "Impossible de reculer data: "+data + " , dds:" +derniereDistance);
+                return;
+            }
+
             long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
             if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
                 Log.e("SavePartReq", "Trop tot");
                 return;
             }
-
-            if(data < derniereDistance)
-                return;
         }
 
         APIRequestPOST.queue.add(this);
@@ -104,11 +107,16 @@ public class SaveParticipationRequest extends APIRequestPOST {
 
 
                 double deltaDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
-                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()) - derniereDistance;
+                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale())
+                        -
+                        site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(derniereDistance);
                 jsonBody.put("data", "" + deltaDistance);
+                SaveParticipationRequest.derniereDistance = data;
+                /*
                 derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
                         site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()
                 );
+                 */
 
             }else if(type == TypeEvent.ARIVEE){
                 jsonBody.put("data", data);
