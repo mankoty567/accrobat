@@ -8,11 +8,22 @@ import { inBounds, fitInBounds } from '../../components/Bounds';
 
 /**
  * Permet de créer des markers au click et leurs lignes associées
+ * @param {Boolean} addingLine Etat pendant lequel nous sommes en train d'ajouter des lignes
+ * @param {Boolean} addPreviewLine Etat qui nous indique si nous avons la ligne de preview
  * @param {Object[]} markers La liste des markers à afficher sur la map
- * @param {Function} setMarkers Fonction pour update le state de markers
- * @param {Object[]} editMode Est-ce qu'on est en train d'ajouter un segment à un point déjà existant
- * @param {Function} setEditMode Fonction pour update le state de editMode
- * @param {Object[]} lines La liste des lignes à afficher sur la map
+ * @param {Function} handleContext Il s'agit d'un eventListener
+ * @param {Function} updateMarker Fonction pour modifier les informations du marqueur
+ * @param {Boolean} editMode Mode nous permettant d'indiquer que le segment acutel est en cours d'édition
+ * @param {Function} setEditMode Fonction pour mettre à jour l'editMode
+ * @param {Function} setCurrentMarker Fonction pour définir quel est le marqueur sélectionné
+ * @param {Object} currentMarker Le marqueur actuellement sélectionné
+ * @param {Function} setContextEvent Fonction pour mettre à jour le contexte de l'événement actuel
+ * @param {Object} contextRef L'élément de contexte actuel, pour l'utiliser en objet DOM
+ * @param {Boolean} addLine Etat nous permettant d'indiquer si on ajoute la ligne
+ * @param {Function} setAddingLine Permet de modifier l'état d'ajout actuel d'une ligne
+ * @param {Function} setPreviewLine Permet de modifier l'état d'ajout actuel d'une ligne ou non
+ * @param {Object[]} errorMarkers La liste des erreurs lors d'un mauvais placement de marqueur
+ * @param {Function} setCurrentObstacle Permet de définir l'obstacle courant
  */
 let Markers = ({
   addingLine,
@@ -32,6 +43,7 @@ let Markers = ({
   errorMarkers,
   setCurrentObstacle,
 }) => {
+  //Variable d'interface
   //Récupère l'icône en fonction du type du marker
   let getIcon = (marker) => {
     var error = errorMarkers.filter((val) => {

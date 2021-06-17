@@ -2,9 +2,13 @@ import { useMemo, useState } from 'react';
 import { Polyline, useMapEvent } from 'react-leaflet';
 import { inBounds } from '../../components/Bounds';
 
+/**
+ * La ligne permettant de prévisualiser la ligne que nous allons placer
+ * @param {Object} from Dernier path de la ligne courrante
+ */
 let PreviewLine = ({ from }) => {
+  //Variable d'interface
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
   let map = useMapEvent(
     useMemo(
       () => ({

@@ -2,6 +2,14 @@ import { Marker, Polyline } from 'react-leaflet';
 import { createLineAnchorIcon } from '../../components/MarkerIcons';
 import { inBounds, fitInBounds } from '../../components/Bounds';
 
+/**
+ * L'ensemble des lignes au sein de l'éditeur
+ * @param {Object[]} lines Les différentes lignes
+ * @param {Object[]} markers Les différents markeurs présent sur la carte
+ * @param {Function} updateLine Fonction lors d'un update de la ligne
+ * @param {Function} setCurrentLine Permet de définir la ligne sélectionnée
+ * @param {Function} handleContext Permet de voir ce qui est appelé
+ */
 let Lines = ({
   lines,
   markers,
@@ -28,6 +36,14 @@ let Lines = ({
   );
 };
 
+/**
+ * Correspond à une ligne sur l'interface
+ * @param {Object} line La ligne contenant le chemin et les informations relatives
+ * @param {Object} markers Les marqueurs présent aux extrémités de la ligne
+ * @param {Function} updateLine Fonction lors d'un update de la ligne
+ * @param {Function} setCurrentLine Permet de définir la ligne sélectionnée
+ * @param {Function} handleContext Il s'agit d'un eventListener
+ */
 let Line = ({
   line,
   markers,

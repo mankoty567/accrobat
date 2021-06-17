@@ -3,6 +3,11 @@ import { List, ListItem, TextField } from '@material-ui/core';
 import MarkdownEditor from '../../../components/MarkdownEditor';
 import useStyles from '../../../components/MaterialUI';
 
+/**
+ * Modal permettant de modifier le challenge
+ * @param {Object} challenge Challenge actuel à modifier
+ * @param {Function} setChallenge Modifie les informations du challenge
+ */
 let ModifyChallenge = ({ challenge, setChallenge }) => {
   //Utilisation des classes CSS
   const classes = useStyles();
