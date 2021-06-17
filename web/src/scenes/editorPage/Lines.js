@@ -6,7 +6,7 @@ let Lines = ({
   lines,
   markers,
   updateLine,
-  setSelectedLine,
+  setCurrentLine,
   handleContext,
 }) => {
   return (
@@ -18,7 +18,7 @@ let Lines = ({
                 line={line}
                 markers={markers}
                 updateLine={updateLine}
-                setSelectedLine={setSelectedLine}
+                setCurrentLine={setCurrentLine}
                 handleContext={handleContext}
               />
             );
@@ -32,7 +32,7 @@ let Line = ({
   line,
   markers,
   updateLine,
-  setSelectedLine,
+  setCurrentLine,
   handleContext,
 }) => {
   const startMarker = markers.find((m) => m.id === line.PointStartId);
@@ -80,7 +80,7 @@ let Line = ({
       <Polyline
         eventHandlers={{
           contextmenu: (event) => {
-            setSelectedLine(line);
+            setCurrentLine(line);
             event.originalEvent.view.L.DomEvent.stopPropagation(
               event,
             );

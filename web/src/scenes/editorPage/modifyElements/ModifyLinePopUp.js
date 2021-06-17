@@ -27,7 +27,7 @@ let calcSegmentDistance = (path, echelle) => {
 };
 
 let ModifyLinePopUp = ({
-  selectedLine,
+  currentLine,
   updateLine,
   modifyLine,
   setModifyLine,
@@ -40,11 +40,11 @@ let ModifyLinePopUp = ({
     setModifyLine(false);
   };
 
-  var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
-  var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
+  var pointStart = getMarkerCoordsFromId(currentLine.PointStartId);
+  var pointEnd = getMarkerCoordsFromId(currentLine.PointEndId);
   var positions = [
     [pointStart[1], pointStart[0]],
-    ...selectedLine.path.map((elem) => {
+    ...currentLine.path.map((elem) => {
       return [elem[1], elem[0]];
     }),
     [pointEnd[1], pointEnd[0]],
@@ -72,10 +72,10 @@ let ModifyLinePopUp = ({
         <List id="content">
           <ListItem>
             <TextField
-              defaultValue={selectedLine.name}
+              defaultValue={currentLine.name}
               label="Nom"
               onChange={(e) => {
-                updateLine(selectedLine.id, {
+                updateLine(currentLine.id, {
                   name: e.target.value,
                 });
               }}
