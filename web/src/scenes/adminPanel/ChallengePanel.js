@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
 import FormChallenge from './FormChallenge';
-import { Typography, Divider, Button } from '@material-ui/core';
+import {
+  Typography,
+  Divider,
+  Button,
+  CircularProgress,
+} from '@material-ui/core';
 import { API } from '../../eventApi/api';
 import AddIcon from '@material-ui/icons/Add';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
@@ -18,8 +22,8 @@ let ChallengePanel = () => {
   const [challenges, setChallenges] = useState([]);
   const [publishedChallenges, setPublishedChallenges] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [formChallenge, setFormChallenge] = useState(false);
   const [open, setOpen] = useState(true);
+  const [statusMessage, setStatusMessage] = useState(null);
   const [page, setPage] = useState('list'); //list ou form
 
   /**
@@ -27,8 +31,10 @@ let ChallengePanel = () => {
    */
   const getChallenges = () => {
     API.challenge.getAdminChallenges().then((res) => {
+      console.log(res.length);
       if (res) {
-        res.forEach((challenge) => {
+        res.forEach((challenge, idx) => {
+          console.log(idx);
           if (challenge.published) {
             setPublishedChallenges((current) => [
               ...current,
@@ -65,6 +71,16 @@ let ChallengePanel = () => {
       img_avatar = avatar;
     }
 
+    setPage('list');
+    setStatusMessage(
+      <>
+        <CircularProgress />
+        <Typography>
+          Challenge en cours de création, veuillez patienter ..
+        </Typography>
+      </>,
+    );
+
     API.challenge
       .createChallenge({
         img_avatar,
@@ -77,9 +93,21 @@ let ChallengePanel = () => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
         setOpen(true);
-        setPage('list');
+        setStatusMessage(
+          <>
+            <Typography>Challenge créé avec succès !</Typography>
+          </>,
+        );
       })
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        setStatusMessage(
+          <>
+            <Typography color="error">
+              Erreur lors de la création du challenge ...
+            </Typography>
+          </>,
+        ),
+      );
   };
 
   /**
@@ -110,7 +138,7 @@ let ChallengePanel = () => {
         .then(() =>
           setChallenges((current) => [
             ...current,
-            current.find((elem) => elem.id === index),
+            publishedChallenges.find((elem) => elem.id === index),
           ]),
         )
         .catch((err) => console.error(err));
@@ -155,10 +183,6 @@ let ChallengePanel = () => {
     getChallenges();
   }, []);
 
-  useEffect(() => {
-    getChallenges();
-  }, [open]);
-
   return (
     <>
       {page === 'list' ? (
@@ -166,6 +190,7 @@ let ChallengePanel = () => {
           <Typography variant="h4" align="center">
             Gestionnaire des challenges
           </Typography>
+          {statusMessage}
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6">Publiés</Typography>
@@ -198,6 +223,7 @@ let ChallengePanel = () => {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6">Non publiés</Typography>
               {challenges.map((challenge, idx) => {
+                console.log(challenge);
                 return (
                   <tr>
                     <td>

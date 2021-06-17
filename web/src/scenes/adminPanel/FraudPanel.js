@@ -18,6 +18,7 @@ export default function FraudPanel() {
     <>
       <Typography variant="h3">Historique des fraudes</Typography>
       {fraudList.map((elem, idx) => {
+        let date = new Date(elem.createdAt);
         return (
           <div
             key={idx}
@@ -37,7 +38,11 @@ export default function FraudPanel() {
             </Typography>
 
             <Typography variant="h6" key={idx / 1000 + 1000000}>
-              {Date(elem.createdAt).toString()}
+              {`${('0' + date.getDay()).toString().slice(-2)}/${(
+                '0' + date.getMonth()
+              )
+                .toString()
+                .slice(-2)}/${date.getFullYear()}`}
             </Typography>
           </div>
         );
