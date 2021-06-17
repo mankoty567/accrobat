@@ -32,14 +32,15 @@ public class RetreiveParticipationResponse implements APIListenner {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("NET", "onErrorResponse Participation" + error.toString() );
-        //DataBase.restoreProgression();
+        Log.e("NET", "onErrorResponse Participation" + error.toString() + "\n" + error.getMessage() );
+        DataBase.restoreProgression();
     }
 
     @Override
     public void onResponse(Object response) {
         Log.e("net", "Progression récupérée");
         try{
+            SaveParticipationRequest.derniereDistance = 0;
             // Conversion de la réponse en JSON
             JSONObject json = new JSONObject((String) response);
             Log.e("NET", response.toString() );
@@ -55,6 +56,7 @@ public class RetreiveParticipationResponse implements APIListenner {
             else if(json.getString("type").equals(TypeProgression.SEGMENT.toString())){
                 restoreProgression(
                         json.getDouble("distancePourcentage")*100,
+                        //Map.mapActuelle.MToDistance(json.getDouble("distance")),
                         json.getJSONObject("entity").getInt("id")
                 );
             }else{
