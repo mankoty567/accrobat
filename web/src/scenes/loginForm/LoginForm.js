@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Typography, Button } from '@material-ui/core';
+import {
+  TextField,
+  Typography,
+  Button,
+  Grid,
+} from '@material-ui/core';
 import { API, host } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
@@ -74,27 +79,49 @@ export default function LoginForm() {
 
   return (
     <>
-      <Typography variant="h2">Se Connecter</Typography>
-      <TextField
-        placeholder="Nom d'utilisateur"
-        value={loginUsername}
-        onChange={(e) => setLoginUsername(e.target.value)}
-      />
-      <TextField
-        placeholder="Mot de passe"
-        value={loginPassword}
-        onChange={(e) => setLoginPassword(e.target.value)}
-        type="password"
-      />
-      <br />
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={!loginUsername || !loginPassword}
-        onClick={handleLogin}
-      >
-        Se connecter
-      </Button>
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+        Se Connecter
+      </Typography>
+      <Grid container justify="center">
+        <div
+          style={{
+            width: '20%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <TextField
+            placeholder="Nom d'utilisateur"
+            value={loginUsername}
+            onChange={(e) => setLoginUsername(e.target.value)}
+            style={{ marginTop: '1vh' }}
+          />
+          <TextField
+            placeholder="Mot de passe"
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
+            type="password"
+            style={{ marginTop: '1vh' }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!loginUsername || !loginPassword}
+            onClick={handleLogin}
+            style={{ marginTop: '1vh' }}
+          >
+            Se connecter
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGoogle}
+            style={{ marginTop: '1vh' }}
+          >
+            Se connecter avec Google
+          </Button>
+        </div>
+      </Grid>
       {!!loginErrorMessage ? (
         <p style={{ color: 'red', fontWeight: 'bold' }}>
           {loginErrorMessage}
@@ -102,13 +129,6 @@ export default function LoginForm() {
       ) : null}
       <br />
       <br />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleGoogle}
-      >
-        Se connecter avec Google
-      </Button>
     </>
   );
 }

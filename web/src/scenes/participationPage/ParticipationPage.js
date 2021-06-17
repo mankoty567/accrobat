@@ -3,6 +3,7 @@ import {
   List,
   ListItem,
   Typography,
+  Divider,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
@@ -89,18 +90,28 @@ let ParticipationPage = () => {
           participation_id={selected.participationId}
         />
       ) : null}
-      <Typography variant="h3">Challenges en cours :</Typography>
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+        Challenges en cours
+      </Typography>
       <List>
         {participations.map((elem, idx) => {
           return (
-            <ListItem>
-              <ChallengeItem
-                challenge={elem}
-                index={idx}
-                key={elem.id}
-                actionComponents={<ParticipationMenu index={idx} />}
-              ></ChallengeItem>
-            </ListItem>
+            <>
+              <ListItem>
+                <ChallengeItem
+                  challenge={elem}
+                  index={idx}
+                  key={'participation' + elem.id + idx}
+                  actionComponents={<ParticipationMenu index={idx} />}
+                ></ChallengeItem>
+              </ListItem>
+              <Divider
+                style={{
+                  marginLeft: '5vh',
+                  marginRight: '5vh',
+                }}
+              />
+            </>
           );
         })}
       </List>

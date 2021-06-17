@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Typography, Button } from '@material-ui/core';
+import {
+  TextField,
+  Typography,
+  Button,
+  Grid,
+} from '@material-ui/core';
 import { API, host } from '../../eventApi/api';
 import { useRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
@@ -85,44 +90,62 @@ export default function InscriptionForm() {
           {registerCallbackMessage}
         </p>
       ) : null}
-      <Typography variant="h2">S'Inscrire</Typography>
-      <TextField
-        placeholder="Nom d'utilisateur"
-        value={registerUsername}
-        onChange={(e) => setRegisterUsername(e.target.value)}
-      />
-      <TextField
-        placeholder="Mot de passe"
-        value={registerPassword}
-        onChange={(e) => setRegisterPassword(e.target.value)}
-        type="password"
-      />
-      <TextField
-        placeholder="Retapez le mot de passe"
-        value={registerPasswordRepeat}
-        onChange={(e) => setRegisterPasswordRepeat(e.target.value)}
-        type="password"
-      />
-      <TextField
-        placeholder="Votre email"
-        value={registerEmail}
-        onChange={(e) => setRegisterEmail(e.target.value)}
-        type="email"
-      />
-      <br />
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={
-          !registerUsername ||
-          !registerPassword ||
-          !registerPasswordRepeat ||
-          !registerEmail
-        }
-        onClick={handleRegister}
-      >
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
         S'inscrire
-      </Button>
+      </Typography>
+      <Grid container justify="center">
+        <div
+          style={{
+            width: '20%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <TextField
+            placeholder="Nom d'utilisateur"
+            value={registerUsername}
+            onChange={(e) => setRegisterUsername(e.target.value)}
+            style={{ marginTop: '1vh' }}
+          />
+          <TextField
+            placeholder="Mot de passe"
+            value={registerPassword}
+            onChange={(e) => setRegisterPassword(e.target.value)}
+            type="password"
+            style={{ marginTop: '1vh' }}
+          />
+          <TextField
+            placeholder="Retapez le mot de passe"
+            value={registerPasswordRepeat}
+            onChange={(e) =>
+              setRegisterPasswordRepeat(e.target.value)
+            }
+            type="password"
+            style={{ marginTop: '1vh' }}
+          />
+          <TextField
+            placeholder="Votre email"
+            value={registerEmail}
+            onChange={(e) => setRegisterEmail(e.target.value)}
+            type="email"
+            style={{ marginTop: '1vh' }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={
+              !registerUsername ||
+              !registerPassword ||
+              !registerPasswordRepeat ||
+              !registerEmail
+            }
+            onClick={handleRegister}
+            style={{ marginTop: '1vh' }}
+          >
+            S'inscrire
+          </Button>
+        </div>
+      </Grid>
       {!!registerErrorMessage ? (
         <p style={{ color: 'red', fontWeight: 'bold' }}>
           {registerErrorMessage}

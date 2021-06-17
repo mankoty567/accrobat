@@ -3,8 +3,7 @@ import {
   InputLabel,
   FormHelperText,
   Input,
-  List,
-  ListItem,
+  Grid,
   Button,
   Avatar,
   CardMedia,
@@ -79,9 +78,28 @@ let FormChallenge = ({ callback, handleCancel }) => {
   };
 
   return (
-    <List>
-      <ListItem>
-        <FormControl error={errTitle}>
+    <Grid
+      container
+      justify="center"
+      // spacing={5}
+      style={{
+        marginBottom: '1vh',
+      }}
+    >
+      <Grid
+        item
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          paddingRight: '3vh',
+        }}
+      >
+        <FormControl
+          error={errTitle}
+          style={{
+            marginBottom: '1vh',
+          }}
+        >
           <InputLabel htmlFor="title">Titre* :</InputLabel>
           <Input
             required
@@ -93,23 +111,46 @@ let FormChallenge = ({ callback, handleCancel }) => {
             Le titre de votre challenge
           </FormHelperText>
         </FormControl>
-      </ListItem>
-      <ListItem>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <InputLabel htmlFor="desc">Description* :</InputLabel>
+        <div
+          style={{
+            marginBottom: '1vh',
+            height: '50vh',
+          }}
+        >
+          <Typography
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            Description :
+          </Typography>
           <MarkdownEditor
+            style={{
+              textAlign: 'left',
+            }}
             callback={(text) => setDescription(text.toString())}
           />
         </div>
-      </ListItem>
-
-      <ListItem>
+      </Grid>
+      <Grid
+        item
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          paddingLeft: '3vh',
+        }}
+      >
         <FormControl
           error={errImage}
           onBlur={(e) => setError(e.target.value, setErrImage)}
         >
-          <Typography>Carte de fond* :</Typography>
-
+          <Typography
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            Carte de fond* :
+          </Typography>
           <ImageUploader
             callback={(image) => setImg_fond(image)}
           ></ImageUploader>
@@ -120,8 +161,6 @@ let FormChallenge = ({ callback, handleCancel }) => {
         <CardMedia>
           <img src={img_fond} height="100" width="100" />
         </CardMedia>
-      </ListItem>
-      <ListItem>
         <FormControl error={errScale}>
           <InputLabel htmlFor="scale">Echelle* :</InputLabel>
           <Input
@@ -138,29 +177,46 @@ let FormChallenge = ({ callback, handleCancel }) => {
             donné ?
           </FormHelperText>
         </FormControl>
-      </ListItem>
-      <ListItem>
         <FormControl>
-          <Typography>Icone :</Typography>
-          <ImageUploader
-            callback={(image) => {
-              setImg_avatar(image);
+          <Typography
+            style={{
+              textAlign: 'left',
             }}
-          ></ImageUploader>
-          <FormHelperText></FormHelperText>
+          >
+            Icône :
+          </Typography>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <ImageUploader
+              callback={(image) => {
+                setImg_avatar(image);
+              }}
+            ></ImageUploader>
+            <Avatar src={img_avatar}></Avatar>
+          </div>
         </FormControl>
-
-        <Avatar src={img_avatar}></Avatar>
-      </ListItem>
-
-      <Button onClick={() => handleCancel()} align="center">
-        Annuler
-      </Button>
-
-      <Button onClick={() => handleSubmit()} align="center">
-        Créer un nouveau challenge
-      </Button>
-    </List>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        container
+        justify="center"
+        style={{
+          marginTop: '5vh',
+        }}
+      >
+        <Button onClick={() => handleCancel()} align="center">
+          Annuler
+        </Button>
+        <Button onClick={() => handleSubmit()} align="center">
+          Créer un nouveau challenge
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

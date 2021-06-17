@@ -3,6 +3,7 @@ import ChallengeItem from '../../components/ChallengeItem';
 import FormChallenge from './FormChallenge';
 import {
   Typography,
+  Grid,
   Divider,
   Button,
   CircularProgress,
@@ -183,13 +184,37 @@ let ChallengePanel = () => {
     <>
       {page === 'list' ? (
         <>
-          <Typography variant="h4" align="center">
+          <Typography
+            variant="h4"
+            align="center"
+            style={{
+              marginBottom: '2vh',
+            }}
+          >
             Gestionnaire des challenges
           </Typography>
           {statusMessage}
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography variant="h6">Publiés</Typography>
+          <Grid
+            container
+            justify="center"
+            style={{
+              marginBottom: '1vh',
+            }}
+          >
+            <Grid item xs={12}>
+              <Button
+                startIcon={<AddIcon />}
+                onClick={() => {
+                  setSelected(null);
+                  setPage('form');
+                }}
+              >
+                Ajouter un challenge
+              </Button>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography variant="h5">Publiés</Typography>
               <table
                 style={{
                   display: 'block',
@@ -210,14 +235,21 @@ let ChallengePanel = () => {
                             />
                           }
                         />
+                        <Divider
+                          style={{
+                            marginLeft: '5vh',
+                            marginRight: '5vh',
+                          }}
+                        />
                       </td>
                     </tr>
                   );
                 })}
               </table>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography variant="h6">Non publiés</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              {' '}
+              <Typography variant="h5">Non publiés</Typography>
               {challenges.map((challenge, idx) => {
                 return (
                   <tr>
@@ -233,22 +265,19 @@ let ChallengePanel = () => {
                           />
                         }
                       />
+                      <Divider
+                        style={{
+                          marginLeft: '5vh',
+                          marginRight: '5vh',
+                        }}
+                      />
                     </td>
                   </tr>
                 );
               })}
-            </div>
-          </div>
-          <Divider orientation="horizontal" />
-          <Button
-            startIcon={<AddIcon />}
-            onClick={() => {
-              setSelected(null);
-              setPage('form');
-            }}
-          >
-            Ajouter un challenge
-          </Button>
+            </Grid>
+          </Grid>
+
           {selected ? (
             <ChallengeEditor
               challenge_id={selected}

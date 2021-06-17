@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Paper,
+  Divider,
   Typography,
-  Grid,
   TextField,
   Button,
 } from '@material-ui/core';
@@ -84,80 +83,79 @@ let Proposition = () => {
 
   return (
     <>
-      <Grid container spacing={4} style={{ padding: '3vh' }}>
-        <Grid item xs={4} align="left">
-          <Paper>
-            <div style={{ padding: '5px' }}>
-              <Typography variant="h5" align="center">
-                Proposition
-              </Typography>
-
-              <TextField
-                value={challengeProposal}
-                onChange={(e) => setChallengeProposal(e.target.value)}
-                label="Proposition"
-                style={{ width: '100%' }}
-              />
-              <Button
-                variant="contained"
-                style={{ width: '100%' }}
-                onClick={handleAddProposal}
-              >
-                Envoyer
-              </Button>
-              <SmallMessage
-                message={messageProposal.message}
-                type={messageProposal.type}
-              />
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={8} align="left">
-          <Paper>
-            <div style={{ padding: '5px' }}>
-              <Typography variant="h5" align="center">
-                Challenges à voter
-              </Typography>
-              <div className={style.challengeToVoteContainer}>
-                {challengesToVote.map((challenge) => (
-                  <div
-                    key={challenge.id}
-                    className={style.challengeToVote}
-                  >
-                    <p>{challenge.description}</p>
-                    <div className={style.voteContainer}>
-                      <p
-                        className={classnames([style.vote], {
-                          [style.selected]: challenge.vote === -1,
-                        })}
-                        onClick={() => handleVote(challenge.id, -1)}
-                      >
-                        -1
-                      </p>
-                      <p
-                        className={classnames([style.vote], {
-                          [style.selected]: challenge.vote === 0,
-                        })}
-                        onClick={() => handleVote(challenge.id, 0)}
-                      >
-                        0
-                      </p>
-                      <p
-                        className={classnames([style.vote], {
-                          [style.selected]: challenge.vote === 1,
-                        })}
-                        onClick={() => handleVote(challenge.id, 1)}
-                      >
-                        1
-                      </p>
-                    </div>
-                  </div>
-                ))}
+      {/* <Typography variant="h5" align="center">
+        Challenges à voter
+      </Typography> */}
+      <div className={style.challengeToVoteContainer}>
+        {challengesToVote.map((challenge) => (
+          <>
+            <div key={challenge.id} className={style.challengeToVote}>
+              <Typography>{challenge.description}</Typography>
+              <div className={style.voteContainer}>
+                <p
+                  className={classnames([style.no], {
+                    [style.selected]: challenge.vote === -1,
+                  })}
+                  onClick={() => handleVote(challenge.id, -1)}
+                >
+                  -1
+                </p>
+                <p
+                  className={classnames([style.neutral], {
+                    [style.selected]: challenge.vote === 0,
+                  })}
+                  onClick={() => handleVote(challenge.id, 0)}
+                >
+                  0
+                </p>
+                <p
+                  className={classnames([style.yes], {
+                    [style.selected]: challenge.vote === 1,
+                  })}
+                  onClick={() => handleVote(challenge.id, 1)}
+                >
+                  +1
+                </p>
               </div>
             </div>
-          </Paper>
-        </Grid>
-      </Grid>
+            <Divider
+              style={{
+                marginLeft: '5vh',
+                marginRight: '5vh',
+              }}
+            />
+          </>
+        ))}
+      </div>
+
+      <SmallMessage
+        message={messageProposal.message}
+        type={messageProposal.type}
+      />
+      <div
+        style={{
+          marginTop: '2vh',
+          marginBottom: '2vh',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <TextField
+          value={challengeProposal}
+          onChange={(e) => setChallengeProposal(e.target.value)}
+          label="Description du thème à proposer"
+          style={{ width: '60%' }}
+        />
+        <Button
+          variant="contained"
+          style={{ marginLeft: '2vh' }}
+          onClick={handleAddProposal}
+        >
+          Proposer un nouveau thème
+        </Button>
+      </div>
     </>
   );
 };

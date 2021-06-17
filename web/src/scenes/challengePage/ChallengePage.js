@@ -3,6 +3,7 @@ import {
   List,
   ListItem,
   Typography,
+  Divider,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
@@ -81,23 +82,44 @@ let ChallengePage = () => {
           setOpen={() => setOpen()}
         />
       ) : null}
-      <Typography variant="h3">Challenges disponibles :</Typography>
-      <List>
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+        Challenges disponibles
+      </Typography>
+      <List
+        style={{
+          marginBottom: '2vh',
+        }}
+      >
         {challenges.map((elem, idx) => {
           return (
-            <ListItem>
-              <ChallengeItem
-                challenge={elem}
-                index={idx}
-                key={'c' + elem.id}
-                actionComponents={<ChallengeMenu index={idx} />}
+            <>
+              <ListItem>
+                <ChallengeItem
+                  challenge={elem}
+                  index={idx}
+                  key={'challenge' + elem.id + idx}
+                  actionComponents={<ChallengeMenu index={idx} />}
+                />
+              </ListItem>
+              <Divider
+                style={{
+                  marginLeft: '5vh',
+                  marginRight: '5vh',
+                }}
               />
-            </ListItem>
+            </>
           );
         })}
       </List>
-      <Typography variant="h3">Thèmes :</Typography>
-
+      <Typography
+        variant="h4"
+        align="center"
+        style={{
+          marginBottom: '2vh',
+        }}
+      >
+        Thèmes
+      </Typography>
       <Proposition />
     </>
   );
