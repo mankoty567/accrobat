@@ -187,9 +187,9 @@ let ParticipationDetails = ({
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                zoom={9}
-                maxZoom={11}
-                minZoom={8}
+                style={{
+                  height: '90vh',
+                }}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}

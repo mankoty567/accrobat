@@ -116,163 +116,156 @@ let ProfilePage = () => {
             display: 'block',
             marginLeft: 'auto',
             marginRight: 'auto',
-            marginTop: '5vh',
           }}
         >
-          <Paper>
-            <Typography variant="h3">Page de profil</Typography>
-            <Divider />
-            <Grid container space={1}>
-              <Grid item xs={8}>
-                <Paper>
+          <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+            Page de profil
+          </Typography>
+          <Grid container space={1}>
+            <Grid item xs={8}>
+              <List>
+                <ListItem>
                   <List>
                     <ListItem>
-                      <List>
-                        <ListItem>
+                      {edit ? (
+                        <TextField
+                          fullWidth
+                          label="Nom d'utilisateur"
+                          helperText="Modifiez votre nom d'utilisateur"
+                          value={username}
+                          onChange={(e) =>
+                            setUsername(e.target.value)
+                          }
+                        />
+                      ) : (
+                        <ListItem
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                          }}
+                        >
                           <Typography variant="h6">
-                            Nom d'utilisateur :
+                            Nom d'utilisateur
+                          </Typography>
+                          <Typography>
+                            {userState.username}
                           </Typography>
                         </ListItem>
-                        <ListItem>
-                          {edit ? (
-                            <TextField
-                              fullWidth
-                              label="Nom d'utilisateur"
-                              helperText="Modifiez votre nom d'utilisateur"
-                              value={username}
-                              onChange={(e) =>
-                                setUsername(e.target.value)
-                              }
-                            />
-                          ) : (
-                            <Typography>
-                              {userState.username}
-                            </Typography>
-                          )}
-                        </ListItem>
-                      </List>
-                    </ListItem>
-                    <Divider />
-
-                    <ListItem>
-                      <List>
-                        <ListItem>
-                          <Typography variant="h6">
-                            Email :
-                          </Typography>
-                        </ListItem>
-                        <ListItem>
-                          {edit ? (
-                            <TextField
-                              fullWidth
-                              label="Nom d'utilisateur"
-                              helperText="Modifiez votre nom d'utilisateur"
-                              value={email}
-                              onChange={(e) =>
-                                setEmail(e.target.value)
-                              }
-                            />
-                          ) : (
-                            <Typography>{userState.email}</Typography>
-                          )}
-                        </ListItem>
-                      </List>
+                      )}
                     </ListItem>
                   </List>
-                </Paper>
-              </Grid>
-
-              <Grid
-                item
-                xs={4}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                {edit ? (
-                  <>
-                    <ImageUploader
-                      maxSize={[2000, 2000]}
-                      setErrMessage={(err) => setImageError(err)}
-                      callback={(image) => {
-                        setImg_avatar(image);
-                      }}
-                    />
-                    <Typography color="error">
-                      {imageError}
-                    </Typography>
-                  </>
-                ) : null}
-                <Avatar
-                  style={{
-                    height: '20vh',
-                    width: '10vw',
-                    margin: 'auto',
-                  }}
-                  src={img_avatar}
-                />
-              </Grid>
-
-              {edit ? null : (
+                </ListItem>
                 <ListItem>
-                  <Typography variant="h6">Mot de passe :</Typography>
+                  <List>
+                    <ListItem>
+                      {edit ? (
+                        <TextField
+                          fullWidth
+                          label="Nom d'utilisateur"
+                          helperText="Modifiez votre nom d'utilisateur"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      ) : (
+                        <ListItem
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                          }}
+                        >
+                          <Typography variant="h6">Email</Typography>
+                          <Typography>{userState.email}</Typography>
+                        </ListItem>
+                      )}
+                    </ListItem>
+                  </List>
+                </ListItem>
+              </List>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              {edit ? (
+                <>
+                  <ImageUploader
+                    maxSize={[2000, 2000]}
+                    setErrMessage={(err) => setImageError(err)}
+                    callback={(image) => {
+                      setImg_avatar(image);
+                    }}
+                  />
+                  <Typography color="error">{imageError}</Typography>
+                </>
+              ) : null}
+              <Avatar
+                style={{
+                  height: '20vh',
+                  width: '10vw',
+                  margin: 'auto',
+                }}
+                src={img_avatar}
+              />
+            </Grid>
+
+            {edit ? null : (
+              <ListItem>
+                <Grid container justify="center">
                   <Button onClick={() => setMode('password')}>
                     Modifier mon mot de passe
                   </Button>
-                </ListItem>
-              )}
-            </Grid>
-
-            <Typography variant="h6" style={{ color: '#18bc9c' }}>
-              {statusMessage}
-            </Typography>
-            {edit ? (
-              <>
-                <Typography color="error">{err}</Typography>
-
-                <Grid container space={1}>
-                  <Grid item xs={6}>
-                    <Button
-                      fullWidth
-                      startIcon={<CheckIcon />}
-                      onClick={() => handleSubmit()}
-                    >
-                      Sauvegarder les changements
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      fullWidth
-                      onClick={() => {
-                        setEdit(false),
-                          setImg_avatar(
-                            `https://api.acrobat.bigaston.dev/api/user/${userState.id}/avatar`,
-                          );
-                        setUsername(userState.username);
-                        setEmail(userState.email);
-                      }}
-                    >
-                      Anuler les changements
-                    </Button>
-                  </Grid>
                 </Grid>
-              </>
-            ) : (
-              <>
-                <Divider />
-                <Grid container space={1}>
-                  <Grid item xs={6}>
-                    <Button
-                      fullWidth
-                      startIcon={<EditIcon />}
-                      onClick={() => handleEdit()}
-                    >
-                      Modifier mon profil
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                </Grid>
-              </>
+              </ListItem>
             )}
-          </Paper>
+          </Grid>
+
+          <Typography variant="h6" style={{ color: '#18bc9c' }}>
+            {statusMessage}
+          </Typography>
+          {edit ? (
+            <>
+              <Typography color="error">{err}</Typography>
+
+              <Grid container space={1}>
+                <Grid item xs={6}>
+                  <Button
+                    fullWidth
+                    startIcon={<CheckIcon />}
+                    onClick={() => handleSubmit()}
+                  >
+                    Sauvegarder les changements
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    fullWidth
+                    onClick={() => {
+                      setEdit(false),
+                        setImg_avatar(
+                          `https://api.acrobat.bigaston.dev/api/user/${userState.id}/avatar`,
+                        );
+                      setUsername(userState.username);
+                      setEmail(userState.email);
+                    }}
+                  >
+                    Anuler les changements
+                  </Button>
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid container justify="center">
+                <Button
+                  startIcon={<EditIcon />}
+                  onClick={() => handleEdit()}
+                >
+                  Modifier mon profil
+                </Button>
+              </Grid>
+            </>
+          )}
         </div>
       ) : (
         <PasswordPage

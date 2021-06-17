@@ -162,7 +162,7 @@ let PreviewChallenge = ({
                 justify="space-between"
               >
                 <h2 style={{ margin: 0 }}>
-                  Avancement sur {challenge.title}
+                  Prévisualisation de {challenge.title}
                 </h2>
                 <Button
                   variant="contained"
@@ -181,9 +181,9 @@ let PreviewChallenge = ({
                 center={[bounds[1][0] / 2, bounds[1][1] / 2]}
                 bounds={bounds}
                 maxBounds={bounds}
-                zoom={9}
-                maxZoom={11}
-                minZoom={8}
+                style={{
+                  height: '90vh',
+                }}
               >
                 <ImageOverlay
                   url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}

@@ -203,6 +203,9 @@ export const Navbar = () => {
                         autoFocusItem={open}
                         id="menu-list-grow"
                         onKeyDown={handleListKeyDown}
+                        style={{
+                          zIndex: 999,
+                        }}
                       >
                         <MenuItem
                           component={Link}

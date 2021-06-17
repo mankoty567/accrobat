@@ -49,142 +49,135 @@ let PasswordPage = ({ setMode, callback }) => {
   return (
     <div
       style={{
-        width: '35vw',
-        display: 'block',
+        display: 'flex',
+        flexDirection: 'column',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '5vh',
+        alignItems: 'center',
       }}
     >
-      <Paper>
-        <Typography variant="h3">
-          Changer son mot de passe :
-        </Typography>
-        <Divider />
-        <List>
-          <ListItem>
-            <TextField
-              fullWidth
-              label="Mot de passe actuel :"
-              type={showPassword1 ? 'text' : 'password'}
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              helperText={
-                <Typography color="error">
-                  {error === 'Error: Old Password Not Correct'
-                    ? 'Mot de passe incorrect'
-                    : ''}
-                </Typography>
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={(e) =>
-                        setShowPassword1(!showPassword1)
-                      }
-                    >
-                      {showPassword1 ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              fullWidth
-              label="Nouveau mot de passe :"
-              type={showPassword2 ? 'text' : 'password'}
-              onChange={(e) => setConfirmationPass(e.target.value)}
-              value={confirmationPass}
-              helperText={
-                <Typography color="error">
-                  {error === 'Error: Two password not match'
-                    ? 'Les mot de passe sont différent'
-                    : ''}
-                </Typography>
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={(e) =>
-                        setShowPassword2(!showPassword2)
-                      }
-                    >
-                      {showPassword2 ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              fullWidth
-              label="Confirmez votre mot de passe :"
-              type={showPassword3 ? 'text' : 'password'}
-              onChange={(e) => setConfirmationPass2(e.target.value)}
-              value={confirmationPass2}
-              helperText={
-                <Typography color="error">
-                  {error === 'Error: Two password not match'
-                    ? 'Les mot de passe sont différent'
-                    : ''}
-                </Typography>
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={(e) =>
-                        setShowPassword3(!showPassword3)
-                      }
-                    >
-                      {showPassword3 ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </ListItem>
-        </List>
-        <Divider />
-
-        <Grid container space={1}>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              onClick={() => handleSubmit()}
-              startIcon={<CheckIcon />}
-            >
-              Valider
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              onClick={() => setMode('profile')}
-              startIcon={<ReplyIcon />}
-            >
-              Revenir à mon profil
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+        Changer de mot de passe
+      </Typography>
+      <List
+        style={{
+          width: '20vw',
+        }}
+      >
+        <ListItem>
+          <TextField
+            fullWidth
+            label="Mot de passe actuel :"
+            type={showPassword1 ? 'text' : 'password'}
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            helperText={
+              <Typography color="error">
+                {error === 'Error: Old Password Not Correct'
+                  ? 'Mot de passe incorrect'
+                  : ''}
+              </Typography>
+            }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(e) => setShowPassword1(!showPassword1)}
+                  >
+                    {showPassword1 ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </ListItem>
+        <ListItem>
+          <TextField
+            fullWidth
+            label="Nouveau mot de passe :"
+            type={showPassword2 ? 'text' : 'password'}
+            onChange={(e) => setConfirmationPass(e.target.value)}
+            value={confirmationPass}
+            helperText={
+              <Typography color="error">
+                {error === 'Error: Two password not match'
+                  ? 'Les mot de passe sont différent'
+                  : ''}
+              </Typography>
+            }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(e) => setShowPassword2(!showPassword2)}
+                  >
+                    {showPassword2 ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </ListItem>
+        <ListItem>
+          <TextField
+            fullWidth
+            label="Confirmez votre mot de passe :"
+            type={showPassword3 ? 'text' : 'password'}
+            onChange={(e) => setConfirmationPass2(e.target.value)}
+            value={confirmationPass2}
+            helperText={
+              <Typography color="error">
+                {error === 'Error: Two password not match'
+                  ? 'Les mot de passe sont différent'
+                  : ''}
+              </Typography>
+            }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(e) => setShowPassword3(!showPassword3)}
+                  >
+                    {showPassword3 ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </ListItem>
+      </List>
+      <Grid container justify="center">
+        <Button
+          onClick={() => handleSubmit()}
+          startIcon={<CheckIcon />}
+          style={{
+            marginRight: '2vh',
+          }}
+        >
+          Valider
+        </Button>
+        <Button
+          onClick={() => setMode('profile')}
+          startIcon={<ReplyIcon />}
+          style={{
+            marginLeft: '2vh',
+          }}
+        >
+          Revenir à mon profil
+        </Button>
+      </Grid>
     </div>
   );
 };
