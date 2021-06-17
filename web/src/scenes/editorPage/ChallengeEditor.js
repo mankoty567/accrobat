@@ -599,7 +599,13 @@ let ChallengeEditor = ({
             />
             <main id="content" className={classes.content}>
               <Grid container spacing={5} justify="space-between">
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    height: '7vh',
+                  }}
+                >
                   <Grid
                     id="title"
                     style={{
@@ -625,13 +631,26 @@ let ChallengeEditor = ({
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item xs={5} justify="center">
+                <Grid
+                  item
+                  xs={5}
+                  justify="center"
+                  style={{
+                    height: '83vh',
+                  }}
+                >
                   <ModifyChallenge
                     challenge={challenge}
                     setChallenge={setChallenge}
                   />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}
+                  style={{
+                    height: '83vh',
+                  }}
+                >
                   <MapContainer
                     className={classes.mapContainer}
                     crs={CRS.Simple}
@@ -701,8 +720,14 @@ let ChallengeEditor = ({
                     <Echelle echelle={challenge.echelle} />
                   </MapContainer>
                 </Grid>
-                <Grid item xs={12} justify="center">
-                  <div className={classes.actionButtons}>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    height: '10vh',
+                  }}
+                >
+                  <Grid container justify="center">
                     {valid ? (
                       <>
                         <Button
@@ -724,7 +749,7 @@ let ChallengeEditor = ({
                         </Button>
                       </>
                     )}
-                  </div>
+                  </Grid>
                 </Grid>
                 {currentMarker ? (
                   <ModifyMarkerPopUp

@@ -8,7 +8,11 @@ let ModifyChallenge = ({ challenge, setChallenge }) => {
   const classes = useStyles();
 
   return (
-    <List>
+    <List
+      style={{
+        height: '100%',
+      }}
+    >
       <ListItem>
         <TextField
           className={classes.input}
@@ -35,7 +39,7 @@ let ModifyChallenge = ({ challenge, setChallenge }) => {
       <ListItem
         style={{
           'justify-content': 'center',
-          // height: '50vh',
+          height: '70%',
         }}
       >
         <MarkdownEditor

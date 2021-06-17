@@ -249,15 +249,21 @@ export default ({ callback, defaultText }) => {
   });
 
   return (
-    <div>
-      <Paper>
+    <div
+      style={{
+        height: '100%',
+      }}
+    >
+      <Paper
+        style={{
+          height: '100%',
+        }}
+      >
         <MenuBar editor={editor} />
         <EditorContent
           editor={editor}
           style={{
             width: '100%',
-            border: '1px solid black',
-            borderRadius: '0 0 3px 3px',
             padding: '5px',
           }}
         ></EditorContent>
