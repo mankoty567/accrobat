@@ -38,6 +38,7 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
 
      public static boolean isNotAPreview;
      private LinearLayout ll_interaction;
+     private LinearLayout ll_mode;
 
      /************************************************************************
       * Création de la class et de la vue
@@ -47,8 +48,12 @@ import site.nohan.protoprogression.View.ui.home.SignupFragment;
         View root = inflater.inflate(R.layout.progression, container, false);
 
         signin = R.id.navigation_signin;
-        ll_interaction = root.findViewById(R.id.ll_challenge_interaction);
-        if(!isNotAPreview) ll_interaction.setVisibility(View.GONE);
+        ll_interaction = root.findViewById(R.id.ll_zoom);
+        ll_mode = root.findViewById(R.id.ll_mode);
+        if(!isNotAPreview){
+            ll_interaction.setVisibility(View.GONE);
+            ll_mode.setVisibility(View.GONE);
+        }
         //else ll_interaction.setVisibility(View.VISIBLE);
 
          //Vérification que l'utilisateur est connecté

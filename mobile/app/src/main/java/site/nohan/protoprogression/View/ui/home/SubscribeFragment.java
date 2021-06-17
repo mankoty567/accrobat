@@ -98,8 +98,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PedometerController.mode = TypeEvent.MARCHE;
-                DataBase.pedometerModeSelected = 0;
+                PedometerController.modeSelected = TypeEvent.MARCHE;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
             }
@@ -107,8 +106,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer_run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PedometerController.mode = TypeEvent.COURSE;
-                DataBase.pedometerModeSelected = 1;
+                PedometerController.modeSelected = TypeEvent.COURSE;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
             }
@@ -116,8 +114,7 @@ public class SubscribeFragment extends Fragment {
         btn_bike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PedometerController.mode = TypeEvent.VELO;
-                DataBase.pedometerModeSelected = 2;
+                PedometerController.modeSelected = TypeEvent.VELO;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
             }

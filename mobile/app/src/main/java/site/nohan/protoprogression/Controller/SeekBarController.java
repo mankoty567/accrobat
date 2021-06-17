@@ -78,9 +78,9 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
         DataBase.saveProgression();
 
-        new SaveParticipationRequest(this.activity, PedometerController.mode, progress, Map.participationId,
+        new SaveParticipationRequest(this.activity, PedometerController.modeSelected, progress, Map.participationId,
             new SaveParticipationResponse(
-                this.activity, PedometerController.mode, progress,  Map.participationId
+                this.activity, PedometerController.modeSelected, progress,  Map.participationId
             )
         );
         //Log.e("lele", DataBase.getSubscribed().toString());
@@ -108,17 +108,17 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
             //Condition vérifiant le mode sélectionné par l'utilisateur
             // et activant / désactivant ses fonctionnalités
-            switch (DataBase.pedometerModeSelected) {
-                case 0:
+            switch (PedometerController.modeSelected) {
+                case MARCHE:
                     PedometerController.isRunning = false;
-                    DataBase.pedometerController.pedometerAction();
+                    DataBase.pedometerController.pedometerStop();
                     break;
-                case 1:
+                case COURSE:
                     PedometerController.isRunning = true;
-                    DataBase.pedometerController.pedometerAction();
+                    DataBase.pedometerController.pedometerStop();
                     break;
-                case 2:
-                    DataBase.pedometerController.bikeAction();
+                case VELO:
+                    DataBase.pedometerController.bikeStop();
                     break;
             }
 
@@ -147,8 +147,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                         break;
                     Log.e("suiv",c.objectif.titre);
                     button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c,toile,this.activity,true));
-                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
+                    button.setOnClickListener(new DirectionController(c,toile,this.activity));
+                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
                     button.setText(c.objectif.titre + " par " + c.nom);
 
                     directionLayout.addView(button);

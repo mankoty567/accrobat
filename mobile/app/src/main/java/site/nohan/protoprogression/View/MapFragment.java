@@ -85,14 +85,14 @@ public class MapFragment extends Fragment {
 
         //Affichage du mode sélectionné
         ImageView img_mode_selected = getActivity().findViewById(R.id.img_mode_selected);
-        switch (DataBase.pedometerModeSelected){
-            case 0:
+        switch (PedometerController.modeSelected){
+            case MARCHE:
                 img_mode_selected.setBackgroundResource(R.drawable.walking_green);
                 break;
-            case 1:
+            case COURSE:
                 img_mode_selected.setBackgroundResource(R.drawable.running_green);
                 break;
-            case 2:
+            case VELO:
                 img_mode_selected.setBackgroundResource(R.drawable.cycling_green);
                 break;
         }

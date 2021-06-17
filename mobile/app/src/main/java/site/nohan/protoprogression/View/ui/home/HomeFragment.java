@@ -95,8 +95,8 @@ public class HomeFragment extends Fragment {
      ******************************************/
     public void updateViewButtonMenu(Button buttonClicked, Button buttonErased){
         if(SeekBarController.progress > 0) {
-            new SaveParticipationRequest(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId,
-                    new SaveParticipationResponse(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId)
+            new SaveParticipationRequest(this.getActivity(), PedometerController.modeSelected, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this.getActivity(), PedometerController.modeSelected, SeekBarController.progress, Map.participationId)
             );
         }
         //Affichage de tous les challenges

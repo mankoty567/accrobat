@@ -29,8 +29,6 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class PedometerController implements SensorEventListener, StepListener {
 
-
-    public static TypeEvent mode = TypeEvent.MARCHE;
     /*****************************************************************
      * Création des variables globales de la class
      *****************************************************************/
@@ -38,6 +36,7 @@ public class PedometerController implements SensorEventListener, StepListener {
     private MapFragment mapFragment;
 
     public static boolean isRunning;
+    public static TypeEvent modeSelected = TypeEvent.MARCHE;
 
     //Variables d'affichages
     public static TextView tKilometres;
@@ -85,7 +84,7 @@ public class PedometerController implements SensorEventListener, StepListener {
     /*****************************************************************
      * Méthode de lancement ou d'arrêt du Podomètre
      *****************************************************************/
-    public void pedometerAction(){
+    /*public void pedometerAction(){
         //Si le GPS est allumé, on l'arrête
         if(isGPSOn){
             stopLocationService();
@@ -110,12 +109,36 @@ public class PedometerController implements SensorEventListener, StepListener {
 
             isPedometerOn = false;
         }
+    }*/
+
+    /*****************************************************************
+     * Méthode de lancement du Podomètre
+     *****************************************************************/
+    public void pedometerStart(){
+        Log.i(TAG, "onCreate : Registered accelerometer listener");
+        numSteps = 0;
+        distanceOfPedometer = 0;
+        oldDistance = distance;
+        tKilometres.setText(distance + " ms");
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+
+        isPedometerOn = true;
+    }
+
+    /*****************************************************************
+     * Méthode d'arrêt du Podomètre
+     *****************************************************************/
+    public void pedometerStop(){
+        sensorManager.unregisterListener(this);
+        tKilometres.setText(distance + " ms");
+
+        isPedometerOn = false;
     }
 
     /*****************************************************************
      * Méthode de lancement ou d'arrêt du GPS
      *****************************************************************/
-    public void bikeAction(){
+    /*public void bikeAction(){
         //Si le podomètre est en route, on l'arrête
         if(isPedometerOn){
             sensorManager.unregisterListener(this);
@@ -138,6 +161,26 @@ public class PedometerController implements SensorEventListener, StepListener {
             isGPSOn = false;
 
         }
+    }*/
+
+    /*****************************************************************
+     * Méthode de lancement du GPS
+     *****************************************************************/
+    public void bikeStart(){
+        if(ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            startLocationService();
+        }
+        isGPSOn = true;
+    }
+
+    /*****************************************************************
+     * Méthode d'arrêt du GPS
+     *****************************************************************/
+    public void bikeStop(){
+        stopLocationService();
+        isGPSOn = false;
     }
 
     /*****************************************************************
@@ -187,7 +230,7 @@ public class PedometerController implements SensorEventListener, StepListener {
         Log.i(TAG, distance + " ms");
 
         //Mise à jour de la seekbar
-        int distanceMap = (int) Math.floor(distance*100/ Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()));
+        int distanceMap = (int) Math.floor(distance*100/Map.mapActuelle.cheminActuel.getLongueur());
         sbProgression.setProgress(distanceMap);
     }
 
