@@ -326,7 +326,7 @@ let ChallengeEditor = ({
       });
   };
 
-  let addObstacle = async (event) => {
+  let addObstacle = async () => {
     var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
     var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
     var positions = [
@@ -518,152 +518,160 @@ let ChallengeEditor = ({
               onEvent={handleContextEvent}
             />
             <main id="content" className={classes.content}>
-              <Grid
-                id="title"
-                style={{
-                  marginTop: 0,
-                  marginBottom: 10,
-                  display: 'flex',
-                }}
-                container
-                justify="space-between"
-              >
-                <h2 style={{ margin: 0 }}>
-                  Édition de {challenge.title}
-                </h2>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    setSelected(null);
-                    setOpen(false);
-                  }}
-                >
-                  X
-                </Button>
-              </Grid>
-              <ModifyChallenge
-                challenge={challenge}
-                setChallenge={setChallenge}
-              />
-              <MapContainer
-                className={classes.mapContainer}
-                crs={CRS.Simple}
-                center={[bounds[1][0] / 2, bounds[1][1] / 2]}
-                bounds={bounds}
-                maxBounds={bounds}
-              >
-                <ImageOverlay
-                  url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
-                  bounds={bounds}
-                ></ImageOverlay>
-                <Markers
-                  addingLine={addingLine}
-                  addPreviewLine={addPreviewLine}
-                  markers={markers}
-                  handleContext={handleContext}
-                  updateMarker={updateMarker}
-                  editMode={editMode}
-                  setEditMode={setEditMode}
-                  setCurrentMarker={setCurrentMarker}
-                  currentMarker={currentMarker}
-                  setContextEvent={setContextEvent}
-                  contextRef={contextRef}
-                  addLine={addLine}
-                  setAddingLine={setAddingLine}
-                  setPreviewLine={setPreviewLine}
-                  errorMarkers={errorMarkers}
-                  setCurrentObstacle={setCurrentObstacle}
-                />
-                {!waitingAPI ? (
-                  <Lines
-                    lines={lines}
+              <Grid container spacing={5} justify="space-between">
+                <Grid item xs={12}>
+                  <Grid
+                    id="title"
+                    style={{
+                      // marginTop: 0,
+                      marginBottom: 10,
+                      display: 'flex',
+                    }}
+                    container
+                    justify="space-between"
+                  >
+                    <h2 style={{ margin: 0 }}>
+                      Édition de {challenge.title}
+                    </h2>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => {
+                        setSelected(null);
+                        setOpen(false);
+                      }}
+                    >
+                      X
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid item xs={5} justify="center">
+                  <ModifyChallenge
+                    challenge={challenge}
+                    setChallenge={setChallenge}
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <MapContainer
+                    className={classes.mapContainer}
+                    crs={CRS.Simple}
+                    center={[bounds[1][0] / 2, bounds[1][1] / 2]}
+                    bounds={bounds}
+                    maxBounds={bounds}
+                  >
+                    <ImageOverlay
+                      url={`https://api.acrobat.bigaston.dev/api/challenge/${challenge_id}/image`}
+                      bounds={bounds}
+                    ></ImageOverlay>
+                    <Markers
+                      addingLine={addingLine}
+                      addPreviewLine={addPreviewLine}
+                      markers={markers}
+                      handleContext={handleContext}
+                      updateMarker={updateMarker}
+                      editMode={editMode}
+                      setEditMode={setEditMode}
+                      setCurrentMarker={setCurrentMarker}
+                      currentMarker={currentMarker}
+                      setContextEvent={setContextEvent}
+                      contextRef={contextRef}
+                      addLine={addLine}
+                      setAddingLine={setAddingLine}
+                      setPreviewLine={setPreviewLine}
+                      errorMarkers={errorMarkers}
+                      setCurrentObstacle={setCurrentObstacle}
+                    />
+                    {!waitingAPI ? (
+                      <Lines
+                        lines={lines}
+                        markers={markers}
+                        updateLine={updateLine}
+                        setSelectedLine={setSelectedLine}
+                        handleContext={handleContext}
+                      />
+                    ) : null}
+                    <Obstacles
+                      obstacles={obstacles}
+                      currentObstacle={currentObstacle}
+                      lines={lines}
+                      getMarkerCoordsFromId={getMarkerCoordsFromId}
+                      handleContext={handleContext}
+                      setCurrentMarker={setCurrentMarker}
+                      setCurrentObstacle={setCurrentObstacle}
+                    />
+                    {currentMarker && previewLine ? (
+                      <>
+                        <Polyline
+                          positions={[
+                            [currentMarker.y, currentMarker.x],
+                            ...previewLine,
+                          ]}
+                          color={'black'}
+                        />
+                        {currentMarker.type != 'end' ? (
+                          <PreviewLine from={previewLine} />
+                        ) : null}
+                      </>
+                    ) : null}
+                    <Echelle />
+                  </MapContainer>
+                </Grid>
+                <Grid item xs={12} justify="center">
+                  <div className={classes.actionButtons}>
+                    {valid ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handlePublish}
+                        >
+                          Publier
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleCheck}
+                        >
+                          Vérifier / Mettre à jour
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </Grid>
+                {currentMarker ? (
+                  <ModifyMarkerPopUp
+                    modifyMarker={modifyMarker}
+                    setModifyMarker={setModifyMarker}
+                    setMarkers={setMarkers}
+                    currentMarker={currentMarker}
                     markers={markers}
-                    updateLine={updateLine}
-                    setSelectedLine={setSelectedLine}
-                    handleContext={handleContext}
+                    updateMarker={updateMarker}
                   />
                 ) : null}
-                <Obstacles
-                  obstacles={obstacles}
-                  currentObstacle={currentObstacle}
-                  lines={lines}
-                  getMarkerCoordsFromId={getMarkerCoordsFromId}
-                  handleContext={handleContext}
-                  setCurrentMarker={setCurrentMarker}
-                  setCurrentObstacle={setCurrentObstacle}
-                />
-                {currentMarker && previewLine ? (
-                  <>
-                    <Polyline
-                      positions={[
-                        [currentMarker.y, currentMarker.x],
-                        ...previewLine,
-                      ]}
-                      color={'black'}
-                    />
-                    {currentMarker.type != 'end' ? (
-                      <PreviewLine from={previewLine} />
-                    ) : null}
-                  </>
+                {currentObstacle ? (
+                  <ModifyObstaclePopUp
+                    modifyObstacle={modifyObstacle}
+                    setModifyObstacle={setModifyObstacle}
+                    setObstacles={setObstacles}
+                    currentObstacle={currentObstacle}
+                    updateObstacle={updateObstacle}
+                  />
                 ) : null}
-                <Echelle />
-              </MapContainer>
-              <Grid container justify="center">
-                <div className={classes.actionButtons}>
-                  {valid ? (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handlePublish}
-                      >
-                        Publier
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCheck}
-                      >
-                        Vérifier / Mettre à jour
-                      </Button>
-                    </>
-                  )}
-                </div>
+                {selectedLine ? (
+                  <ModifyLinePopUp
+                    modifyLine={modifyLine}
+                    setModifyLine={setModifyLine}
+                    setLines={setLines}
+                    selectedLine={selectedLine}
+                    updateLine={updateLine}
+                    echelle={challenge.echelle}
+                    getMarkerCoordsFromId={getMarkerCoordsFromId}
+                  />
+                ) : null}
               </Grid>
-              {currentMarker ? (
-                <ModifyMarkerPopUp
-                  modifyMarker={modifyMarker}
-                  setModifyMarker={setModifyMarker}
-                  setMarkers={setMarkers}
-                  currentMarker={currentMarker}
-                  markers={markers}
-                  updateMarker={updateMarker}
-                />
-              ) : null}
-              {currentObstacle ? (
-                <ModifyObstaclePopUp
-                  modifyObstacle={modifyObstacle}
-                  setModifyObstacle={setModifyObstacle}
-                  setObstacles={setObstacles}
-                  currentObstacle={currentObstacle}
-                  updateObstacle={updateObstacle}
-                />
-              ) : null}
-              {selectedLine ? (
-                <ModifyLinePopUp
-                  modifyLine={modifyLine}
-                  setModifyLine={setModifyLine}
-                  setLines={setLines}
-                  selectedLine={selectedLine}
-                  updateLine={updateLine}
-                  echelle={challenge.echelle}
-                  getMarkerCoordsFromId={getMarkerCoordsFromId}
-                />
-              ) : null}
             </main>
             {Object.keys(checkMessage).length === 0 ? null : (
               <>

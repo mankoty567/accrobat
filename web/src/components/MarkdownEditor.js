@@ -45,7 +45,7 @@ const MenuBar = ({ editor }) => {
   return (
     <div
       style={{
-        width: '900px',
+        width: '100%',
         borderStyle: 'solid',
         borderRadius: '3px',
         borderWidth: '1px',
@@ -57,7 +57,7 @@ const MenuBar = ({ editor }) => {
       <Grid container item>
         <Grid container item direction="column" xs={5}>
           <Grid item>
-            <Typography>Formattage de texte :</Typography>
+            <Typography>Formatage de texte :</Typography>
           </Grid>
           <Grid item>
             <Tooltip title="Mettre en gras">
@@ -239,29 +239,28 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-export default ({ callback }) => {
+export default ({ callback, defaultText }) => {
   const editor = useEditor({
     onUpdate({ editor }) {
       callback(editor.getHTML());
     },
     extensions: [StarterKit, Underline, Image],
-    content: '',
+    content: defaultText,
   });
 
   return (
     <div>
-      <Paper style={{ padding: '15px' }}>
+      <Paper>
         <MenuBar editor={editor} />
-
         <EditorContent
           editor={editor}
           style={{
             width: '100%',
-            borderStyle: 'solid',
-            borderRadius: '3px',
-            borderWidth: '1px',
+            border: '1px solid black',
+            borderRadius: '0 0 3px 3px',
+            padding: '5px',
           }}
-        />
+        ></EditorContent>
       </Paper>
     </div>
   );
