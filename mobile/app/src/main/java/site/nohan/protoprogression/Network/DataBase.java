@@ -66,7 +66,11 @@ public class DataBase {
          * TABLE USER
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
-        //bdd.execSQL("DROP TABLE EVENT");
+        /*bdd.execSQL("DROP TABLE EVENT");
+        bdd.execSQL("DROP TABLE PROGRESSION");
+        bdd.execSQL("DROP TABLE USER");
+        bdd.execSQL("DROP TABLE MOI");
+        bdd.execSQL("DROP TABLE ACCOMPLI");*/
 
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +

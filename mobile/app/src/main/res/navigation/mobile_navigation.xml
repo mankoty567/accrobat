@@ -48,11 +48,14 @@
         <action
             android:id="@+id/action_challenge_to_user"
             app:destination="@id/navigation_user" />
+        <action
+            android:id="@+id/action_navigation_challenge_to_navigation_challenge_finished"
+            app:destination="@id/navigation_challenge_finished" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_user"
-        android:name="site.nohan.protoprogression.View.ui.notifications.NotificationsFragment"
+        android:name="site.nohan.protoprogression.View.ui.user.UserFragment"
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user" />
 
@@ -71,4 +74,9 @@
             android:id="@+id/action_subscribeFragment_to_navigation_challenge"
             app:destination="@id/navigation_challenge" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_challenge_finished"
+        android:name="site.nohan.protoprogression.View.ArriveeFragment"
+        android:label="ArriveeFragment" />
 </navigation>
