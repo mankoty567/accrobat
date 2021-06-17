@@ -135,12 +135,10 @@ let ChallengePanel = () => {
     const handleClone = () => {
       API.challenge
         .cloneChallenge(index)
-        .then(() =>
-          setChallenges((current) => [
-            ...current,
-            publishedChallenges.find((elem) => elem.id === index),
-          ]),
-        )
+        .then((res) => {
+          setChallenges((current) => [...current, res]);
+        })
+
         .catch((err) => console.error(err));
     };
     /**
