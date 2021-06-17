@@ -79,11 +79,10 @@ public class ChallengesResponse implements APIListenner {
                 map.libelle = jMap.getString("title");
                 map.date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(jMap.getString("createdAt"));
                 map.description = jMap.getString("description");
-                new AvatarMapRequest(activity, map.id);
                 Log.e("onResponse: ", map.id+"");
+                new AvatarMapRequest(activity, map.id);
                 Map.maps.add(map);
             }
-
 
             homeListChallengesAdapter.notifyDataSetChanged();
 

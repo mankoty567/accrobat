@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import site.nohan.protoprogression.Controller.MainActivity;
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
 import site.nohan.protoprogression.Network.Challenge.RecordRequest;
 import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
@@ -31,6 +33,8 @@ import site.nohan.protoprogression.Network.Map.MapRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
+import static site.nohan.protoprogression.Network.DataBase.resetRecords;
+
 public class SubscribeFragment extends Fragment {
     /************************************************************************
      * Création des variables globales
@@ -38,6 +42,7 @@ public class SubscribeFragment extends Fragment {
     private int signin = R.id.navigation_signin;;
     private int challenge = R.id.navigation_challenge;
 
+    private Button btn_back;
     private Button btn_subscribe;
     private Button btn_preview;
     private TextView tv_title;
@@ -92,6 +97,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.MARCHE;
                 DataBase.pedometerModeSelected = 0;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
@@ -100,6 +106,7 @@ public class SubscribeFragment extends Fragment {
         btn_pedometer_run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.COURSE;
                 DataBase.pedometerModeSelected = 1;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
@@ -108,6 +115,7 @@ public class SubscribeFragment extends Fragment {
         btn_bike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PedometerController.mode = TypeEvent.VELO;
                 DataBase.pedometerModeSelected = 2;
                 Map.participationId = DataBase.getSubscribed().get(position).participation;
                 subscribeToMap(true);
@@ -134,6 +142,16 @@ public class SubscribeFragment extends Fragment {
         wvDescription.setHorizontalScrollBarEnabled(false);
         wvDescription.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
+        //Ajout du bouton back
+        btn_back = root.findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowFragment(R.id.navigation_home);
+            }
+        });
+
+        //Ajout des actions pour les boutons d'inscriptions et de prévisualisation
         btn_subscribe = root.findViewById(R.id.btn_challenge_subscribe);
         btn_subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +185,7 @@ public class SubscribeFragment extends Fragment {
         //Affichage des records du challenge
         tv_records = root.findViewById(R.id.txt_title_records);
         lv_records = root.findViewById(R.id.lv_subscribe_records);
+        resetRecords();
         SubscribeListRecordsAdapter subscribeAdapter = new SubscribeListRecordsAdapter(this.getActivity());
         new RecordRequest(this.getActivity(), idChallenge, subscribeAdapter, this);
         lv_records.setAdapter(subscribeAdapter);

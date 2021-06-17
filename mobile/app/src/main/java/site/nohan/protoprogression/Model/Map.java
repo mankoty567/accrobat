@@ -54,7 +54,6 @@ public class Map {
     }
 
     public double distanceToM(double distance){
-        Log.e("distanceToM: ", (distance/100) + " ; " + ((distance/100)*echelle));
         return (distance/100)*this.echelle;
     }
 

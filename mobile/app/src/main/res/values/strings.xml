@@ -4,9 +4,9 @@
     <string name="app_name">Run\'s Like</string>
 
     <!-- Navigation -->
-    <string name="title_home">Home</string>
-    <string name="title_challenge">Challenge</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_challenge">Challenge en cours</string>
+    <string name="title_user">Mon Profil</string>
     <string name="title_activity_main">MainActivity</string>
 
     <!-- Home Fragment -->

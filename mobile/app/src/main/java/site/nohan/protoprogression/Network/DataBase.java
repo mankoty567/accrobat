@@ -67,6 +67,7 @@ public class DataBase {
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
         //bdd.execSQL("DROP TABLE EVENT");
+
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
                 "USERNAME VARCHAR(255)," +
@@ -408,8 +409,9 @@ public class DataBase {
         if(resultats.getCount() == 0)
             return -1;
         resultats.moveToFirst();
-
-        return resultats.getInt(0);
+        int size = resultats.getInt(0);
+        if(size > 5) size = 5;
+        return size;
     }
 
     public static synchronized void addFailEvent(int participationId, TypeEvent typeEvent, int data){
@@ -439,7 +441,25 @@ public class DataBase {
 
         Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT;", null);
         if(eventsCursor.getCount() == 0){
-            Log.e("restoreProgression", "rien à restorer pour les chemins");
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+    public static synchronized  ArrayList<Event> getEventsOf(int participationId){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT;", null);
+        if(eventsCursor.getCount() == 0){
             return new ArrayList<>();
         }
         Event event;
@@ -467,4 +487,5 @@ public class DataBase {
     public static synchronized boolean needToSyncEventWithAPI(){
         return !getFailEvents().isEmpty();
     }
+
 }

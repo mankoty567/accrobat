@@ -51,7 +51,8 @@ public class MapResponse implements APIListenner {
 
 
         try{
-
+            // Log de la map
+            //Log.e("map", response.toString());
             // Init des chemins
            this.map.pointPassages = new ArrayList<>();
 
@@ -178,7 +179,7 @@ public class MapResponse implements APIListenner {
 
         }catch (JSONException jsonException){
             jsonException.printStackTrace();
-           this.map.pointPassages = new ArrayList<>();
+            this.map.pointPassages = new ArrayList<>();
         }
 
         Log.e("Map", "Chargement terminé");
@@ -214,7 +215,6 @@ public class MapResponse implements APIListenner {
             linearLayout.addView(button);
         }
     }
-
 
 
 }

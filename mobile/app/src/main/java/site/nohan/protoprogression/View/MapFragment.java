@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import site.nohan.protoprogression.Controller.ButtonController;
 import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
@@ -47,7 +48,7 @@ public class MapFragment extends Fragment {
         toile = new Toile(this.getContext());
         toile.setOnTouchListener(new ToileController(toile));
 
-        if(DataBase.pedometerController == null) DataBase.pedometerController = new PedometerController(this.getActivity());
+        if(DataBase.pedometerController == null) DataBase.pedometerController = new PedometerController(this.getActivity(),this);
 
         seekBarController = new SeekBarController(this);
         buttonController = new ButtonController(this);
@@ -87,5 +88,12 @@ public class MapFragment extends Fragment {
         bAddCurrent.setOnClickListener(buttonController);
 
          */
+    }
+
+    /******************************************
+     * Méthode utilisé pour afficher le fragment @param fragment dans le framelayout
+     ******************************************/
+    public void ShowFragment(int fragment) {
+        Navigation.findNavController(this.getActivity(),R.id.nav_host_fragment).navigate(fragment);
     }
 }

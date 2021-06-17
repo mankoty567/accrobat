@@ -1,7 +1,5 @@
 package site.nohan.protoprogression.Model;
 
-import androidx.annotation.Nullable;
-
 public class Progression {
     private Map map;
     private int pariticpationId;

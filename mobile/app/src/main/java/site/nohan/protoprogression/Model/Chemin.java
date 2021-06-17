@@ -58,7 +58,6 @@ public class Chemin {
         return (int) Math.floor(longueur);
     }
 
-
     // Renvoi la longueur jusqu'au point p
     public int getLongueurAt(Point objectif){
         double distance = 0;
