@@ -8,9 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import site.nohan.protoprogression.Model.Avatar;
+import site.nohan.protoprogression.Model.Progression;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.R;
 
@@ -22,6 +24,7 @@ import static site.nohan.protoprogression.Network.DataBase.getRecordUsername;
 public class UserHistoryChallengeAdapter extends ArrayAdapter<String> {
 
     private Activity context;
+    private ArrayList<Progression> progressions;
 
     public UserHistoryChallengeAdapter(Activity context) {
         super(context, R.layout.user_history_challenges_list, new String[]{"Chargement"} );
@@ -29,7 +32,7 @@ public class UserHistoryChallengeAdapter extends ArrayAdapter<String> {
 
         //Mise en place des données de la DB
         this.context=context;
-
+        progressions = getProgressions(true);
     }
 
     public View getView(int position, View view, ViewGroup parent) {
@@ -41,12 +44,12 @@ public class UserHistoryChallengeAdapter extends ArrayAdapter<String> {
         ImageView avatar = rowView.findViewById(R.id.list_history_challenge);
 
         if(Avatar.getAvatar(getProgressions(true).get(position).getMap().id) != null){
-            if(Avatar.getAvatar(getProgressions(true).get(position).getMap().id).image != null)
-                avatar.setImageBitmap(Avatar.getAvatar(getProgressions(true).get(position).getMap().id).image);
+            if(Avatar.getAvatar(progressions.get(position).getMap().id).image != null)
+                avatar.setImageBitmap(Avatar.getAvatar(progressions.get(position).getMap().id).image);
         }
 
-        list_title.setText(getProgressions(true).get(position).getMap().libelle+"");
-        list_date.setText("Terminé le : "+getProgressions(true).get(position).getMap().dateDernierePartie);
+        list_title.setText(progressions.get(position).getMap().libelle+"");
+        list_date.setText("Terminé le : "+progressions.get(position).getMap().dateDernierePartie);
 
         return rowView;
     };

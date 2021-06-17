@@ -64,7 +64,6 @@ public class PedometerController implements SensorEventListener, StepListener {
         this.activity = activityUsed;
         this.mapFragment = mapFragment;
         tKilometres = activity.findViewById(R.id.tKilometres);
-        sbProgression = activity.findViewById(R.id.seekBar);
 
         //Initialisation des services de mouvements
         Log.i(TAG, "onCreate: Initializing Sensor Services");
@@ -231,6 +230,7 @@ public class PedometerController implements SensorEventListener, StepListener {
 
         //Mise à jour de la seekbar
         int distanceMap = (int) Math.floor(distance*100/Map.mapActuelle.cheminActuel.getLongueur());
+        Log.e("DISTANCE", distanceMap+"");
         sbProgression.setProgress(distanceMap);
     }
 
