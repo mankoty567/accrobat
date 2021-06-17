@@ -9,10 +9,14 @@ import ChallengeItem from '../../components/ChallengeItem';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { API } from '../../eventApi/api';
 import Proposition from './Proposition';
+import PreviewChallenge from './PreviewChallenge';
+import SearchIcon from '@material-ui/icons/Search';
 
 let ChallengePage = () => {
   //Variable d'interface
   const [challenges, setChallenges] = useState([]);
+  const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState(null);
 
   /**
    * Menu pour les composants de challenge côté tout les challenge
@@ -26,8 +30,23 @@ let ChallengePage = () => {
       API.participation.createParticipation(challenges[index].id);
     };
 
+    /**
+     * Lorsqu'on clique sur u bouton pour avoir la preview
+     */
+    const handlePreview = () => {
+      setSelected(challenges[index].id);
+      setOpen(true);
+    };
+
     return (
       <>
+        <Button
+          onClick={() => handlePreview()}
+          startIcon={<SearchIcon />}
+        >
+          Prévisualiser
+        </Button>
+
         <Button
           startIcon={<BookmarkIcon />}
           onClick={() => handleClick()}
@@ -54,6 +73,14 @@ let ChallengePage = () => {
   useEffect(() => fetchData(), []);
   return (
     <>
+      {selected ? (
+        <PreviewChallenge
+          challenge_id={selected}
+          setSelected={() => setSelected()}
+          open={open}
+          setOpen={() => setOpen()}
+        />
+      ) : null}
       <Typography variant="h3">Challenges disponibles :</Typography>
       <List>
         {challenges.map((elem, idx) => {

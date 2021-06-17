@@ -13,15 +13,25 @@ import {
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 
+/**
+ * Modal pour modifier le marqueur
+ * @param {Object} currentMarker Le marqueur actuellement sélectionné
+ * @param {Function} updateMarker Fonction permettant de modifier les informations
+ * @param {Boolean} modifyMarker Etat pour indiquer si nous sommes en train de modifier un marqueur
+ * @param {Function} setModifyMarker Permet de modifier l'état de modifyMarker
+ */
 let ModifyMarkerPopUp = ({
   currentMarker,
-  markers,
   updateMarker,
   modifyMarker,
   setModifyMarker,
 }) => {
+  //Variable d'interface
   const classes = useStyles();
 
+  /**
+   * Fonction lors de la fermeture du modal
+   */
   let handleClose = () => {
     setModifyMarker(false);
   };

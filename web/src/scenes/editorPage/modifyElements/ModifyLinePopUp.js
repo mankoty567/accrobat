@@ -11,6 +11,11 @@ import {
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 
+/**
+ * Fonction pour calculer la distance du segment
+ * @param {Number[][]} path Path du segment
+ * @param {Number} echelle Echelle par laquelle multiplier
+ */
 let calcSegmentDistance = (path, echelle) => {
   let d = 0;
 
@@ -26,25 +31,38 @@ let calcSegmentDistance = (path, echelle) => {
   return d * echelle;
 };
 
+/**
+ * Modal pour modifier une ligne
+ * @param {Object} currentLine La ligne actuellement sélectionnée
+ * @param {Function} updateLine Fonction pour modifier les données de la ligne
+ * @param {Boolean} modifyLine Etat pour définir si on modifier une ligne ou non
+ * @param {Function} setModifyLine Fonction pour modifier l'état courrant de la modification
+ * @param {Number} echelle Echelle du challenge
+ * @param {Function} getMarkerCoordsFromId FOnction pour récupérer un marqueur depuis un id
+ */
 let ModifyLinePopUp = ({
-  selectedLine,
+  currentLine,
   updateLine,
   modifyLine,
   setModifyLine,
   echelle,
   getMarkerCoordsFromId,
 }) => {
+  //variable d'interface
   const classes = useStyles();
 
+  /**
+   * Fonction lors de la fermeture du modal
+   */
   let handleClose = () => {
     setModifyLine(false);
   };
 
-  var pointStart = getMarkerCoordsFromId(selectedLine.PointStartId);
-  var pointEnd = getMarkerCoordsFromId(selectedLine.PointEndId);
+  var pointStart = getMarkerCoordsFromId(currentLine.PointStartId);
+  var pointEnd = getMarkerCoordsFromId(currentLine.PointEndId);
   var positions = [
     [pointStart[1], pointStart[0]],
-    ...selectedLine.path.map((elem) => {
+    ...currentLine.path.map((elem) => {
       return [elem[1], elem[0]];
     }),
     [pointEnd[1], pointEnd[0]],
@@ -72,10 +90,10 @@ let ModifyLinePopUp = ({
         <List id="content">
           <ListItem>
             <TextField
-              defaultValue={selectedLine.name}
+              defaultValue={currentLine.name}
               label="Nom"
               onChange={(e) => {
-                updateLine(selectedLine.id, {
+                updateLine(currentLine.id, {
                   name: e.target.value,
                 });
               }}
