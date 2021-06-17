@@ -64,6 +64,7 @@ public class DirectionController implements View.OnClickListener {
                 DataBase.pedometerController.bikeAction();
                 break;
         }
+        PedometerController.distance = 0;
 
         Map.mapActuelle.cheminActuel = this.direction;
         Map.mapActuelle.accompli = 0;
