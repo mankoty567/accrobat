@@ -201,7 +201,7 @@ public class Toile extends View {
                     );
 
                     // On dessine la progression uniquement du chemin sur lequel on est
-                    if (c == Map.mapActuelle.cheminActuel) {
+                    if (c == Map.mapActuelle.cheminActuel && !Map.mapActuelle.cheminActuel.complete) {
 
                         this.stylo.setStrokeWidth(15);
                         // Si on est entre deux points
@@ -210,8 +210,8 @@ public class Toile extends View {
 
                             float rapport = (float) (Map.mapActuelle.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
 
-                            float diffX = B.x - A.x;
-                            float diffY = B.y - A.y;
+                            float diffX = (float) B.x - A.x;
+                            float diffY = (float) B.y - A.y;
                             int pointsMax = (int) Math.floor(10 * Chemin.getDistance(A, B));
                             int points = Math.round(pointsMax * rapport);
 
@@ -248,7 +248,7 @@ public class Toile extends View {
                                     this.stylo.setTextSize((1/this.scale.x)*50);
                                     if(Map.mapActuelle.cheminActuel != null)
                                         canvas.drawText(Map.mapActuelle.libelle == null ? "Indéfinis" :
-                                                        Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()-Map.mapActuelle.accompli) +" m",
+                                                        Map.mapActuelle.distanceToM(Map.mapActuelle.cheminActuel.getLongueur()-(double)Map.mapActuelle.accompli) +" m",
                                                 ((A.x + intervalX * j ) + 3 ) * canvas.getWidth() / 100,
                                                 (A.y + intervalY * j) * canvas.getHeight() / 100 ,
                                                 this.stylo
@@ -288,8 +288,8 @@ public class Toile extends View {
                         if(obstacle.distance*c.getLongueur() > c.getLongueurAt(A) && obstacle.distance*c.getLongueur() <= c.getLongueurAt(B)){
                             float rapport = (float) (Map.mapActuelle.accompli - c.getLongueurAt(A)) / (c.getLongueurAt(B) - c.getLongueurAt(A));
 
-                            float diffX = B.x - A.x;
-                            float diffY = B.y - A.y;
+                            float diffX = (float) B.x - A.x;
+                            float diffY = (float) B.y - A.y;
                             int pointsMax = (int) Math.round(10 * Chemin.getDistance(A, B));
                             int points = Math.round(pointsMax * rapport);
 
@@ -297,7 +297,7 @@ public class Toile extends View {
                             float intervalY = diffY / (pointsMax + 1);
 
                             double distance = obstacle.distance*c.getLongueur() - c.getLongueurAt(A);
-                            double deltaAB = c.getLongueurAt(B) - c.getLongueurAt(A);
+                            double deltaAB = (double) c.getLongueurAt(B) - c.getLongueurAt(A);
                             int point = (int) Math.round((pointsMax*distance)/deltaAB);
 
                             this.stylo.setARGB(

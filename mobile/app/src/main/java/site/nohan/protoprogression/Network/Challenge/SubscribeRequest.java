@@ -25,7 +25,7 @@ public class SubscribeRequest extends APIRequestPOST {
      * Constructeur de la requête
      ******************************************/
     public SubscribeRequest(Activity activity, int challengeID, SubscribeFragment subscribeFragment) {
-        super(activity, "participation", new SubscribeResponse(activity, subscribeFragment));
+        super(activity, "participation", new SubscribeResponse(activity, subscribeFragment, challengeID));
 
         this.challengeID = challengeID;
 
@@ -41,7 +41,7 @@ public class SubscribeRequest extends APIRequestPOST {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {

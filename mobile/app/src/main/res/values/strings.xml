@@ -4,14 +4,14 @@
     <string name="app_name">Run\'s Like</string>
 
     <!-- Navigation -->
-    <string name="title_home">Home</string>
-    <string name="title_challenge">Challenge</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_challenge">Challenge en cours</string>
+    <string name="title_user">Mon Profil</string>
     <string name="title_activity_main">MainActivity</string>
 
     <!-- Home Fragment -->
     <string name="title_challenges">Tous les challenges</string>
-    <string name="title_subscribedChallenges">Challenges privés</string>
+    <string name="title_subscribedChallenges">Mes challenges</string>
 
     <!-- Signin Fragment -->
     <string name="title_signin">Espace de Connexion</string>
@@ -35,5 +35,6 @@
     <string name="challenge_title">Title Challenge</string>
     <string name="challenge_date">Date Challenge</string>
     <string name="challenge_description">Description Challenge</string>
-    <string name="records">Records</string>
+    <string name="records">Classement</string>
+    <string name="select_branch_progression">Sélectionner un chemin pour démarrer une session</string>
 </resources>

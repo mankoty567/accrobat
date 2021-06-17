@@ -11,14 +11,15 @@ import java.util.Map;
 import site.nohan.protoprogression.Network.APIRequestGET;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.View.ui.home.HomeListChallengesAdapter;
+import site.nohan.protoprogression.View.ui.home.SubscribeFragment;
 import site.nohan.protoprogression.View.ui.home.SubscribeListRecordsAdapter;
 
 public class RecordRequest extends APIRequestGET {
     /******************************************
      * Constructeur de la requête
      ******************************************/
-    public RecordRequest(Activity activity, int id, SubscribeListRecordsAdapter subscribeListRecordsAdapter) {
-        super(activity, "challenge/"+id+"/records", new RecordResponse(activity, subscribeListRecordsAdapter));
+    public RecordRequest(Activity activity, int id, SubscribeListRecordsAdapter subscribeListRecordsAdapter, SubscribeFragment  subscribeFragment) {
+        super(activity, "challenge/"+id+"/records", new RecordResponse(activity, subscribeListRecordsAdapter, subscribeFragment));
         Log.d("net", this.getUrl());
         APIRequestGET.queue.add(this);
         APIRequestGET.queue.start();
@@ -32,7 +33,7 @@ public class RecordRequest extends APIRequestGET {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {

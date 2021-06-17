@@ -8,14 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="287dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/congrats" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/background">
 
         <TextView
             android:id="@+id/textView"
@@ -37,9 +32,10 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_continue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/blue_button"
             android:text="Continuer" />
     </LinearLayout>
 

@@ -3,47 +3,51 @@ import {
   List,
   ListItem,
   Typography,
+  Divider,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
-import ParticipationDetails from './ParticipationDetails';
-import SearchIcon from '@material-ui/icons/Search';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { API } from '../../eventApi/api';
+import Proposition from './Proposition';
+import PreviewChallenge from './PreviewChallenge';
+import SearchIcon from '@material-ui/icons/Search';
 
 let ChallengePage = () => {
-  const [selected, setSelected] = useState(null);
+  //Variable d'interface
   const [challenges, setChallenges] = useState([]);
-  const [participations, setParticipations] = useState([]);
   const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState(null);
 
-  const ParticipationMenu = ({ index }) => {
-    const handleClick = () => {
-      setSelected(participations[index].id);
-    };
-    return (
-      <>
-        <Button
-          startIcon={<SearchIcon />}
-          onClick={() => handleClick()}
-        >
-          Consulter
-        </Button>
-      </>
-    );
-  };
-
+  /**
+   * Menu pour les composants de challenge côté tout les challenge
+   * @param {Number} index L'index du challenge dans la liste
+   */
   const ChallengeMenu = ({ index }) => {
+    /**
+     * Lorsqu'on clique sur le bouton participer
+     */
     const handleClick = () => {
-      setParticipations((current) => [...current, challenges[index]]);
-      setChallenges((current) =>
-        current.filter((_, idx) => idx !== index),
-      );
       API.participation.createParticipation(challenges[index].id);
     };
 
+    /**
+     * Lorsqu'on clique sur u bouton pour avoir la preview
+     */
+    const handlePreview = () => {
+      setSelected(challenges[index].id);
+      setOpen(true);
+    };
+
     return (
       <>
+        <Button
+          onClick={() => handlePreview()}
+          startIcon={<SearchIcon />}
+        >
+          Prévisualiser
+        </Button>
+
         <Button
           startIcon={<BookmarkIcon />}
           onClick={() => handleClick()}
@@ -59,38 +63,10 @@ let ChallengePage = () => {
    */
   const fetchData = () => {
     //On récupère les participations de l'utilisateur
-    API.participation
-      .getParticipations()
-      .then((participationList) => {
-        //On récupère tous les challenges publiés
-        API.challenge.getChallenges().then((challengeList) => {
-          //Par propreté
-          let challenge_list = challengeList;
-          let participation_list = [];
-
-          for (const elem of participationList) {
-            //Transfert du challenge dans la liste des participations
-            participation_list = [
-              ...participation_list,
-              challenge_list.find(
-                (challenge) => challenge.id === elem.ChallengeId,
-              ),
-            ];
-
-            //Supression du challenge en question
-            challenge_list = challenge_list.filter(
-              (challenge) => challenge.id !== elem.ChallengeId,
-            );
-          }
-
-          //Mise à jour des states
-          setChallenges(
-            challenge_list.filter((elem) => elem !== undefined),
-          );
-          setParticipations(
-            participation_list.filter((elem) => elem !== undefined),
-          );
-        });
+    API.challenge
+      .getChallenges()
+      .then((challengeList) => {
+        setChallenges(challengeList);
       })
       .catch((err) => console.error(err));
   };
@@ -99,43 +75,52 @@ let ChallengePage = () => {
   return (
     <>
       {selected ? (
-        <ParticipationDetails
+        <PreviewChallenge
           challenge_id={selected}
-          setSelected={setSelected}
+          setSelected={() => setSelected()}
           open={open}
-          setOpen={setOpen}
+          setOpen={() => setOpen()}
         />
       ) : null}
-      <Typography variant="h3">Challenges en cours :</Typography>
-      <List>
-        {participations.map((elem, idx) => {
-          return (
-            <ListItem>
-              <ChallengeItem
-                challenge={elem}
-                index={idx}
-                key={elem.id}
-                actionComponents={<ParticipationMenu index={idx} />}
-              ></ChallengeItem>
-            </ListItem>
-          );
-        })}
-      </List>
-      <Typography variant="h3">Challenges disponibles :</Typography>
-      <List>
+      <Typography variant="h3" style={{ paddingTop: '1vh' }}>
+        Challenges disponibles
+      </Typography>
+      <List
+        style={{
+          marginBottom: '2vh',
+        }}
+      >
         {challenges.map((elem, idx) => {
           return (
-            <ListItem>
-              <ChallengeItem
-                challenge={elem}
-                index={idx}
-                key={'c' + elem.id}
-                actionComponents={<ChallengeMenu index={idx} />}
+            <>
+              <ListItem>
+                <ChallengeItem
+                  challenge={elem}
+                  index={idx}
+                  key={'challenge' + elem.id + idx}
+                  actionComponents={<ChallengeMenu index={idx} />}
+                />
+              </ListItem>
+              <Divider
+                style={{
+                  marginLeft: '5vh',
+                  marginRight: '5vh',
+                }}
               />
-            </ListItem>
+            </>
           );
         })}
       </List>
+      <Typography
+        variant="h4"
+        align="center"
+        style={{
+          marginBottom: '2vh',
+        }}
+      >
+        Thèmes
+      </Typography>
+      <Proposition />
     </>
   );
 };

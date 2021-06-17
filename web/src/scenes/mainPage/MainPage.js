@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
-import PublicPage from '../PublicPage';
+import PublicPage from '../publicPage/PublicPage';
 import ProfilePage from '../profilePage/ProfilePage';
+import ParticipationPage from '../participationPage/ParticipationPage';
 import AdminPanel from '../adminPanel/AdminPanel';
 import LoginForm from '../loginForm/LoginForm';
+import InscriptionForm from '../loginForm/InscriptionForm';
+
 import Logout from '../loginForm/Logout';
 import NeedLogin from '../loginForm/NeedLogin';
 import GoogleReturn from '../loginForm/GoogleReturn';
@@ -17,9 +20,12 @@ import { useRecoilState } from 'recoil';
 import ChallengePage from '../challengePage/ChallengePage';
 import Navbar from '../../components/Navbar';
 
+/**
+ * Page principale de l'application, contenant la navBar et le routage de base
+ */
 let MainPage = () => {
-  // Tentative de connection automatique de l'utilisateur
-  const [, setUserState] = useRecoilState(API.user.userAtom);
+  //Variable d'interface
+  const [UserState, setUserState] = useRecoilState(API.user.userAtom);
   const [, setDoneConnection] = useRecoilState(
     API.user.doneConnectionAtom,
   );
@@ -49,7 +55,6 @@ let MainPage = () => {
         <Switch>
           <Route path="/home">
             <PublicPage />
-            {/* <ChallengeEditor challenge_id={25} /> */}
           </Route>
           <Route path="/profile">
             <NeedLogin>
@@ -66,9 +71,16 @@ let MainPage = () => {
               <AdminPanel />
             </NeedLogin>
           </Route>
-
+          <Route path="/participations">
+            <NeedLogin>
+              <ParticipationPage />
+            </NeedLogin>
+          </Route>
           <Route path="/login">
             <LoginForm />
+          </Route>
+          <Route path="/register">
+            <InscriptionForm />
           </Route>
           <Route path="/logout">
             <Logout />

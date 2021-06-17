@@ -1,5 +1,6 @@
 package site.nohan.protoprogression.View.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.DataBase;
@@ -44,8 +48,26 @@ public class SubscribeListRecordsAdapter extends ArrayAdapter<String> {
         TextView list_title = (TextView) rowView.findViewById(R.id.txt_list_pseudo);
         TextView list_record = (TextView) rowView.findViewById(R.id.txt_list_recordDate);
 
+        //creating Date from millisecond
+        long secondes = TimeUnit.MILLISECONDS.toSeconds(getRecordDuration(position)) % 60;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(getRecordDuration(position)) % 60;
+        long heures = TimeUnit.MILLISECONDS.toHours(getRecordDuration(position)) % 60;
+        long jours = TimeUnit.MILLISECONDS.toDays(getRecordDuration(position)) % 24;
+
+        String date = "";
+        if(jours > 0) {
+            date += jours+"j, ";
+        }
+        if(heures > 0){
+            date += heures+"h ";
+        }
+        if(minutes > 0){
+            date += minutes+"m ";
+        }
+        date += secondes+"s";
+
         list_title.setText(getRecordUsername(position)+"");
-        list_record.setText(getRecordDuration(position)+" en ms");
+        list_record.setText(date);
 
         return rowView;
     };

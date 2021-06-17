@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Obstacle;
@@ -39,6 +40,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     private final Toile toile;
     private final TextView tKm;
     private final LinearLayout directionLayout;
+    public static int progress = 0;
     ButtonController buttonController;
 
     public SeekBarController(MapFragment mapFragment){
@@ -47,6 +49,10 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         this.toile = mapFragment.toile;
         this.tKm = this.activity.findViewById(R.id.tKilometres);
         this.directionLayout = this.activity.findViewById(R.id.routeSelect);
+
+        SeekBar seekBar = mapFragment.getActivity().findViewById(R.id.seekBar);
+        //seekBar.setEnabled(false);
+
     }
 
     public void setButtonController(ButtonController buttonController) {
@@ -55,6 +61,10 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        SeekBarController.progress = progress;
+        //Log.e("onProgressChanged: ", progress+"" );
+        //Log.e("onProgressChanged: ", Map.mapActuelle.accompli+"");
+
         // On reserve de la place dans la mémoire pour modifier le bouton que l'on va façonner
         Button button;
 
@@ -64,11 +74,15 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             return;
 
         // On affiche la progression a coté de la barre
-        tKm.setText(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale())+" m ");
+        tKm.setText((int) Math.floor(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale()))+" m ");
 
         DataBase.saveProgression();
 
-        new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
+        new SaveParticipationRequest(this.activity, PedometerController.modeSelected, progress, Map.participationId,
+            new SaveParticipationResponse(
+                this.activity, PedometerController.modeSelected, progress,  Map.participationId
+            )
+        );
         //Log.e("lele", DataBase.getSubscribed().toString());
         Obstacle obstacle = this.detecterObstacle();
         if(obstacle != null){
@@ -78,7 +92,12 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     TypeEvent.OSTACLE,
                     obstacle.id,
                     Map.participationId,
-                    new SaveParticipationResponse()
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.OSTACLE,
+                            obstacle.id,
+                            Map.participationId
+                    )
             );
             new ObstacleAlertDialog(this.activity, obstacle);
 
@@ -86,6 +105,40 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
         }
 
         if(progress == 100){
+
+            //Condition vérifiant le mode sélectionné par l'utilisateur
+            // et activant / désactivant ses fonctionnalités
+            switch (PedometerController.modeSelected) {
+                case MARCHE:
+                    PedometerController.isRunning = false;
+                    DataBase.pedometerController.pedometerStop();
+                    break;
+                case COURSE:
+                    PedometerController.isRunning = true;
+                    DataBase.pedometerController.pedometerStop();
+                    break;
+                case VELO:
+                    DataBase.pedometerController.bikeStop();
+                    break;
+            }
+
+            if(Map.mapActuelle.cheminActuel != null) {
+            Log.e("Direction", "Arrivé au bout du chemin ' "+ Map.mapActuelle.cheminActuel.nom + " '" );
+            Map.mapActuelle.cheminActuel.complete = true;
+            new SaveParticipationRequest(
+                    this.activity,
+                    TypeEvent.ARIVEE,
+                    Map.mapActuelle.cheminActuel.objectifId,
+                    Map.participationId,
+                    new SaveParticipationResponse(
+                            this.activity,
+                            TypeEvent.ARIVEE,
+                            Map.mapActuelle.cheminActuel.objectifId,
+                            Map.participationId
+                    )
+            );
+
+        }
             if(directionLayout.getChildCount() < 1){
                 Log.e("chld", ""+directionLayout.getChildCount());
 
@@ -94,8 +147,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                         break;
                     Log.e("suiv",c.objectif.titre);
                     button = new Button(this.activity);
-                    button.setOnClickListener(new DirectionController(c,toile,this.activity));
-                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.purple_200, null)));
+                    button.setOnClickListener(new DirectionController(c,toile,this.activity,true));
+                    button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.blue_button, null)));
                     button.setText(c.objectif.titre + " par " + c.nom);
 
                     directionLayout.addView(button);
@@ -103,7 +156,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
                 if(Map.mapActuelle.cheminActuel.objectif.chemins.get(0).objectif == null){
                     button = new Button(this.activity);
-                    button.setOnClickListener(new ArriveeController(this.activity, Map.mapActuelle.cheminActuel.objectif));
+                    button.setOnClickListener(new ArriveeController(this.activity, Map.mapActuelle.cheminActuel.objectif, mapFragment));
                     button.setBackgroundTintList(ColorStateList.valueOf(this.activity.getResources().getColor(R.color.green, null)));
                     button.setText("Terminer la course");
                     directionLayout.addView(button);
@@ -113,10 +166,7 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
 
             }
         }else{
-            for(int i=0;i<directionLayout.getChildCount();i++)
-            {
-                directionLayout.removeAllViews();
-            }
+            directionLayout.removeAllViews();
         }
 
         Map.mapActuelle.accompli = (int) Math.floor(((float) progress*Map.mapActuelle.cheminActuel.getLongueur())/100);

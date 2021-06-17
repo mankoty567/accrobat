@@ -5,19 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.ui.home.SigninFragment"
-    android:paddingBottom="55dp" >
+    tools:context=".View.ui.home.SigninFragment" >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ll_base_style">
 
                 <LinearLayout
                     android:id="@+id/ll_signin"
@@ -28,68 +23,50 @@
 
                         <ImageView
                             android:id="@+id/imageView"
-                            android:layout_width="200dp"
-                            android:layout_height="140dp"
                             android:src="@drawable/logo_runslike"
-                            android:layout_marginBottom="40dp"
-                            android:layout_marginTop="40dp"/>
+                            style="@style/image_logo_style"/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_login"
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp">
+                            style="@style/til_secure_style">
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/et_signin_login"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    style="@style/tiet_secure_style"
                                     android:hint="@string/txt_login"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_password"
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"
-                            app:passwordToggleEnabled="true"
-                            android:layout_marginBottom="10dp">
+                            style="@style/til_secure_style"
+                            app:passwordToggleEnabled="true">
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/et_signin_password"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    style="@style/tiet_secure_style"
                                     android:hint="@string/txt_password"
                                     android:inputType="textPassword"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/txt_signin_inscription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12dp"
+                            style="@style/message_secure_style"
                             android:text="@string/txt_go_to_inscription" />
 
                         <TextView
                             android:id="@+id/txt_signin_message"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/error_secure_style"
                             android:visibility="gone"
-                            android:layout_marginTop="10dp"
-                            android:textColor="@color/red"
-                            android:textSize="15dp"
                             android:text="@string/txt_fraude" />
 
                         <LinearLayout
                             android:id="@+id/ll_signin_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
                             android:gravity="center"
                             android:orientation="vertical">
 
                                 <Button
                                     android:id="@+id/btn_signin_connection"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_horizontal"
+                                    style="@style/submit_button"
                                     android:text="@string/button_connect" />
 
                         </LinearLayout>

@@ -1,6 +1,7 @@
 package site.nohan.protoprogression.Model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,13 +14,17 @@ public class Map {
     public static int participationId;
     public static Map mapActuelle;
 
-    public static ArrayList<Map> maps;
+    public static ArrayList<Map> maps = new ArrayList<>();
+
+    public static ArrayList<Map> sauvegardes = new ArrayList<>();
 
     public int id;
 
     public String libelle;
     public Date date;
     public String description;
+
+    public int participation;
 
     public int accompli;
 
@@ -50,7 +55,7 @@ public class Map {
     }
 
     public double distanceToM(double distance){
-        return distance*this.echelle;
+        return (distance/100)*this.echelle;
     }
 
     public double MToDistance(double M){
@@ -74,6 +79,24 @@ public class Map {
         }
         throw new RuntimeException("Aucune arrivée dans la map");
     }
+
+
+    public static Map findById(int mapId) {
+        for(Map map : maps){
+            if(map.id == mapId)
+                return map;
+        }
+        return null;
+    }
+
+    public static Map findSauvegardeById(int mapId){
+        for(Map map : sauvegardes){
+            if(map.id == mapId)
+                return map;
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {

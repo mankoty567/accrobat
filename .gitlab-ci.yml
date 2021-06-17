@@ -1,8 +1,0 @@
-image: node
-
-eslint: 
-  script: 
-    - cd serveur
-    - npm i eslint
-    - npm run lint
-  stage: test

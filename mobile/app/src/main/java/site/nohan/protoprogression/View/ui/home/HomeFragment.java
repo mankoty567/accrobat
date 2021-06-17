@@ -18,10 +18,15 @@ import androidx.navigation.Navigation;
 
 import java.util.Date;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
+import site.nohan.protoprogression.Controller.SeekBarController;
 import site.nohan.protoprogression.Controller.ui.MapsAdaptaterListenner;
+import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Network.Challenge.ChallengesRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Authenticate.WhoAmI.WhoAmIRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
+import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
@@ -81,6 +86,7 @@ public class HomeFragment extends Fragment {
         if(!isOnPrivateChallenges) updateViewButtonMenu(btn_allChallenges,btn_privateChallenges);
         else updateViewButtonMenu(btn_privateChallenges,btn_allChallenges);
 
+
         return root;
     }
 
@@ -88,14 +94,19 @@ public class HomeFragment extends Fragment {
      * Méthode utilisé pour mettre à jour le menu
      ******************************************/
     public void updateViewButtonMenu(Button buttonClicked, Button buttonErased){
+        if(SeekBarController.progress > 0) {
+            new SaveParticipationRequest(this.getActivity(), PedometerController.modeSelected, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this.getActivity(), PedometerController.modeSelected, SeekBarController.progress, Map.participationId)
+            );
+        }
         //Affichage de tous les challenges
         if(!isOnPrivateChallenges) new ChallengesRequest(this.getActivity(), challengesAdapter);
         else {
             challengesAdapter.notifyDataSetChanged();
         }
         lv_home_challenges.setOnItemClickListener(new MapsAdaptaterListenner(this));
-        buttonClicked.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_200, null)));
-        buttonErased.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_700, null)));
+        buttonClicked.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.light_gray_main, null)));
+        buttonErased.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bold_gray_main, null)));
     }
 
     /******************************************

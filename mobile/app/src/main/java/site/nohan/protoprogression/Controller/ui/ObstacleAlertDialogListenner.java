@@ -29,7 +29,7 @@ public class ObstacleAlertDialogListenner implements DialogInterface.OnShowListe
     @Override
     public void onShow(DialogInterface dialogInterface) {
         Button button = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
-        button.setBackgroundTintList(ColorStateList.valueOf(activity.getResources().getColor(R.color.purple_200, null)));
+        button.setBackgroundTintList(ColorStateList.valueOf(activity.getResources().getColor(R.color.blue_button, null)));
         button.setOnClickListener(new ObstacleController(activity, obstacle, input, alertDialog));
 
     }

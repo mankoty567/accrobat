@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
     <color name="green_200">#8BC34A</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
@@ -10,4 +7,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#33CC33</color>
     <color name="red">#DB0404</color>
+
+    <!-- Colors definded in the graphical charter -->
+    <color name="bold_gray_main">#2D292B</color>
+    <color name="light_gray_main">#646163</color>
+    <color name="blue_button">#4a6dc1</color>
+    <color name="background">#F2E8C7</color>
+    <color name="light_background">#FFFCF0</color>
+    <color name="gray_text">#647680</color>
+    <color name="gray_text_disabled">#2D292B</color>
+    <color name="red_error">#961415</color>
 </resources>

@@ -19,7 +19,10 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import site.nohan.protoprogression.Model.Map;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.R;
+import site.nohan.protoprogression.View.MapFragment;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.SENSOR_SERVICE;
@@ -30,14 +33,13 @@ public class PedometerController implements SensorEventListener, StepListener {
      * Création des variables globales de la class
      *****************************************************************/
     private Activity activity;
+    private MapFragment mapFragment;
 
     public static boolean isRunning;
+    public static TypeEvent modeSelected = TypeEvent.MARCHE;
 
     //Variables d'affichages
     public static TextView tKilometres;
-    private Button bPodometreMarche;
-    private Button bPodometreCourse;
-    private Button bGPSVelo;
     public static SeekBar sbProgression;
 
     //Variable contenant la distance générale parcourue
@@ -58,13 +60,10 @@ public class PedometerController implements SensorEventListener, StepListener {
     /*****************************************************************
      * Constructeur de la class
      *****************************************************************/
-    public PedometerController(Activity activityUsed){
-        activity = activityUsed;
-        bPodometreMarche = activity.findViewById(R.id.bPodometreMarche);
-        bPodometreCourse = activity.findViewById(R.id.bPodometreCourse);
-        bGPSVelo = activity.findViewById(R.id.bGPSVelo);
+    public PedometerController(Activity activityUsed, MapFragment mapFragment){
+        this.activity = activityUsed;
+        this.mapFragment = mapFragment;
         tKilometres = activity.findViewById(R.id.tKilometres);
-        sbProgression = activity.findViewById(R.id.seekBar);
 
         //Initialisation des services de mouvements
         Log.i(TAG, "onCreate: Initializing Sensor Services");
@@ -75,14 +74,20 @@ public class PedometerController implements SensorEventListener, StepListener {
     }
 
     /*****************************************************************
+     * Accesseur au Fragment Map
+     *****************************************************************/
+    public MapFragment getMapFragment() {
+        return this.mapFragment;
+    }
+
+    /*****************************************************************
      * Méthode de lancement ou d'arrêt du Podomètre
      *****************************************************************/
-    public void pedometerAction(){
+    /*public void pedometerAction(){
         //Si le GPS est allumé, on l'arrête
         if(isGPSOn){
             stopLocationService();
             isGPSOn = false;
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
 
         //Si le podomètre est éteint, on le lance
@@ -96,38 +101,48 @@ public class PedometerController implements SensorEventListener, StepListener {
             sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
             isPedometerOn = true;
-            if(isRunning) {
-                bPodometreCourse.setBackgroundResource(R.drawable.running_bold);
-                bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            } else {
-                bPodometreCourse.setBackgroundResource(R.drawable.running);
-                bPodometreMarche.setBackgroundResource(R.drawable.walking_bold);
-            }
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
         else{
             sensorManager.unregisterListener(this);
             tKilometres.setText(distance + " ms");
 
             isPedometerOn = false;
-
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
+    }*/
+
+    /*****************************************************************
+     * Méthode de lancement du Podomètre
+     *****************************************************************/
+    public void pedometerStart(){
+        Log.i(TAG, "onCreate : Registered accelerometer listener");
+        numSteps = 0;
+        distanceOfPedometer = 0;
+        oldDistance = distance;
+        tKilometres.setText(distance + " ms");
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+
+        isPedometerOn = true;
+    }
+
+    /*****************************************************************
+     * Méthode d'arrêt du Podomètre
+     *****************************************************************/
+    public void pedometerStop(){
+        sensorManager.unregisterListener(this);
+        tKilometres.setText(distance + " ms");
+
+        isPedometerOn = false;
     }
 
     /*****************************************************************
      * Méthode de lancement ou d'arrêt du GPS
      *****************************************************************/
-    public void bikeAction(){
+    /*public void bikeAction(){
         //Si le podomètre est en route, on l'arrête
         if(isPedometerOn){
             sensorManager.unregisterListener(this);
             //tKilometres.setText("--- kms");
             isPedometerOn = false;
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
         }
 
         //Si le GPS est éteint, on le démarre
@@ -139,20 +154,32 @@ public class PedometerController implements SensorEventListener, StepListener {
                 startLocationService();
             }
             isGPSOn = true;
-
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling_bold);
         }
         else{
             stopLocationService();
             isGPSOn = false;
 
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
-
         }
+    }*/
+
+    /*****************************************************************
+     * Méthode de lancement du GPS
+     *****************************************************************/
+    public void bikeStart(){
+        if(ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            startLocationService();
+        }
+        isGPSOn = true;
+    }
+
+    /*****************************************************************
+     * Méthode d'arrêt du GPS
+     *****************************************************************/
+    public void bikeStop(){
+        stopLocationService();
+        isGPSOn = false;
     }
 
     /*****************************************************************
@@ -163,15 +190,12 @@ public class PedometerController implements SensorEventListener, StepListener {
         if(isGPSOn){
             stopLocationService();
             isGPSOn = false;
-            bGPSVelo.setBackgroundResource(R.drawable.cycling);
         }
 
         if(isPedometerOn){
             sensorManager.unregisterListener(this);
             //tKilometres.setText("--- kms");
             isPedometerOn = false;
-            bPodometreCourse.setBackgroundResource(R.drawable.running);
-            bPodometreMarche.setBackgroundResource(R.drawable.walking);
         }
     }
 
@@ -205,15 +229,9 @@ public class PedometerController implements SensorEventListener, StepListener {
         Log.i(TAG, distance + " ms");
 
         //Mise à jour de la seekbar
-        float distanceMap = distance * 1;
-        sbProgression.setProgress((int)distanceMap);
-
-        //Mise à jour de la toile
-        /*Map.accompli = (int) Math.floor(((float) distanceMap*Map.cheminActuel.getLongueur())/100);
-        int i=0;
-        for(Point p : Map.cheminActuel.points){
-            i++;
-        }*/
+        int distanceMap = (int) Math.floor(distance*100/Map.mapActuelle.cheminActuel.getLongueur());
+        Log.e("DISTANCE", distanceMap+"");
+        sbProgression.setProgress(distanceMap);
     }
 
     /************************************************************************

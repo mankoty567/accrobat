@@ -1,4 +1,5 @@
 const bdd = require('../../models');
+const utils = require('../utils');
 const debug = require('debug')('serveur:participation');
 
 module.exports = {
@@ -48,9 +49,7 @@ module.exports = {
                 res.json({
                   segmentsParcourus: [],
                   type: 'PointPassage',
-                  entity: {
-                    pointPassage,
-                  },
+                  entity: pointPassage,
                 });
               });
             } else {
@@ -116,7 +115,7 @@ module.exports = {
                 let i = 0;
                 let segmentId = undefined;
 
-                while (!isOnPoint) {
+                while (!isOnPoint && i !== events.length) {
                   if (events[i].type === 'pointpassage:depart') {
                     isOnPoint = true;
                     segmentId = Math.trunc(events[i].data);
@@ -126,14 +125,50 @@ module.exports = {
                   }
                 }
 
-                bdd.Segment.findOne({ where: { id: segmentId } }).then(
-                  (segment) => {
-                    obj.type = 'Segment';
-                    obj.distance = distance;
-                    obj.entity = segment;
-                    res.json(obj);
-                  }
-                );
+                if (segmentId === undefined) {
+                  res.status(500).send('No Start Point');
+                  return;
+                }
+
+                bdd.Segment.findOne({
+                  where: { id: segmentId },
+                  include: [
+                    {
+                      model: bdd.PointPassage,
+                      as: 'pointStart',
+                      include: bdd.Challenge,
+                    },
+                    {
+                      model: bdd.PointPassage,
+                      as: 'pointEnd',
+                    },
+                  ],
+                }).then((segment) => {
+                  let pourcentage = utils.calcSegmentPourcentage(
+                    [
+                      [segment.pointStart.x, segment.pointStart.y],
+                      ...segment.path,
+                      [segment.pointEnd.x, segment.pointEnd.y],
+                    ],
+                    segment.pointStart.Challenge.echelle,
+                    distance
+                  );
+
+                  segment = JSON.parse(JSON.stringify(segment));
+
+                  delete segment.pointStart;
+                  delete segment.pointEnd;
+
+                  obj.segmentsParcourus = obj.segmentsParcourus.filter(
+                    (s) => s !== segment.id
+                  );
+
+                  obj.type = 'Segment';
+                  obj.distance = distance;
+                  obj.distancePourcentage = pourcentage;
+                  obj.entity = segment;
+                  res.json(obj);
+                });
               }
             }
           });

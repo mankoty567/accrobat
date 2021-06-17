@@ -46,7 +46,7 @@ public class Chemin {
                     return c;
             }
         }
-        throw new RuntimeException("Chemin " + id + " introuvable");
+        return null;
     }
 
     // Renvoi la longueur jusqu'au dernier segment
@@ -74,7 +74,7 @@ public class Chemin {
 
 
     public static double getDistance(Point A, Point B){
-        return Math.sqrt(Math.pow(B.x-A.x,2) + Math.pow(B.y-A.y,2));
+        return Math.sqrt(Math.pow((double)B.x-A.x,2) + Math.pow((double)B.y-A.y,2));
     }
 
     @Override
@@ -106,8 +106,10 @@ public class Chemin {
         return max;
     }
 
+
+
     public Point getMiddlePoint(){
-        return this.points.get((int) Math.round(this.points.size()/2));
+        return this.points.get((int) Math.round((float)this.points.size()/2));
     }
 
 

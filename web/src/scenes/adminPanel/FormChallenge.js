@@ -3,8 +3,7 @@ import {
   InputLabel,
   FormHelperText,
   Input,
-  List,
-  ListItem,
+  Grid,
   Button,
   Avatar,
   CardMedia,
@@ -15,7 +14,11 @@ import React, { useState } from 'react';
 import ImageUploader from '../../components/ImageUploader';
 import MarkdownEditor from '../../components/MarkdownEditor';
 
-let FormChallenge = ({ callback }) => {
+/**
+ * Formulaire pour créer un challenge
+ * @param {Function} callback Passage d'une fonction au composant parent
+ */
+let FormChallenge = ({ callback, handleCancel }) => {
   //Ajouter la prise en charge de l'échelle et de l'id
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -27,6 +30,11 @@ let FormChallenge = ({ callback }) => {
   const [errImage, setErrImage] = useState(false);
   const [errScale, setErrScale] = useState(false);
 
+  /**
+   * Permet de mettre l'interface dans l'état d'erreur ou non
+   * @param {any} value La valeur du state
+   * @param {Function} setValue La fonction de modification de l'élément non mutable
+   */
   const setError = (value, setValue) => {
     if (value.length === 0) {
       setValue(true);
@@ -35,6 +43,9 @@ let FormChallenge = ({ callback }) => {
     }
   };
 
+  /**
+   * Fonction pour créer un challenge
+   */
   const handleSubmit = () => {
     if (!errTitle || !errDesc || !errImage || !errScale) {
       callback(title, description, img_fond, scale, img_avatar);
@@ -67,9 +78,28 @@ let FormChallenge = ({ callback }) => {
   };
 
   return (
-    <List>
-      <ListItem>
-        <FormControl error={errTitle}>
+    <Grid
+      container
+      justify="center"
+      // spacing={5}
+      style={{
+        marginBottom: '1vh',
+      }}
+    >
+      <Grid
+        item
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          paddingRight: '3vh',
+        }}
+      >
+        <FormControl
+          error={errTitle}
+          style={{
+            marginBottom: '1vh',
+          }}
+        >
           <InputLabel htmlFor="title">Titre* :</InputLabel>
           <Input
             required
@@ -81,23 +111,46 @@ let FormChallenge = ({ callback }) => {
             Le titre de votre challenge
           </FormHelperText>
         </FormControl>
-      </ListItem>
-      <ListItem>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <InputLabel htmlFor="desc">Description* :</InputLabel>
+        <div
+          style={{
+            marginBottom: '1vh',
+            height: '50vh',
+          }}
+        >
+          <Typography
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            Description :
+          </Typography>
           <MarkdownEditor
+            style={{
+              textAlign: 'left',
+            }}
             callback={(text) => setDescription(text.toString())}
           />
         </div>
-      </ListItem>
-
-      <ListItem>
+      </Grid>
+      <Grid
+        item
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          paddingLeft: '3vh',
+        }}
+      >
         <FormControl
           error={errImage}
           onBlur={(e) => setError(e.target.value, setErrImage)}
         >
-          <Typography>Carte de fond* :</Typography>
-
+          <Typography
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            Carte de fond* :
+          </Typography>
           <ImageUploader
             callback={(image) => setImg_fond(image)}
           ></ImageUploader>
@@ -108,8 +161,6 @@ let FormChallenge = ({ callback }) => {
         <CardMedia>
           <img src={img_fond} height="100" width="100" />
         </CardMedia>
-      </ListItem>
-      <ListItem>
         <FormControl error={errScale}>
           <InputLabel htmlFor="scale">Echelle* :</InputLabel>
           <Input
@@ -126,25 +177,46 @@ let FormChallenge = ({ callback }) => {
             donné ?
           </FormHelperText>
         </FormControl>
-      </ListItem>
-      <ListItem>
         <FormControl>
-          <Typography>Icone :</Typography>
-          <ImageUploader
-            callback={(image) => {
-              setImg_avatar(image);
+          <Typography
+            style={{
+              textAlign: 'left',
             }}
-          ></ImageUploader>
-          <FormHelperText></FormHelperText>
+          >
+            Icône :
+          </Typography>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <ImageUploader
+              callback={(image) => {
+                setImg_avatar(image);
+              }}
+            ></ImageUploader>
+            <Avatar src={img_avatar}></Avatar>
+          </div>
         </FormControl>
-
-        <Avatar src={img_avatar}></Avatar>
-      </ListItem>
-
-      <Button onClick={() => handleSubmit()} align="center" fullWidth>
-        Créer le challenge
-      </Button>
-    </List>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        container
+        justify="center"
+        style={{
+          marginTop: '5vh',
+        }}
+      >
+        <Button onClick={() => handleCancel()} align="center">
+          Annuler
+        </Button>
+        <Button onClick={() => handleSubmit()} align="center">
+          Créer un nouveau challenge
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

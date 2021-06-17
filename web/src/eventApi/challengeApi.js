@@ -66,7 +66,6 @@ const challengeApi = {
    * @returns Le challenge avec son id
    */
   createChallenge: (challenge) => {
-    console.log('createChallenge');
     return fetch(`${host}/api/challenge`, {
       method: 'POST',
       headers: {

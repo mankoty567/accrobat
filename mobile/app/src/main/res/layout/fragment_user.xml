@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.ui.user.UserFragment" >
+
+    <LinearLayout
+        style="@style/ll_base_style">
+
+        <LinearLayout
+            android:id="@+id/ll_challenge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/txt_user_pseudo"
+                style="@style/title_text_style"
+                android:text="@string/challenge_title" />
+
+            <TextView
+                android:id="@+id/txt_user_email"
+                style="@style/second_title_text_style"
+                android:text="@string/challenge_date" />
+
+            <Button
+                android:id="@+id/btn_disconnect"
+                style="@style/submit_button"
+                android:text="Se déconnecter" />
+
+            <TextView
+                android:id="@+id/txt_user_history"
+                style="@style/second_title_text_style"
+                android:text="Challenges terminés" />
+
+            <LinearLayout
+                android:id="@+id/ll_user_history"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <ListView
+                    android:id="@+id/lv_user_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

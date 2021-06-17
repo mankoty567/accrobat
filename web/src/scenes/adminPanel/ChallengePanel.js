@@ -1,32 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import ChallengeItem from '../../components/ChallengeItem';
 import FormChallenge from './FormChallenge';
-import { Typography, Divider, Button } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  Divider,
+  Button,
+  CircularProgress,
+} from '@material-ui/core';
 import { API } from '../../eventApi/api';
 import AddIcon from '@material-ui/icons/Add';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
 import EditIcon from '@material-ui/icons/Edit';
 import LayersIcon from '@material-ui/icons/Layers';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
-import ChallengeEditor from '../ChallengeEditor';
-import ChallengeToVote from './ChallengeToVote';
+import ChallengeEditor from '../editorPage/ChallengeEditor';
 
+/**
+ * Le panel d'administration pour les challenges
+ */
 let ChallengePanel = () => {
+  //Variable d'interface
   const [challenges, setChallenges] = useState([]);
-  const [addmode, setAddmode] = useState('add');
+  const [publishedChallenges, setPublishedChallenges] = useState([]);
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(null);
+  const [page, setPage] = useState('list'); //list ou form
 
+  /**
+   * Fonction pour récupérer tout les challenges de l'API
+   */
   const getChallenges = () => {
-    setIsLoading(true);
     API.challenge.getAdminChallenges().then((res) => {
-      setIsLoading(false);
-      setChallenges(res);
+      if (res) {
+        res.forEach((challenge, idx) => {
+          if (challenge.published) {
+            setPublishedChallenges((current) => [
+              ...current,
+              challenge,
+            ]);
+          } else {
+            setChallenges((current) => [...current, challenge]);
+          }
+        });
+      }
     });
   };
 
+  /**
+   * Fonction permettant d'ajouter un challenge sur l'API
+   * @param {String} title Titre du challenge
+   * @param {String} description Description du challenge
+   * @param {Object} img_fond Image de fond de la carte
+   * @param {Number} scale Echelle de la carte
+   * @param {object} avatar Avatar du challenge
+   */
   const addChallenge = (
     title,
     description,
@@ -34,9 +62,7 @@ let ChallengePanel = () => {
     scale,
     avatar,
   ) => {
-    setAddmode('add');
     //Tester si la img_avatar est null, si c'est le cas, on met undefined
-
     let img_avatar;
     if (!avatar) {
       img_avatar = undefined;
@@ -44,7 +70,16 @@ let ChallengePanel = () => {
       img_avatar = avatar;
     }
 
-    console.log({ title, description, scale });
+    setPage('list');
+    setStatusMessage(
+      <>
+        <CircularProgress />
+        <Typography>
+          Challenge en cours de création, veuillez patienter ..
+        </Typography>
+      </>,
+    );
+
     API.challenge
       .createChallenge({
         img_avatar,
@@ -56,17 +91,34 @@ let ChallengePanel = () => {
       .then((res) => {
         setChallenges((current) => [...current, res]);
         setSelected(res.id);
+        setOpen(true);
+        setStatusMessage(
+          <>
+            <Typography>Challenge créé avec succès !</Typography>
+          </>,
+        );
       })
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        setStatusMessage(
+          <>
+            <Typography color="error">
+              Erreur lors de la création du challenge ...
+            </Typography>
+          </>,
+        ),
+      );
   };
 
-  useEffect(() => getChallenges(), []);
-
-  useEffect(() => {
-    getChallenges();
-  }, [open]);
-
-  const Menu = ({ index }) => {
+  /**
+   * Menu des objets de challenge dans l'interface admin
+   * @param {Number} index L'id du challenge
+   * @param {Boolean} published Si le challenge est publié
+   * @returns
+   */
+  const Menu = ({ index, published }) => {
+    /**
+     * Fonction pour gérer la délétion d'un challenge
+     */
     const handleDelete = () => {
       API.challenge
         .deleteChallenge(index)
@@ -76,86 +128,171 @@ let ChallengePanel = () => {
           ),
         );
     };
-    const handleClone = () => {};
+    /**
+     * Fonction permettant de dupliquer un challenge
+     */
+    const handleClone = () => {
+      API.challenge
+        .cloneChallenge(index)
+        .then((res) => {
+          setChallenges((current) => [...current, res]);
+        })
+
+        .catch((err) => console.error(err));
+    };
+    /**
+     * Fonction permettant de modifier les informaitons d'un challenge
+     */
     const handleEdit = () => {
       setSelected(index);
       setOpen(true);
     };
+
     return (
       <>
-        <Button startIcon={<EditIcon />} onClick={() => handleEdit()}>
-          Modifier
-        </Button>
-        <Button startIcon={<LayersIcon />}>Dupliquer</Button>
+        {!published ? (
+          <Button
+            startIcon={<EditIcon />}
+            onClick={() => handleEdit()}
+          >
+            Modifier
+          </Button>
+        ) : null}
         <Button
-          startIcon={<DeleteOutlineIcon />}
-          onClick={() => handleDelete()}
+          startIcon={<LayersIcon />}
+          onClick={() => handleClone()}
         >
-          Supprimer
+          Dupliquer
         </Button>
+        {!published ? (
+          <Button
+            startIcon={<DeleteOutlineIcon />}
+            onClick={() => handleDelete()}
+          >
+            Supprimer
+          </Button>
+        ) : null}
       </>
     );
   };
 
+  useEffect(() => {
+    getChallenges();
+  }, []);
+
   return (
     <>
-      <Typography variant="h4" align="center">
-        {addmode == 'add'
-          ? 'Ajouter un challenge'
-          : addmode === 'list'
-          ? 'Liste des challenges'
-          : 'Challenges à voter'}
-      </Typography>
-      <Divider orientation="horizontal" />
-      <Button
-        startIcon={<AddIcon />}
-        onClick={() => {
-          setAddmode('add');
-          setSelected(null);
-        }}
-      >
-        Ajouter un challenge
-      </Button>
-      <Button
-        startIcon={<MenuBookIcon />}
-        onClick={() => setAddmode('list')}
-      >
-        Consulter les challenge existants
-      </Button>
-      <Button
-        startIcon={<EmojiObjectsIcon />}
-        onClick={() => setAddmode('vote')}
-      >
-        Challenges à voter
-      </Button>
-      {addmode === 'add' ? (
-        <FormChallenge callback={addChallenge} />
-      ) : addmode === 'list' ? (
+      {page === 'list' ? (
         <>
-          {challenges
-            ? challenges.map((key, idx) => {
+          <Typography
+            variant="h4"
+            align="center"
+            style={{
+              marginBottom: '2vh',
+            }}
+          >
+            Gestionnaire des challenges
+          </Typography>
+          {statusMessage}
+          <Grid
+            container
+            justify="center"
+            style={{
+              marginBottom: '1vh',
+            }}
+          >
+            <Grid item xs={12}>
+              <Button
+                startIcon={<AddIcon />}
+                onClick={() => {
+                  setSelected(null);
+                  setPage('form');
+                }}
+              >
+                Ajouter un challenge
+              </Button>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography variant="h5">Publiés</Typography>
+              <table
+                style={{
+                  display: 'block',
+                }}
+              >
+                {publishedChallenges.map((challenge, idx) => {
+                  return (
+                    <tr>
+                      <td>
+                        <ChallengeItem
+                          challenge={challenge}
+                          index={challenge.id}
+                          key={idx}
+                          actionComponents={
+                            <Menu
+                              index={challenge.id}
+                              published={challenge.published}
+                            />
+                          }
+                        />
+                        <Divider
+                          style={{
+                            marginLeft: '5vh',
+                            marginRight: '5vh',
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </table>
+            </Grid>
+            <Grid item xs={6}>
+              {' '}
+              <Typography variant="h5">Non publiés</Typography>
+              {challenges.map((challenge, idx) => {
                 return (
-                  <ChallengeItem
-                    challenge={key}
-                    index={key.id}
-                    key={idx}
-                    actionComponents={<Menu index={key.id} />}
-                  />
+                  <tr>
+                    <td>
+                      <ChallengeItem
+                        challenge={challenge}
+                        index={challenge.id}
+                        key={idx}
+                        actionComponents={
+                          <Menu
+                            index={challenge.id}
+                            published={challenge.published}
+                          />
+                        }
+                      />
+                      <Divider
+                        style={{
+                          marginLeft: '5vh',
+                          marginRight: '5vh',
+                        }}
+                      />
+                    </td>
+                  </tr>
                 );
-              })
-            : null}
+              })}
+            </Grid>
+          </Grid>
+
+          {selected ? (
+            <ChallengeEditor
+              challenge_id={selected}
+              setSelected={setSelected}
+              open={open}
+              setOpen={setOpen}
+            />
+          ) : null}
         </>
       ) : (
-        <ChallengeToVote />
-      )}
-      {selected ? (
-        <ChallengeEditor
-          challenge_id={selected}
-          setSelected={setSelected}
-          open={open}
-          setOpen={setOpen}
+        <FormChallenge
+          callback={addChallenge}
+          handleCancel={() => setPage('list')}
         />
-      ) : null}
+      )}
     </>
   );
 };

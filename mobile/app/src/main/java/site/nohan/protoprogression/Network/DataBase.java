@@ -4,19 +4,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.view.inputmethod.InlineSuggestionsRequest;
 
-import java.text.DateFormat;
+import androidx.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
+import site.nohan.protoprogression.Controller.Pedometer.PedometerController;
 import site.nohan.protoprogression.Model.Chemin;
+import site.nohan.protoprogression.Model.Event;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.Permission;
 import site.nohan.protoprogression.Model.PointPassage;
+import site.nohan.protoprogression.Model.Progression;
+import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Model.User;
 
 public class DataBase {
@@ -24,33 +26,51 @@ public class DataBase {
     public static Context context;
     private static SQLiteDatabase bdd;
 
+    public static PedometerController pedometerController = null;
+
     /******************************************
      * Création des variables globales
      ******************************************/
     public static boolean isTokenValid(){
+        User moi = null;
         try {
-            getMoi().getToken();
-        } catch (Exception e){
+            moi = getMoi();
+        } catch (NullPointerException e){
             Log.e("TOKEN_VALIDITY", e+"");
             return false;
         }
-        return (getMoi().getToken() != null && !getMoi().getToken().equals("NULL"));
+        if(moi != null) return (moi.getToken() != null && !moi.getToken().equals("NULL"));
+        else return false;
     }
 
     public static boolean isTokenDateValid(Date date){
         boolean res = false;
-        if(getMoi().getToken_last_update() == null) return false;
-        final long diff = (date.getTime() - getMoi().getToken_last_update().getTime()) / 1000L;
+        User moi = null;
+        try {
+            moi = getMoi();
+        } catch (NullPointerException e){
+            Log.e("TOKEN_LAST_UPDATE", e+"");
+        }
+        if(moi == null) return false;
+        else if(moi.getToken_last_update() == null) return false;
+        final long diff = (date.getTime() - moi.getToken_last_update().getTime()) / 1000L;
         if(diff <= 7200L) res = true;
         return res;
     }
 
     public static synchronized void init(Context ctx) {
         DataBase.context = context;
+
         /*
          * TABLE USER
          */
         bdd = ctx.openOrCreateDatabase(DataBase.DBNAME, android.content.Context.MODE_PRIVATE, null);
+        /*bdd.execSQL("DROP TABLE EVENT");
+        bdd.execSQL("DROP TABLE PROGRESSION");
+        bdd.execSQL("DROP TABLE USER");
+        bdd.execSQL("DROP TABLE MOI");
+        bdd.execSQL("DROP TABLE ACCOMPLI");*/
+
         bdd.execSQL("CREATE TABLE IF NOT EXISTS USER(" +
                 "ID INTEGER," +
                 "USERNAME VARCHAR(255)," +
@@ -74,12 +94,14 @@ public class DataBase {
          */
         bdd.execSQL("CREATE TABLE IF NOT EXISTS PROGRESSION(" +
                 "CHALLENGE_ID INTEGER," +
+                "PARTICIPATION_ID," +
                 "CHEMIN_ID INTEGER," + // SEGMENT_ID
                 "PROGRESSION INTEGER," +
                 "LIBELLE TEXT,"+
                 "DESCRIPTION TEXT," +
                 "DATE_INSCRIPTION TEXT," +
-                "DATE_DERNIEREPARTIE TEXT" +
+                "DATE_DERNIEREPARTIE TEXT," +
+                "TERMINE INTEGER" +
                 ");"
         );
 
@@ -87,18 +109,34 @@ public class DataBase {
          * TABLE ACCOMPLI (afin de restaurer les segments (Chemins accomplis)
          */
         bdd.execSQL("CREATE TABLE IF NOT EXISTS ACCOMPLI(" +
-                "CHALLENGE_ID," +
-                "CHEMIN_ID" +
+                "CHALLENGE_ID INTEGER," +
+                "CHEMIN_ID INTEGER," +
+                "PARTICIPATION_ID INTEGER" +
                 ");");
 
         /*
          * TABLE RECORDS (afin d'obtenir les meilleurs temps effectués pour un challenge)
          */
         bdd.execSQL("CREATE TABLE IF NOT EXISTS RECORDS(" +
-                "PARTICIPATION_ID," +
-                "DURATION," +
-                "USERNAME" +
+                "PARTICIPATION_ID INTEGER," +
+                "DURATION INTEGER," +
+                "USERNAME INTEGER" +
                 ");");
+
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT_FAILED_TO_SEND(" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER," +
+                "CREATED_AT DATETIME" +
+                ");");
+
+        bdd.execSQL("CREATE TABLE IF NOT EXISTS EVENT(" +
+                "PARTICIPATION_ID INTEGER," +
+                "TYPE VARCHAR(25)," +
+                "DATA INTEGER," +
+                "CREATED_AT DATETIME" +
+                ");");
+        ;
 
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
@@ -116,6 +154,7 @@ public class DataBase {
         for (resultats.moveToFirst(); !resultats.isAfterLast(); resultats.moveToNext()) {
             newMap = new Map();
             newMap.id = resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"));
+            newMap.participation = resultats.getInt(resultats.getColumnIndex("PARTICIPATION_ID"));
             newMap.libelle =  resultats.getString(resultats.getColumnIndex("LIBELLE"));
             newMap.dateInscription = resultats.getString(resultats.getColumnIndex("DATE_INSCRIPTION"));
             newMap.description = resultats.getString(resultats.getColumnIndex("DESCRIPTION"));
@@ -128,6 +167,48 @@ public class DataBase {
         return maps;
     }
 
+    public static synchronized void newProgression(int participationId, int mapId){
+        Map map = Map.findById(mapId);
+        bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
+                mapId + ", " +
+                participationId + ", " +
+                "NULL," +
+                "NULL, \"" +
+                map.libelle + "\",\"" +
+                map.description + " \"," +
+                "datetime()," +
+                "datetime()," +
+                "0" +
+                ");"
+        );
+        Log.e("newProgression: ", "" + Map.participationId);
+    }
+
+    public static synchronized void terminer(int participation){
+        bdd.execSQL("UPDATE PROGRESSION SET TERMINE=1 WHERE PARTICIPATION_ID="+participation);
+    }
+
+    @Nullable
+    public static Progression getProgression(int participation){
+        Progression progression = null;
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+participation+";", null);
+        resultats.moveToFirst();
+        if(resultats.getCount() > 0) {
+            progression = new Progression(
+                    Map.findById(resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"))),
+                    participation,
+                    resultats.getInt(resultats.getColumnIndex("PROGRESSION")),
+                    resultats.getInt(resultats.getColumnIndex("CHEMIN_ID")),
+                    resultats.getInt(resultats.getColumnIndex("TERMINE"))
+            );
+            Log.e("getProgression: ", progression.toString());
+        }
+        resultats.close();
+        return progression;
+    }
+
+
+
     public static synchronized void saveProgression(){
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -136,7 +217,7 @@ public class DataBase {
 
 
 
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+";", null);
         resultats.moveToFirst();
         if(resultats.getCount() == 0){
             dateInscription = "" + dateAujourdhui;
@@ -145,19 +226,21 @@ public class DataBase {
         }
         resultats.close();
 
-        bdd.execSQL("DELETE FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+ ";");
+        bdd.execSQL("DELETE FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+ ";");
         bdd.execSQL("INSERT INTO PROGRESSION VALUES(" +
                 Map.mapActuelle.id + ", " +
+                Map.participationId + ", " +
                 Map.mapActuelle.cheminActuel.id +", " +
                 Map.mapActuelle.accompli + ", \"" +
                 Map.mapActuelle.libelle + "\",\"" +
                 Map.mapActuelle.description + " \",'" +
                 dateInscription + "','" +
-                dateAujourdhui +
-                "');"
+                dateAujourdhui + "'," +
+                "0" +
+                ");"
         );
 
-        bdd.execSQL("DELETE FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";");
+        bdd.execSQL("DELETE FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+";");
         ArrayList<Integer> completes = new ArrayList<>();
         for (PointPassage pointPassage : Map.mapActuelle.pointPassages){
             for (Chemin chemin : pointPassage.chemins){
@@ -167,10 +250,31 @@ public class DataBase {
             }
         }
         for( int cheminId : completes ){
-            bdd.execSQL("INSERT INTO ACCOMPLI VALUES (" + Map.mapActuelle.id + " ," +  cheminId + ");");
+            bdd.execSQL("INSERT INTO ACCOMPLI VALUES (" + Map.mapActuelle.id + " ," +  cheminId + " ," + Map.participationId +");");
         }
 
         //Map.mapActuelle.cheminActuel.id;
+    }
+
+    public static synchronized  ArrayList<Progression> getProgressions(boolean termine){
+        ArrayList<Progression> progressions = new ArrayList<>();
+        Progression progression;
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE TERMINE="+ (termine ? 1+"" : 0+"" )+";", null);
+        if(eventsCursor.getCount() == 0){
+            return new ArrayList<>();
+        }
+
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            progression = new Progression(
+                    Map.findById(eventsCursor.getInt(eventsCursor.getColumnIndex("CHALLENGE_ID"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PROGRESSION")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("CHEMIN_ID")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("TERMINE"))
+            );
+            progressions.add(progression);
+        }
+        return progressions;
     }
 
     public static synchronized void deleteProgression(int mapId){
@@ -179,21 +283,23 @@ public class DataBase {
     }
 
     public static synchronized void restoreProgression(){
-        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        Cursor resultats = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(resultats.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour la progression");
             return;
         }
         resultats.moveToFirst();
-        int cheminId  = resultats.getInt(1);
-        int progression  = resultats.getInt(2);
+        int participationId = resultats.getInt(1);
+        int cheminId  = resultats.getInt(2);
+        int progression  = resultats.getInt(3);
+
 
         Map.mapActuelle.cheminActuel = Chemin.findById(Map.mapActuelle, cheminId);
         Map.mapActuelle.accompli = progression;
         resultats.close();
 
 
-        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE CHALLENGE_ID="+Map.mapActuelle.id+";", null);
+        Cursor accomplis = bdd.rawQuery("SELECT * FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+" AND CHEMIN_ID IS NOT NULL;", null);
         if(accomplis.getCount() == 0){
             Log.e("restoreProgression", "rien à restorer pour les chemins");
             return;
@@ -291,7 +397,7 @@ public class DataBase {
 
     private static ArrayList<Integer> recordsParticipationID = new ArrayList<Integer>();
 
-    public static void addRecord(int idParticipation, long duration, String username){
+    public static synchronized void addRecord(int idParticipation, long duration, String username){
         bdd.execSQL("DELETE FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+ ";");
         bdd.execSQL("INSERT INTO RECORDS VALUES(" +
                 idParticipation + ", " +
@@ -302,14 +408,14 @@ public class DataBase {
         recordsParticipationID.add(idParticipation);
     }
 
-    public static void resetRecords(){
+    public static synchronized void resetRecords(){
         bdd.execSQL("DELETE FROM RECORDS;");
         recordsParticipationID.clear();
     }
 
     public static long getRecordDuration(int position){
         int idParticipation = -1;
-        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+        if(recordsParticipationID.size() > 0 && recordsParticipationID.size() > position) idParticipation = recordsParticipationID.get(position);
 
         Cursor resultats = bdd.rawQuery("SELECT DURATION FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
@@ -319,9 +425,9 @@ public class DataBase {
         return resultats.getLong(0);
     }
 
-    public static String getRecordUsername(int position){
+    public static synchronized String getRecordUsername(int position){
         int idParticipation = -1;
-        if(recordsParticipationID.size() > 0) idParticipation = recordsParticipationID.get(position);
+        if(recordsParticipationID.size() > 0 && recordsParticipationID.size() > position) idParticipation = recordsParticipationID.get(position);
 
         Cursor resultats = bdd.rawQuery("SELECT USERNAME FROM RECORDS WHERE PARTICIPATION_ID="+idParticipation+";",null);
         if(resultats.getCount() == 0)
@@ -331,12 +437,90 @@ public class DataBase {
         return resultats.getString(0);
     }
 
-    public static int getRecordSize(){
+    public static synchronized int getRecordSize(){
         Cursor resultats = bdd.rawQuery("SELECT COUNT (*) FROM RECORDS ;",null);
         if(resultats.getCount() == 0)
             return -1;
         resultats.moveToFirst();
-
-        return resultats.getInt(0);
+        int size = resultats.getInt(0);
+        if(size > 5) size = 5;
+        return size;
     }
+
+    public static synchronized void addFailEvent(int participationId, TypeEvent typeEvent, int data){
+        Log.e("DB",  "Ajout d'un event faild" + typeEvent.toString());
+        bdd.execSQL("INSERT INTO EVENT_FAILED_TO_SEND VALUES(" +
+                participationId + ", \"" +
+                typeEvent.toString() +"\"," +
+                data + "," +
+                "datetime()" +
+                ");"
+        );
+    }
+
+    public static synchronized void addNewEvent(int participationId, TypeEvent typeEvent, int data){
+        Log.e("DB",  "Ajout d'un event " + typeEvent.toString());
+        bdd.execSQL("INSERT INTO EVENT VALUES(" +
+                participationId + ", \"" +
+                typeEvent.toString() +"\"," +
+                data + ", " +
+                "datetime()" +
+                ");"
+        );
+    }
+
+    public static synchronized  ArrayList<Event> getFailEvents(){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT DESC;", null);
+        if(eventsCursor.getCount() == 0){
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA")),
+                    eventsCursor.getString(eventsCursor.getColumnIndex("CREATED_AT"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+    public static synchronized  ArrayList<Event> getEventsOf(int participationId){
+        ArrayList<Event> events = new ArrayList<>();
+
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT DESC;", null);
+        if(eventsCursor.getCount() == 0){
+            return new ArrayList<>();
+        }
+        Event event;
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            event = new Event(
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA")),
+                    eventsCursor.getString(eventsCursor.getColumnIndex("CREATED_AT"))
+            );
+            events.add(event);
+        }
+        return events;
+    }
+
+
+    public static synchronized void deleteFailedToSend(int participationId, TypeEvent typeEvent, int data) {
+        Log.e("DB", "Suppression d'un event failed" + typeEvent.toString());
+        bdd.execSQL("DELETE FROM EVENT_FAILED_TO_SEND WHERE " +
+                "PARTICIPATION_ID=" + participationId + " AND " +
+                "TYPE like \"" + typeEvent.toString() + "\" AND " +
+                "DATA = " + data + "" + ";"
+        );
+    }
+
+    public static synchronized boolean needToSyncEventWithAPI(){
+        return !getFailEvents().isEmpty();
+    }
+
 }

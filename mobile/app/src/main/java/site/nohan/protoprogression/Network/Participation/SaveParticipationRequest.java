@@ -3,13 +3,10 @@ package site.nohan.protoprogression.Network.Participation;
 import android.app.Activity;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.android.volley.AuthFailureError;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +14,8 @@ import java.util.Map;
 import site.nohan.protoprogression.Model.Chemin;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
 import site.nohan.protoprogression.Network.APIListenner;
-import site.nohan.protoprogression.Network.APIRequestGET;
 import site.nohan.protoprogression.Network.APIRequestPOST;
+import site.nohan.protoprogression.Network.ConnectionManager;
 import site.nohan.protoprogression.Network.DataBase;
 
 public class SaveParticipationRequest extends APIRequestPOST {
@@ -27,6 +24,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
     public static double derniereDistance = 0;
     public static long deniereMsEnvoiProgression = 0;
 
+    Activity activity;
     TypeEvent type;
     int id;
     int data;
@@ -38,15 +36,33 @@ public class SaveParticipationRequest extends APIRequestPOST {
      * @param apiListenner*/
     public SaveParticipationRequest(Activity activity, TypeEvent type, int data,  int id  , APIListenner apiListenner) {
         super(activity, "event/", apiListenner);
-        Log.e("update", type.toString() + " data: " + data + " id: "+ id  );
+
         this.data = data;
         this.id = id;
         this.type = type;
+        this.activity = activity;
+
+        if(ConnectionManager.wasDisconnected()){
+            Log.e("NET", "La requête de participation ne sera pas envoyée" );
+            DataBase.addFailEvent(id, type, data);
+            return;
+        }
 
         // Si cela fais longtemps que le deniere Envoi Progression a eu lieu on envoi sinon on ignore
         if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
+            if(site.nohan.protoprogression.Model.Map.mapActuelle == null) {
+                Log.e("SavePartReq", "Pas de map actuel sur laquel progresser");
+                return;
+            }
+
+            if(data < derniereDistance) {
+                Log.e("SavePartReq", "Impossible de reculer data: "+data + " , dds:" +derniereDistance);
+                return;
+            }
+
             long deltaEnvoi = System.currentTimeMillis() - SaveParticipationRequest.deniereMsEnvoiProgression;
             if (deltaEnvoi < SaveParticipationRequest.intervalleEnvoiMinimum) {
+                Log.e("SavePartReq", "Trop tot");
                 return;
             }
         }
@@ -55,16 +71,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
         APIRequestPOST.queue.start();
     }
 
-    public SaveParticipationRequest(Activity activity, TypeEvent type, int id, SaveParticipationResponse apiListenner) {
-        super(activity, "event/", apiListenner);
-        Log.e("update", type.toString() + " id: "+ id   );
-        this.id = id;
-        this.type = type;
 
-        APIRequestPOST.queue.add(this);
-        APIRequestPOST.queue.start();
-
-    }
 
     /******************************************
      * Méthode utilisé pour définir le type du BODY de la requête
@@ -81,7 +88,7 @@ public class SaveParticipationRequest extends APIRequestPOST {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String,String> headers = new HashMap<>();
         headers.putAll(super.getHeaders());
-        if(DataBase.getMoi().getToken() != null && DataBase.getMoi().getToken() != "") {
+        if(DataBase.getMoi().getToken() != null && !DataBase.getMoi().getToken().equals("")) {
             //Log.d("TOKEN_OK", DataBase.token_user + "");
             headers.put("Authorization", "Bearer " + DataBase.getMoi().getToken());
         } else {
@@ -99,9 +106,17 @@ public class SaveParticipationRequest extends APIRequestPOST {
             if(type == TypeEvent.MARCHE || type == TypeEvent.COURSE || type == TypeEvent.VELO) {
 
 
-                double deltaDistance = (site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()/2f - derniereDistance);
+                double deltaDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
+                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale())
+                        -
+                        site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(derniereDistance);
                 jsonBody.put("data", "" + deltaDistance);
-                derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale() / 2f;
+                SaveParticipationRequest.derniereDistance = data;
+                /*
+                derniereDistance = site.nohan.protoprogression.Model.Map.mapActuelle.distanceToM(
+                        site.nohan.protoprogression.Model.Map.mapActuelle.getDistanceTotale()
+                );
+                 */
 
             }else if(type == TypeEvent.ARIVEE){
                 jsonBody.put("data", data);
