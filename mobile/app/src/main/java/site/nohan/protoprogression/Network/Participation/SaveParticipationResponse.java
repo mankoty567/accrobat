@@ -58,7 +58,7 @@ public class SaveParticipationResponse implements APIListenner {
     @Override
     public void onResponse(Object response) {
         Log.e("updated", this.typeEvent.toString() + " data: " + data + " id: "+ id  );
-       // Log.e("net/SavePartResp/OK", "event envoyé ");
+        Log.e("net/SavePartResp/OK", "event envoyé partId (" + id + ")");
         DataBase.deleteFailedToSend(this.id, this.typeEvent, this.data);
         DataBase.addNewEvent(this.id, this.typeEvent, this.data);
 

@@ -129,12 +129,12 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     this.activity,
                     TypeEvent.ARIVEE,
                     Map.mapActuelle.cheminActuel.objectifId,
-                    Map.mapActuelle.id,
+                    Map.participationId,
                     new SaveParticipationResponse(
                             this.activity,
                             TypeEvent.ARIVEE,
                             Map.mapActuelle.cheminActuel.objectifId,
-                            Map.mapActuelle.id
+                            Map.participationId
                     )
             );
 
