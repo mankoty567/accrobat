@@ -62,8 +62,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         SeekBarController.progress = progress;
-        Log.e("onProgressChanged: ", progress+"" );
-        Log.e("onProgressChanged: ", Map.mapActuelle.accompli+"");
+        //Log.e("onProgressChanged: ", progress+"" );
+        //Log.e("onProgressChanged: ", Map.mapActuelle.accompli+"");
 
         // On reserve de la place dans la mémoire pour modifier le bouton que l'on va façonner
         Button button;
@@ -74,11 +74,15 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
             return;
 
         // On affiche la progression a coté de la barre
-        tKm.setText(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale())+" m ");
+        tKm.setText((int) Math.floor(Map.mapActuelle.distanceToM(Map.mapActuelle.getDistanceTotale()))+" m ");
 
         DataBase.saveProgression();
 
-        //new SaveParticipationRequest(this.activity, TypeEvent.MARCHE, progress, Map.participationId, new SaveParticipationResponse());
+        new SaveParticipationRequest(this.activity, PedometerController.mode, progress, Map.participationId,
+            new SaveParticipationResponse(
+                this.activity, PedometerController.mode, progress,  Map.participationId
+            )
+        );
         //Log.e("lele", DataBase.getSubscribed().toString());
         Obstacle obstacle = this.detecterObstacle();
         if(obstacle != null){
@@ -125,12 +129,12 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
                     this.activity,
                     TypeEvent.ARIVEE,
                     Map.mapActuelle.cheminActuel.objectifId,
-                    Map.mapActuelle.id,
+                    Map.participationId,
                     new SaveParticipationResponse(
                             this.activity,
                             TypeEvent.ARIVEE,
                             Map.mapActuelle.cheminActuel.objectifId,
-                            Map.mapActuelle.id
+                            Map.participationId
                     )
             );
 

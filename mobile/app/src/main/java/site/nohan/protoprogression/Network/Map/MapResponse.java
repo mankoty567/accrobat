@@ -49,7 +49,7 @@ public class MapResponse implements APIListenner {
     public void onResponse(Object response) {
         Log.e("map", response.toString());
 
-
+        Map.sauvegardes.add(this.map);
         try{
             // Log de la map
             //Log.e("map", response.toString());
@@ -193,6 +193,7 @@ public class MapResponse implements APIListenner {
         LinearLayout linearLayout = this.activity.findViewById(R.id.routeSelect);
         SeekBar seekBar = this.activity.findViewById(R.id.seekBar);
         if(progression.getProgression() == 0) {
+            /*
             for (Chemin c : this.map.getDepart().chemins) {
                 if (c.objectif == null)
                     break;
@@ -204,6 +205,8 @@ public class MapResponse implements APIListenner {
 
                 linearLayout.addView(button);
             }
+
+             */
         }else{
             Chemin c = Chemin.findById(this.map, progression.getCheminId());
             Button button = new Button(this.activity);

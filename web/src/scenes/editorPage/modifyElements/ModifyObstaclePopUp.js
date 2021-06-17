@@ -12,14 +12,25 @@ import {
 } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 
+/**
+ * Modal pour modifier un obstacle
+ * @param {Object} currentObstacle Obstacle actuellement sélectionné
+ * @param {Function} updateObstacle Fonction pour modifier l'obstacle actuel
+ * @param {Boolean} modifyObstacle Variable d'état pour indiquer que l'on modifie l'obstacle
+ * @param {Function} setModifyObstacle Fonction pour modifier la variable d'état modifyObstacle
+ */
 let ModifyObstaclePopUp = ({
   currentObstacle,
   updateObstacle,
   modifyObstacle,
   setModifyObstacle,
 }) => {
+  //Variable d'interface
   const classes = useStyles();
 
+  /**
+   * Fonction lors de la fermeture du modal
+   */
   let handleClose = () => {
     setModifyObstacle(false);
   };

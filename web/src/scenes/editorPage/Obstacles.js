@@ -2,6 +2,16 @@ import { Marker, Tooltip } from 'react-leaflet';
 import { createObstacleIcon } from '../../components/MarkerIcons';
 import placeOnSegment from '../../components/PlaceOnSegments';
 
+/**
+ * Il s'agit de l'objet obstacle sur la carte
+ * @param {Object[]} obstacles La liste de tout les obstacles présent sur la carte
+ * @param {Object} currentObstacle L'obstacle actuellement sélectionné
+ * @param {Object[]} lines La liste de toutes les lignes présente sur la map
+ * @param {Function} getMarkerCoordsFromId Fonction pour récupérer les coordonnées selon l'id
+ * @param {Function} handleContext Il s'agit d'un eventListener
+ * @param {Function} setCurrentMarker Fonction pour définir le marqueur courant
+ * @param {Function} setCurrentObstacle Fonction qui permet de définir l'obstacle courant
+ */
 let Obstacles = ({
   obstacles,
   currentObstacle,

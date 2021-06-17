@@ -1,4 +1,4 @@
-import { Typography, Tabs, Tab } from '@material-ui/core';
+import { Typography, Tabs, Tab, Grid } from '@material-ui/core';
 import ChallengePanel from './ChallengePanel';
 import React, { useState } from 'react';
 import {
@@ -12,7 +12,6 @@ import {
 import PropositionPanel from './PropositionPanel';
 import UserAdminPanel from './UserAdminPanel';
 import FraudPanel from './FraudPanel';
-import ChallengeToVote from './ChallengeToVote';
 import { useRecoilState } from 'recoil';
 import { API } from '../../eventApi/api';
 
@@ -43,44 +42,52 @@ let AdminPanel = () => {
       </Typography>
 
       <Router basename="/admin">
-        <Tabs value={page} onChange={handleChanges}>
-          <Tab
-            label="Gestionnaire de challenge"
-            component={Link}
-            to="/editor"
-            value="/editor"
-          />
-          <Tab
-            label="Proposition utilisateurs"
-            component={Link}
-            to="/propositions"
-            value="/propositions"
-          />
-          {userState.permission > 100 ? (
+        <Grid
+          container
+          justify="center"
+          style={{
+            paddingBottom: '1vh',
+          }}
+        >
+          <Tabs value={page} onChange={handleChanges}>
             <Tab
-              label="Gestionnaire des utilisateurs"
+              label="Gestionnaire de challenge"
               component={Link}
-              to="/user"
-              value="/user"
+              to="/editor"
+              value="/editor"
             />
-          ) : null}
+            <Tab
+              label="Proposition utilisateurs"
+              component={Link}
+              to="/propositions"
+              value="/propositions"
+            />
+            {userState.permission > 100 ? (
+              <Tab
+                label="Gestionnaire des utilisateurs"
+                component={Link}
+                to="/user"
+                value="/user"
+              />
+            ) : null}
 
-          {userState.permission > 100 ? (
-            <Tab
-              label="Historique des fraudes"
-              component={Link}
-              to="/fraud"
-              value="/fraud"
-            />
-          ) : null}
-        </Tabs>
+            {userState.permission > 100 ? (
+              <Tab
+                label="Historique des fraudes"
+                component={Link}
+                to="/fraud"
+                value="/fraud"
+              />
+            ) : null}
+          </Tabs>
+        </Grid>
+
         <Switch>
           <Route path="/editor">
             <ChallengePanel />
           </Route>
           <Route path="/propositions">
             <PropositionPanel />
-            <ChallengeToVote />
           </Route>
           <Route path="/user">
             {userState.permission > 100 ? (

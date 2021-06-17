@@ -40,12 +40,12 @@ public class DirectionController implements View.OnClickListener {
                 this.activity,
                 TypeEvent.DEPART,
                 this.direction.id,
-                Map.mapActuelle.id,
+                Map.participationId,
                 new SaveParticipationResponse(
                         this.activity,
                         TypeEvent.DEPART,
                         this.direction.id,
-                        Map.mapActuelle.id
+                        Map.participationId
                 )
         );
 

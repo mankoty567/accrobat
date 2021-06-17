@@ -8,11 +8,15 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import React, { useState, useEffect } from 'react';
 import { API } from '../../eventApi/api';
+import useStyles from '../../components/MaterialUI';
+import ChallengeToVote from './ChallengeToVote';
 
 /**
  * Pannel permettant de gérer les propositions
  */
 const PropositionPanel = () => {
+  const classes = useStyles();
+
   //Variable d'interface
   const [propositions, setPropositions] = useState([]);
   const [isLoadingProposition, setIsLoadingPropositions] =
@@ -38,20 +42,52 @@ const PropositionPanel = () => {
   }, []);
 
   return (
-    <div style={{ height: '30vh' }}>
-      <Typography variant="h4" align="center">
+    <>
+      <Typography
+        variant="h4"
+        align="center"
+        style={{
+          marginBottom: '2vh',
+        }}
+      >
+        Propositions de thèmes
+      </Typography>
+      <Typography
+        variant="h5"
+        align="center"
+        style={{
+          marginBottom: '1vh',
+        }}
+      >
         Proposition des joueurs
       </Typography>
-      <Divider orientation="horizontal" />
-
       {isLoadingProposition ? (
         <CircularProgress />
       ) : (
         propositions.map((key) => {
           return (
-            <div className={style.flexRow}>
-              <Typography key={key.id}>{key.description}</Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography
+                key={key.id}
+                style={{
+                  marginRight: '4vh',
+                }}
+              >
+                {key.description}
+              </Typography>
               <IconButton
+                style={{
+                  color: 'darkgreen',
+                  padding: '1vh',
+                  // margin: '1vh',
+                }}
                 onClick={(e) =>
                   handleChangeProposition(key.id, 'accepted')
                 }
@@ -59,6 +95,11 @@ const PropositionPanel = () => {
                 <CheckCircleIcon />
               </IconButton>
               <IconButton
+                style={{
+                  color: 'darkred',
+                  padding: '1vh',
+                  // margin: '1vh',
+                }}
                 onClick={(e) =>
                   handleChangeProposition(key.id, 'refused')
                 }
@@ -69,7 +110,8 @@ const PropositionPanel = () => {
           );
         })
       )}
-    </div>
+      <ChallengeToVote propositions={propositions} />
+    </>
   );
 };
 

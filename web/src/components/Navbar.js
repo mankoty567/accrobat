@@ -137,7 +137,7 @@ export const Navbar = () => {
           ) : null}
           {!userState ? (
             <Tab
-              label="S'inscrire'"
+              label="S'inscrire"
               component={Link}
               to="/register"
               value="/register"
