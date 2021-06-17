@@ -86,11 +86,6 @@ public class HomeFragment extends Fragment {
         if(!isOnPrivateChallenges) updateViewButtonMenu(btn_allChallenges,btn_privateChallenges);
         else updateViewButtonMenu(btn_privateChallenges,btn_allChallenges);
 
-        if(SeekBarController.progress > 0) {
-            new SaveParticipationRequest(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId,
-                    new SaveParticipationResponse(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId)
-            );
-        }
 
         return root;
     }
@@ -99,6 +94,11 @@ public class HomeFragment extends Fragment {
      * Méthode utilisé pour mettre à jour le menu
      ******************************************/
     public void updateViewButtonMenu(Button buttonClicked, Button buttonErased){
+        if(SeekBarController.progress > 0) {
+            new SaveParticipationRequest(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId,
+                    new SaveParticipationResponse(this.getActivity(), PedometerController.mode, SeekBarController.progress, Map.participationId)
+            );
+        }
         //Affichage de tous les challenges
         if(!isOnPrivateChallenges) new ChallengesRequest(this.getActivity(), challengesAdapter);
         else {

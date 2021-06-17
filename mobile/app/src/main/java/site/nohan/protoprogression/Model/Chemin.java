@@ -106,6 +106,8 @@ public class Chemin {
         return max;
     }
 
+
+
     public Point getMiddlePoint(){
         return this.points.get((int) Math.round((float)this.points.size()/2));
     }

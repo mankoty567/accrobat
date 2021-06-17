@@ -30,6 +30,7 @@ import site.nohan.protoprogression.Network.Challenge.SubscribeRequest;
 import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Map.ImageMapRequest;
 import site.nohan.protoprogression.Network.Map.MapRequest;
+import site.nohan.protoprogression.Network.Participation.RetreiveParticipationRequest;
 import site.nohan.protoprogression.R;
 import site.nohan.protoprogression.View.ui.challenge.ChallengeFragment;
 
@@ -211,8 +212,21 @@ public class SubscribeFragment extends Fragment {
      * Méthode utilisé pour afficher la map à laquelle on s'inscrit / on prévisualise
      ******************************************/
     public void subscribeToMap(boolean subscribe){
+        /*
+        if(Map.findSauvegardeById(idChallenge) == null) {
+            Map.mapActuelle = new Map();
+            new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
+        }else{
+
+            Map.mapActuelle = Map.findSauvegardeById(idChallenge);
+
+            new RetreiveParticipationRequest(this.getActivity(), Map.participationId);
+        }
+        */
+
         Map.mapActuelle = new Map();
         new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
+        //
         new ImageMapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
         ChallengeFragment.isNotAPreview = subscribe;
         ShowFragment(challenge);

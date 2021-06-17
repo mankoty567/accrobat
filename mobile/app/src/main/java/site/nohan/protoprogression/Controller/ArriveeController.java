@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import site.nohan.protoprogression.Model.Map;
 import site.nohan.protoprogression.Model.PointPassage;
 import site.nohan.protoprogression.Model.Types.TypeEvent;
+import site.nohan.protoprogression.Network.DataBase;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationRequest;
 import site.nohan.protoprogression.Network.Participation.SaveParticipationResponse;
 import site.nohan.protoprogression.R;
@@ -31,16 +32,17 @@ public class ArriveeController implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         arriveeFragment = new ArriveeFragment();
+        DataBase.terminer(Map.participationId);
         new SaveParticipationRequest(
                 this.activity,
                 TypeEvent.ARIVEE,
                 this.direction.id,
-                Map.mapActuelle.id,
+                Map.participationId,
                 new SaveParticipationResponse(
                         this.activity,
                         TypeEvent.ARIVEE,
                         this.direction.id,
-                        Map.mapActuelle.id
+                        Map.participationId
                 )
         );
 

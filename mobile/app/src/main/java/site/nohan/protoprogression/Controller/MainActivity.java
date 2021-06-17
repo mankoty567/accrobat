@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        Log.e("mainActivity", "Création du timer");
+        checkConnectionTimer = new Timer();
+        checkConnectionTimer.scheduleAtFixedRate(new ConnectivityController(this), 5000, 5000);
+        Log.e("edf", "resume" );
+
     }
 
     public static void setBottomNavigationViewVisibility(int visibility){
@@ -58,10 +63,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Timer permettant de verifier régulierement si on a récupérer la connexion
-        Log.e("mainActivity", "Création du timer");
-        checkConnectionTimer = new Timer();
+        checkConnectionTimer.purge();
         checkConnectionTimer.scheduleAtFixedRate(new ConnectivityController(this), 5000, 5000);
-        Log.e("edf", "resume" );
 
     }
 

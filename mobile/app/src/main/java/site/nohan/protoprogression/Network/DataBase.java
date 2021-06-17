@@ -97,7 +97,8 @@ public class DataBase {
                 "LIBELLE TEXT,"+
                 "DESCRIPTION TEXT," +
                 "DATE_INSCRIPTION TEXT," +
-                "DATE_DERNIEREPARTIE TEXT" +
+                "DATE_DERNIEREPARTIE TEXT," +
+                "TERMINE INTEGER" +
                 ");"
         );
 
@@ -132,8 +133,7 @@ public class DataBase {
                 "DATA INTEGER," +
                 "CREATED_AT DATETIME" +
                 ");");
-
-
+        ;
 
         //Créer la rangée unique
         Cursor resultats = bdd.rawQuery("SELECT * FROM MOI WHERE ID=0",null);
@@ -174,10 +174,15 @@ public class DataBase {
                 map.libelle + "\",\"" +
                 map.description + " \"," +
                 "datetime()," +
-                "datetime()" +
+                "datetime()," +
+                "0" +
                 ");"
         );
         Log.e("newProgression: ", "" + Map.participationId);
+    }
+
+    public static synchronized void terminer(int participation){
+        bdd.execSQL("UPDATE PROGRESSION SET TERMINE=1 WHERE PARTICIPATION_ID="+participation);
     }
 
     @Nullable
@@ -190,13 +195,16 @@ public class DataBase {
                     Map.findById(resultats.getInt(resultats.getColumnIndex("CHALLENGE_ID"))),
                     participation,
                     resultats.getInt(resultats.getColumnIndex("PROGRESSION")),
-                    resultats.getInt(resultats.getColumnIndex("CHEMIN_ID"))
+                    resultats.getInt(resultats.getColumnIndex("CHEMIN_ID")),
+                    resultats.getInt(resultats.getColumnIndex("TERMINE"))
             );
             Log.e("getProgression: ", progression.toString());
         }
         resultats.close();
         return progression;
     }
+
+
 
     public static synchronized void saveProgression(){
 
@@ -224,8 +232,9 @@ public class DataBase {
                 Map.mapActuelle.libelle + "\",\"" +
                 Map.mapActuelle.description + " \",'" +
                 dateInscription + "','" +
-                dateAujourdhui +
-                "');"
+                dateAujourdhui + "'," +
+                "0" +
+                ");"
         );
 
         bdd.execSQL("DELETE FROM ACCOMPLI WHERE PARTICIPATION_ID="+Map.participationId+";");
@@ -242,6 +251,27 @@ public class DataBase {
         }
 
         //Map.mapActuelle.cheminActuel.id;
+    }
+
+    public static synchronized  ArrayList<Progression> getProgressions(boolean termine){
+        ArrayList<Progression> progressions = new ArrayList<>();
+        Progression progression;
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM PROGRESSION WHERE TERMINE="+ (termine ? 1+"" : 0+"" )+";", null);
+        if(eventsCursor.getCount() == 0){
+            return new ArrayList<>();
+        }
+
+        for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+            progression = new Progression(
+                    Map.findById(eventsCursor.getInt(eventsCursor.getColumnIndex("CHALLENGE_ID"))),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("PROGRESSION")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("CHEMIN_ID")),
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("TERMINE"))
+            );
+            progressions.add(progression);
+        }
+        return progressions;
     }
 
     public static synchronized void deleteProgression(int mapId){
@@ -439,7 +469,7 @@ public class DataBase {
     public static synchronized  ArrayList<Event> getFailEvents(){
         ArrayList<Event> events = new ArrayList<>();
 
-        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT;", null);
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT_FAILED_TO_SEND ORDER BY CREATED_AT DESC;", null);
         if(eventsCursor.getCount() == 0){
             return new ArrayList<>();
         }
@@ -448,7 +478,8 @@ public class DataBase {
             event = new Event(
                     eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
                     TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
-                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA")),
+                    eventsCursor.getString(eventsCursor.getColumnIndex("CREATED_AT"))
             );
             events.add(event);
         }
@@ -458,7 +489,7 @@ public class DataBase {
     public static synchronized  ArrayList<Event> getEventsOf(int participationId){
         ArrayList<Event> events = new ArrayList<>();
 
-        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT;", null);
+        Cursor eventsCursor = bdd.rawQuery("SELECT * FROM EVENT WHERE PARTICIPATION_ID="+participationId+" ORDER BY CREATED_AT DESC;", null);
         if(eventsCursor.getCount() == 0){
             return new ArrayList<>();
         }
@@ -467,7 +498,8 @@ public class DataBase {
             event = new Event(
                     eventsCursor.getInt(eventsCursor.getColumnIndex("PARTICIPATION_ID")),
                     TypeEvent.get(eventsCursor.getString(eventsCursor.getColumnIndex("TYPE"))),
-                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA"))
+                    eventsCursor.getInt(eventsCursor.getColumnIndex("DATA")),
+                    eventsCursor.getString(eventsCursor.getColumnIndex("CREATED_AT"))
             );
             events.add(event);
         }

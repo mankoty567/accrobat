@@ -6,11 +6,17 @@ public class Event {
     private int participationId;
     private TypeEvent typeEvent;
     private int data;
+    private String date;
 
-    public Event(int participationId, TypeEvent typeEvent, int data) {
+    public Event(int participationId, TypeEvent typeEvent, int data, String date) {
         this.participationId = participationId;
         this.typeEvent = typeEvent;
         this.data = data;
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public int getParticipationId() {
