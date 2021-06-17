@@ -13,6 +13,7 @@ import {
   TableRow,
   FormControlLabel,
   Checkbox,
+  Grid,
   IconButton,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -31,8 +32,9 @@ const status = {
 
 /**
  * Page permettant de voter pour des propositions
+ * @param {Object} propositions UseState des différentes propositions des utilisateurs
  */
-export default function ChallengeToVote() {
+export default function ChallengeToVote({ propositions }) {
   //Variables d'interface
   const [showClosed, setShowClosed] = useState(false);
   const [addDescription, setAddDescription] = useState('');
@@ -144,7 +146,7 @@ export default function ChallengeToVote() {
       setIsLoadingChallenges(false);
       setChallenges(data);
     });
-  }, []);
+  }, [propositions]);
 
   useEffect(() => {
     setShownChallenge(
@@ -155,40 +157,45 @@ export default function ChallengeToVote() {
   return (
     <>
       <div>
-        <Typography variant="h5" className={style.center}>
-          Ajouter une proposition
+        <Typography
+          variant="h5"
+          style={{
+            marginTop: '2vh',
+          }}
+        >
+          Liste des votes
         </Typography>
-        <div className={style.flex}>
-          <TextField
-            value={addDescription}
-            onChange={(e) => setAddDescription(e.target.value)}
-            label="Description"
-            style={{ width: '80%' }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ width: '20%' }}
-            onClick={handleClickAdd}
-            disabled={addDescription === ''}
+        <div>
+          <Typography variant="h6">Ajouter un vote</Typography>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            Ajouter
-          </Button>
+            {' '}
+            <TextField
+              value={addDescription}
+              onChange={(e) => setAddDescription(e.target.value)}
+              label="Description courte"
+              style={{ width: '80%' }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: '2vh' }}
+              onClick={handleClickAdd}
+              disabled={addDescription === ''}
+            >
+              Ajouter
+            </Button>
+          </div>
+          {isLoadingAdd ? <CircularProgress /> : null}
         </div>
-        {isLoadingAdd ? <CircularProgress /> : null}
-      </div>
-
-      <Divider
-        orientation="horizontal"
-        style={{ marginTop: '10px' }}
-      />
-
-      <div>
-        <Typography variant="h5" className={style.center}>
-          Liste des propositions
-        </Typography>
         {isLoadingChallenges ? <CircularProgress /> : null}
-        <div className={style.flexCenter}>
+        <div>
           <FormControlLabel
             control={
               <Checkbox
@@ -201,63 +208,125 @@ export default function ChallengeToVote() {
             label="Montrer les challenges fermés"
           />
         </div>
-
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Somme des votes</TableCell>
-              <TableCell>Nombre de votes</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {shownChallenge.map((c) => (
-              <TableRow key={c.id} className={style.flex}>
+        <Grid container justify="center">
+          <Table
+            style={{
+              marginBottom: '2vh',
+              width: '90%',
+              border: '1px solid black',
+            }}
+          >
+            <TableHead>
+              <TableRow>
                 <TableCell
-                  className={classnames(
-                    [style.status],
-                    [style[c.status]],
-                  )}
+                  style={{
+                    border: '1px solid black',
+                  }}
                 >
-                  {status[c.status]}
+                  Status
                 </TableCell>
-                <TableCell>
-                  {c.description}{' '}
-                  <IconButton
-                    onClick={() =>
-                      handleClickEdit(c.id, c.description)
-                    }
-                  >
-                    <EditIcon />
-                  </IconButton>
+                <TableCell
+                  style={{
+                    border: '1px solid black',
+                  }}
+                >
+                  Description
                 </TableCell>
-                <TableCell>{c.voteSum}</TableCell>
-                <TableCell>{c.userVote}</TableCell>
-                <TableCell>
-                  {c.status === 'open' ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleCloseChallenge(c.id)}
-                    >
-                      Fermer
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleOpenChallenge(c.id)}
-                    >
-                      Ouvrir
-                    </Button>
-                  )}
+                <TableCell
+                  style={{
+                    border: '1px solid black',
+                  }}
+                >
+                  Somme des votes
+                </TableCell>
+                <TableCell
+                  style={{
+                    border: '1px solid black',
+                  }}
+                >
+                  Nombre de votes
+                </TableCell>
+                <TableCell
+                  style={{
+                    border: '1px solid black',
+                  }}
+                >
+                  Action
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {shownChallenge.map((c) => (
+                <TableRow key={c.id}>
+                  <TableCell
+                    style={{
+                      border: '1px solid black',
+                    }}
+                    className={classnames(
+                      [style.status],
+                      [style[c.status]],
+                    )}
+                  >
+                    {status[c.status]}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      border: '1px solid black',
+                    }}
+                  >
+                    {c.description}{' '}
+                    <IconButton
+                      onClick={() =>
+                        handleClickEdit(c.id, c.description)
+                      }
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      border: '1px solid black',
+                    }}
+                  >
+                    {c.voteSum}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      border: '1px solid black',
+                    }}
+                  >
+                    {c.userVote}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      border: '1px solid black',
+                    }}
+                  >
+                    <Grid container justify="center">
+                      {c.status === 'open' ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleCloseChallenge(c.id)}
+                        >
+                          Fermer
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleOpenChallenge(c.id)}
+                        >
+                          Ouvrir
+                        </Button>
+                      )}
+                    </Grid>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Grid>
       </div>
 
       <Modal

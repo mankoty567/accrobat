@@ -3,6 +3,7 @@ import {
   Typography,
   Select,
   MenuItem,
+  Grid,
 } from '@material-ui/core';
 import { useRecoilState } from 'recoil';
 import React, { useEffect, useState } from 'react';
@@ -55,51 +56,66 @@ const UserAdminPanel = () => {
   }, []);
 
   return (
-    <div style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-      <Typography variant="h4" align="center">
-        Gestionnaire des utilisateurs
-      </Typography>
-      <table style={{ marginLeft: '40%', marginRight: 'auto' }}>
-        <tr>
-          <td>
-            <Typography style={{ paddingRight: '10px' }}>
-              Chercher un utilisateur :
-            </Typography>
-          </td>
-          <td>
-            <TextField
-              placeholder="Entrez un nom d'utilisateur"
-              onChange={(e) => {
-                setFilter(e.target.value);
-              }}
-              value={filter}
-            ></TextField>
-          </td>
-        </tr>
-      </table>
-
-      <table
+    <>
+      <Typography
+        variant="h4"
+        align="center"
         style={{
-          width: '300px%',
-          display: 'block',
-          marginLeft: '40vw',
-          marginRight: 'auto',
+          marginBottom: '2vh',
         }}
       >
-        {userList
-          .filter((elem) => elem.username.includes(filter))
-          .map((user, idx) => {
-            return (
-              <UserItem
-                key={idx}
-                userId={user.id}
-                username={user.username}
-                permission={user.permission}
-              />
-            );
-          })}
-      </table>
-    </div>
+        Gestionnaire des utilisateurs
+      </Typography>
+      <Grid
+        container
+        justify="center"
+        style={{
+          marginBottom: '1vh',
+        }}
+      >
+        <table>
+          <tr>
+            <td>
+              <Typography style={{ paddingRight: '10px' }}>
+                Chercher un utilisateur :
+              </Typography>
+            </td>
+            <td>
+              <TextField
+                placeholder="Entrez un nom d'utilisateur"
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                }}
+                value={filter}
+              ></TextField>
+            </td>
+          </tr>
+        </table>
+      </Grid>
+      <Grid container justify="center">
+        <table
+        // style={{
+        //   width: '300px%',
+        //   display: 'block',
+        //   marginLeft: '40vw',
+        //   marginRight: 'auto',
+        // }}
+        >
+          {userList
+            .filter((elem) => elem.username.includes(filter))
+            .map((user, idx) => {
+              return (
+                <UserItem
+                  key={idx}
+                  userId={user.id}
+                  username={user.username}
+                  permission={user.permission}
+                />
+              );
+            })}
+        </table>
+      </Grid>
+    </>
   );
 };
 
