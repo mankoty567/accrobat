@@ -97,7 +97,7 @@ let ParticipationPage = () => {
               <ChallengeItem
                 challenge={elem}
                 index={idx}
-                key={elem.id}
+                key={'participation' + elem.id + idx}
                 actionComponents={<ParticipationMenu index={idx} />}
               ></ChallengeItem>
             </ListItem>

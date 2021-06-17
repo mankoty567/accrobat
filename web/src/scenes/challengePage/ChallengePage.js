@@ -81,7 +81,7 @@ let ChallengePage = () => {
           setOpen={() => setOpen()}
         />
       ) : null}
-      <Typography variant="h3">Challenges disponibles :</Typography>
+      <Typography variant="h3">Challenges disponibles</Typography>
       <List>
         {challenges.map((elem, idx) => {
           return (
@@ -89,7 +89,7 @@ let ChallengePage = () => {
               <ChallengeItem
                 challenge={elem}
                 index={idx}
-                key={'c' + elem.id}
+                key={'challenge' + elem.id + idx}
                 actionComponents={<ChallengeMenu index={idx} />}
               />
             </ListItem>
@@ -97,7 +97,6 @@ let ChallengePage = () => {
         })}
       </List>
       <Typography variant="h3">Thèmes :</Typography>
-
       <Proposition />
     </>
   );
