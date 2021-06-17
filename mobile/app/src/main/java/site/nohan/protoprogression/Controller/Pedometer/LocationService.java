@@ -97,7 +97,7 @@ public class LocationService extends Service {
                         Toast.makeText(getApplicationContext(), "Fraude détectée, course annulée !",Toast.LENGTH_LONG).show();
                         hasFrauded = true;
                         distance = 0;
-                        stopLocationService();
+                        DataBase.pedometerController.bikeAction();
                         new FraudRequest(DataBase.pedometerController.getMapFragment().getActivity());
                         DataBase.pedometerController.getMapFragment().ShowFragment(R.id.navigation_subscribe);
                     }
