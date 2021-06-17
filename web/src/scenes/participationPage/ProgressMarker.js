@@ -7,10 +7,11 @@ export default function ProgressMarker({
   position,
   segments,
   markers,
+  segmentsFinished,
 }) {
   var coords = [0.5, 0.5];
   if (position.type == 'PointPassage') {
-    coords = [position.entity.x, position.entity.y];
+    coords = [position.entity.y, position.entity.x];
   }
   if (position.type == 'Segment') {
     var segment = position.entity;
@@ -25,11 +26,12 @@ export default function ProgressMarker({
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeOnSegment(positions, position.distance).reverse();
+    coords = placeOnSegment(positions, position.distance);
   }
   if (position.type == 'Obstacle') {
     var obstacle = position.entity;
-    var segment = segments.find((s) => (s.id = obstacle.SegmentId));
+    var segmentId = segmentsFinished.slice(-1).pop();
+    var segment = segments.find((s) => s.id === segmentId);
     var startMarker = markers.find(
       (m) => m.id === segment.PointStartId,
     );
@@ -41,12 +43,12 @@ export default function ProgressMarker({
       }),
       [endMarker.y, endMarker.x],
     ];
-    coords = placeOnSegment(positions, position.distance);
+    coords = placeOnSegment(positions, obstacle.distance);
   }
   return (
     <Marker
       key={'position'}
-      position={[coords[1], coords[0]]}
+      position={[coords[0], coords[1]]}
       icon={createProgressIcon()}
     />
   );
