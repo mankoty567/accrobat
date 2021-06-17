@@ -208,8 +208,18 @@ public class SubscribeFragment extends Fragment {
      * Méthode utilisé pour afficher la map à laquelle on s'inscrit / on prévisualise
      ******************************************/
     public void subscribeToMap(boolean subscribe){
+        /*
+        if(Map.findById(idChallenge) == null) {
+            Map.mapActuelle = new Map();
+            new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
+        }else{
+            Map.mapActuelle = Map.findById(idChallenge);
+        }
+
+         */
         Map.mapActuelle = new Map();
         new MapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
+        //
         new ImageMapRequest(this.getActivity(), idChallenge, Map.mapActuelle);
         ChallengeFragment.isNotAPreview = subscribe;
         ShowFragment(challenge);

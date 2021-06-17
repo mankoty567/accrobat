@@ -62,8 +62,8 @@ public class SeekBarController implements SeekBar.OnSeekBarChangeListener {
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         SeekBarController.progress = progress;
-        Log.e("onProgressChanged: ", progress+"" );
-        Log.e("onProgressChanged: ", Map.mapActuelle.accompli+"");
+        //Log.e("onProgressChanged: ", progress+"" );
+        //Log.e("onProgressChanged: ", Map.mapActuelle.accompli+"");
 
         // On reserve de la place dans la mémoire pour modifier le bouton que l'on va façonner
         Button button;

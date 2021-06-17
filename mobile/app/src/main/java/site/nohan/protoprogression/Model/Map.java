@@ -38,7 +38,10 @@ public class Map {
 
     public double echelle;
 
-
+    public Map(){
+        //this.maps = new ArrayList<>();
+        //this.maps.add(this);
+    }
 
 
     public int getDistanceTotale(){
