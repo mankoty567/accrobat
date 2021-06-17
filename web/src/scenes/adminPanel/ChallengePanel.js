@@ -31,10 +31,8 @@ let ChallengePanel = () => {
    */
   const getChallenges = () => {
     API.challenge.getAdminChallenges().then((res) => {
-      console.log(res.length);
       if (res) {
         res.forEach((challenge, idx) => {
-          console.log(idx);
           if (challenge.published) {
             setPublishedChallenges((current) => [
               ...current,
@@ -221,7 +219,6 @@ let ChallengePanel = () => {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6">Non publiés</Typography>
               {challenges.map((challenge, idx) => {
-                console.log(challenge);
                 return (
                   <tr>
                     <td>

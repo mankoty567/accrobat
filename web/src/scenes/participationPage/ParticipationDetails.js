@@ -25,6 +25,7 @@ let ParticipationDetails = ({
   setSelected,
   open,
   setOpen,
+  participation_id,
 }) => {
   //Utilisation des classes CSS
   const classes = useStyles();
@@ -35,7 +36,6 @@ let ParticipationDetails = ({
     [1, 1],
   ];
 
-  var participation_id = null;
   const [markers, setMarkers] = useState([]);
   const [segments, setSegments] = useState([]);
   const [segmentsFinished, setSegmentsFinished] = useState([]);
@@ -49,8 +49,6 @@ let ParticipationDetails = ({
     echelle: 0,
   });
 
-  // useEffect(() => console.log(position), [position]);
-
   let getIcon = (marker) => {
     switch (marker.type) {
       case 'start':
@@ -63,12 +61,6 @@ let ParticipationDetails = ({
   };
 
   const initializeMap = async (challenge_id) => {
-    await API.participation.getParticipations().then((res) => {
-      res.forEach((participation) => {
-        if (participation.ChallengeId == challenge_id)
-          participation_id = participation.id;
-      });
-    });
     await API.challenge
       .getChallenge({
         challenge_id,

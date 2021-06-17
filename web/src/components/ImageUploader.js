@@ -51,7 +51,7 @@ let ImageUploader = ({ callback, maxSize, setErrMessage }) => {
               callback(base64img);
             })
             .catch((err) => {
-              console.log(err);
+              console.error(err);
             });
         } else {
           setErrMessage

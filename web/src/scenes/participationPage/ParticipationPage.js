@@ -25,7 +25,7 @@ let ParticipationPage = () => {
      * Lorsqu'on clique sur le bouton consulter
      */
     const handleClick = () => {
-      setSelected(participations[index].id);
+      setSelected(participations[index]);
       setOpen(true);
     };
     return (
@@ -58,9 +58,12 @@ let ParticipationPage = () => {
             //Transfert du challenge dans la liste des participations
             participation_list = [
               ...participation_list,
-              challenge_list.find(
-                (challenge) => challenge.id === elem.ChallengeId,
-              ),
+              {
+                ...challenge_list.find(
+                  (challenge) => challenge.id === elem.ChallengeId,
+                ),
+                participationId: elem.id,
+              },
             ];
           }
 
@@ -72,15 +75,18 @@ let ParticipationPage = () => {
       .catch((err) => console.error(err));
   };
 
-  useEffect(() => fetchData(), []);
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       {selected ? (
         <ParticipationDetails
-          challenge_id={selected}
+          challenge_id={selected.id}
           setSelected={setSelected}
           open={open}
           setOpen={setOpen}
+          participation_id={selected.participationId}
         />
       ) : null}
       <Typography variant="h3">Challenges en cours :</Typography>
