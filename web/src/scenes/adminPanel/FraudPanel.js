@@ -18,6 +18,7 @@ export default function FraudPanel() {
     <>
       <Typography variant="h3">Historique des fraudes</Typography>
       {fraudList.map((elem, idx) => {
+        let date = new Date(elem.createdAt);
         return (
           <div
             key={idx}
@@ -28,11 +29,21 @@ export default function FraudPanel() {
               paddingRight: 'auto',
             }}
           >
-            <Typography variant="h6" style={{ paddingRight: '40px' }}>
+            <Typography
+              variant="h6"
+              key={idx * 1000 + 10000000}
+              style={{ paddingRight: '40px' }}
+            >
               {elem.User.username}
             </Typography>
 
-            <Typography variant="h6">{elem.createdAt}</Typography>
+            <Typography variant="h6" key={idx / 1000 + 1000000}>
+              {`${('0' + date.getDay()).toString().slice(-2)}/${(
+                '0' + date.getMonth()
+              )
+                .toString()
+                .slice(-2)}/${date.getFullYear()}`}
+            </Typography>
           </div>
         );
       })}
