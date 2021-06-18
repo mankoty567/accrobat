@@ -208,7 +208,13 @@ module.exports = {
                     .status(400)
                     .send('Bad request: Obstacle is not a question');
                 } else {
-                  if (req.body.awnser === obstacle.enigme_awnser) {
+                  let banalisedProposal = req.body.awnser.toLowerCase();
+                  banalisedProposal = banalisedProposal.trim();
+
+                  let banalisedAwnser = obstacle.enigme_awnser.toLowerCase();
+                  banalisedAwnser = banalisedAwnser.trim();
+
+                  if (banalisedProposal === banalisedAwnser) {
                     bdd.Event.create({
                       type: 'obstacle:completed',
                       ParticipationId: participation.id,
